@@ -1,0 +1,193 @@
+/* Pull-chain light: FetaUI 06 Motion Buttons Handoff and Motion. */
+.tray {
+  width: 288px;
+  max-width: 100%;
+}
+
+.status {
+  padding: var(--feta-space-0-5) var(--feta-space-2);
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-alpha-ink-base-5);
+  color: var(--feta-text-secondary);
+  font: var(--feta-text-label-micro);
+  letter-spacing: var(--feta-text-label-micro-tracking);
+}
+
+.tray[data-on] .status {
+  background-color: var(--feta-bg-warning-subtle);
+  color: var(--feta-status-warning-text);
+}
+
+.scene {
+  position: relative;
+  width: 280px;
+  max-width: 100%;
+  height: 280px;
+  overflow: hidden;
+  align-self: center;
+}
+
+.lamp {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.wire { fill: var(--feta-text-tertiary); }
+
+.cord {
+  fill: none;
+  stroke: var(--feta-text-tertiary);
+  stroke-width: 2;
+}
+
+.shade {
+  fill: var(--feta-text-tertiary);
+  transition: fill var(--feta-motion-duration-slow) var(--feta-motion-ease-out-soft);
+}
+
+.tray[data-on] .shade { fill: var(--feta-text-secondary); }
+
+.highlight {
+  fill: none;
+  stroke: var(--feta-effect-shade-highlight);
+  stroke-width: 5;
+  stroke-linecap: round;
+  filter: blur(4px);
+}
+
+.underside {
+  fill: var(--feta-text-quaternary);
+  transition: fill var(--feta-motion-duration-slow) var(--feta-motion-ease-out-soft);
+}
+
+.tray[data-on] .underside { fill: var(--feta-gradient-amber-light); }
+
+.light,
+.dust {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--feta-motion-duration-slow) var(--feta-motion-ease-out-soft);
+}
+
+.tray[data-on] .dust { opacity: 1; }
+
+/* One light: a single soft glow from the lamp's mouth. It falls down, so almost none rises above the shade. */
+.light {
+  top: -60px;
+  left: -80px;
+  width: 440px;
+  height: 400px;
+  -webkit-mask-image: linear-gradient(to bottom, rgb(0 0 0 / 4%) 20%, rgb(0 0 0 / 16%) 34%, rgb(0 0 0 / 58%) 45%, black 56%);
+  mask-image: linear-gradient(to bottom, rgb(0 0 0 / 4%) 20%, rgb(0 0 0 / 16%) 34%, rgb(0 0 0 / 58%) 45%, black 56%);
+  background-image: radial-gradient(
+    ellipse 50% 50% at 50% 46%,
+    var(--feta-effect-glow-amber) 0%,
+    color-mix(in srgb, var(--feta-effect-glow-amber) 82%, transparent) 25%,
+    color-mix(in srgb, var(--feta-effect-glow-amber) 46%, transparent) 55%,
+    color-mix(in srgb, var(--feta-effect-glow-amber) 14%, transparent) 80%,
+    transparent 100%
+  );
+}
+
+.tray[data-on] .light {
+  opacity: 1;
+  animation: ignite 700ms linear both, breathe 4200ms ease-in-out 700ms infinite;
+}
+
+.tray[data-on] .underside { animation: ignite 700ms linear both; }
+
+.dust { inset: 0; }
+
+.mote {
+  position: absolute;
+  border-radius: var(--feta-radius-full);
+  background-color: color-mix(in srgb, var(--feta-gradient-amber-light) 45%, white);
+  opacity: 0;
+}
+
+.tray[data-on] .mote { animation: drift 7s ease-in-out infinite; }
+
+/* Set by watchOffscreen. */
+.dust[data-offscreen] .mote { animation-play-state: paused; }
+.light:has(+ .dust[data-offscreen]) { animation-play-state: paused; }
+
+.tray[data-still] .light,
+.tray[data-still] .underside { animation: none !important; }
+
+.tray[data-still] .mote {
+  animation: none !important;
+  opacity: 0.25;
+}
+
+/* A bulb catching: two dips, then full. */
+@keyframes ignite {
+  0% { opacity: 0; }
+  10% { opacity: 0.7; }
+  18% { opacity: 0.15; }
+  34% { opacity: 0.85; }
+  44% { opacity: 0.4; }
+  70%, 100% { opacity: 1; }
+}
+
+@keyframes breathe {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.88; transform: scale(1.03); }
+}
+
+@keyframes drift {
+  0% { opacity: 0; transform: translate(0, 0); }
+  20% { opacity: var(--glow); }
+  50% { transform: translate(calc(var(--dx) * -0.4), calc(var(--dy) * 0.5)); }
+  80% { opacity: var(--glow); }
+  100% { opacity: 0; transform: translate(var(--dx), var(--dy)); }
+}
+
+.pull {
+  position: absolute;
+  top: 180px;
+  left: 168px;
+  display: flex;
+  width: 23px;
+  flex-direction: column;
+  align-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--feta-bg-inverse);
+  cursor: grab;
+  border-radius: var(--feta-radius-md);
+  outline: 2px solid transparent;
+  outline-offset: 3px;
+  touch-action: none;
+}
+
+.pull:active { cursor: grabbing; }
+.pull:focus-visible { outline-color: var(--feta-text-primary); }
+.pull:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.pull svg { fill: currentColor; }
+
+.bead {
+  width: 7px;
+  height: 7px;
+  margin-bottom: var(--feta-space-0-5);
+  border-radius: var(--feta-radius-full);
+  background-color: currentColor;
+}
+
+.caption {
+  position: absolute;
+  inset: auto 0 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--feta-space-0-5);
+}
+
+.captionTitle {
+  font: var(--feta-text-title-small);
+  letter-spacing: var(--feta-text-title-small-tracking);
+}

@@ -1,0 +1,14 @@
+/* FetaUI 28 Dropdown Handoff. */
+.dropdown { width: 100%; }
+
+.tile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--feta-radius-lg);
+  background-color: var(--feta-alpha-ink-base-5);
+  font-size: 14px;
+  line-height: 1;
+}

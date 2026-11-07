@@ -1,0 +1,75 @@
+/* Lightbox Grid: FetaUI 16.3 Showcase Cards Handoff and Motion. */
+.lightbox { max-width: 576px; }
+
+.body { padding: var(--feta-space-3); }
+.root { position: relative; }
+.stack, .viewer { display: flex; flex-direction: column; gap: var(--feta-space-3); }
+
+.header { display: flex; align-items: center; justify-content: space-between; padding: var(--feta-space-1) var(--feta-space-1) 0; }
+.title { margin: 0; font: 600 14px/20px var(--feta-type-font-sans); letter-spacing: var(--feta-text-title-total-tracking); }
+.meta { flex: none; color: var(--feta-text-tertiary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); }
+
+.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--feta-space-1); margin: 0; padding: 0; list-style: none; }
+.tile {
+  display: block;
+  overflow: hidden;
+  width: 100%;
+  aspect-ratio: 1;
+  padding: 0;
+  border: 0;
+  border-radius: var(--feta-radius-lg);
+  background: none;
+  cursor: zoom-in;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  transition: outline-color var(--feta-motion-duration-focus) var(--feta-motion-ease-out);
+}
+.tile:focus-visible { outline-color: var(--feta-text-primary); }
+
+.toolbar { display: flex; align-items: center; justify-content: space-between; }
+.counter { color: var(--feta-text-tertiary); font: var(--feta-text-mono-meta); letter-spacing: var(--feta-text-mono-meta-tracking); }
+.actions { display: flex; gap: var(--feta-space-0-5); }
+
+.stage { position: relative; height: 337px; touch-action: pan-x; }
+.frame { position: absolute; inset: 0; overflow: hidden; border-radius: var(--feta-radius-control); }
+.zoom, .photo { position: absolute; inset: 0; }
+.zoom { transition: transform var(--feta-motion-duration-slow) var(--feta-motion-ease-out); }
+[data-still] .zoom { transition: none; }
+.zoom[data-zoomed] { transform: scale(1.6); }
+.previous, .next { position: absolute; top: 50%; translate: 0 -50%; }
+.previous { left: 10px; }
+.next { right: 10px; }
+
+.caption { display: flex; align-items: center; justify-content: space-between; gap: var(--feta-space-2); padding: 0 var(--feta-space-1); }
+.captionText { overflow: hidden; font: var(--feta-text-title-small); letter-spacing: var(--feta-text-title-small-tracking); text-overflow: ellipsis; white-space: nowrap; }
+
+.thumbs { display: flex; gap: var(--feta-space-1-5); margin: 0; padding: 0; list-style: none; }
+.thumb { position: relative; display: block; width: 40px; height: 40px; padding: 0; border: 0; border-radius: var(--feta-radius-lg); background: none; cursor: pointer; outline: 2px solid transparent; outline-offset: 2px; }
+.thumb > span, .thumb > img { border-radius: var(--feta-radius-lg); }
+.thumb:focus-visible { outline-color: var(--feta-text-primary); }
+.thumb[aria-current]::after { content: ''; position: absolute; inset: -3px; border-radius: var(--feta-radius-xl); box-shadow: inset 0 0 0 1.5px var(--feta-text-primary); }
+
+/* Dismissing */
+.root[data-state='dismissing'] { opacity: 0.6; transition: opacity var(--feta-motion-duration-slow) var(--feta-motion-ease-out); }
+.frame[data-held] { transform: scale(0.9); }
+
+/* Art */
+.art { position: relative; display: block; width: 100%; height: 100%; overflow: hidden; background-color: var(--feta-avatar-bg); }
+.image { display: block; width: 100%; height: 100%; object-fit: cover; }
+.shape { position: absolute; background-color: var(--feta-avatar-ink); }
+.shape[data-tone='deep'] { background-color: color-mix(in srgb, var(--feta-black) 60%, transparent); }
+.shape[data-kind='circle'] { aspect-ratio: 1; border-radius: var(--feta-radius-full); }
+.shape[data-kind='center'] { left: 50%; aspect-ratio: 1; border-radius: var(--feta-radius-full); transform: translateX(-50%); }
+.shape[data-kind='oval'] { border-radius: var(--feta-radius-full); }
+.shape[data-kind='bar'] { height: 3px; border-radius: var(--feta-radius-xs); }
+.shape[data-kind='reed'] { width: 3px; border-radius: var(--feta-radius-xs); }
+.shape[data-kind='block'] { aspect-ratio: 1; border-radius: 12%; }
+.shape[data-tone='paper'] { background-color: var(--feta-avatar-bg); }
+
+[data-platform='mobile'] .lightbox { max-width: 358px; }
+[data-platform='mobile'] .stage { height: 261px; }
+
+@media (max-width: 640px) {
+  .lightbox { max-width: 358px; }
+  .stage { height: 261px; }
+}

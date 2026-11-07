@@ -1,0 +1,210 @@
+/* Liquid Slider: the Liquid Slider · Soft set, Slider Handoff and Motion. */
+.card {
+  /* The water in ink. A color swaps these for the accent; the glass stays ink. */
+  --ls-edge: var(--feta-alpha-ink-base-10);
+  --ls-mid: var(--feta-alpha-ink-base-8);
+  --ls-deep: var(--feta-alpha-ink-base-10);
+  --ls-top-a: var(--feta-alpha-ink-base-4);
+  --ls-top-b: var(--feta-alpha-ink-base-8);
+  --ls-line: var(--feta-alpha-ink-base-60);
+  --ls-bulge: var(--feta-alpha-ink-base-5);
+  --ls-drop: var(--feta-alpha-ink-base-10);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: 400px;
+  max-width: 100%;
+  padding: var(--feta-space-1);
+  border-radius: var(--feta-radius-frame);
+  background-color: var(--feta-alpha-ink-base-4);
+  font-family: var(--feta-type-font-sans);
+  letter-spacing: -0.04em;
+}
+
+/* `color` (or --feta-slider-accent): the lead color at 60%, the chart palettes' strength, for the lines,
+   and shares of that for the body so the white highlights and bubbles still read. */
+.card[data-accent] {
+  --ls-edge: color-mix(in srgb, var(--feta-slider-accent) 36%, transparent);
+  --ls-mid: color-mix(in srgb, var(--feta-slider-accent) 28%, transparent);
+  --ls-deep: color-mix(in srgb, var(--feta-slider-accent) 24%, transparent);
+  --ls-top-a: color-mix(in srgb, var(--feta-slider-accent) 16%, transparent);
+  --ls-top-b: color-mix(in srgb, var(--feta-slider-accent) 28%, transparent);
+  --ls-line: color-mix(in srgb, var(--feta-slider-accent) 60%, transparent);
+  --ls-bulge: color-mix(in srgb, var(--feta-slider-accent) 16%, transparent);
+  --ls-drop: color-mix(in srgb, var(--feta-slider-accent) 30%, transparent);
+}
+
+.card[data-disabled] { opacity: 0.4; }
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--feta-space-3);
+  padding: var(--feta-space-2-5) var(--feta-space-3) var(--feta-space-2-5) var(--feta-space-3-5);
+}
+
+.title { overflow: hidden; color: var(--feta-text-primary); font: 600 14px/20px var(--feta-type-font-sans); letter-spacing: -0.04em; text-overflow: ellipsis; white-space: nowrap; }
+.meta { flex-shrink: 0; color: var(--feta-text-secondary); font: 500 10px/10px var(--feta-type-font-mono); letter-spacing: 0; white-space: nowrap; }
+
+.body {
+  display: flex;
+  /* Narrower than the 358 Mobile card, the readout takes its own row above the glass. */
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--feta-space-3);
+  padding: var(--feta-space-4) var(--feta-space-4) var(--feta-space-4) var(--feta-space-5);
+  border-radius: var(--feta-radius-panel);
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft);
+}
+
+.readout { display: flex; flex: 1 0 auto; flex-direction: column; gap: var(--feta-space-0-5); }
+.note { display: flex; flex-direction: column; align-items: flex-start; }
+.note:not(:empty) { padding-bottom: var(--feta-space-2); }
+
+.hint { color: var(--feta-text-secondary); font: var(--feta-text-caption-medium); letter-spacing: var(--feta-text-caption-medium-tracking); }
+
+.done {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--feta-space-1-5);
+  padding: 3px var(--feta-space-2-5) 3px var(--feta-space-1);
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-bg-success-subtle);
+  color: var(--feta-status-success-text);
+  font: var(--feta-text-caption-medium);
+  letter-spacing: var(--feta-text-caption-medium-tracking);
+  white-space: nowrap;
+}
+
+.badge { display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; border-radius: var(--feta-radius-full); background-color: var(--feta-status-success-strong); color: var(--feta-white); }
+.value { color: var(--feta-text-primary); font: 600 32px/38px var(--feta-type-font-mono); letter-spacing: 0; white-space: nowrap; }
+.unit { color: var(--feta-alpha-ink-base-60); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); white-space: nowrap; }
+
+.wrap {
+  display: flex;
+  flex-shrink: 0;
+  margin-left: auto;
+  padding: var(--feta-space-2) var(--feta-space-2-5);
+  border-radius: var(--feta-radius-panel);
+  outline: none;
+  cursor: grab;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.wrap[data-dragging] { cursor: grabbing; }
+.card[data-disabled] .wrap { cursor: not-allowed; }
+.glass { width: 120px; height: 212px; }
+.svg { display: block; overflow: visible; }
+
+/* Glass, in ink in every color. */
+.s4 { stop-color: var(--feta-alpha-ink-base-4); }
+.s8 { stop-color: var(--feta-alpha-ink-base-8); }
+.s10 { stop-color: var(--feta-alpha-ink-base-10); }
+.clear { stop-color: var(--feta-alpha-ink-base-4); stop-opacity: 0; }
+.lit { stop-color: var(--feta-white); stop-opacity: 0.9; }
+.unlit { stop-color: var(--feta-white); stop-opacity: 0; }
+.thin { opacity: 0.78; }
+.shadowSoft { fill: var(--feta-alpha-ink-base-8); }
+.shadowContact { fill: var(--feta-alpha-ink-base-10); }
+.rim { fill: var(--feta-alpha-ink-base-4); stroke: var(--feta-alpha-ink-base-10); stroke-width: 1; }
+.paper { fill: var(--feta-bg-surface); }
+.tint { fill: var(--feta-alpha-ink-base-10); }
+.inner { fill: var(--feta-alpha-ink-base-5); }
+.lip { fill: none; stroke: var(--feta-alpha-ink-base-10); stroke-width: 2; }
+.baseFront { fill: none; stroke: var(--feta-alpha-ink-base-10); stroke-width: 1.5; }
+.glintLine { fill: none; stroke: var(--feta-bg-surface); stroke-width: 1.5; stroke-linecap: round; }
+
+/* Water, in the accent. */
+.wEdge { stop-color: var(--ls-edge); }
+.wMid { stop-color: var(--ls-mid); }
+.wDeep { stop-color: var(--ls-deep); }
+.wTopA { stop-color: var(--ls-top-a); }
+.wTopB { stop-color: var(--ls-top-b); }
+.surface { stroke: var(--ls-line); stroke-width: 1; }
+.meniscus { fill: none; stroke: var(--feta-bg-surface); stroke-width: 1; }
+.bubble { fill: var(--feta-bg-surface); stroke: var(--ls-line); stroke-width: 0.75; }
+
+/* Hover shows the grab pill on the surface; Dragging keeps it and adds the bulge and two bubbles. */
+.grab {
+  fill: var(--feta-bg-surface);
+  stroke: var(--feta-alpha-ink-base-10);
+  stroke-width: 1;
+  filter: drop-shadow(0 1px 1px var(--feta-shadow-soft-sm));
+  opacity: 0;
+  transition: opacity 140ms var(--feta-motion-ease-out);
+}
+
+.bulge { fill: var(--ls-bulge); opacity: 0; transition: opacity 140ms var(--feta-motion-ease-out); }
+.bubble[data-extra] { opacity: 0; transition: opacity 140ms var(--feta-motion-ease-out); }
+.wrap[data-dragging] .grab, .wrap[data-dragging] .bulge, .wrap[data-dragging] .bubble[data-extra] { opacity: 1; }
+@media (hover: hover) { .wrap:hover .grab { opacity: 1; } }
+.card[data-disabled] .wrap .grab { opacity: 0; }
+
+/* Bubbles rise while filling, and pause offscreen. */
+.wrap[data-dragging] .bubble { animation: rise 1.4s ease-out infinite; transform-box: fill-box; }
+.wrap[data-dragging] .bubble:nth-child(2) { animation-delay: -0.5s; }
+.wrap[data-dragging] .bubble:nth-child(3) { animation-delay: -0.9s; }
+.wrap[data-dragging] .bubble:nth-child(4) { animation-delay: -0.3s; }
+.wrap[data-dragging] .bubble:nth-child(5) { animation-delay: -1.1s; }
+.bubbles[data-offscreen] .bubble { animation-play-state: paused; }
+
+@keyframes rise {
+  0% { transform: translateY(8px); opacity: 0; }
+  20% { opacity: 1; }
+  100% { transform: translateY(-28px); opacity: 0; }
+}
+
+/* Sloshing throws three drops off the surface. */
+.drop { fill: var(--ls-drop); stroke: var(--ls-line); stroke-width: 0.75; opacity: 0; transform-box: fill-box; transform-origin: center; }
+.drops[data-on] .drop { animation: throw 640ms var(--feta-motion-ease-out) both; }
+.drops[data-on] .drop:nth-child(2) { animation-delay: 40ms; }
+.drops[data-on] .drop:nth-child(3) { animation-delay: 80ms; }
+
+@keyframes throw {
+  0% { transform: translateY(0) scale(0.4); opacity: 0; }
+  35% { transform: translateY(var(--up)) scale(1); opacity: 1; }
+  100% { transform: translateY(0) scale(0.6); opacity: 0; }
+}
+
+/* Focus rings the glass in ink, over a 5 px halo. */
+.halo, .ring { fill: none; opacity: 0; transition: opacity var(--feta-motion-duration-focus) var(--feta-motion-ease-out); }
+.halo { stroke: var(--feta-alpha-ink-base-5); stroke-width: 5; }
+.ring { stroke: var(--feta-text-primary); stroke-width: 1.5; }
+.wrap:focus-visible .halo, .wrap:focus-visible .ring { opacity: 1; }
+
+.marks {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  justify-content: space-between;
+  box-sizing: border-box;
+  height: 217px;
+  margin: 0;
+  padding: 0 0 29px;
+  list-style: none;
+  color: var(--feta-text-tertiary);
+  font: 500 10px/10px var(--feta-type-font-mono);
+  letter-spacing: 0;
+}
+
+.card[data-still] .grab, .card[data-still] .bulge, .card[data-still] .bubble, .card[data-still] .halo, .card[data-still] .ring { transition: none; }
+.card[data-still] .bubble, .card[data-still] .drop { animation: none; }
+.card[data-still] .bubble[data-extra] { opacity: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .card .bubble, .card .drop { animation: none; }
+}
+
+/* Mobile: 358 wide, a 112 by 202 glass. */
+@media (max-width: 640px) {
+  .card { width: 100%; }
+  .glass { width: 112px; height: 202px; }
+  .marks { height: 207px; }
+}
+
+[data-platform="mobile"] .card { width: 100%; }
+[data-platform="mobile"] .glass { width: 112px; height: 202px; }
+[data-platform="mobile"] .marks { height: 207px; }

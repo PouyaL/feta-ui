@@ -1,0 +1,85 @@
+/* Morph Popover: FetaUI 06 Motion Buttons Handoff and Motion. */
+.pill {
+  height: var(--feta-size-button-md);
+  padding-inline: var(--feta-space-3-5);
+}
+
+.tray {
+  width: 340px;
+  max-width: 100%;
+}
+
+.header { padding: var(--feta-space-2) var(--feta-space-2) var(--feta-space-2-5) var(--feta-space-3); }
+
+.body { overflow: hidden; }
+
+.field {
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  height: 112px;
+  padding: var(--feta-space-3-5) var(--feta-space-4);
+  border: 0;
+  background: transparent;
+  color: var(--feta-text-primary);
+  font: var(--feta-text-body-compact);
+  letter-spacing: var(--feta-text-body-compact-tracking);
+  resize: none;
+  outline: none;
+}
+
+.field::placeholder { color: var(--feta-text-tertiary); }
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--feta-space-2) var(--feta-space-2) var(--feta-space-2) var(--feta-space-3);
+  background-color: var(--feta-alpha-ink-base-4);
+}
+
+.hint {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--feta-space-1-5);
+  color: var(--feta-text-secondary);
+  font: var(--feta-text-caption-default);
+}
+
+.kbd {
+  padding-inline: var(--feta-space-1);
+  border-radius: var(--feta-radius-md);
+  background-color: var(--feta-alpha-ink-base-8);
+  font: var(--feta-text-mono-tag);
+  letter-spacing: 0;
+}
+
+.sent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--feta-space-2-5);
+  padding: var(--feta-space-7) var(--feta-space-4);
+  text-align: center;
+}
+
+.badge {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-status-success-strong);
+  color: var(--feta-status-on-solid);
+}
+
+.badge svg {
+  width: 16px;
+  height: 16px;
+}
+
+.sentTitle { font: var(--feta-text-title-small); letter-spacing: var(--feta-text-title-small-tracking); }
+
+@media (hover: none) {
+  .hint { visibility: hidden; }
+}

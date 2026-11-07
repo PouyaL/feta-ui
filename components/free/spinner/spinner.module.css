@@ -1,0 +1,34 @@
+/* Spinner: FetaUI 60 Loader & Spinner Handoff and Motion. */
+.spinner {
+  --spinner-turn: 800ms;
+  --spinner-track: 10%;
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  color: inherit;
+  vertical-align: middle;
+}
+.spinner[data-kind="bars"] { --spinner-turn: 1s; }
+.spinner[data-kind="orbit"] { --spinner-turn: 1.4s; }
+.spinner[data-delayed] { opacity: 0; animation: show 1ms linear var(--spinner-delay) forwards; }
+
+.rotor { display: block; animation: turn var(--spinner-turn) linear infinite; }
+.spinner[data-kind="bars"] .rotor { animation-timing-function: steps(8); }
+.spinner[data-kind="dots"] .rotor { animation: none; }
+
+.track { stroke: color-mix(in srgb, currentColor var(--spinner-track), transparent); }
+.dot { animation: breathe 1.2s var(--feta-motion-ease-spread) infinite both; }
+
+.spinner[data-still] .rotor, .spinner[data-still] .dot { animation: none; }
+[data-loop][data-offscreen] .rotor, [data-loop][data-offscreen] .dot { animation-play-state: paused; }
+
+@keyframes show { to { opacity: 1; } }
+@keyframes turn { to { transform: rotate(360deg); } }
+@keyframes breathe { 0%, 100% { opacity: 0.3; } 40% { opacity: 1; } }
+@keyframes pulse { 50% { opacity: 0.5; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .rotor, .spinner[data-kind="dots"] .rotor { animation: pulse 1.6s linear infinite; }
+  .dot { animation: none; }
+  .spinner[data-still] .rotor { animation: none; }
+}

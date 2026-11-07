@@ -1,0 +1,64 @@
+/* Separator: FetaUI 50 Separator Handoff and Motion. */
+.separator {
+  --dot-gap: var(--feta-space-1-5);
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  margin: 0;
+  color: var(--feta-text-tertiary);
+}
+.separator[data-orientation="horizontal"] { width: 100%; min-height: 1px; flex-direction: row; }
+.separator[data-orientation="vertical"] {
+  align-self: stretch;
+  display: inline-flex;
+  flex-direction: column;
+  width: auto;
+  min-width: 1px;
+  min-height: 1em;
+}
+
+.rule { display: block; flex: 1 1 0; background-color: var(--feta-alpha-ink-base-8); }
+[data-orientation="horizontal"] > .rule { height: 1px; }
+[data-orientation="vertical"] > .rule { width: 1px; }
+
+[data-kind="fade"][data-orientation="horizontal"] > .rule { background: linear-gradient(to right, transparent, var(--feta-alpha-ink-base-10), transparent); }
+[data-kind="fade"][data-orientation="vertical"] > .rule { background: linear-gradient(to bottom, transparent, var(--feta-alpha-ink-base-10), transparent); }
+
+[data-kind="dotted"] > .rule { background-color: transparent; }
+[data-kind="dotted"][data-orientation="horizontal"] > .rule {
+  height: 2px;
+  background-image: radial-gradient(circle at center, var(--feta-alpha-ink-base-10) 1px, transparent 1px);
+  background-size: var(--dot-gap) 2px;
+  background-repeat: round no-repeat;
+}
+[data-kind="dotted"][data-orientation="vertical"] > .rule {
+  width: 2px;
+  background-image: radial-gradient(circle at center, var(--feta-alpha-ink-base-10) 1px, transparent 1px);
+  background-size: 2px var(--dot-gap);
+  background-repeat: no-repeat round;
+}
+
+.separator[data-kind="label"] { gap: var(--feta-space-2-5); }
+.separator[data-kind="icon"] { gap: var(--feta-space-2); }
+
+.label {
+  flex: none;
+  font: var(--feta-text-mono-micro);
+  letter-spacing: var(--feta-text-mono-micro-tracking);
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--feta-text-tertiary);
+}
+
+.knot {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--feta-radius-full);
+  color: var(--feta-text-secondary);
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8);
+}

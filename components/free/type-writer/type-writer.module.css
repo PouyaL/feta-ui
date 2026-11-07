@@ -1,0 +1,37 @@
+/* Type Writer: FetaUI Text page. */
+.text {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  color: var(--feta-text-primary);
+  font: var(--feta-text-heading-small);
+  letter-spacing: var(--feta-text-heading-small-tracking);
+}
+
+.word { white-space: pre; }
+.word[data-selected] { background-color: var(--feta-bg-info-subtle); }
+
+.caret {
+  width: 2px;
+  height: 1em;
+  margin-left: var(--feta-space-0-5);
+  background-color: currentColor;
+  animation: typeBlink 1s steps(1) infinite;
+}
+
+.caret[data-solid] { animation: none; }
+.caret[data-off] { animation: none; opacity: 0; }
+[data-offscreen] .caret { animation-play-state: paused; }
+
+@keyframes typeBlink {
+  50% { opacity: 0; }
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

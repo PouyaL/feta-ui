@@ -1,0 +1,78 @@
+/* Cart Button: FetaUI 06 Motion Buttons Handoff and Motion. */
+.tray {
+  width: 384px;
+  max-width: 100%;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--feta-space-1);
+  padding: var(--feta-space-2) var(--feta-space-2) var(--feta-space-3);
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--feta-space-0-5);
+  padding-block: var(--feta-space-6);
+}
+
+.emptyTitle { font: var(--feta-text-title-small); letter-spacing: var(--feta-text-title-small-tracking); }
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: var(--feta-space-3);
+  padding: var(--feta-space-2);
+}
+
+.tile {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--feta-radius-xl);
+}
+
+.tile svg {
+  width: 20px;
+  height: 20px;
+}
+
+.tile[data-tone="accent"] { background-color: var(--feta-bg-accent-subtle); }
+.tile[data-tone="success"] { background-color: var(--feta-bg-success-subtle); }
+.tile[data-tone="warning"] { background-color: var(--feta-bg-warning-subtle); }
+
+.text {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--feta-space-0-5);
+}
+
+.name { font: var(--feta-text-title-small); letter-spacing: var(--feta-text-title-small-tracking); }
+
+.divider {
+  height: 1px;
+  background-color: var(--feta-alpha-ink-base-8);
+}
+
+.subtotal {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--feta-space-2) var(--feta-space-2) var(--feta-space-1);
+}
+
+.amount {
+  display: inline-flex;
+  font: var(--feta-text-title-total);
+  letter-spacing: var(--feta-text-title-total-tracking);
+}
+
+.checkout { padding: var(--feta-space-1) var(--feta-space-2) 0; }
+.checkoutButton { width: 100%; }

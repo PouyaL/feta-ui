@@ -1,0 +1,99 @@
+/* Undo Button: FetaUI 06 Motion Buttons Handoff and Motion. */
+.shell {
+  position: relative;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  height: var(--feta-size-button-md);
+  padding-inline: var(--feta-space-3-5);
+  gap: var(--feta-space-2);
+  overflow: hidden;
+  font: var(--feta-text-label-default);
+  letter-spacing: var(--feta-text-label-default-tracking);
+  white-space: nowrap;
+}
+
+.pending {
+  padding: 0 var(--feta-space-1-5) 0 var(--feta-space-3-5);
+  gap: var(--feta-space-2-5);
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft);
+}
+
+.pendingLabel {
+  display: inline-flex;
+  color: var(--feta-text-tertiary);
+}
+
+.divider {
+  flex: none;
+  width: 1px;
+  height: 16px;
+  background-color: var(--feta-alpha-ink-base-10);
+}
+
+.undo {
+  height: 26px;
+  padding-inline: var(--feta-space-2);
+  gap: var(--feta-space-1-5);
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-alpha-ink-base-5);
+  color: var(--feta-text-primary);
+}
+
+.undoIcon {
+  display: inline-flex;
+}
+
+.undoIcon svg {
+  display: block;
+  width: 14px;
+  height: 14px;
+}
+
+.seconds {
+  min-width: 8px;
+  color: var(--feta-text-tertiary);
+  font: var(--feta-text-mono-tag);
+  letter-spacing: 0;
+}
+
+.kbd {
+  display: inline-flex;
+  align-items: center;
+  height: 18px;
+  padding-inline: var(--feta-space-1);
+  border-radius: var(--feta-radius-md);
+  background-color: var(--feta-alpha-ink-base-8);
+  color: var(--feta-text-secondary);
+  font: var(--feta-text-mono-tag);
+  letter-spacing: 0;
+}
+
+.bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background-color: var(--feta-text-primary);
+  transform-origin: left;
+  animation: drain linear both;
+}
+
+.done {
+  background-color: var(--feta-bg-success-subtle);
+  color: var(--feta-status-success-text);
+}
+
+@keyframes drain {
+  to { transform: scaleX(0); }
+}
+
+@media (hover: hover) {
+  .undo:hover { background-color: var(--feta-alpha-ink-base-8); }
+}
+
+@media (hover: none) {
+  .kbd { display: none; }
+}

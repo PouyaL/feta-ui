@@ -1,0 +1,14 @@
+/* Plan Card: FetaUI 218 Handoff. 300 wide, 358 on Mobile. */
+.card { display: flex; flex-direction: column; gap: var(--feta-space-3); box-sizing: border-box; width: 100%; max-width: 300px; padding: var(--feta-space-4) var(--feta-space-5) var(--feta-space-5); border-radius: var(--feta-radius-panel); background-color: var(--feta-bg-surface); box-shadow: 0 0 0 4px var(--feta-alpha-ink-base-4); color: var(--feta-text-primary); text-align: left; transition: box-shadow var(--feta-motion-duration-fast) var(--feta-motion-ease-out); }
+.card[data-state="selected"] { box-shadow: 0 0 0 2px var(--feta-text-primary); }
+.head { display: flex; align-items: center; justify-content: space-between; gap: var(--feta-space-2); min-height: 24px; }
+.name { margin: 0; font: var(--feta-text-label-large); letter-spacing: var(--feta-text-label-large-tracking); }
+.price { margin: 0; }
+.amount { font: var(--feta-text-heading-medium); letter-spacing: var(--feta-text-heading-medium-tracking); font-variant-numeric: tabular-nums; }
+.period, .pitch { color: var(--feta-text-secondary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); }
+.pitch { margin: 0; font: var(--feta-text-body-row); letter-spacing: var(--feta-text-body-row-tracking); }
+.features { display: flex; flex-direction: column; gap: var(--feta-space-2); margin: 0; padding: var(--feta-space-3) 0 0; border-top: 1px solid var(--feta-alpha-ink-base-5); list-style: none; }
+.feature { display: flex; align-items: center; gap: var(--feta-space-2); font: var(--feta-text-body-compact); letter-spacing: var(--feta-text-body-row-tracking); }
+.action { width: 100%; margin-top: var(--feta-space-1); }
+[data-platform="mobile"] .card { max-width: 358px; }
+@media (max-width: 640px) { .card { max-width: 358px; } }

@@ -1,0 +1,174 @@
+/* The pill under Input, Select, Combobox and Date Picker: FetaUI 31 Input Handoff. */
+.pill {
+  --pad: var(--feta-space-3-5);
+  position: relative;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  height: var(--feta-size-input-md);
+  gap: var(--feta-space-2);
+  padding-inline: var(--pad);
+  border: 0;
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-alpha-ink-base-4);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8);
+  color: var(--feta-text-primary);
+  font: var(--feta-text-label-default);
+  letter-spacing: var(--feta-text-label-default-tracking);
+  font-weight: 400;
+  text-align: start;
+  transition:
+    background-color var(--feta-motion-duration-focus) var(--feta-motion-ease-out),
+    box-shadow var(--feta-motion-duration-focus) var(--feta-motion-ease-out);
+}
+
+@media (hover: hover) {
+  .pill:hover:not([data-disabled]):not(:focus-within):not([data-open]) {
+    background-color: var(--feta-alpha-ink-base-5);
+    box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-10);
+  }
+}
+
+.pill:focus-within,
+.pill[data-open] {
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1.5px var(--feta-text-primary);
+}
+
+.pill[data-invalid],
+.pill[data-invalid]:focus-within {
+  box-shadow: inset 0 0 0 1.5px var(--feta-status-danger);
+}
+
+.pill[data-disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pill[data-still] { transition: none; }
+
+.entry {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  caret-color: var(--feta-text-primary);
+}
+
+.entry::placeholder { color: var(--feta-alpha-ink-base-60); opacity: 0.67; }
+.entry:disabled { cursor: not-allowed; }
+
+.quiet {
+  display: inline-flex;
+  flex: none;
+  color: var(--feta-alpha-ink-base-60);
+}
+
+.danger {
+  display: inline-flex;
+  flex: none;
+  color: var(--feta-status-danger);
+}
+
+.quiet svg,
+.danger svg {
+  display: block;
+  width: var(--feta-size-icon);
+  height: var(--feta-size-icon);
+}
+
+/* The floating list under Select, Combobox and Date Picker. */
+.pop {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + var(--feta-space-1-5));
+  left: 0;
+  box-sizing: border-box;
+  border-radius: var(--feta-radius-panel);
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft);
+  transform-origin: top center;
+}
+
+.item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 34px;
+  gap: var(--feta-space-2);
+  padding: var(--feta-space-2) var(--feta-space-2-5);
+  border: 0;
+  border-radius: var(--feta-radius-xl);
+  background: transparent;
+  color: var(--feta-text-primary);
+  font: var(--feta-text-label-default);
+  letter-spacing: var(--feta-text-label-default-tracking);
+  font-weight: 400;
+  text-align: start;
+  cursor: pointer;
+  user-select: none;
+}
+
+.item[aria-selected="true"] { font-weight: 500; }
+.item[aria-disabled="true"] { opacity: 0.4; cursor: not-allowed; }
+
+.itemBody {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+/* The highlight glides between rows. */
+.glide {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-color: var(--feta-alpha-ink-base-5);
+}
+
+.check {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+}
+
+.check svg {
+  display: block;
+  width: var(--feta-size-icon);
+  height: var(--feta-size-icon);
+}
+
+.message {
+  display: flex;
+  align-items: center;
+  gap: var(--feta-space-1);
+  font: var(--feta-text-caption-default);
+  letter-spacing: var(--feta-text-caption-default-tracking);
+  color: var(--feta-status-danger-text);
+}
+
+.message svg { width: 14px; height: 14px; }
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .pill { font-size: 16px; line-height: 22px; }
+}
+
+[data-platform="mobile"] .pill { font-size: 16px; line-height: 22px; }
+[data-platform="web"] .pill { font-size: 14px; line-height: 20px; }

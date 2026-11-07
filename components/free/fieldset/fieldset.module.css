@@ -1,0 +1,56 @@
+/* Fieldset: FetaUI 30 Field Handoff. */
+.fieldset {
+  box-sizing: border-box;
+  width: 440px;
+  max-width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: var(--feta-space-1);
+  border: 0;
+  border-radius: var(--feta-radius-tray);
+  background-color: var(--feta-alpha-ink-base-4);
+}
+
+.fieldset:disabled { opacity: 0.5; }
+
+/* A legend ignores the fieldset's padding unless it floats. */
+.legend {
+  float: left;
+  width: 100%;
+  box-sizing: border-box;
+  padding: var(--feta-space-2) var(--feta-space-3);
+  color: var(--feta-text-primary);
+  font: var(--feta-text-title-row);
+  letter-spacing: var(--feta-text-title-row-tracking);
+}
+
+.card {
+  clear: both;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  gap: var(--feta-space-4);
+  padding: var(--feta-space-4-5);
+  border-radius: var(--feta-radius-card);
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft);
+}
+
+.description {
+  margin: 0;
+  color: var(--feta-text-secondary);
+  font: var(--feta-text-caption-default);
+  letter-spacing: var(--feta-text-caption-default-tracking);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--feta-space-3);
+}
+
+@media (max-width: 640px) {
+  .row { grid-template-columns: minmax(0, 1fr); }
+}
+
+[data-platform="mobile"] .row { grid-template-columns: minmax(0, 1fr); }

@@ -1,0 +1,237 @@
+/* FetaUI 52 Navigation Handoff: Nav Item and Sidebar. */
+.frame {
+  --width: 264px;
+  position: relative;
+  flex: none;
+  width: var(--width);
+  max-width: 100%;
+  height: 100%;
+}
+
+.frame[data-mode="drawer"] { --width: 320px; }
+.frame[data-rail] { width: 64px; }
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: var(--width);
+  max-width: 100%;
+  height: 100%;
+  min-height: 0;
+  gap: var(--feta-space-2);
+  padding: var(--feta-space-2-5) var(--feta-space-2) var(--feta-space-2);
+  border-radius: var(--feta-radius-tray);
+  background-color: var(--feta-alpha-ink-base-4);
+}
+
+.frame[data-rail] .sidebar { max-width: none; padding-inline-end: calc(200px + var(--feta-space-2)); }
+
+.frame[data-settled] .sidebar {
+  width: 64px;
+  padding-inline-end: var(--feta-space-2);
+  clip-path: none !important;
+}
+
+.header { display: flex; align-items: center; min-height: 36px; padding-inline: var(--feta-space-1); }
+.frame[data-rail] .header,
+.frame[data-rail] .footer { display: flex; justify-content: center; padding-inline: 0; }
+.search { padding-inline: var(--feta-space-0-5); }
+
+.scroll {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  gap: var(--feta-space-3);
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.scroll::-webkit-scrollbar { display: none; }
+
+.sectionLabel {
+  padding: var(--feta-space-1) var(--feta-space-2-5);
+  color: var(--feta-text-tertiary);
+  font: var(--feta-text-mono-micro);
+  letter-spacing: 0;
+}
+
+.list,
+.subs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--feta-space-0-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.subs {
+  position: relative;
+  margin-inline-start: var(--feta-space-4-5);
+  padding-inline-start: var(--feta-space-2);
+  margin-top: var(--feta-space-0-5);
+  box-shadow: inset 1px 0 0 var(--feta-alpha-ink-base-10);
+}
+
+.tip { display: block; }
+
+.item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  /*
+   * The row's height is its min-height, never padding plus the label's line, so every state and
+   * platform keeps one pitch: Web 34, Mobile 44. Mobile type has a 22 line, which used to make
+   * rows 38 at 390 and 46 in the Mobile frame.
+   */
+  min-height: 34px;
+  gap: var(--feta-space-2-5);
+  padding: 0 var(--feta-space-2-5);
+  border: 0;
+  border-radius: var(--feta-radius-xl);
+  background: transparent;
+  color: var(--feta-text-primary);
+  font: var(--feta-text-label-default);
+  letter-spacing: var(--feta-text-label-default-tracking);
+  font-weight: 400;
+  text-align: start;
+  text-decoration: none;
+  cursor: pointer;
+  outline: 1.5px solid transparent;
+  outline-offset: -1.5px;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color var(--feta-motion-duration-focus) var(--feta-motion-ease-out);
+}
+
+.item[data-still] { transition: none; }
+.item:focus-visible { outline-color: var(--feta-text-primary); }
+.item:disabled { opacity: 0.4; cursor: not-allowed; }
+.item[data-active] { font-weight: 500; }
+
+@media (hover: hover) {
+  .item:hover:not(:disabled):not([data-active]) { background-color: var(--feta-alpha-ink-base-5); }
+}
+
+.item[data-kind="sub"] { color: var(--feta-text-secondary); }
+.item[data-kind="sub"][data-active] { color: var(--feta-text-primary); }
+.item[data-kind="sub"][data-active]::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(-1 * var(--feta-space-2-5) - 1px);
+  width: 1px;
+  background-color: var(--feta-text-primary);
+}
+
+.item[data-kind="trigger"] {
+  width: auto;
+  min-height: 32px;
+  gap: var(--feta-space-1);
+  padding: 0 var(--feta-space-2-5) 0 var(--feta-space-3);
+  border-radius: var(--feta-radius-full);
+}
+
+.item[data-kind="trigger"][data-open] { background-color: var(--feta-alpha-ink-base-5); }
+
+.item[data-rail] {
+  justify-content: center;
+  width: 40px;
+  min-height: 40px;
+  margin-inline: auto;
+  padding: 0;
+}
+
+.surface {
+  position: absolute;
+  inset: 0;
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft);
+}
+
+.icon,
+.chevron {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  color: var(--feta-alpha-ink-base-60);
+}
+
+.item[data-active] .icon { color: var(--feta-text-primary); }
+.icon svg,
+.chevron svg { display: block; width: var(--feta-size-icon); height: var(--feta-size-icon); }
+
+.label {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.count {
+  position: relative;
+  flex: none;
+  color: var(--feta-text-secondary);
+  font: var(--feta-text-mono-meta);
+  letter-spacing: 0;
+}
+
+.count[data-rail] {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  min-width: 14px;
+  padding-inline: var(--feta-space-1);
+  box-sizing: border-box;
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-bg-inverse);
+  color: var(--feta-text-inverse);
+  font: var(--feta-text-mono-micro);
+  line-height: 14px;
+  text-align: center;
+}
+
+.promo { padding-inline: var(--feta-space-0-5); }
+
+.footer { padding: var(--feta-space-1); }
+
+.person {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: var(--feta-space-2-5);
+}
+
+.personText {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  color: var(--feta-text-secondary);
+  font: var(--feta-text-caption-default);
+  letter-spacing: var(--feta-text-caption-default-tracking);
+}
+
+.personText strong {
+  color: var(--feta-text-primary);
+  font: var(--feta-text-label-default);
+  letter-spacing: var(--feta-text-label-default-tracking);
+  font-weight: 500;
+}
+
+@media (max-width: 640px) {
+  .item { min-height: 44px; padding: 0 var(--feta-space-3); }
+  .item[data-kind="trigger"] { min-height: 40px; }
+}
+
+[data-platform="mobile"] .item { min-height: 44px; padding: 0 var(--feta-space-3); }
+[data-platform="mobile"] .item[data-kind="trigger"] { min-height: 40px; }
+[data-platform="web"] .item { min-height: 34px; padding: 0 var(--feta-space-2-5); }
+[data-platform="web"] .item[data-kind="trigger"] { min-height: 32px; padding: 0 var(--feta-space-2-5) 0 var(--feta-space-3); }
+[data-platform] .item[data-rail] { min-height: 40px; padding: 0; }

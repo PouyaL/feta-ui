@@ -1,0 +1,20 @@
+/* Availability Strip: FetaUI 131 Handoff. p16, r20, 4% tray, label 200 wide beside six cells 8 apart. */
+.strip { display: flex; align-items: center; gap: var(--feta-space-4); box-sizing: border-box; width: 100%; min-width: 0; padding: var(--feta-space-4); border-radius: var(--feta-radius-panel); background: var(--feta-alpha-ink-base-4); }
+.label { display: flex; flex: 0 0 200px; flex-direction: column; gap: var(--feta-space-0-5); }
+.name { margin: 0; color: var(--feta-text-primary); font: 500 14px/20px var(--feta-type-font-sans); letter-spacing: -0.04em; }
+.note { margin: 0; color: var(--feta-text-secondary); font: var(--feta-text-caption-default); letter-spacing: -0.04em; }
+.months { display: grid; flex: 1 1 0; grid-template-columns: repeat(6, minmax(0, 1fr)); align-items: start; gap: var(--feta-space-2); min-width: 0; margin: 0; padding: 0; list-style: none; }
+.months li { display: flex; min-width: 0; }
+[data-platform="mobile"] .strip { flex-direction: column; align-items: stretch; gap: var(--feta-space-3); }
+[data-platform="mobile"] .label { flex: none; }
+[data-platform="mobile"] .months { flex: none; grid-template-columns: repeat(2, 104px); }
+@media (max-width: 640px) { .strip { flex-direction: column; align-items: stretch; gap: var(--feta-space-3); } .label { flex: none; } .months { flex: none; grid-template-columns: repeat(2, 104px); } }
+@container (max-width: 640px) { .strip { flex-direction: column; align-items: stretch; gap: var(--feta-space-3); } .label { flex: none; } .months { flex: none; grid-template-columns: repeat(2, 104px); } }
+
+/* Cells fill their month slot; on their own they are 120 wide. */
+.months > li > [class] { width: 100%; }
+
+/* Pointing at a month dims the others, so the one being read stands out. */
+.months li { transition: filter 200ms ease; }
+@media (hover: hover) { .strip:not([data-still]) .months:has(li:hover) li:not(:hover) { filter: opacity(0.55); } }
+@media (prefers-reduced-motion: reduce) { .months li { transition: none; } }

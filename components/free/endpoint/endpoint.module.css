@@ -1,0 +1,12 @@
+/* Endpoint: FetaUI 225 Handoff. 560 by 64, method column 72, 80 on Mobile. */
+.row { display: flex; align-items: center; gap: var(--feta-space-3); box-sizing: border-box; width: 100%; max-width: 560px; min-height: 64px; padding: var(--feta-space-2-5) var(--feta-space-4); border: 0; border-radius: var(--feta-radius-control); background: transparent; box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8); color: var(--feta-text-primary); font: inherit; text-align: left; text-decoration: none; cursor: pointer; outline: 2px solid transparent; outline-offset: -2px; transition: background-color var(--feta-motion-duration-focus) var(--feta-motion-ease-out); }
+.row:focus-visible { outline-color: var(--feta-text-primary); }
+@media (hover: hover) { .row:hover { background-color: var(--feta-alpha-ink-base-4); } }
+.method { display: inline-flex; flex: none; width: 72px; }
+.text { display: flex; flex: 1; flex-direction: column; min-width: 0; }
+.path { overflow: hidden; font: var(--feta-text-mono-caption); letter-spacing: var(--feta-text-mono-caption-tracking); text-overflow: ellipsis; white-space: nowrap; }
+.summary { color: var(--feta-text-secondary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); }
+.chevron { color: var(--feta-text-tertiary); }
+[data-platform="mobile"] .row { max-width: 358px; }
+[data-platform="mobile"] .method { width: 80px; }
+@media (max-width: 640px) { .row { max-width: 358px; } .method { width: 80px; } }

@@ -1,0 +1,57 @@
+/* Rail Card: FetaUI 16.5 Showcase Cards Handoff and Motion. */
+.rail {
+  --save-right: 14px;
+  box-sizing: border-box;
+  flex: none;
+  width: 264px;
+  max-width: 100%;
+  height: 410px;
+  gap: 0;
+}
+
+.rail[data-hovered] { --tray: var(--feta-alpha-ink-base-5); }
+
+/* No inset card here: the scene sits straight on the tray. */
+.rail[data-variant] .body { padding: 0; border-radius: 0; background: none; box-shadow: none; }
+.rail[data-variant] .body > div { gap: 0; }
+
+.image { position: relative; height: 320px; overflow: hidden; border-radius: var(--feta-radius-card); background-color: var(--feta-zinc-200); }
+.scene, .photo { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+.sky { fill: var(--feta-zinc-200); }
+.light { fill: var(--feta-white); }
+.far { fill: var(--feta-zinc-300); }
+.mid { fill: var(--feta-zinc-400); }
+.near { fill: var(--feta-zinc-600); }
+
+.nights { position: absolute; top: 10px; left: 10px; }
+.save { position: absolute; z-index: 2; top: 10px; right: var(--save-right); display: block; }
+.save [data-hovered] { background-color: var(--feta-alpha-ink-base-8); }
+.save [data-variant='primary'][data-hovered] { background-color: var(--feta-bg-inverse); }
+
+.text { display: flex; flex-direction: column; gap: var(--feta-space-0-5); padding: var(--feta-space-2-5) var(--feta-space-2) var(--feta-space-2); }
+.title { margin: 0; overflow: hidden; font: var(--feta-text-label-row); letter-spacing: var(--feta-text-label-row-tracking); text-overflow: ellipsis; white-space: nowrap; }
+.link { color: inherit; text-decoration: none; outline: none; }
+.link::after { content: ''; position: absolute; inset: 0; z-index: 1; border-radius: var(--feta-radius-tray); }
+.rail:has(.link:focus-visible) { outline-color: var(--feta-text-primary); }
+.location { margin: 0; overflow: hidden; color: var(--feta-text-secondary); font: var(--feta-text-body-compact); letter-spacing: var(--feta-text-body-compact-tracking); text-overflow: ellipsis; white-space: nowrap; }
+.row { display: flex; align-items: baseline; justify-content: space-between; gap: var(--feta-space-2); margin: 0; padding-top: var(--feta-space-1-5); }
+.dates { min-width: 0; overflow: hidden; color: var(--feta-text-tertiary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); text-overflow: ellipsis; white-space: nowrap; }
+.price { flex: none; font: var(--feta-text-caption-medium); letter-spacing: var(--feta-text-caption-medium-tracking); }
+
+/* Loading */
+.skeleton { display: flex; flex-direction: column; padding: var(--feta-space-1); border-radius: var(--feta-radius-tray); background-color: var(--feta-alpha-ink-base-4); }
+.skeleton .boneImage { flex: none; height: 320px; border-radius: var(--feta-radius-card); }
+.boneLines { display: flex; flex-direction: column; gap: var(--feta-space-2); padding: var(--feta-space-3) var(--feta-space-2) var(--feta-space-2); }
+
+[data-platform='mobile'] .rail { --save-right: 6px; width: 240px; height: 380px; }
+[data-platform='mobile'] .image, [data-platform='mobile'] .skeleton .boneImage { height: 290px; }
+[data-platform='mobile'] .title { font: var(--feta-text-title-row); letter-spacing: var(--feta-text-title-row-tracking); }
+[data-platform='mobile'] .price { font: var(--feta-text-title-small); letter-spacing: var(--feta-text-title-small-tracking); }
+
+@media (max-width: 640px) {
+  .rail { --save-right: 6px; width: 240px; height: 380px; }
+  .image, .skeleton .boneImage { height: 290px; }
+  .title { font: var(--feta-text-title-row); letter-spacing: var(--feta-text-title-row-tracking); }
+  .price { font: var(--feta-text-title-small); letter-spacing: var(--feta-text-title-small-tracking); }
+}

@@ -1,0 +1,45 @@
+/* Cancel Flow: FetaUI 202 Cancel Flow Handoff and Motion. */
+.tray { --panel: 640px; }
+.body { display: flex; flex-direction: column; gap: var(--feta-space-3); padding: var(--feta-space-4) var(--feta-space-5); }
+.header { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--feta-space-3); }
+.plan { min-width: 0; }
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--feta-space-2); margin: 0; padding: 0; color: var(--feta-text-tertiary); font: var(--feta-text-caption-default); letter-spacing: -0.04em; list-style: none; }
+.stepItem { display: flex; flex-direction: column; gap: var(--feta-space-2); }
+.stepBar { height: 2px; border-radius: var(--feta-radius-xs); background-color: var(--feta-alpha-ink-base-8); transition: background-color 240ms cubic-bezier(0.25, 0.1, 0.25, 1); }
+.stepItem[data-state="now"] { color: var(--feta-text-primary); font-weight: 500; }
+.stepItem[data-state="now"] .stepBar, .stepItem[data-state="done"] .stepBar { background-color: var(--feta-text-primary); }
+.view { display: flex; flex-direction: column; gap: var(--feta-space-3); }
+.title { margin: var(--feta-space-2) 0 0; outline: none; font: var(--feta-text-heading-small); letter-spacing: -0.04em; }
+.lead { margin: 0; color: var(--feta-text-secondary); letter-spacing: -0.04em; }
+.failed { margin: 0; color: var(--feta-status-danger-text); letter-spacing: -0.04em; }
+.reasons { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--feta-space-2); }
+
+.reason {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--feta-space-2);
+  padding: var(--feta-space-3);
+  border-radius: var(--feta-radius-control);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8);
+  cursor: pointer;
+  transition: background-color 120ms cubic-bezier(0.25, 0.1, 0.25, 1), box-shadow 120ms cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.reason:hover { background-color: var(--feta-alpha-ink-base-4); }
+.reason[data-on] { box-shadow: inset 0 0 0 1.5px var(--feta-text-primary); }
+.reason:has(input:focus-visible) { outline: 2px solid var(--feta-text-primary); outline-offset: 1px; }
+.reasonText { display: flex; flex-direction: column; min-width: 0; }
+.reasonLabel { font: var(--feta-text-label-row); letter-spacing: -0.04em; }
+.note { display: flex; flex-direction: column; gap: var(--feta-space-2); }
+.noteLabel { display: inline-flex; align-items: baseline; gap: var(--feta-space-1-5); font: var(--feta-text-label-row); letter-spacing: -0.04em; }
+.noteHint { margin: 0; color: var(--feta-text-tertiary); font: var(--feta-text-caption-default); letter-spacing: -0.04em; }
+.offer { display: flex; align-items: center; justify-content: space-between; gap: var(--feta-space-3); padding: var(--feta-space-3-5); border-radius: var(--feta-radius-control); background-color: var(--feta-alpha-ink-base-4); }
+.price { margin: 0; font-size: 20px; font-weight: 500; line-height: 28px; letter-spacing: -0.04em; }
+.pause { display: flex; align-items: center; gap: var(--feta-space-2); margin: 0; color: var(--feta-text-secondary); font: var(--feta-text-caption-default); letter-spacing: -0.04em; }
+.footer { display: flex; align-items: center; justify-content: space-between; gap: var(--feta-space-3); padding-top: var(--feta-space-3); border-top: 1px solid var(--feta-alpha-ink-base-8); }
+
+@container (max-width: 480px) {
+  .body { padding: var(--feta-space-4); }
+  .reasons { grid-template-columns: minmax(0, 1fr); }
+}

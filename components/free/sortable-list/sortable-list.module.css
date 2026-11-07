@@ -1,0 +1,16 @@
+/* Sortable List: FetaUI 23 Table Handoff and Motion. 460 wide. */
+.list { box-sizing: border-box; width: 100%; max-width: 460px; padding: var(--feta-space-1); border-radius: var(--feta-radius-tray); background-color: var(--feta-alpha-ink-base-4); color: var(--feta-text-primary); text-align: left; }
+.items { display: flex; flex-direction: column; gap: var(--feta-space-1); margin: 0; padding: 0; list-style: none; }
+.slot { border-radius: var(--feta-radius-card); }
+.slot[data-lifted] { outline: 1px dashed var(--feta-alpha-ink-base-10); outline-offset: -1px; }
+.item { position: relative; display: flex; align-items: center; gap: var(--feta-space-3); box-sizing: border-box; min-height: 54px; padding: var(--feta-space-1) var(--feta-space-3) var(--feta-space-1) var(--feta-space-1); border-radius: var(--feta-radius-card); background-color: var(--feta-bg-surface); box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft); }
+.item[data-lifted] { z-index: 2; box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft); will-change: transform; }
+.grip { display: inline-flex; flex: none; align-items: center; justify-content: center; width: 40px; height: 44px; padding: 0; border: 0; border-radius: var(--feta-radius-control); background-color: var(--feta-alpha-ink-base-4); color: var(--feta-text-primary); cursor: grab; touch-action: none; outline: 2px solid transparent; outline-offset: 1px; transition: color var(--feta-motion-duration-fast) var(--feta-motion-ease-out), background-color var(--feta-motion-duration-fast) var(--feta-motion-ease-out); }
+.grip:focus-visible { outline-color: var(--feta-text-primary); }
+.item[data-lifted] .grip { cursor: grabbing; color: var(--feta-text-primary); }
+@media (hover: hover) { .item:hover .grip { background-color: var(--feta-alpha-ink-base-8); } }
+.text { display: flex; flex: 1; flex-direction: column; min-width: 0; }
+.title { overflow: hidden; font: var(--feta-text-title-row); letter-spacing: var(--feta-text-title-row-tracking); text-overflow: ellipsis; white-space: nowrap; }
+.subtitle { overflow: hidden; color: var(--feta-text-secondary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); text-overflow: ellipsis; white-space: nowrap; }
+.order { color: var(--feta-text-tertiary); font: var(--feta-text-mono-meta); letter-spacing: var(--feta-text-mono-meta-tracking); }
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }

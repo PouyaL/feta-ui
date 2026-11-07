@@ -1,0 +1,69 @@
+/* Frame Rule: FetaUI 35 Frame Handoff and Motion. */
+.frame {
+  --inset: 56px;
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 720px;
+  margin-inline: auto;
+  padding: var(--feta-space-6) var(--inset);
+  overflow: hidden;
+  border-radius: var(--feta-radius-card);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8);
+}
+
+[data-platform="mobile"] .frame { --inset: 20px; }
+
+@media (max-width: 640px) {
+  :root:not([data-platform="web"]) .frame { --inset: 20px; }
+}
+
+.frame[data-selected] .column { background-color: var(--feta-alpha-ink-base-4); }
+
+.rule {
+  position: absolute;
+  right: 0;
+  left: 0;
+  height: 1px;
+  background-color: var(--feta-alpha-ink-base-8);
+}
+
+.rule[data-edge="top"] { top: var(--feta-space-4); }
+.rule[data-edge="bottom"] { bottom: var(--feta-space-4); }
+.frame[data-selected] .rule { background-color: var(--feta-alpha-ink-base-60); }
+
+.side {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background-color: var(--feta-alpha-ink-base-8);
+}
+
+.side[data-side="left"] { left: var(--inset); }
+.side[data-side="right"] { right: var(--inset); }
+
+/* A 4 px dot in a surface circle at each crossing. */
+.dot {
+  position: absolute;
+  z-index: 1;
+  box-sizing: content-box;
+  width: 4px;
+  height: 4px;
+  border: 3px solid var(--feta-bg-surface);
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-alpha-ink-base-60);
+  translate: -50% -50%;
+}
+
+.dot[data-corner^="t"] { top: var(--feta-space-4); }
+.dot[data-corner^="b"] { top: calc(100% - var(--feta-space-4)); }
+.dot[data-corner$="l"] { left: var(--inset); }
+.dot[data-corner$="r"] { left: calc(100% - var(--inset)); }
+
+.column {
+  position: relative;
+  padding: var(--feta-space-4);
+  color: var(--feta-text-primary);
+  transition: background-color var(--feta-motion-duration-fast) var(--feta-motion-ease-out);
+}

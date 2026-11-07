@@ -1,0 +1,219 @@
+/* Focal Point Picker: FetaUI 39 Media Handoff and Motion. Overlays on photos are white, so they read on any image. */
+.tray {
+  --photo: 260px;
+  --crop: 110px;
+  --cross: 28px;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 480px;
+  margin-inline: auto;
+  padding: var(--feta-space-1);
+  border-radius: var(--feta-radius-tray);
+  background-color: var(--feta-alpha-ink-base-4);
+}
+
+[data-platform="mobile"] .tray { --photo: 200px; --crop: 84px; }
+
+@media (max-width: 640px) {
+  :root:not([data-platform="web"]) .tray { --photo: 200px; --crop: 84px; }
+}
+
+.tray[data-dragging] { --cross: 40px; }
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--feta-space-3);
+  padding: var(--feta-space-2);
+  border-radius: var(--feta-radius-card);
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft);
+}
+
+.photo {
+  position: relative;
+  height: var(--photo);
+  overflow: hidden;
+  border-radius: var(--feta-radius-control);
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* The dim outside the crop is this window's huge shadow. */
+.window {
+  position: absolute;
+  box-shadow: 0 0 0 999px rgb(0 0 0 / 45%);
+  pointer-events: none;
+  animation: focalFade 200ms var(--feta-motion-ease-out);
+}
+
+@keyframes focalFade { from { opacity: 0; } }
+.tray[data-still] .window { animation: none; }
+
+.hairX,
+.hairY {
+  position: absolute;
+  background-color: rgb(255 255 255 / 60%);
+  pointer-events: none;
+}
+
+.hairX { inset: 0 0 auto; height: 1px; top: calc(var(--y) * 1%); }
+.hairY { inset: 0 auto 0 0; width: 1px; left: calc(var(--x) * 1%); }
+
+/* The rail is the photo's own size, so the point moves by translating a percent of it. */
+.rail {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transform: translate(calc(var(--x) * 1%), calc(var(--y) * 1%));
+  transition: transform 280ms var(--feta-motion-ease-out);
+}
+
+.tray[data-dragging] .rail,
+.tray[data-still] .rail { transition: none; }
+
+.cross {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: var(--cross);
+  height: var(--cross);
+  border: 2px solid #fff;
+  border-radius: var(--feta-radius-full);
+  box-sizing: border-box;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 40%);
+  pointer-events: auto;
+  cursor: grab;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  transform: translate(-50%, -50%);
+}
+
+.cross:focus-visible { outline-color: #fff; }
+
+.cross::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  margin: calc(-1 * var(--feta-space-1));
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-bg-inverse);
+  box-shadow: 0 0 0 1.5px #fff;
+}
+
+.chip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  padding: var(--feta-space-0-5) var(--feta-space-1-5);
+  border-radius: var(--feta-radius-md);
+  background-color: var(--feta-bg-inverse);
+  color: var(--feta-text-inverse);
+  font: var(--feta-text-mono-micro);
+  white-space: pre;
+  transform: translateX(-50%);
+}
+
+.saved {
+  position: absolute;
+  top: var(--feta-space-2);
+  left: var(--feta-space-2);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--feta-space-1);
+  padding: var(--feta-space-0-5) var(--feta-space-2);
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-bg-success-subtle);
+  color: var(--feta-status-success-text);
+  font: var(--feta-text-label-micro);
+  letter-spacing: -0.04em;
+}
+
+.saved svg { width: 12px; height: 12px; }
+
+.crops {
+  display: flex;
+  gap: var(--feta-space-1);
+}
+
+/* Each crop takes width in proportion to its ratio, so all three fit at one height. */
+.crop {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.cropFrame {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: var(--crop);
+  overflow: hidden;
+  border-radius: var(--feta-radius-field);
+  box-shadow: 0 0 0 1px var(--feta-alpha-ink-base-8);
+  transition: box-shadow var(--feta-motion-duration-base) var(--feta-motion-ease-out);
+}
+
+.crop[data-hover] .cropFrame { box-shadow: 0 0 0 2px var(--feta-text-primary); }
+
+.cropImage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: object-position 280ms var(--feta-motion-ease-out);
+}
+
+.tray[data-dragging] .cropImage,
+.tray[data-still] .cropImage { transition: none; }
+
+.cropLabel {
+  margin-top: var(--feta-space-1-5);
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.crop[data-hover] .cropName { font-weight: 600; }
+
+.cropName {
+  color: var(--feta-text-primary);
+  font: var(--feta-text-label-micro);
+  letter-spacing: -0.04em;
+}
+
+.cropRatio {
+  color: var(--feta-text-tertiary);
+  font: var(--feta-text-mono-micro);
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--feta-space-3);
+  margin: 0;
+  padding: var(--feta-space-2) var(--feta-space-3);
+  color: var(--feta-text-secondary);
+  font: var(--feta-text-caption-default);
+  letter-spacing: var(--feta-text-caption-default-tracking);
+}
+
+.mono {
+  flex: none;
+  color: var(--feta-text-primary);
+  font: var(--feta-text-mono-meta);
+  white-space: pre;
+}

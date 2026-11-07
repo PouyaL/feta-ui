@@ -1,0 +1,196 @@
+/* Rich Text Editor: FetaUI 64 Text Handoff and Motion. */
+.tray {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--feta-space-1);
+  border-radius: var(--feta-radius-tray);
+  background-color: var(--feta-alpha-ink-base-4);
+}
+
+.split { display: flex; }
+
+/* The editor is the card. The source sits on the tray beside it. */
+.editor {
+  flex: 1;
+  min-width: 0;
+  padding: var(--feta-space-6) var(--feta-space-7);
+  border-radius: var(--feta-radius-card);
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft);
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  height: 32px;
+  padding-inline: var(--feta-space-1);
+}
+
+.count {
+  display: inline-flex;
+  gap: var(--feta-space-1);
+  margin-left: auto;
+  padding-right: var(--feta-space-2);
+  color: var(--feta-text-tertiary);
+  font: var(--feta-text-mono-micro);
+}
+
+.area {
+  position: relative;
+  min-height: 240px;
+  color: var(--feta-text-primary);
+  font: 400 15px/24px var(--feta-type-font-sans);
+  letter-spacing: -0.04em;
+  outline: none;
+  overflow-wrap: anywhere;
+}
+
+.area[data-empty]::before {
+  content: attr(data-placeholder);
+  position: absolute;
+  max-width: 100%;
+  color: var(--feta-text-tertiary);
+  pointer-events: none;
+}
+
+.area ::selection { background-color: var(--feta-alpha-ink-base-10); }
+.area h1 { margin: 0 0 var(--feta-space-2); font: 600 26px/32px var(--feta-type-font-sans); letter-spacing: -0.04em; }
+.area h2 { margin: var(--feta-space-4) 0 var(--feta-space-1-5); font: 600 19px/26px var(--feta-type-font-sans); letter-spacing: -0.04em; }
+.area p { margin: 0 0 var(--feta-space-2); }
+.area ul { margin: 0 0 var(--feta-space-2); padding-left: var(--feta-space-5); list-style: disc; }
+.area blockquote { margin: var(--feta-space-3) 0 0; padding-left: var(--feta-space-3); border-left: 2px solid var(--feta-alpha-ink-base-10); color: var(--feta-text-secondary); }
+.area code { padding: var(--feta-space-0-5) var(--feta-space-1); border-radius: var(--feta-radius-sm); background-color: var(--feta-alpha-ink-base-5); font: 400 13px/20px var(--feta-type-font-mono); }
+.area pre { margin: 0 0 var(--feta-space-2); padding: var(--feta-space-3); border-radius: var(--feta-radius-field); background-color: var(--feta-alpha-ink-base-4); font: 400 13px/20px var(--feta-type-font-mono); overflow-x: auto; }
+.area a { color: var(--feta-status-accent-text); text-decoration: underline; }
+
+.source {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  width: min(330px, 45%);
+}
+
+.sourceBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--feta-space-2);
+  padding: var(--feta-space-2) var(--feta-space-2) 0 var(--feta-space-3);
+}
+
+.tabs { display: flex; gap: var(--feta-space-1); }
+
+.tab {
+  height: var(--feta-size-button-sm);
+  padding-inline: var(--feta-space-2-5);
+  border: 0;
+  border-radius: var(--feta-radius-field);
+  background: transparent;
+  color: var(--feta-text-secondary);
+  font: var(--feta-text-label-small);
+  letter-spacing: -0.04em;
+  cursor: pointer;
+  outline: 2px solid transparent;
+}
+
+.tab:focus-visible { outline-color: var(--feta-text-primary); }
+.tab[aria-selected="true"] { background-color: var(--feta-bg-surface); color: var(--feta-text-primary); box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8); }
+
+.code {
+  flex: 1;
+  margin: 0;
+  padding: var(--feta-space-3-5);
+  overflow: auto;
+  color: var(--feta-text-secondary);
+  font: var(--feta-text-mono-code);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.bar {
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: var(--feta-space-0-5);
+  padding: var(--feta-space-1);
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-bg-surface);
+  box-shadow: 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft);
+  translate: -50% calc(-100% - 8px);
+}
+
+.row {
+  display: none;
+  justify-content: space-between;
+  padding: var(--feta-space-1) var(--feta-space-1) 0;
+}
+
+.link input {
+  width: 180px;
+  height: var(--feta-size-button-sm);
+  padding-inline: var(--feta-space-2);
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--feta-text-primary);
+  font: var(--feta-text-caption-default);
+}
+
+.menu {
+  position: absolute;
+  z-index: 3;
+  box-sizing: border-box;
+  width: 260px;
+  max-width: calc(100% - 16px);
+  margin: 0;
+  padding: var(--feta-space-1);
+  border-radius: var(--feta-radius-control);
+  background-color: var(--feta-bg-surface);
+  box-shadow: 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft);
+  list-style: none;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: var(--feta-space-2);
+  height: 44px;
+  padding-inline: var(--feta-space-1-5);
+  border-radius: var(--feta-radius-field);
+  cursor: pointer;
+}
+
+.option[aria-selected="true"] { background-color: var(--feta-alpha-ink-base-5); }
+
+.tile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--feta-radius-lg);
+  background-color: var(--feta-alpha-ink-base-5);
+  color: var(--feta-text-secondary);
+  font: var(--feta-text-label-small);
+}
+
+.optionName,
+.optionHint { display: block; }
+.optionName { color: var(--feta-text-primary); font: var(--feta-text-label-small); letter-spacing: -0.04em; }
+.optionHint { color: var(--feta-text-secondary); font: var(--feta-text-caption-default); letter-spacing: -0.04em; }
+
+[data-platform="mobile"] .source { display: none; }
+[data-platform="mobile"] .row { display: flex; }
+[data-platform="mobile"] .editor { padding: var(--feta-space-5) var(--feta-space-4-5); }
+[data-platform="mobile"] .area h1 { font-size: 22px; line-height: 28px; }
+[data-platform="mobile"] .area { font-size: 16px; }
+
+@media (max-width: 640px) {
+  :root:not([data-platform="web"]) .source { display: none; }
+  :root:not([data-platform="web"]) .row { display: flex; }
+  :root:not([data-platform="web"]) .editor { padding: var(--feta-space-5) var(--feta-space-4-5); }
+  :root:not([data-platform="web"]) .area h1 { font-size: 22px; line-height: 28px; }
+  :root:not([data-platform="web"]) .area { font-size: 16px; }
+}

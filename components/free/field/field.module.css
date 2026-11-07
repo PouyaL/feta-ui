@@ -1,0 +1,58 @@
+/* Field: FetaUI 30 Field Handoff and Motion. */
+.field {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: var(--feta-space-2);
+}
+
+.field[data-horizontal] {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: var(--feta-space-4);
+}
+
+.field[data-horizontal] .head {
+  flex: 0 0 200px;
+  padding-top: var(--feta-space-2-5);
+}
+
+.head { padding-inline: var(--feta-space-1); }
+
+.body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  gap: var(--feta-space-1-5);
+}
+
+.control {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.valid {
+  position: absolute;
+  right: var(--feta-space-3);
+  display: inline-flex;
+  color: var(--feta-status-success-text);
+}
+
+.valid svg { display: block; width: var(--feta-size-icon); height: var(--feta-size-icon); }
+
+.help {
+  padding-inline: var(--feta-space-1);
+  color: var(--feta-text-secondary);
+  font: var(--feta-text-caption-default);
+  letter-spacing: var(--feta-text-caption-default-tracking);
+}
+
+@media (max-width: 640px) {
+  .field[data-horizontal] { flex-direction: column; gap: var(--feta-space-2); }
+  .field[data-horizontal] .head { flex: none; padding-top: 0; }
+}
+
+[data-platform="mobile"] .field[data-horizontal] { flex-direction: column; gap: var(--feta-space-2); }
+[data-platform="mobile"] .field[data-horizontal] .head { flex: none; padding-top: 0; }

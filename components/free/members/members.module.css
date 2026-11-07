@@ -1,0 +1,36 @@
+/* Members: FetaUI 194 Members Handoff and Motion. */
+.header { display: flex; align-items: center; justify-content: space-between; gap: var(--feta-space-4); }
+.heading { min-width: 0; }
+.seats { display: flex; flex: none; flex-direction: column; gap: var(--feta-space-1-5); width: 40%; max-width: 225px; }
+.sectionTitle { display: inline-flex; align-items: baseline; gap: var(--feta-space-2); margin: 0; font: var(--feta-text-label-row); letter-spacing: -0.04em; }
+.count { color: var(--feta-text-tertiary); font: var(--feta-text-mono-micro); }
+.invite { display: flex; flex-direction: column; gap: var(--feta-space-2); }
+.inviteRow { display: flex; align-items: center; gap: var(--feta-space-2); }
+.email { flex: 1; min-width: 0; }
+.roleSelect { flex: none; width: 160px; }
+.hint { margin: 0; color: var(--feta-text-tertiary); font: var(--feta-text-caption-default); letter-spacing: -0.04em; }
+.listHead { display: flex; align-items: center; justify-content: space-between; gap: var(--feta-space-3); }
+.search { flex: none; width: 225px; max-width: 50%; }
+.list { display: flex; flex-direction: column; gap: 0; margin: var(--feta-space-2) 0 0; padding: 0; list-style: none; }
+.member { display: flex; align-items: center; gap: var(--feta-space-3); min-height: 52px; }
+.who { display: flex; flex: 1; flex-direction: column; min-width: 0; }
+.name { display: inline-flex; align-items: baseline; gap: var(--feta-space-1-5); font: var(--feta-text-label-row); letter-spacing: -0.04em; overflow-wrap: anywhere; }
+.you { color: var(--feta-text-tertiary); font: var(--feta-text-caption-default); }
+.email2, .mobileMeta { overflow: hidden; color: var(--feta-text-secondary); font: var(--feta-text-caption-default); letter-spacing: -0.04em; text-overflow: ellipsis; white-space: nowrap; }
+.mobileMeta { display: none; }
+.activity { flex: none; width: 104px; color: var(--feta-text-secondary); font: var(--feta-text-caption-default); letter-spacing: -0.04em; }
+.memberRole { flex: none; width: 112px; }
+.owner { color: var(--feta-text-secondary); }
+.remove { flex: none; width: 28px; }
+.none { padding: var(--feta-space-4) 0; color: var(--feta-text-secondary); text-align: center; }
+.footer { color: var(--feta-text-tertiary); font: var(--feta-text-caption-default); letter-spacing: -0.04em; }
+
+@container (max-width: 480px) {
+  .header { flex-direction: column; align-items: stretch; }
+  .seats { width: 100%; max-width: none; }
+  .inviteRow { flex-wrap: wrap; }
+  .email { flex-basis: 100%; }
+  .roleSelect { flex: 1; width: auto; }
+  .search, .activity, .memberRole, .email2:not([data-keep]), .revoke { display: none; }
+  .mobileMeta { display: block; }
+}

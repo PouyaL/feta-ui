@@ -1,0 +1,72 @@
+/* Wheel Picker: FetaUI 24 Time and Date Picker Handoff and Motion. */
+.picker {
+  --row: 34px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: 300px;
+  max-width: 100%;
+  gap: var(--feta-space-3);
+  padding: var(--feta-space-4);
+  border-radius: var(--feta-radius-2xl);
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft);
+}
+
+.wheels {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  height: calc(var(--row) * var(--visible));
+  overflow: hidden;
+}
+
+.band {
+  position: absolute;
+  top: calc(var(--row) * 2);
+  right: 0;
+  left: 0;
+  height: var(--row);
+  border-radius: var(--feta-radius-xl);
+  background-color: var(--feta-alpha-ink-base-5);
+  pointer-events: none;
+}
+
+.wheel {
+  --row: inherit;
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  border-radius: var(--feta-radius-xl);
+  outline: 2px solid transparent;
+  outline-offset: -2px;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 35%, black 65%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, black 35%, black 65%, transparent);
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.wheel:focus-visible { outline-color: var(--feta-text-primary); -webkit-mask-image: none; mask-image: none; }
+
+.reel { display: flex; flex-direction: column; will-change: transform; }
+
+.reel > span {
+  display: grid;
+  flex: none;
+  place-items: center;
+  height: var(--row);
+  color: var(--feta-text-tertiary);
+  font: var(--feta-text-title-row);
+}
+
+.reel > span[data-on] { color: var(--feta-text-primary); }
+.picker[data-moving] .reel { filter: blur(0.6px); }
+.submit { flex: 1; }
+.head { display: flex; align-items: baseline; justify-content: space-between; color: var(--feta-text-primary); font: var(--feta-text-label-default); letter-spacing: var(--feta-text-label-default-tracking); }
+.reading { color: var(--feta-text-secondary); font: var(--feta-text-mono-tag); }
+.hint { margin: 0; text-align: center; color: var(--feta-text-tertiary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); }
+.actions { display: flex; gap: var(--feta-space-2); }
+
+@media (max-width: 640px) { .picker { --row: 40px; width: 100%; } }
+[data-platform="mobile"] .picker { --row: 40px; width: 100%; }

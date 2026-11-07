@@ -1,0 +1,35 @@
+/* The Soft shell: FetaUI 64 Text Handoff. */
+.tray {
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--feta-space-1);
+  border-radius: var(--feta-radius-tray);
+  background-color: var(--feta-alpha-ink-base-4);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 32px;
+  padding-inline: var(--feta-space-3);
+}
+
+.name {
+  color: var(--feta-text-primary);
+  font: var(--feta-text-label-micro);
+  letter-spacing: -0.04em;
+}
+
+.state {
+  color: var(--feta-text-tertiary);
+  font: var(--feta-text-mono-micro);
+}
+
+.body {
+  padding: var(--feta-space-6) var(--feta-space-5);
+  overflow: hidden;
+  border-radius: var(--feta-radius-card);
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft);
+}

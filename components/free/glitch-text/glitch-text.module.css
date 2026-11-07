@@ -1,0 +1,65 @@
+/* Glitch Text: FetaUI Text page. Red and cyan are the effect's fixed tints. */
+.line {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--feta-space-3);
+  color: var(--feta-text-primary);
+}
+
+.line[data-size="display"] {
+  font: 600 32px/40px var(--feta-type-font-sans);
+  letter-spacing: -0.04em;
+}
+
+.line[data-size="status"] {
+  font: var(--feta-text-title-row);
+  letter-spacing: var(--feta-text-title-row-tracking);
+}
+
+.label {
+  color: var(--feta-text-tertiary);
+  font: var(--feta-text-mono-meta);
+}
+
+.glitch {
+  --shift: 3px;
+  position: relative;
+  display: inline-block;
+}
+
+.glitch[data-strength="strong"] { --shift: 5px; }
+
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.glitch[data-on]::before,
+.glitch[data-on]::after { visibility: visible; }
+
+.glitch::before { color: #ff2d55; mix-blend-mode: multiply; }
+.glitch::after { color: #00d4ff; mix-blend-mode: multiply; }
+
+:global(.dark) .glitch::before,
+:global(.dark) .glitch::after,
+[data-theme="dark"] .glitch::before,
+[data-theme="dark"] .glitch::after { mix-blend-mode: screen; }
+
+.glitch[data-on]::before { animation: glitchA 140ms steps(2) infinite; }
+.glitch[data-on]::after { animation: glitchB 180ms steps(2) infinite; }
+
+@keyframes glitchA {
+  0% { clip-path: inset(0 0 62% 0); transform: translateX(calc(var(--shift) * -1)); }
+  50% { clip-path: inset(48% 0 12% 0); transform: translateX(var(--shift)); }
+  100% { clip-path: inset(20% 0 44% 0); transform: translateX(calc(var(--shift) * -1)); }
+}
+
+@keyframes glitchB {
+  0% { clip-path: inset(58% 0 0 0); transform: translateX(var(--shift)); }
+  50% { clip-path: inset(8% 0 54% 0); transform: translateX(calc(var(--shift) * -1)); }
+  100% { clip-path: inset(36% 0 22% 0); transform: translateX(var(--shift)); }
+}

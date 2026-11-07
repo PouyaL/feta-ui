@@ -1,0 +1,66 @@
+/* Particle Button: FetaUI 06 Motion Buttons Handoff and Motion. */
+.button {
+  height: var(--feta-size-button-md);
+  padding-inline: var(--feta-space-3-5);
+  border-radius: var(--feta-radius-xl);
+}
+
+.button[data-state="pending"] { cursor: default; }
+
+.button[data-state="success"],
+.button[data-state="success"]:hover {
+  background-color: var(--feta-status-success-strong);
+  box-shadow: none;
+  color: var(--feta-status-on-solid);
+}
+
+.button[data-state="error"],
+.button[data-state="error"]:hover {
+  background-color: var(--feta-status-danger-strong);
+  box-shadow: none;
+  color: var(--feta-status-on-solid);
+}
+
+.face {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--feta-space-1-5);
+}
+
+.spin {
+  display: inline-flex;
+  animation: spin 800ms linear infinite;
+}
+
+.burst {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  pointer-events: none;
+}
+
+.chip {
+  position: absolute;
+  display: block;
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-gradient-emerald-from);
+}
+
+.chip[data-shape="bar"] {
+  width: 5px;
+  height: 2px;
+}
+
+.chip[data-shape="dot"] {
+  width: 3px;
+  height: 3px;
+  background-color: var(--feta-status-success-strong);
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spin { animation-duration: 2s; }
+}

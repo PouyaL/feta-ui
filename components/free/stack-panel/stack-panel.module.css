@@ -1,0 +1,141 @@
+/* FetaUI 54 Stack Panel Handoff. */
+.panel {
+  box-sizing: border-box;
+  width: 384px;
+  max-width: 100%;
+  padding: var(--feta-space-1);
+  border-radius: var(--feta-radius-tray);
+  background-color: var(--feta-alpha-ink-base-4);
+}
+
+.viewport {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--feta-radius-card);
+  touch-action: pan-y;
+}
+
+.sheet,
+.under {
+  box-sizing: border-box;
+  width: 100%;
+  background: linear-gradient(var(--feta-alpha-ink-base-4), var(--feta-alpha-ink-base-4)), var(--feta-bg-surface);
+}
+
+.page { position: relative; z-index: 1; }
+.under { position: absolute; inset: 0; }
+
+.nav {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: var(--feta-space-1-5);
+}
+
+.title {
+  position: absolute;
+  right: 96px;
+  left: 96px;
+  margin: 0;
+  overflow: hidden;
+  color: var(--feta-text-primary);
+  font: var(--feta-text-label-default);
+  letter-spacing: var(--feta-text-label-default-tracking);
+  font-weight: 500;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  outline: 0;
+  pointer-events: none;
+}
+
+.section { padding: 0 0 var(--feta-space-2); }
+
+.sectionTitle {
+  margin: 0;
+  padding: var(--feta-space-3) var(--feta-space-3) var(--feta-space-1-5);
+  color: var(--feta-text-tertiary);
+  font: var(--feta-text-mono-micro);
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.card {
+  overflow: hidden;
+  border-radius: var(--feta-radius-card);
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 44px;
+  gap: var(--feta-space-2-5);
+  padding: var(--feta-space-1) var(--feta-space-3);
+  border: 0;
+  background: transparent;
+  color: var(--feta-text-primary);
+  font: var(--feta-text-label-default);
+  letter-spacing: var(--feta-text-label-default-tracking);
+  text-align: start;
+  outline: 2px solid transparent;
+  outline-offset: -2px;
+}
+
+button.row { cursor: pointer; }
+.row:focus-visible { outline-color: var(--feta-text-primary); }
+.row + .row { box-shadow: inset 0 1px 0 var(--feta-alpha-ink-base-5); }
+.row[data-danger] { color: var(--feta-status-danger-text); }
+
+@media (hover: hover) {
+  button.row:hover { background-color: var(--feta-alpha-ink-base-4); }
+}
+
+.rowLabel {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.rowLabel small {
+  color: var(--feta-text-secondary);
+  font: var(--feta-text-caption-default);
+  letter-spacing: var(--feta-text-caption-default-tracking);
+}
+
+.detail { color: var(--feta-alpha-ink-base-60); }
+
+.icon,
+.chevron,
+.check { display: inline-flex; flex: none; }
+.icon,
+.chevron { color: var(--feta-alpha-ink-base-60); }
+.icon svg,
+.chevron svg,
+.check svg { display: block; width: var(--feta-size-icon); height: var(--feta-size-icon); }
+
+.note {
+  margin: 0;
+  padding: var(--feta-space-1-5) var(--feta-space-3) 0;
+  color: var(--feta-text-secondary);
+  font: var(--feta-text-caption-default);
+  letter-spacing: var(--feta-text-caption-default-tracking);
+}
+
+@media (max-width: 640px) {
+  .panel { width: 358px; }
+  .nav { min-height: 48px; }
+  .row { min-height: 52px; }
+}
+
+[data-platform="mobile"] .panel { width: 358px; }
+[data-platform="mobile"] .nav { min-height: 48px; }
+[data-platform="mobile"] .row { min-height: 52px; }
+[data-platform="web"] .panel { width: 384px; }
+[data-platform="web"] .nav { min-height: 44px; }
+[data-platform="web"] .row { min-height: 44px; }

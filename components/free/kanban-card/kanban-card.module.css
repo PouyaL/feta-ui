@@ -1,0 +1,61 @@
+/* Kanban Card: FetaUI 216 Kanban Card Handoff and Motion. */
+.enter { width: 100%; }
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--feta-space-2-5);
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--feta-space-3-5);
+  border-radius: var(--feta-radius-2xl);
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8);
+  color: var(--feta-text-primary);
+  letter-spacing: -0.04em;
+  transition: box-shadow 120ms cubic-bezier(0.25, 0.1, 0.25, 1), transform 120ms cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.card:hover, .card[data-state="hover"] { box-shadow: inset 0 0 0 1px var(--feta-border-strong); }
+
+/* Lifts with a 2 degree tilt and a shadow. */
+.card[data-state="dragging"] { box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft); transform: rotate(2deg); }
+.card[data-still][data-state="dragging"] { transform: none; }
+
+.top { display: flex; align-items: center; justify-content: space-between; gap: var(--feta-space-1-5); min-height: 20px; }
+.id { margin-left: auto; color: var(--feta-text-tertiary); font: var(--feta-text-mono-tag); }
+.titleRow { display: flex; gap: var(--feta-space-1-5); }
+.check { display: inline-flex; flex: none; padding-top: var(--feta-space-0-5); color: var(--feta-status-success-text); }
+
+.title {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  font: var(--feta-text-label-row);
+  letter-spacing: -0.04em;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.card[data-done] .title { color: var(--feta-text-secondary); }
+.meta { display: flex; align-items: center; gap: var(--feta-space-2-5); min-height: 20px; color: var(--feta-text-secondary); font: var(--feta-text-caption-default); letter-spacing: -0.04em; }
+.stat { display: inline-flex; align-items: center; gap: var(--feta-space-1); }
+.stat[data-mono] { font: var(--feta-text-mono-tag); }
+.end { margin-left: auto; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.meta > span[title], .assignee { display: inline-flex; }
+
+/* Compact: for dense boards such as Kanban. */
+.card[data-density="compact"] { padding: var(--feta-space-3); border-radius: var(--feta-radius-control); }
+
+/* Keyboard pick up: a 2 px ring, a shadow and the same tilt. */
+.card[data-state="lifted"] { position: relative; z-index: 1; box-shadow: inset 0 0 0 2px var(--feta-text-primary), var(--feta-elevation-soft); transform: rotate(2deg); }
+.card[data-still][data-state="lifted"] { transform: none; }
+
+/* The spot a dragged card left. */
+.card[data-state="placeholder"] { opacity: 0.32; }
+
+/* Handle: a full card button over the content. Controls that must stay clickable inside a slot need position relative and z-index 1. */
+.card[data-handle] { position: relative; cursor: grab; touch-action: pan-x pan-y; user-select: none; -webkit-user-select: none; }
+.handle { position: absolute; inset: 0; padding: 0; border: 0; border-radius: inherit; outline: 2px solid transparent; outline-offset: 1px; background: none; cursor: inherit; touch-action: inherit; }
+.handle:focus-visible { outline-color: var(--feta-text-primary); }

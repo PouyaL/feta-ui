@@ -1,0 +1,105 @@
+/* Card Field: FetaUI 16.6 Showcase Cards Handoff and Motion. */
+.tray {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--feta-space-1);
+  width: 100%;
+  max-width: 384px;
+  padding: var(--feta-space-1);
+  border-radius: var(--feta-radius-tray);
+  background-color: var(--feta-alpha-ink-base-4);
+  color: var(--feta-text-primary);
+  font-family: var(--feta-type-font-sans);
+}
+
+.header { box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; min-height: 40px; padding: var(--feta-space-1-5) var(--feta-space-1-5) var(--feta-space-1-5) var(--feta-space-3); }
+.label { margin: 0; font: var(--feta-text-label-row); letter-spacing: var(--feta-text-label-row-tracking); }
+.test.test { color: var(--feta-text-primary); }
+
+.body {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--feta-space-2-5);
+  padding: var(--feta-space-3-5);
+  border-radius: var(--feta-radius-card);
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft);
+}
+
+.field {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: var(--feta-space-2-5);
+  height: 50px;
+  padding: 0 var(--feta-space-3-5) 0 var(--feta-space-2-5);
+  border-radius: var(--feta-radius-control);
+  background-color: var(--feta-alpha-ink-base-4);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8);
+  transition: background-color var(--feta-motion-duration-fast) var(--feta-motion-ease-out), box-shadow var(--feta-motion-duration-fast) var(--feta-motion-ease-out);
+}
+
+.field[data-focus] { background-color: var(--feta-bg-surface); box-shadow: inset 0 0 0 1.5px var(--feta-text-primary); }
+.field[data-invalid] { box-shadow: inset 0 0 0 1.5px var(--feta-status-danger); }
+.tray[data-still] .field { transition: none; }
+
+.brand { display: grid; flex: none; place-items: center; width: 34px; height: 22px; }
+.icon { display: grid; color: var(--feta-text-tertiary); }
+
+.chip {
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 22px;
+  border-radius: var(--feta-radius-md);
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-10);
+  font: 600 9px/10px var(--feta-type-font-sans);
+}
+
+.numberWrap { position: relative; display: flex; flex: 1; min-width: 0; height: 20px; }
+.input {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--feta-text-primary);
+  font: var(--feta-text-label-row);
+  letter-spacing: var(--feta-text-label-row-tracking);
+  outline: none;
+}
+
+.numberWrap .input { position: relative; }
+.input::placeholder { color: var(--feta-text-tertiary); font-weight: 400; }
+.input:disabled { opacity: 1; color: var(--feta-text-primary); -webkit-text-fill-color: var(--feta-text-primary); }
+
+/* The rest of the number, drawn behind the caret. */
+.ghost { position: absolute; inset: 0; overflow: hidden; color: var(--feta-text-quaternary); font: var(--feta-text-body-row); letter-spacing: var(--feta-text-label-row-tracking); white-space: pre; pointer-events: none; }
+.ghostTyped { visibility: hidden; font-weight: 500; }
+.numberWrap[data-collapsed] .ghost { display: none; }
+
+.expiry.expiry { flex: none; width: 72px; text-align: right; font-variant-numeric: tabular-nums; }
+.expiry[data-invalid] { color: var(--feta-status-danger); -webkit-text-fill-color: var(--feta-status-danger); }
+.cvc.cvc { flex: none; width: 44px; text-align: right; font-variant-numeric: tabular-nums; }
+
+.helper { display: flex; align-items: center; gap: var(--feta-space-1-5); min-height: 16px; margin: 0; padding: 0 var(--feta-space-0-5) var(--feta-space-1); color: var(--feta-text-tertiary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); }
+.helper[data-invalid] { color: var(--feta-status-danger); }
+
+.pay.pay { width: 100%; }
+.tray[data-status='paid'] .pay.pay { background-color: var(--feta-status-success-strong); color: var(--feta-status-on-solid); transition: background-color 320ms var(--feta-motion-ease-out); }
+.tray[data-still][data-status='paid'] .pay.pay { transition: none; }
+
+[data-platform='mobile'] .tray { max-width: 358px; }
+[data-platform='mobile'] .label { font: var(--feta-text-title-row); letter-spacing: var(--feta-text-title-row-tracking); }
+[data-platform='mobile'] .input { font-size: 16px; }
+
+@media (max-width: 640px) {
+  .tray { max-width: 358px; }
+  .label { font: var(--feta-text-title-row); letter-spacing: var(--feta-text-title-row-tracking); }
+  .input { font-size: 16px; }
+}

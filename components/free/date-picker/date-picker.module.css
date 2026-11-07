@@ -1,0 +1,81 @@
+/* Date Picker: FetaUI 24 Time and Date Picker Handoff and Motion. */
+.picker {
+  position: relative;
+  width: 300px;
+  max-width: 100%;
+}
+
+.trigger {
+  height: 44px;
+  cursor: pointer;
+  outline: 0;
+}
+
+.trigger:disabled { cursor: not-allowed; }
+
+.value {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.value[data-empty] { color: var(--feta-alpha-ink-base-60); opacity: 0.67; }
+
+.pop {
+  width: max-content;
+  max-width: calc(100vw - 32px);
+  border-radius: var(--feta-radius-tray);
+}
+
+.rangeBody { display: flex; }
+
+.timeRow {
+  display: flex;
+  align-items: center;
+  gap: var(--feta-space-2);
+  padding: var(--feta-space-2) var(--feta-space-3);
+  color: var(--feta-text-secondary);
+  font: var(--feta-text-label-small);
+  letter-spacing: var(--feta-text-label-small-tracking);
+}
+
+.time {
+  flex: 1;
+  min-width: 0;
+  height: var(--feta-size-button-sm);
+  padding-inline: var(--feta-space-2);
+  border: 0;
+  border-radius: var(--feta-radius-field);
+  background-color: var(--feta-alpha-ink-base-4);
+  color: var(--feta-text-primary);
+  font: inherit;
+}
+
+.readBack {
+  display: block;
+  min-height: 16px;
+  margin-top: var(--feta-space-1-5);
+  padding-inline: var(--feta-space-1);
+  color: var(--feta-text-secondary);
+  font: var(--feta-text-caption-default);
+  letter-spacing: var(--feta-text-caption-default-tracking);
+}
+
+.presets {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--feta-space-0-5);
+  padding: var(--feta-space-2);
+}
+
+@media (max-width: 640px) {
+  .picker { width: 100%; }
+  .trigger { height: 48px; }
+  .presets { display: none; }
+}
+
+[data-platform="mobile"] .picker { width: 100%; }
+[data-platform="mobile"] .trigger { height: 48px; }
+[data-platform="mobile"] .presets { display: none; }

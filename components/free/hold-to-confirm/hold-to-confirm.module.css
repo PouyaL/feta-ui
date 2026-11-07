@@ -1,0 +1,61 @@
+.wrap { position: relative; display: inline-flex; }
+.wrapSolid { width: 288px; max-width: 100%; }
+
+.button {
+  overflow: hidden;
+  isolation: isolate;
+  height: 46px;
+  padding: 0 var(--feta-space-4);
+  border-radius: var(--feta-radius-full);
+  touch-action: none;
+  -webkit-touch-callout: none;
+}
+.solid { width: 100%; height: 64px; padding: 0 var(--feta-space-6); }
+
+/* The sweep: one layer scaled from the leading edge, so it costs a transform per frame. */
+.sweep {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  transform-origin: 0 50%;
+  background: var(--feta-bg-danger-subtle);
+  pointer-events: none;
+}
+.solid .sweep { background: var(--feta-status-danger); }
+
+/* A bright seam rides the front of the sweep while it moves. */
+.edge {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -1px;
+  z-index: 0;
+  width: 2px;
+  background: var(--feta-status-danger);
+  pointer-events: none;
+}
+.solid .edge { background: var(--feta-alpha-ink-base-60); }
+
+.content {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--feta-space-2);
+  min-width: 0;
+}
+.glyph { width: 18px; height: 18px; }
+.labels { display: inline-grid; }
+.sizer, .label { grid-area: 1 / 1; text-align: center; }
+.sizer { visibility: hidden; }
+
+.button[data-state='holding'], .button[data-state='complete'] { color: var(--feta-status-danger-text); }
+.button[data-state='complete'] { background-color: var(--feta-bg-danger-subtle); }
+.solid[data-state='holding'], .solid[data-state='complete'] { color: var(--feta-text-inverse); }
+.solid[data-state='complete'] { background-color: var(--feta-status-danger); }
+
+@media (max-width: 640px) {
+  .wrapSolid { width: 100%; }
+}
+[data-platform='mobile'] .wrapSolid { width: 100%; }

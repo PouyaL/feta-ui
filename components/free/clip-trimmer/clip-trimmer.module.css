@@ -1,0 +1,181 @@
+/* Clip Trimmer: FetaUI 39 Media Handoff and Motion. */
+.tray {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 480px;
+  margin-inline: auto;
+  padding: var(--feta-space-1);
+  border-radius: var(--feta-radius-tray);
+  background-color: var(--feta-alpha-ink-base-4);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--feta-space-3);
+  padding: var(--feta-space-2);
+  border-radius: var(--feta-radius-card);
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft);
+}
+
+.preview {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: var(--feta-radius-control);
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+}
+
+/* Play on a surface disc in the corner, so it never covers the footage. */
+.disc {
+  position: absolute;
+  right: var(--feta-space-2);
+  bottom: var(--feta-space-2);
+  display: inline-flex;
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-bg-surface);
+}
+
+.clock {
+  position: absolute;
+  bottom: var(--feta-space-2);
+  left: var(--feta-space-2);
+  color: var(--feta-status-on-solid);
+  font: var(--feta-text-mono-meta);
+  text-shadow: 0 1px 2px rgb(0 0 0 / 50%);
+}
+
+.time {
+  position: absolute;
+  bottom: 2px;
+  padding: var(--feta-space-0-5) var(--feta-space-1-5);
+  border-radius: var(--feta-radius-md);
+  background-color: var(--feta-bg-inverse);
+  color: var(--feta-text-inverse);
+  font: var(--feta-text-mono-micro);
+  transform: translateX(-50%);
+}
+
+.strip {
+  position: relative;
+  height: 52px;
+  margin-inline: var(--feta-space-2);
+  touch-action: none;
+}
+
+.frames {
+  position: absolute;
+  inset: 4px 0;
+  display: flex;
+  overflow: hidden;
+  border-radius: var(--feta-radius-field);
+}
+
+.frame {
+  flex: 1;
+  background-size: cover;
+  border-right: 1px solid color-mix(in srgb, var(--feta-bg-surface) 40%, transparent);
+}
+
+.cut {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  background-color: color-mix(in srgb, var(--feta-bg-surface) 72%, transparent);
+}
+
+.range {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+  border: 2px solid var(--feta-bg-inverse);
+  border-radius: var(--feta-radius-field);
+  pointer-events: none;
+}
+
+.fill {
+  position: absolute;
+  inset: 0;
+  background-color: color-mix(in srgb, var(--feta-bg-inverse) 40%, transparent);
+  transform-origin: left;
+}
+
+.playhead {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 2px;
+  background-color: var(--feta-status-on-solid);
+  box-shadow: 0 0 2px var(--feta-effect-scrim);
+  pointer-events: none;
+}
+
+.handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 14px;
+  margin-left: calc(-1 * var(--feta-space-2));
+  border-radius: var(--feta-radius-md);
+  background-color: var(--feta-bg-inverse);
+  cursor: ew-resize;
+  touch-action: none;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  transition: width var(--feta-motion-duration-fast) var(--feta-motion-ease-out), margin var(--feta-motion-duration-fast) var(--feta-motion-ease-out);
+}
+
+/* The grip. */
+.handle::after {
+  content: '';
+  position: absolute;
+  top: 18px;
+  bottom: 18px;
+  left: 50%;
+  width: 2px;
+  margin-left: calc(-1 * var(--feta-space-0-5));
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-text-inverse);
+}
+
+.handle:focus-visible { outline-color: var(--feta-text-primary); }
+.handle[data-active] { width: 16px; margin-left: calc(-1 * var(--feta-space-2)); }
+.tray[data-still] .handle { transition: none; }
+
+.ruler {
+  display: flex;
+  justify-content: space-between;
+  margin-inline: var(--feta-space-2);
+  color: var(--feta-text-tertiary);
+  font: var(--feta-text-mono-micro);
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: var(--feta-space-1);
+  padding: var(--feta-space-2) var(--feta-space-2) var(--feta-space-1) var(--feta-space-3);
+}
+
+.length {
+  flex: 1;
+  margin: 0;
+  color: var(--feta-text-secondary);
+  font: var(--feta-text-mono-meta);
+}
+
+.length strong {
+  color: var(--feta-text-primary);
+  font-weight: 500;
+}

@@ -1,0 +1,87 @@
+/* Input Group: FetaUI 32 Input Group Handoff and Motion. */
+.pill { --pad: var(--feta-space-3); cursor: text; }
+.pill[data-has-end] { padding-right: var(--feta-space-1); }
+
+.addon {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  gap: var(--feta-space-1);
+  color: var(--feta-alpha-ink-base-60);
+}
+
+.addon svg { display: block; width: var(--feta-size-icon); height: var(--feta-size-icon); }
+
+.text {
+  color: var(--feta-text-secondary);
+  font: var(--feta-text-mono-code);
+}
+
+.chip {
+  padding: var(--feta-space-0-5) var(--feta-space-2);
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-alpha-ink-base-5);
+  color: var(--feta-text-secondary);
+  font: var(--feta-text-mono-tag);
+}
+
+.box {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: 100%;
+  border-radius: var(--feta-radius-card);
+  background-color: var(--feta-alpha-ink-base-4);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8);
+  color: var(--feta-text-primary);
+  font: var(--feta-text-label-default);
+  letter-spacing: var(--feta-text-label-default-tracking);
+  font-weight: 400;
+  cursor: text;
+  transition:
+    background-color var(--feta-motion-duration-focus) var(--feta-motion-ease-out),
+    box-shadow var(--feta-motion-duration-focus) var(--feta-motion-ease-out);
+}
+
+.box:focus-within {
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1.5px var(--feta-text-primary);
+}
+
+.box[data-invalid],
+.box[data-invalid]:focus-within { box-shadow: inset 0 0 0 1.5px var(--feta-status-danger); }
+.box[data-disabled] { opacity: 0.5; }
+.box[data-still] { transition: none; }
+
+.blockRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--feta-space-2);
+  padding: var(--feta-space-2-5) var(--feta-space-3-5);
+  color: var(--feta-text-secondary);
+  font: var(--feta-text-mono-code);
+}
+
+.blockBody {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--feta-space-2);
+  padding: var(--feta-space-1-5) var(--feta-space-3-5);
+}
+
+.composer {
+  height: 22px;
+  line-height: 22px;
+  resize: none;
+  overflow: hidden;
+  transition: height var(--feta-motion-duration-lift) var(--feta-motion-ease-out);
+}
+
+.composer[data-still] { transition: none; }
+
+@media (max-width: 640px) {
+  .box { font-size: 16px; }
+}
+
+[data-platform="mobile"] .box { font-size: 16px; }

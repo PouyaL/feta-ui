@@ -1,0 +1,96 @@
+/* Save Button: FetaUI 06 Motion Buttons Handoff and Motion. */
+.root {
+  position: relative;
+  display: inline-flex;
+}
+
+.button {
+  height: var(--feta-size-button-md);
+  padding-inline: var(--feta-space-3-5);
+  gap: var(--feta-space-2);
+  border-radius: var(--feta-radius-full);
+}
+
+.label {
+  display: inline-flex;
+  overflow: hidden;
+}
+
+.roll {
+  display: inline-block;
+}
+
+.panel {
+  position: absolute;
+  top: calc(100% + var(--feta-space-2));
+  left: 0;
+  z-index: 10;
+  width: 288px;
+  max-width: calc(100vw - 32px);
+  transform-origin: top left;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--feta-space-0-5);
+  padding: var(--feta-space-1);
+}
+
+.row {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 44px;
+  gap: var(--feta-space-3);
+  padding: 0 var(--feta-space-3) 0 var(--feta-space-2);
+  border: 0;
+  margin: 0;
+  border-radius: var(--feta-radius-xl);
+  background: transparent;
+  color: var(--feta-text-primary);
+  cursor: pointer;
+  font: var(--feta-text-title-small);
+  letter-spacing: var(--feta-text-title-small-tracking);
+  text-align: left;
+  outline: 2px solid transparent;
+  outline-offset: -2px;
+  transition: background-color var(--feta-motion-duration-fast) var(--feta-motion-ease-out-soft);
+}
+
+.row:focus-visible { outline-color: var(--feta-text-primary); }
+.row[data-on] { background-color: var(--feta-alpha-ink-base-4); }
+
+@media (hover: hover) {
+  .row:hover { background-color: var(--feta-alpha-ink-base-4); }
+}
+
+.swatch {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--feta-radius-lg);
+}
+
+.swatch svg {
+  width: 14px;
+  height: 14px;
+}
+
+.swatch[data-tone="accent"] { background-color: var(--feta-bg-accent-subtle); }
+.swatch[data-tone="success"] { background-color: var(--feta-bg-success-subtle); }
+.swatch[data-tone="warning"] { background-color: var(--feta-bg-warning-subtle); }
+.swatch[data-tone="neutral"] { background-color: var(--feta-alpha-ink-base-5); }
+
+.text {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.name { white-space: nowrap; }
+.create { color: var(--feta-text-secondary); }

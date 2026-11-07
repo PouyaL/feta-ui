@@ -1,0 +1,73 @@
+/* Card Flip: FetaUI 16.2 Showcase Cards Handoff and Motion. */
+.flip { max-width: 288px; }
+
+.label { color: var(--feta-text-tertiary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); }
+.value { margin: 0; font: 600 14px/20px var(--feta-type-font-sans); letter-spacing: var(--feta-text-body-row-tracking); white-space: nowrap; }
+.mono { color: var(--feta-text-tertiary); font: var(--feta-text-mono-meta); }
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.datum { display: flex; flex-direction: column; gap: var(--feta-space-0-5); min-width: 0; }
+
+/* The stage replaces the inset card, so each side can be its own. */
+.stage.stage { position: relative; height: 372px; padding: 0; background: none; box-shadow: none; }
+.stage > div:first-child { height: 100%; }
+
+.front, .back {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 372px;
+  padding: var(--feta-space-4-5) var(--feta-space-4-5) var(--feta-space-4);
+  border-radius: var(--feta-radius-card);
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft);
+}
+
+.frontHead { display: flex; align-items: center; justify-content: space-between; height: 20px; }
+.art { display: flex; flex: none; flex-direction: column; justify-content: flex-end; gap: var(--feta-space-1); height: 150px; box-sizing: border-box; padding: var(--feta-space-4) 0; }
+.event { margin: 0; font: 600 26px/34px var(--feta-type-font-sans); letter-spacing: var(--feta-text-title-total-tracking); white-space: nowrap; }
+.details { display: flex; gap: var(--feta-space-4); height: 52px; margin: 0; padding-bottom: var(--feta-space-3-5); box-sizing: border-box; }
+.plain { margin: 0; }
+.holder { display: flex; align-items: flex-end; justify-content: space-between; height: 52px; padding-top: var(--feta-space-3-5); box-sizing: border-box; }
+
+.back { align-items: center; gap: var(--feta-space-3-5); }
+.qr { display: grid; flex: none; place-items: center; width: 120px; height: 120px; border-radius: var(--feta-radius-2xl); background-color: var(--feta-avatar-bg); color: var(--feta-avatar-ink); }
+.qrArt { width: 96px; height: 96px; fill: currentColor; }
+.number { color: var(--feta-text-primary); font: 400 14px/20px var(--feta-type-font-mono); }
+.seat { box-sizing: border-box; display: flex; justify-content: space-between; align-self: stretch; margin: 0; padding: var(--feta-space-1-5) 0; }
+.terms { margin: 0; color: var(--feta-text-tertiary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); text-align: center; }
+
+/* 3D */
+.scene { height: 100%; perspective: 1000px; cursor: pointer; }
+.turner { position: relative; height: 100%; transform-style: preserve-3d; }
+.face { position: absolute; inset: 0; overflow: hidden; border-radius: var(--feta-radius-card); backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.face[data-back] { transform: rotateY(180deg); }
+.shade { position: absolute; inset: 0; background-color: var(--feta-effect-scrim); opacity: 0; pointer-events: none; }
+
+/* Still: the sides swap, and reduced motion crossfades them in 150 ms. */
+.fade { position: relative; height: 100%; cursor: pointer; }
+.fadeFace { position: absolute; inset: 0; opacity: 0; }
+.fadeFace[data-on] { opacity: 1; }
+.fade[data-animate] .fadeFace { transition: opacity var(--feta-motion-duration-fast) var(--feta-motion-ease-out); }
+
+/* The Turning pose */
+.held { position: relative; height: 100%; }
+.heldBack { position: absolute; inset: 0; transform: translate(11px, 4px) rotate(6deg); }
+.heldFront { position: absolute; inset: 0; overflow: hidden; border-radius: var(--feta-radius-card); transform: translate(-6px, -6px) rotate(-5deg); }
+.heldShade { position: absolute; inset: 0; background: linear-gradient(125deg, var(--feta-effect-clear-black), var(--feta-effect-scrim)); pointer-events: none; }
+
+.hint { position: absolute; z-index: 2; left: 50%; bottom: 8px; padding: var(--feta-space-1-5) var(--feta-space-3); border-radius: var(--feta-radius-full); background-color: var(--feta-bg-inverse); color: var(--feta-text-inverse); font: var(--feta-text-caption-medium); letter-spacing: var(--feta-text-caption-medium-tracking); white-space: nowrap; transform: translateX(-50%); pointer-events: none; }
+
+.footer.footer { justify-content: space-between; padding: var(--feta-space-2) var(--feta-space-1) var(--feta-space-1) var(--feta-space-3); }
+.meta { color: var(--feta-text-tertiary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); }
+.button[data-busy] { background-color: var(--feta-alpha-ink-base-10); }
+
+[data-platform='mobile'] .flip { max-width: 320px; }
+[data-platform='mobile'] .footer.footer { --feta-size-button-sm: 36px; }
+[data-platform='mobile'] .footer.footer > button { flex: none; }
+
+@media (max-width: 640px) {
+  .flip { max-width: 320px; }
+  .footer.footer.footer { --feta-size-button-sm: 36px; }
+  .footer.footer.footer > button { flex: none; }
+}

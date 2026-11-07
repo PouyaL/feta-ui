@@ -1,0 +1,395 @@
+/*
+ * Liquid Ring: FetaUI 35 Frame Handoff and Motion, with the chrome ring, orbit glow and layout of the
+ * original liquid metal composer. Glow and beam tints come from the colour ramps; the pinks have no token yet.
+ */
+.ring {
+  --strength: 1;
+  --beam: 0.6;
+  --blue: var(--feta-blue-300);
+  /* No pink ramp in the tokens yet; nearest is --feta-red-300. */
+  --pink: #F2A7C8;
+  --white: var(--feta-white);
+  --glow-1: var(--feta-blue-400);
+  --glow-2: var(--feta-violet-400);
+  /* No pink ramp in the tokens yet; nearest is --feta-red-400. */
+  --glow-3: #FF7FB5;
+  --glow-opacity: 0.45;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--feta-space-3);
+  box-sizing: border-box;
+  width: 100%;
+  /* 672 on Web, as the original composer; Mobile fills its column. */
+  max-width: 672px;
+  margin-inline: auto;
+}
+
+:global(.dark) .ring,
+[data-theme="dark"] .ring {
+  --glow-1: var(--feta-blue-300);
+  --glow-2: var(--feta-white);
+  /* No pink ramp in the tokens yet; nearest is --feta-red-200. */
+  --glow-3: #FFC2DD;
+  --glow-opacity: 0.8;
+}
+
+.frame {
+  position: relative;
+  isolation: isolate;
+  border-radius: var(--feta-radius-frame);
+}
+
+/* The box: radius 24 and 10 all round, the field 2 rows of 16/24, the toolbar 6 below it. */
+.box {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--feta-space-1-5);
+  padding: var(--feta-space-2-5);
+  border-radius: var(--feta-radius-frame);
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 1px 2px var(--feta-shadow-soft-lg), var(--feta-elevation-soft);
+}
+
+.field {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--feta-space-1);
+  padding: var(--feta-space-1-5) var(--feta-space-2) 0;
+}
+
+.lead {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  height: var(--feta-type-body-lg-line);
+  color: var(--feta-text-primary);
+}
+
+.lead svg { width: 16px; height: 16px; }
+
+.input {
+  display: block;
+  width: 100%;
+  min-height: calc(var(--feta-type-body-lg-line) * 2);
+  max-height: calc(var(--feta-type-body-lg-line) * 8);
+  border: 0;
+  outline: 0;
+  resize: none;
+  padding: 0;
+  background: transparent;
+  color: var(--feta-text-primary);
+  font: var(--feta-text-body-large);
+  letter-spacing: var(--feta-text-body-large-tracking);
+  field-sizing: content;
+}
+
+.input::placeholder { color: var(--feta-text-tertiary); }
+.ring[data-state="loading"] .input { color: var(--feta-text-secondary); }
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--feta-space-1);
+  min-width: 0;
+}
+
+.side {
+  display: flex;
+  align-items: center;
+  gap: var(--feta-space-1-5);
+  min-width: 0;
+}
+
+.model { display: inline-flex; min-width: 0; color: var(--feta-text-secondary); transition: opacity 160ms var(--feta-motion-ease-out); }
+/* The fan slides over the model button, so it fades out while the actions are open. */
+.model[data-hidden] { opacity: 0; pointer-events: none; }
+
+/* Voice clock: mono, tabular, beside the pause button. */
+.timer {
+  flex: none;
+  padding-inline: var(--feta-space-1);
+  color: var(--feta-text-tertiary);
+  font: var(--feta-text-mono-caption);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* The actions fan: the plus and its droplets, one button plus 6 apart. */
+.fan {
+  --step: calc(var(--feta-size-button-md) + var(--feta-space-1-5));
+  --drop: color-mix(in srgb, var(--feta-text-primary) 5%, var(--feta-bg-surface));
+  position: relative;
+  z-index: 2;
+  flex: none;
+  width: var(--feta-size-button-md);
+  height: var(--feta-size-button-md);
+}
+
+.gooDefs { position: absolute; width: 0; height: 0; }
+
+.goo {
+  position: absolute;
+  inset: calc(var(--feta-space-6) * -1);
+  pointer-events: none;
+}
+
+.drop {
+  position: absolute;
+  top: var(--feta-space-6);
+  left: var(--feta-space-6);
+  width: var(--feta-size-button-md);
+  height: var(--feta-size-button-md);
+  border-radius: var(--feta-radius-full);
+  background-color: var(--drop);
+}
+
+/* Each droplet travels with a little overshoot: 500 ms, the first out leading, the last out leading back. */
+.travel {
+  transform: translateX(0);
+  transition: transform 500ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 240ms var(--feta-motion-ease-out);
+}
+
+.fan[data-open] .travel { transform: translateX(calc((var(--i) + 1) * var(--step))); }
+
+.plus,
+.action {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: inline-flex;
+}
+
+.plus { z-index: 2; }
+.plus svg { transition: transform 300ms var(--feta-motion-ease-out); }
+.fan[data-open] .plus svg { transform: rotate(45deg); }
+
+.action { z-index: 1; opacity: 0; }
+.fan[data-open] .action { opacity: 1; }
+
+.tip {
+  position: absolute;
+  bottom: calc(100% + var(--feta-space-2));
+  left: 50%;
+  padding: var(--feta-space-1) var(--feta-space-2);
+  border-radius: var(--feta-radius-lg);
+  background-color: var(--feta-bg-inverse);
+  color: var(--feta-text-inverse);
+  font: var(--feta-text-caption-default);
+  letter-spacing: var(--feta-text-caption-default-tracking);
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateX(-50%);
+  transition: opacity 160ms var(--feta-motion-ease-out);
+  pointer-events: none;
+}
+
+.action:hover .tip,
+.action:has(:focus-visible) .tip { opacity: 1; }
+.down { display: inline-flex; transform: rotate(180deg); }
+
+/* The send button sits in its own small chrome ring. */
+.send {
+  position: relative;
+  display: inline-flex;
+  border-radius: var(--feta-radius-full);
+}
+
+/* The orbit glow: a conic light turning every 9 s, blurred and masked to the 16 px past the box. */
+.orbit {
+  position: absolute;
+  inset: calc(var(--feta-space-4) * -1);
+  z-index: -1;
+  box-sizing: border-box;
+  padding: var(--feta-space-4);
+  border-radius: 40px;
+  opacity: calc(var(--glow-opacity) * var(--strength));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  transition: opacity 400ms var(--feta-motion-ease-out);
+  pointer-events: none;
+}
+
+.orbitClip {
+  position: absolute;
+  inset: var(--feta-space-2-5);
+  overflow: hidden;
+  border-radius: 30px;
+  filter: blur(4px);
+}
+
+.orbitTurn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 200%;
+  aspect-ratio: 1;
+  background: conic-gradient(transparent 0 52%, var(--glow-1) 68%, var(--glow-2) 78%, var(--glow-3) 86%, transparent 97%);
+  transform: translate(-50%, -50%) rotate(0deg);
+  animation: liquidTurn 9s linear infinite;
+}
+
+/* Paused dims the beam and its blooms, and holds them still. */
+.ring[data-paused] .beam { opacity: 0.35; }
+.ring[data-paused] .pink,
+.ring[data-paused] .blue { opacity: calc(var(--beam) * 0.35); }
+
+/* Voice dims the orbit so the beam leads. */
+.ring[data-state="voice"] .orbit { opacity: calc(var(--glow-opacity) * var(--strength) * 0.5); }
+
+/* Focus lights the whole ring, 2 px, so focus is never only the glow. */
+.lit {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  overflow: hidden;
+  box-sizing: border-box;
+  padding: 2px;
+  border-radius: var(--feta-radius-frame);
+  opacity: 0;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  transition: opacity 160ms var(--feta-motion-ease-out);
+  pointer-events: none;
+}
+
+/* Typing, or keyboard focus anywhere inside. A mouse press on a toolbar button leaves the chrome alone. */
+.ring:has(.input:focus) .lit,
+.ring:has(:focus-visible) .lit {
+  opacity: 0.7;
+  background: conic-gradient(from 90deg,
+    var(--feta-text-primary) 0deg, var(--blue) 15deg, var(--feta-text-primary) 150deg, var(--feta-alpha-ink-base-60) 180deg,
+    var(--pink) 195deg, var(--feta-text-primary) 330deg);
+}
+
+/* Loading: one bright arc runs round the ring every 1.6 s over the chrome. */
+.ring[data-state="loading"] .lit { opacity: 1; padding: 1.5px; background: none; }
+
+.arc {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: none;
+  width: 200%;
+  aspect-ratio: 1;
+  background: conic-gradient(from 0deg, transparent 0%, var(--feta-text-primary) 6%, var(--blue) 12%, transparent 20%);
+  transform: translate(-50%, -50%) rotate(200deg);
+  animation: liquidTurn 1.6s linear infinite;
+}
+
+.ring[data-state="loading"] .arc { display: block; }
+
+@keyframes liquidTurn {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.ring[data-offscreen] .arc,
+.ring[data-offscreen] .orbitTurn { animation-play-state: paused; }
+
+/* Voice: pink and blue under the bottom edge, as wide as the beam. */
+.blooms {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.pink,
+.blue {
+  position: absolute;
+  bottom: -15px;
+  width: 36%;
+  height: 30px;
+  border-radius: var(--feta-radius-full);
+  filter: blur(12px);
+  opacity: calc(var(--beam) * 1.1);
+  transform: scaleX(calc(0.6 + var(--beam) * 0.4));
+  transition: opacity 200ms var(--feta-motion-ease-out), transform 200ms var(--feta-motion-ease-out);
+}
+
+.pink { left: 12%; background-color: var(--pink); }
+.blue { left: 46%; background-color: var(--blue); }
+.ring[data-mono] .pink { opacity: 0; }
+.ring[data-mono] .blue { left: 20%; width: 60%; background-color: var(--feta-text-tertiary); opacity: calc(var(--beam) * 0.9); }
+
+/* The beam: 78% of the width on the bottom edge, 2 high, with a 10 high glow. */
+.beam {
+  position: absolute;
+  bottom: -5px;
+  left: 11%;
+  z-index: 4;
+  width: 78%;
+  height: 10px;
+  transform: scaleX(var(--beam));
+  transition: transform 200ms var(--feta-motion-ease-out);
+  pointer-events: none;
+}
+
+.beamGlow,
+.beamLine {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  border-radius: var(--feta-radius-full);
+  background: linear-gradient(90deg, transparent, var(--pink) 25%, var(--white) 50%, var(--blue) 75%, transparent);
+}
+
+.beamGlow {
+  top: 0;
+  height: 10px;
+  filter: blur(4px);
+  opacity: calc(var(--beam) * 1.15);
+  transition: opacity 200ms var(--feta-motion-ease-out);
+}
+
+.beamLine { top: 4px; height: 2px; }
+
+.ring[data-mono] .beamGlow,
+.ring[data-mono] .beamLine { background: linear-gradient(90deg, var(--feta-alpha-ink-base-10), var(--feta-text-primary) 50%, var(--feta-alpha-ink-base-10)); }
+
+.hint {
+  margin: 0;
+  padding-inline: var(--feta-space-3);
+  overflow: hidden;
+  color: var(--feta-text-tertiary);
+  font: var(--feta-text-mono-caption);
+  white-space: pre;
+  text-overflow: ellipsis;
+}
+
+/* Mobile: 16/22 input and 44 buttons from the tokens, 20 icon in the field. */
+/* On Mobile the open fan reaches the mic, so the mic steps aside until it folds back. */
+.mic { display: inline-flex; transition: opacity 160ms var(--feta-motion-ease-out); }
+[data-platform="mobile"] .ring[data-fan-open] .mic { visibility: hidden; opacity: 0; }
+/* Voice on Mobile drops the model button to make room for the clock and pause. */
+[data-platform="mobile"] .ring[data-state="voice"] .model { display: none; }
+[data-platform="mobile"] .ring .lead svg { width: 20px; height: 20px; }
+[data-platform="mobile"] .ring .input { min-height: 44px; line-height: 22px; }
+
+@media (max-width: 640px) {
+  :root:not([data-platform="web"]) .ring[data-state="voice"] .model { display: none; }
+  :root:not([data-platform="web"]) .ring[data-fan-open] .mic { visibility: hidden; opacity: 0; }
+  :root:not([data-platform="web"]) .ring .lead svg { width: 20px; height: 20px; }
+  :root:not([data-platform="web"]) .ring .input { min-height: 44px; line-height: 22px; }
+}
+
+/* Reduced motion and animated off: the orbit and arc hold, the beam stays at 60%. */
+.ring[data-still] .arc,
+.ring[data-still] .orbitTurn { animation: none; }
+.ring[data-still] .orbit,
+.ring[data-still] .lit,
+.ring[data-still] .pink,
+.ring[data-still] .blue,
+.ring[data-still] .beam,
+.ring[data-still] .beamGlow,
+.ring[data-still] .model,
+.ring[data-still] .travel,
+.ring[data-still] .tip,
+.ring[data-still] .plus svg { transition: none; }

@@ -1,0 +1,8 @@
+export { AnimatedIcon } from './animated-icon'
+export { holdOnHover, holdsState } from './hover-hold'
+export { claim, release, subscribe } from './loop-coordinator'
+export { flickerNeon, isLoop, linkToScroll, LOOP_PAUSE_MS, playIcon, prefersReducedMotion, stopIcon, type PlayOptions } from './play'
+export { FetaProvider } from './provider'
+export type { IconHandle, IconProps, Preset, Style, Trigger } from './types'
+export { useIconAnimation } from './use-icon-animation'
+export { useIconHover } from './use-icon-hover'

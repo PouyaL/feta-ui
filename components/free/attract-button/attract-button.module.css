@@ -1,0 +1,26 @@
+/* Attract Button: FetaUI 06 Motion Buttons Handoff and Motion. */
+.field {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 272px;
+  height: 168px;
+  max-width: 100%;
+  color: var(--feta-text-primary);
+}
+
+.canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.button {
+  width: 144px;
+  height: 40px;
+  gap: var(--feta-space-2);
+  border-radius: var(--feta-radius-xl);
+}
+
+.magnet { transform: rotate(90deg); }

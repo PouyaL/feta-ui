@@ -1,0 +1,70 @@
+/* Cookie Banner: FetaUI 16.7 Cookie Consent Handoff and Motion. */
+.host { box-sizing: border-box; width: 100%; max-width: 680px; color: var(--feta-text-primary); font-family: var(--feta-type-font-sans); letter-spacing: var(--feta-text-body-row-tracking); }
+.host[data-compact]:not([data-saved]) { max-width: 484px; }
+.host[data-fixed] { position: fixed; z-index: 50; right: 16px; bottom: 16px; left: 16px; width: auto; margin-inline: auto; }
+
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+.tray, .savedTray {
+  position: relative;
+  box-sizing: border-box;
+  border-radius: var(--feta-radius-tray);
+  background-color: var(--feta-alpha-ink-base-4);
+  isolation: isolate;
+}
+
+.tray { display: flex; align-items: center; gap: var(--feta-space-4); padding: var(--feta-space-3-5) var(--feta-space-3) var(--feta-space-3-5) var(--feta-space-5); }
+/* One set of actions: inside the card on Web, on the tray on Mobile. */
+.tray::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 4px;
+  border-radius: var(--feta-radius-card);
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft);
+}
+
+.copy { flex: 1; min-width: 0; }
+.text { margin: 0; color: var(--feta-text-secondary); font: var(--feta-text-body-row); letter-spacing: var(--feta-text-body-row-tracking); }
+.host[data-compact] .text { white-space: nowrap; }
+.error { margin: var(--feta-space-0-5) 0 0; color: var(--feta-status-danger-text); font: var(--feta-text-body-row); letter-spacing: var(--feta-text-body-row-tracking); }
+.link { margin-left: var(--feta-space-0-5); color: var(--feta-text-primary); font: var(--feta-text-label-row); letter-spacing: var(--feta-text-label-row-tracking); text-underline-offset: 2px; }
+.actions { display: flex; flex: none; align-items: center; gap: var(--feta-space-1-5); }
+
+.savedTray { padding: var(--feta-space-1); }
+.savedCard {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: var(--feta-space-2-5);
+  padding: var(--feta-space-2-5) var(--feta-space-2) var(--feta-space-2-5) var(--feta-space-3);
+  border-radius: var(--feta-radius-card);
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft);
+}
+
+.tile { display: grid; flex: none; place-items: center; width: 28px; height: 28px; border-radius: var(--feta-radius-full); background-color: var(--feta-bg-success-subtle); color: var(--feta-status-success-text); }
+.savedText { flex: 1; min-width: 0; }
+.savedTitle { margin: 0; font: var(--feta-text-label-row); letter-spacing: var(--feta-text-label-row-tracking); }
+.savedDetail { margin: 0; color: var(--feta-text-secondary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); }
+
+[data-platform='mobile'] .host, [data-platform='mobile'] .host[data-compact]:not([data-saved]) { max-width: 358px; }
+[data-platform='mobile'] .host[data-fixed] { right: 0; left: 0; }
+[data-platform='mobile'] .tray { display: flex; flex-direction: column; align-items: stretch; gap: var(--feta-space-1); padding: var(--feta-space-1); }
+[data-platform='mobile'] .tray::before { display: none; }
+[data-platform='mobile'] .copy { padding: var(--feta-space-3-5); border-radius: var(--feta-radius-card); background-color: var(--feta-bg-surface); box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft); }
+[data-platform='mobile'] .host[data-compact] .text { white-space: normal; }
+[data-platform='mobile'] .actions { display: grid; grid-template-columns: 1fr 1fr; padding-top: var(--feta-space-1); --feta-size-button-sm: var(--feta-size-button-md); }
+[data-platform='mobile'] .customize.customize { grid-area: 2 / 1 / 3 / 3; }
+
+@media (max-width: 640px) {
+  .host { max-width: 358px; }
+  .host[data-compact]:not([data-saved]) { max-width: 358px; }
+  .tray { display: flex; flex-direction: column; align-items: stretch; gap: var(--feta-space-1); padding: var(--feta-space-1); }
+  .tray::before { display: none; }
+  .copy { padding: var(--feta-space-3-5); border-radius: var(--feta-radius-card); background-color: var(--feta-bg-surface); box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft); }
+  .host[data-compact] .text { white-space: normal; }
+  .actions { display: grid; grid-template-columns: 1fr 1fr; padding-top: var(--feta-space-1); --feta-size-button-sm: var(--feta-size-button-md); }
+  .customize.customize { grid-area: 2 / 1 / 3 / 3; }
+}

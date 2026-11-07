@@ -1,0 +1,18 @@
+/* Integrations: FetaUI 200 Handoff. */
+.search { flex: 0 1 256px; min-width: 200px; }
+.controls { padding: 0 var(--feta-space-5) var(--feta-space-3); overflow-x: auto; }
+.list { margin: 0; padding: var(--feta-space-1) 0; list-style: none; }
+.row { display: flex; align-items: center; gap: var(--feta-space-3); min-height: 60px; padding: var(--feta-space-2) var(--feta-space-5); }
+.tile { display: inline-flex; flex: none; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: var(--feta-radius-xl); box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8); }
+.text { display: flex; flex: 1; flex-direction: column; min-width: 0; }
+.name { display: flex; align-items: baseline; gap: var(--feta-space-2); font: var(--feta-text-title-row); letter-spacing: var(--feta-text-title-row-tracking); }
+.category { color: var(--feta-text-tertiary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); }
+.description { color: var(--feta-text-secondary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); }
+.failed { color: var(--feta-status-danger-text); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); }
+.status { display: inline-flex; flex: none; align-items: center; gap: var(--feta-space-2); }
+.empty { padding: var(--feta-space-8) var(--feta-space-5); color: var(--feta-text-secondary); font: var(--feta-text-body-row); letter-spacing: var(--feta-text-body-row-tracking); text-align: center; }
+@container panel (max-width: 480px) {
+  .controls, .row { padding-inline: var(--feta-space-4); }
+  .search { flex: 1 1 100%; }
+  .configure { display: none; }
+}

@@ -1,0 +1,185 @@
+/* FetaUI 56 Toolbar Handoff. */
+.dock {
+  --tool: 32px;
+  --inset: var(--feta-space-4);
+  position: absolute;
+  z-index: 10;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--feta-space-0-5);
+  padding: var(--feta-space-1);
+  border-radius: var(--feta-radius-full);
+  background: linear-gradient(var(--feta-alpha-ink-base-4), var(--feta-alpha-ink-base-4)), var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft);
+}
+
+.dock[data-edge="bottom"] { bottom: var(--inset); left: 50%; translate: -50% 0; }
+.dock[data-edge="top"] { top: var(--inset); left: 50%; translate: -50% 0; }
+.dock[data-edge="left"] { left: var(--inset); top: 50%; translate: 0 -50%; flex-direction: column; }
+.dock[data-edge="right"] { right: var(--inset); top: 50%; translate: 0 -50%; flex-direction: column; }
+.dock[data-dragging] { box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-10), var(--feta-elevation-soft), var(--feta-elevation-soft); }
+
+/* The grip: six dots, two columns of three, 3 px dots on a 6 px pitch in a 9 by 15 block, as Figma's Grip > Dots. It sits 4 px from the first tool. */
+.grip {
+  position: relative;
+  flex: none;
+  width: 14px;
+  height: 32px;
+  cursor: grab;
+  touch-action: none;
+  margin-inline: var(--feta-space-1) var(--feta-space-0-5);
+}
+.grip::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 9px;
+  height: 15px;
+  translate: -50% -50%;
+  background-image: radial-gradient(circle at 1.5px 1.5px, var(--feta-text-tertiary) 1.5px, transparent 1.6px);
+  background-size: 6px 6px;
+  transition: background-image 160ms ease;
+}
+@media (hover: hover) { .grip:hover::before { background-image: radial-gradient(circle at 1.5px 1.5px, var(--feta-text-secondary) 1.5px, transparent 1.6px); } }
+.grip:active { cursor: grabbing; }
+
+.dock[data-edge="left"] .grip,
+.dock[data-edge="right"] .grip { width: 32px; height: 14px; margin: var(--feta-space-1) 0 var(--feta-space-0-5); }
+.dock[data-edge="left"] .grip::before,
+.dock[data-edge="right"] .grip::before { width: 15px; height: 9px; }
+
+.divider {
+  flex: none;
+  width: 1px;
+  height: 20px;
+  margin-inline: var(--feta-space-1);
+  background-color: var(--feta-alpha-ink-base-8);
+}
+
+.dock[data-edge="left"] .divider,
+.dock[data-edge="right"] .divider { width: 20px; height: 1px; margin: var(--feta-space-1) 0; }
+
+.slot { position: relative; display: inline-flex; }
+
+.tool {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tool);
+  height: var(--tool);
+  padding: 0;
+  border: 0;
+  border-radius: var(--feta-radius-full);
+  background: transparent;
+  color: var(--feta-text-secondary);
+  cursor: pointer;
+  outline: 2px solid transparent;
+  outline-offset: -2px;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color var(--feta-motion-duration-fast) var(--feta-motion-ease-out);
+}
+
+.tool:focus-visible { outline-color: var(--feta-text-primary); }
+.tool[data-on] { color: var(--feta-text-inverse); }
+
+@media (hover: hover) {
+  .tool:not([data-on]):hover { background-color: var(--feta-alpha-ink-base-5); color: var(--feta-text-primary); }
+}
+
+.plate { position: absolute; inset: 0; background-color: var(--feta-bg-inverse); }
+
+.icon { position: relative; display: inline-flex; flex: none; }
+.icon svg { display: block; width: var(--feta-size-icon); height: var(--feta-size-icon); }
+
+.caret {
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 0 4px 4px;
+  border-color: transparent transparent currentColor;
+}
+
+.flyout {
+  position: absolute;
+  z-index: 20;
+  bottom: calc(100% + var(--feta-space-2));
+  left: 50%;
+  box-sizing: border-box;
+  width: 200px;
+  margin-left: calc(-1 * var(--feta-space-25));
+  padding: var(--feta-space-1);
+  border-radius: var(--feta-radius-2xl);
+  background: linear-gradient(var(--feta-alpha-ink-base-4), var(--feta-alpha-ink-base-4)), var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft);
+  transform-origin: bottom center;
+}
+
+.flyout[data-edge="top"] { top: calc(100% + var(--feta-space-2)); bottom: auto; transform-origin: top center; }
+.flyout[data-edge="left"] { top: 0; bottom: auto; left: calc(100% + var(--feta-space-2)); margin-left: 0; transform-origin: left top; }
+.flyout[data-edge="right"] { top: 0; bottom: auto; left: auto; right: calc(100% + var(--feta-space-2)); margin-left: 0; transform-origin: right top; }
+
+.option {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  height: 34px;
+  gap: var(--feta-space-2);
+  padding-inline: var(--feta-space-2-5);
+  border: 0;
+  border-radius: var(--feta-radius-xl);
+  background: transparent;
+  color: var(--feta-text-primary);
+  font: var(--feta-text-label-default);
+  letter-spacing: var(--feta-text-label-default-tracking);
+  text-align: start;
+  cursor: pointer;
+  outline: 2px solid transparent;
+  outline-offset: -2px;
+}
+
+.option:focus-visible { outline-color: var(--feta-text-primary); }
+
+@media (hover: hover) {
+  .option:hover { background-color: var(--feta-alpha-ink-base-5); }
+}
+
+.optionLabel { flex: 1; }
+.optionKey { display: inline-flex; }
+
+.zone {
+  position: absolute;
+  z-index: 5;
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-alpha-ink-base-4);
+  outline: 1px dashed var(--feta-alpha-ink-base-10);
+}
+
+.zone[data-edge="bottom"] { bottom: var(--feta-space-4); left: 20%; right: 20%; height: 40px; }
+.zone[data-edge="top"] { top: var(--feta-space-4); left: 20%; right: 20%; height: 40px; }
+.zone[data-edge="left"] { left: var(--feta-space-4); top: 20%; bottom: 20%; width: 40px; }
+.zone[data-edge="right"] { right: var(--feta-space-4); top: 20%; bottom: 20%; width: 40px; }
+
+@media (max-width: 640px) {
+  .dock { --tool: 40px; }
+  .grip { display: none; }
+  .flyout { width: 220px; margin-left: calc(-1 * var(--feta-space-27-5)); }
+  .option { height: 44px; }
+  .optionKey { display: none; }
+}
+
+[data-platform="mobile"] .dock { --tool: 40px; }
+[data-platform="mobile"] .grip { display: none; }
+[data-platform="mobile"] .flyout { width: 220px; margin-left: calc(-1 * var(--feta-space-27-5)); }
+[data-platform="mobile"] .option { height: 44px; }
+[data-platform="mobile"] .optionKey { display: none; }
+[data-platform="web"] .dock { --tool: 32px; }
+[data-platform="web"] .grip { display: block; }
+[data-platform="web"] .flyout { width: 200px; margin-left: calc(-1 * var(--feta-space-25)); }
+[data-platform="web"] .option { height: 34px; }
+[data-platform="web"] .optionKey { display: inline-flex; }

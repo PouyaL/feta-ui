@@ -1,0 +1,213 @@
+/* Button: FetaUI 05 Button Handoff and Motion. Hover and press on solid fills mix toward the
+   canvas because Figma keeps one fill token for those states ("ink lifts one step"). */
+.button {
+  --fill: transparent;
+  --fill-hover: var(--fill);
+  --fill-press: var(--fill-hover);
+  --ink: var(--feta-text-primary);
+  --ink-hover: var(--ink);
+  --ink-press: var(--ink-hover);
+  --ring: transparent;
+  --ring-hover: var(--ring);
+  --lift: 0 0 transparent;
+  --icon: var(--feta-size-icon);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  border: 0;
+  margin: 0;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  color: var(--ink);
+  background-color: var(--fill);
+  box-shadow: inset 0 0 0 1px var(--ring), var(--lift);
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  transition:
+    background-color var(--feta-motion-duration-fast) var(--feta-motion-ease-out-soft),
+    color var(--feta-motion-duration-fast) var(--feta-motion-ease-out-soft),
+    box-shadow var(--feta-motion-duration-fast) var(--feta-motion-ease-out-soft),
+    outline-color var(--feta-motion-duration-fast) var(--feta-motion-ease-out-soft);
+}
+
+.button:focus-visible { outline-color: var(--feta-text-primary); }
+
+.button[data-size="sm"] {
+  --icon: 14px;
+  height: var(--feta-size-button-sm);
+  padding-inline: var(--feta-space-2-5);
+  gap: var(--feta-space-1);
+  border-radius: var(--feta-radius-field);
+  font: var(--feta-text-label-small);
+  letter-spacing: var(--feta-text-label-small-tracking);
+}
+
+.button[data-size="md"] {
+  height: var(--feta-size-button-md);
+  padding-inline: var(--feta-space-3-5);
+  gap: var(--feta-space-1-5);
+  border-radius: var(--feta-radius-xl);
+  font: var(--feta-text-label-default);
+  letter-spacing: var(--feta-text-label-default-tracking);
+}
+
+.button[data-size="lg"] {
+  height: var(--feta-size-button-lg);
+  padding-inline: var(--feta-space-4-5);
+  gap: var(--feta-space-2);
+  border-radius: var(--feta-radius-control);
+  font: var(--feta-text-label-large);
+  letter-spacing: var(--feta-text-label-large-tracking);
+}
+
+.button[data-shape="pill"] { border-radius: var(--feta-radius-full); }
+
+.button[data-variant="primary"] {
+  --fill: var(--feta-bg-inverse);
+  --fill-hover: color-mix(in oklab, var(--feta-bg-inverse) 88%, var(--feta-bg-canvas));
+  --fill-press: color-mix(in oklab, var(--feta-bg-inverse) 80%, var(--feta-bg-canvas));
+  --ink: var(--feta-text-inverse);
+}
+
+.button[data-variant="secondary"] {
+  --fill: var(--feta-alpha-ink-base-5);
+  --fill-hover: var(--feta-alpha-ink-base-8);
+  --fill-press: var(--feta-alpha-ink-base-10);
+}
+
+.button[data-variant="outline"] {
+  --fill: var(--feta-bg-surface);
+  --fill-hover: var(--feta-bg-subtle);
+  --fill-press: var(--feta-alpha-ink-base-5);
+  --ring: var(--feta-alpha-ink-base-8);
+  --ring-hover: var(--feta-alpha-ink-base-10);
+  --lift: var(--feta-elevation-soft);
+}
+
+.button[data-variant="ghost"] {
+  --fill-hover: var(--feta-alpha-ink-base-5);
+  --fill-press: var(--feta-alpha-ink-base-8);
+  --ink: var(--feta-text-secondary);
+  --ink-hover: var(--feta-text-primary);
+}
+
+.button[data-variant="destructive"] {
+  --fill: var(--feta-status-danger-strong);
+  --fill-hover: color-mix(in oklab, var(--feta-status-danger-strong) 90%, var(--feta-text-primary));
+  --fill-press: color-mix(in oklab, var(--feta-status-danger-strong) 82%, var(--feta-text-primary));
+  --ink: var(--feta-status-on-solid);
+}
+
+.button[data-variant="link"] {
+  --ink-press: var(--feta-text-secondary);
+  padding-inline: var(--feta-space-3);
+  border-radius: var(--feta-radius-sm);
+  text-underline-offset: 3px;
+}
+
+@media (hover: hover) {
+  .button:hover:not(:disabled, [role="link"]) {
+    background-color: var(--fill-hover);
+    color: var(--ink-hover);
+    box-shadow: inset 0 0 0 1px var(--ring-hover), var(--lift);
+  }
+  .button[data-variant="link"]:hover:not(:disabled, [role="link"]) { text-decoration: underline; }
+}
+
+.button:active:not(:disabled, [role="link"]) {
+  background-color: var(--fill-press);
+  color: var(--ink-press);
+}
+
+.button[data-variant="outline"]:active:not(:disabled, [role="link"]) { --lift: 0 0 transparent; }
+
+/* The spinner shows the work; the system busy cursor would make the whole screen look busy. */
+.button[data-status="loading"] { cursor: default; }
+
+.button[data-status="success"],
+.button[data-status="success"]:hover,
+.button[data-status="success"]:active {
+  --ring: transparent;
+  --ring-hover: transparent;
+  --lift: 0 0 transparent;
+  --fill: var(--feta-status-success-strong);
+  --fill-hover: var(--fill);
+  --fill-press: var(--fill);
+  --ink: var(--feta-status-on-solid);
+  --ink-hover: var(--ink);
+  --ink-press: var(--ink);
+  cursor: default;
+  transition-duration: var(--feta-motion-duration-slow);
+}
+
+.button[data-variant="link"][data-status="success"] {
+  --fill: transparent;
+  --ink: var(--feta-status-success-text);
+}
+
+.button:is(:disabled, [role="link"]) {
+  --ink: var(--feta-text-quaternary);
+  --ink-hover: var(--ink);
+  --lift: 0 0 transparent;
+  cursor: not-allowed;
+}
+
+.button[data-variant="primary"]:is(:disabled, [role="link"]),
+.button[data-variant="destructive"]:is(:disabled, [role="link"]) { --fill: var(--feta-alpha-ink-base-5); }
+.button[data-variant="secondary"]:is(:disabled, [role="link"]) { --fill: var(--feta-alpha-ink-base-4); }
+.button[data-variant="outline"]:is(:disabled, [role="link"]) { --ring: var(--feta-alpha-ink-base-5); }
+
+.label { display: inline-block; }
+
+.icon {
+  display: inline-flex;
+  flex: none;
+}
+
+.icon svg {
+  display: block;
+  width: var(--icon);
+  height: var(--icon);
+}
+
+.tick { display: inline-flex; }
+
+.spin {
+  display: inline-flex;
+  animation: spin 800ms linear infinite;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .button[data-still] .spin { animation: none; }
+}
+
+.kbd {
+  display: inline-flex;
+  align-items: center;
+  height: 18px;
+  padding-inline: var(--feta-space-1);
+  border-radius: var(--feta-radius-md);
+  background-color: color-mix(in srgb, currentColor 14%, transparent);
+  font: var(--feta-text-mono-tag);
+  letter-spacing: 0;
+}
+
+@media (hover: none) {
+  .kbd { display: none; }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.button[data-still] { transition: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .spin { animation-duration: 2s; }
+  .button { transition-duration: 0ms; }
+}

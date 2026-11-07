@@ -1,0 +1,36 @@
+/* Comparison Table: FetaUI 209 Handoff and Motion. */
+.root { container: comparison / inline-size; box-sizing: border-box; width: 100%; max-width: 760px; padding: var(--feta-space-8) var(--feta-space-10); border-radius: var(--feta-radius-frame); background-color: var(--feta-bg-surface); box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8); color: var(--feta-text-primary); text-align: left; }
+.head { display: flex; flex-direction: column; gap: var(--feta-space-2); margin-bottom: var(--feta-space-4); }
+.title { margin: 0; font: var(--feta-text-heading-large); letter-spacing: var(--feta-text-heading-large-tracking); }
+.subtitle { margin: 0; color: var(--feta-text-secondary); font: var(--feta-text-body-row); letter-spacing: var(--feta-text-body-row-tracking); }
+.toggle { display: inline-flex; align-items: center; align-self: flex-start; gap: var(--feta-space-2); color: var(--feta-text-secondary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); cursor: pointer; }
+.table { width: 100%; border-collapse: separate; border-spacing: 0; }
+.corner { width: 36%; }
+.plan { padding: var(--feta-space-3) var(--feta-space-2); text-align: center; vertical-align: top; }
+.plan[data-home] { border-radius: var(--feta-radius-card) var(--feta-radius-card) 0 0; background-color: var(--feta-alpha-ink-base-4); }
+.value[data-home] { background-color: var(--feta-alpha-ink-base-4); }
+.planName { display: block; font: var(--feta-text-title-row); letter-spacing: var(--feta-text-title-row-tracking); }
+.short { display: none; }
+.price { display: block; color: var(--feta-text-tertiary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); }
+.group { padding: var(--feta-space-5) 0 var(--feta-space-2); border-top: 1px solid var(--feta-alpha-ink-base-8); color: var(--feta-text-tertiary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); text-align: left; }
+.feature { padding: var(--feta-space-3) var(--feta-space-3) var(--feta-space-3) 0; border-top: 1px solid var(--feta-alpha-ink-base-8); font: var(--feta-text-title-row); letter-spacing: var(--feta-text-title-row-tracking); text-align: left; }
+.hint { display: block; color: var(--feta-text-tertiary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); }
+.value { padding: var(--feta-space-2-5) var(--feta-space-2); border-top: 1px solid var(--feta-alpha-ink-base-8); }
+.cell { display: flex; flex-direction: column; align-items: center; gap: var(--feta-space-0-5); }
+.mark { display: inline-flex; flex: none; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: var(--feta-radius-full); background-color: var(--feta-alpha-ink-base-8); color: var(--feta-text-primary); }
+.mark[data-mark="true"][data-home] { background-color: var(--feta-bg-inverse); color: var(--feta-text-inverse); }
+.mark[data-mark="false"] { background: transparent; color: var(--feta-text-quaternary); }
+.mark[data-mark="partial"] { background: linear-gradient(90deg, var(--feta-text-secondary) 50%, var(--feta-alpha-ink-base-8) 50%); }
+.note { color: var(--feta-text-tertiary); font: var(--feta-text-micro-default); letter-spacing: var(--feta-text-micro-default-tracking); text-align: center; }
+@container comparison (max-width: 420px) {
+  .plan[data-secondary], .value[data-secondary] { display: none; }
+  .long { display: none; }
+  .short { display: inline; }
+  .corner { width: 30%; }
+  .title { font: var(--feta-text-heading-small); letter-spacing: var(--feta-text-heading-small-tracking); }
+  .plan { padding-inline: var(--feta-space-1); }
+  .feature { font: var(--feta-text-body-compact); font-weight: 500; }
+}
+.root:has(> .table) { overflow-x: auto; }
+[data-platform="mobile"] .root { padding: var(--feta-space-4); }
+@media (max-width: 640px) { .root { padding: var(--feta-space-4); } }

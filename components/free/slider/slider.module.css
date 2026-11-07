@@ -1,0 +1,281 @@
+/* Slider: FetaUI 58 Slider Handoff and Motion. */
+.slider {
+  --thumb: 18px;
+  /* Press grows the knob by 4 px, as a scale so nothing reflows: 22 / 18, and the halo 36 / 32. */
+  --thumb-press: 1.2222;
+  --halo-press: 1.125;
+  position: relative;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 24px;
+  touch-action: none;
+  user-select: none;
+  cursor: pointer;
+}
+
+.slider[data-disabled] { opacity: 0.4; cursor: not-allowed; }
+
+.track {
+  --pad: 0px;
+  position: relative;
+  flex: 1;
+  height: 6px;
+  margin-inline: calc(var(--thumb) / 2);
+  border-radius: var(--feta-radius-full);
+  /* A rail near the end reaches past the track: this keeps it from adding page scroll. */
+  contain: layout;
+}
+
+.track::before {
+  content: '';
+  position: absolute;
+  inset: 0 calc(var(--thumb) / -2);
+  border-radius: inherit;
+  background-color: var(--feta-alpha-ink-base-8);
+}
+
+/* A single value's fill starts at the track's own end, under the rail's inset. */
+.slider[data-style="line"]:not([data-range]) .track::after {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 calc(var(--thumb) / -2);
+  width: calc(var(--thumb) / 2 + 3px);
+  border-radius: var(--feta-radius-full) 0 0 var(--feta-radius-full);
+  background-color: var(--feta-text-primary);
+}
+
+.fill {
+  --fill-round: var(--feta-radius-full);
+  position: absolute;
+  inset: 0;
+  background-color: var(--feta-text-primary);
+}
+
+/* The track's own width, so a thumb moves by translating this percent of it. */
+.rail {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.thumb {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  z-index: 2;
+  pointer-events: auto;
+  box-sizing: border-box;
+  width: var(--thumb);
+  height: var(--thumb);
+  margin: calc(var(--thumb) / -2) 0 0 calc(var(--thumb) / -2);
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-10), var(--feta-elevation-soft);
+  outline: 1.5px solid transparent;
+  outline-offset: 3px;
+}
+
+.thumb:focus-visible { outline-color: var(--feta-text-primary); }
+.slider[data-active] .thumb:focus-visible { outline-color: transparent; }
+
+/* The knob is its own layer: a thumb's background would paint under the halo inside it. */
+.slider:not([data-style="field"]) .thumb {
+  background-color: transparent;
+  box-shadow: none;
+}
+
+.slider:not([data-style="field"]) .thumb::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-10), var(--feta-elevation-soft);
+  transition: transform var(--feta-motion-duration-focus) var(--feta-motion-ease-out);
+}
+
+.slider[data-active]:not([data-style="field"]) .thumb:focus::before { transform: scale(var(--thumb-press)); }
+
+.halo {
+  position: absolute;
+  inset: -7px;
+  z-index: -1;
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-alpha-ink-base-5);
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity var(--feta-motion-duration-fast) var(--feta-motion-ease-out), transform var(--feta-motion-duration-fast) var(--feta-motion-ease-out);
+}
+
+@media (hover: hover) {
+  .slider:not([data-disabled]) .thumb:hover .halo { opacity: 1; transform: scale(1); }
+}
+
+.slider[data-active] .thumb:focus .halo {
+  background-color: var(--feta-alpha-ink-base-8);
+  opacity: 1;
+  transform: scale(var(--halo-press));
+}
+
+.slider[data-still] .thumb,
+.slider[data-still] .thumb::before,
+.slider[data-still] .halo { transition: none; }
+
+.tip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  padding: var(--feta-space-1) var(--feta-space-2);
+  border-radius: var(--feta-radius-lg);
+  background-color: var(--feta-bg-inverse);
+  color: var(--feta-text-inverse);
+  font: var(--feta-text-mono-micro);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* Bold: the knob rides inside the fill's rounded end, one cap radius in from it. */
+.slider[data-style="bold"] { --thumb: 22px; --thumb-press: 1; --halo-press: 1; min-height: 28px; }
+
+.slider[data-style="bold"] .track {
+  --pad: var(--feta-space-3-5);
+  height: 28px;
+  margin-inline: 0;
+}
+
+.slider[data-style="bold"] .track::before {
+  inset: 0;
+  background-color: var(--feta-alpha-ink-base-5);
+}
+
+.slider[data-style="bold"] .rail { inset: 0 var(--pad); }
+
+/* One gradient for disc and ring: an inset ring would leave a pale hairline on the ink fill. */
+.slider[data-style="bold"] .thumb::before {
+  background: radial-gradient(circle closest-side, var(--feta-bg-surface) calc(100% - 3.5px), var(--feta-text-primary) calc(100% - 3px));
+  box-shadow: none;
+}
+
+.slider[data-style="bold"] .halo { inset: -9px; }
+
+/* Bold's knob keeps its size when pressed (--thumb-press: 1): only the halo and tip respond. */
+
+.slider[data-style="bold"] .tip { bottom: calc(100% + 10px); }
+
+.ticks {
+  position: absolute;
+  inset: 9px var(--pad);
+  background-image: linear-gradient(to right, var(--feta-alpha-ink-base-10) 1px, transparent 1px);
+}
+
+/* Field */
+.slider[data-style="field"] {
+  --thumb: 2px;
+  height: 36px;
+  overflow: hidden;
+  border-radius: var(--feta-radius-xl);
+  background-color: var(--feta-alpha-ink-base-4);
+  cursor: ew-resize;
+}
+
+.slider[data-style="field"] .track {
+  position: absolute;
+  inset: 0;
+  height: auto;
+  margin: 0;
+  border-radius: 0;
+  contain: none;
+}
+
+.slider[data-style="field"] .track::before { display: none; }
+.slider[data-style="field"] .fill { --fill-round: 0px; background-color: var(--feta-alpha-ink-base-8); border-radius: 0; }
+.slider[data-style="field"][data-active] .fill { background-color: var(--feta-alpha-ink-base-10); }
+.slider[data-style="field"][data-focused] { box-shadow: inset 0 0 0 1.5px var(--feta-text-primary); }
+
+.slider[data-style="field"] .thumb {
+  width: 2px;
+  height: 16px;
+  margin: calc(-1 * var(--feta-space-2)) 0 0 calc(-1 * var(--feta-space-1-5));
+  border-radius: var(--feta-radius-xs);
+  background-color: var(--feta-alpha-ink-base-10);
+  box-shadow: none;
+  outline: 0;
+}
+
+/* Marks sit inside the fill's ends, so a range's first one mirrors the last. */
+.slider[data-style="field"][data-range] .thumb[data-index="0"] { margin-left: var(--feta-space-1); }
+
+.slider[data-style="field"][data-active] .thumb { background-color: var(--feta-text-primary); }
+.slider[data-style="field"] .halo { display: none; }
+
+.fieldText {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex: 1;
+  justify-content: space-between;
+  gap: var(--feta-space-2);
+  padding-inline: var(--feta-space-3);
+  color: var(--feta-text-primary);
+  font: var(--feta-text-label-small);
+  letter-spacing: var(--feta-text-label-small-tracking);
+  pointer-events: none;
+}
+
+.fieldValue { color: var(--feta-text-secondary); font: var(--feta-text-mono-tag); }
+
+/* Typed entry: the number is the way in, so it takes the pointer back from the row. */
+.fieldNumber {
+  pointer-events: auto;
+  cursor: text;
+}
+
+.slider[data-disabled] .fieldNumber { pointer-events: none; }
+
+.fieldEntry {
+  box-sizing: content-box;
+  padding: var(--feta-space-0-5) var(--feta-space-1);
+  border: 0;
+  border-radius: var(--feta-radius-md);
+  outline: 0;
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-10);
+  color: var(--feta-text-primary);
+  font: inherit;
+  text-align: right;
+  pointer-events: auto;
+}
+
+.slider[data-style="field"]:focus-within { box-shadow: inset 0 0 0 1.5px var(--feta-text-primary); }
+
+@media (max-width: 640px) {
+  .slider[data-style="bold"] .track { --pad: var(--feta-space-4); height: 32px; }
+  .slider[data-style="bold"] { min-height: 32px; }
+  .ticks { inset: 11px var(--pad); }
+  .slider[data-style="field"] { height: 44px; }
+}
+
+[data-platform="mobile"] .slider[data-style="bold"] { min-height: 32px; }
+[data-platform="mobile"] .slider[data-style="bold"] .track { --pad: var(--feta-space-4); height: 32px; }
+[data-platform="mobile"] .ticks { inset: 11px var(--pad); }
+[data-platform="mobile"] .slider[data-style="field"] { height: 44px; }
+
+/* Vertical: the row is turned, and pointer math reads Y. The wrapper holds the space. */
+.upright {
+  position: relative;
+  display: inline-block;
+  width: 24px;
+  height: var(--length);
+}
+
+.upright .slider {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--length);
+  translate: -50% -50%;
+  rotate: -90deg;
+}

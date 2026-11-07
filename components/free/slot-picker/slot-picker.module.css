@@ -1,0 +1,120 @@
+/* Slot Picker: FetaUI 24 Time and Date Picker Handoff and Motion. */
+.card {
+  --hour: 36px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: 380px;
+  max-width: 100%;
+  gap: var(--feta-space-3);
+  padding: var(--feta-space-4);
+  border-radius: var(--feta-radius-2xl);
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft);
+}
+
+.head { display: flex; align-items: center; gap: var(--feta-space-2); }
+.title { color: var(--feta-text-primary); font: var(--feta-text-title-row); letter-spacing: var(--feta-text-title-row-tracking); }
+.days { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: var(--feta-space-1); }
+
+.day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--feta-space-0-5);
+  padding: var(--feta-space-1-5) var(--feta-space-0-5);
+  border: 0;
+  border-radius: var(--feta-radius-xl);
+  background-color: var(--feta-alpha-ink-base-4);
+  color: var(--feta-text-primary);
+  font: var(--feta-text-label-small);
+  letter-spacing: var(--feta-text-label-small-tracking);
+  cursor: pointer;
+  outline: 2px solid transparent;
+  outline-offset: 1px;
+}
+
+.day:focus-visible { outline-color: var(--feta-text-primary); }
+.day[aria-checked="true"] { background-color: var(--feta-bg-inverse); color: var(--feta-text-inverse); }
+.dayFree { font: var(--feta-text-label-micro); opacity: 0.65; }
+
+.timeline { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: var(--feta-space-2); }
+
+.hours {
+  display: grid;
+  grid-auto-rows: var(--hour);
+  height: calc(var(--hour) * var(--hours));
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+  list-style: none;
+  color: var(--feta-text-tertiary);
+  font: var(--feta-text-mono-tag);
+}
+
+.hours li { transform: translateY(-6px); }
+
+.line {
+  position: relative;
+  height: calc(var(--hour) * var(--hours));
+  border-radius: var(--feta-radius-field);
+  background-image: linear-gradient(to bottom, var(--feta-alpha-ink-base-5) 1px, transparent 1px);
+  background-size: 100% var(--hour);
+  cursor: pointer;
+  touch-action: none;
+}
+
+.busy, .ghost, .block { position: absolute; right: 0; left: 0; box-sizing: border-box; border-radius: var(--feta-radius-field); }
+
+.busy {
+  padding: var(--feta-space-1-5) var(--feta-space-2-5);
+  background-color: var(--feta-alpha-ink-base-5);
+  color: var(--feta-text-tertiary);
+  font: var(--feta-text-label-micro);
+  pointer-events: none;
+}
+
+.ghost { padding: var(--feta-space-1-5) var(--feta-space-2-5); border: 1.5px dashed var(--feta-alpha-ink-base-60); color: var(--feta-text-secondary); font: var(--feta-text-label-small); pointer-events: none; }
+
+.block {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: var(--feta-space-1-5) var(--feta-space-2-5);
+  background-color: var(--feta-bg-inverse);
+  color: var(--feta-text-inverse);
+  font: var(--feta-text-label-small);
+  letter-spacing: var(--feta-text-label-small-tracking);
+  cursor: grab;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+.block[data-dragging] { cursor: grabbing; }
+.block:focus-visible { outline-color: var(--feta-text-primary); }
+
+.handle {
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  width: 20px;
+  height: 3px;
+  margin-left: calc(-1 * var(--feta-space-2-5));
+  border-radius: var(--feta-radius-xs);
+  background-color: currentColor;
+  opacity: 0.5;
+}
+
+.heading { display: flex; flex-direction: column; color: var(--feta-text-secondary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); }
+.foot { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: var(--feta-space-1) var(--feta-space-2); }
+.zone { grid-column: 1 / -1; color: var(--feta-text-tertiary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); }
+.summary { display: flex; flex-direction: column; min-width: 0; color: var(--feta-text-secondary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); }
+.when { color: var(--feta-text-primary); font: var(--feta-text-label-small); letter-spacing: var(--feta-text-label-small-tracking); }
+.done { display: inline-flex; align-items: center; gap: var(--feta-space-1); }
+.done[data-booked] { color: var(--feta-status-success-text); }
+.day:disabled { cursor: not-allowed; opacity: 0.45; }
+.done svg { width: 16px; height: 16px; }
+
+@media (max-width: 640px) { .card { --hour: 40px; width: 100%; } }
+[data-platform="mobile"] .card { --hour: 40px; width: 100%; }
+.done[data-failed] { color: var(--feta-status-danger); }

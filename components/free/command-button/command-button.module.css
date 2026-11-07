@@ -1,0 +1,51 @@
+/* Command Button: FetaUI 06 Motion Buttons Handoff and Motion. */
+.button {
+  height: var(--feta-size-button-md);
+  padding: 0 var(--feta-space-1-5) 0 var(--feta-space-3-5);
+  gap: var(--feta-space-2-5);
+  border-radius: var(--feta-radius-xl);
+}
+
+.keys {
+  display: inline-flex;
+  gap: var(--feta-space-1);
+}
+
+.wrap {
+  display: inline-flex;
+  height: 24px;
+}
+
+.cap {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding-inline: var(--feta-space-1-5);
+  border-radius: var(--feta-radius-md);
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-10), 0 2px 0 var(--feta-alpha-ink-base-10);
+  color: var(--feta-text-secondary);
+  font: var(--feta-text-mono-tag);
+  letter-spacing: 0;
+  transition:
+    transform var(--feta-motion-duration-fast) var(--feta-motion-ease-out),
+    box-shadow var(--feta-motion-duration-fast) var(--feta-motion-ease-out);
+}
+
+.cap[data-down] {
+  transform: translateY(2px);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-10), 0 0 0 transparent;
+  transition-duration: var(--feta-motion-duration-keycap);
+}
+
+.button:disabled .cap {
+  background-color: transparent;
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-5);
+  color: var(--feta-text-quaternary);
+}
+
+@media (hover: none) {
+  .keys { display: none; }
+  .button { padding-inline: var(--feta-space-3-5); }
+}

@@ -1,0 +1,26 @@
+/* Request Log: FetaUI 226 Handoff. 640 by 38. */
+@keyframes pulse { 50% { opacity: 0.35; transform: scale(0.8); } }
+.row { container-type: inline-size; box-sizing: border-box; width: 100%; max-width: 640px; height: 38px; padding-inline: var(--feta-space-3); border-radius: var(--feta-radius-field); box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8); color: var(--feta-text-primary); font: var(--feta-text-mono-meta); letter-spacing: var(--feta-text-mono-meta-tracking); text-align: left; white-space: nowrap; }
+.cells { display: flex; align-items: center; gap: var(--feta-space-3); height: 100%; }
+.row[data-state="server"] { background-color: var(--feta-bg-danger-subtle); }
+.status { display: inline-flex; flex: none; align-items: center; gap: var(--feta-space-1-5); width: 52px; font-weight: 600; }
+.dot { width: 8px; height: 8px; border-radius: var(--feta-radius-full); background-color: var(--feta-status-success-strong); }
+.row[data-state="client"] .dot { background-color: var(--feta-status-warning); }
+.row[data-state="server"] .dot { background-color: var(--feta-status-danger); }
+.row[data-state="pending"] .dot { background-color: var(--feta-text-tertiary); animation: pulse 1200ms ease-in-out infinite; }
+.row[data-offscreen] .dot { animation-play-state: paused; }
+.row[data-still] .dot { animation: none; }
+@media (prefers-reduced-motion: reduce) { .dot { animation: none !important; } }
+.method { flex: none; width: 44px; color: var(--feta-text-secondary); }
+.path { overflow: hidden; flex: 1; min-width: 0; text-overflow: ellipsis; }
+.duration { flex: none; color: var(--feta-text-secondary); text-align: right; }
+.time { flex: none; color: var(--feta-text-tertiary); }
+/* Windowed rows mount as you scroll, so they must not fade. */
+.list .row { border-radius: 0; box-shadow: none; animation: none; }
+.list { overflow-y: auto; width: 100%; max-width: 640px; border-radius: var(--feta-radius-card); background-color: var(--feta-bg-surface); outline: 2px solid transparent; outline-offset: -2px; }
+.list:focus-visible { outline-color: var(--feta-text-primary); }
+[data-platform="mobile"] .time { display: none; }
+@media (max-width: 640px) { .time { display: none; } }
+/* Narrow rows drop time, then duration, so the path keeps room. */
+@container (max-width: 440px) { .time { display: none; } }
+@container (max-width: 340px) { .duration { display: none; } }

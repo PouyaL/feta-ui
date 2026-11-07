@@ -1,0 +1,167 @@
+{
+  "name": "@fetaui/react",
+  "version": "0.0.0",
+  "description": "Animated React icons: the Free set in 10 styles.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "LICENSE",
+    "THIRD-PARTY-NOTICES.txt"
+  ],
+  "exports": {
+    "./lib": "./src/lib/index.ts",
+    "./rounded": "./src/rounded/index.ts",
+    "./rounded/*": "./src/rounded/*.tsx",
+    "./outlined": "./src/outlined/index.ts",
+    "./outlined/*": "./src/outlined/*.tsx",
+    "./filled": "./src/filled/index.ts",
+    "./filled/*": "./src/filled/*.tsx",
+    "./sharp": "./src/sharp/index.ts",
+    "./sharp/*": "./src/sharp/*.tsx",
+    "./two-tone": "./src/two-tone/index.ts",
+    "./two-tone/*": "./src/two-tone/*.tsx",
+    "./hand-drawn": "./src/hand-drawn/index.ts",
+    "./hand-drawn/*": "./src/hand-drawn/*.tsx",
+    "./riso": "./src/riso/index.ts",
+    "./riso/*": "./src/riso/*.tsx",
+    "./pixel": "./src/pixel/index.ts",
+    "./pixel/*": "./src/pixel/*.tsx",
+    "./glass": "./src/glass/index.ts",
+    "./glass/*": "./src/glass/*.tsx",
+    "./neon": "./src/neon/index.ts",
+    "./neon/*": "./src/neon/*.tsx"
+  },
+  "publishConfig": {
+    "access": "public",
+    "exports": {
+      "./lib": {
+        "types": "./dist/types/lib/index.d.ts",
+        "import": "./dist/esm/lib/index.js",
+        "require": "./dist/cjs/lib/index.js"
+      },
+      "./rounded": {
+        "types": "./dist/types/rounded/index.d.ts",
+        "import": "./dist/esm/rounded/index.js",
+        "require": "./dist/cjs/rounded/index.js"
+      },
+      "./rounded/*": {
+        "types": "./dist/types/rounded/*.d.ts",
+        "import": "./dist/esm/rounded/*.js",
+        "require": "./dist/cjs/rounded/*.js"
+      },
+      "./outlined": {
+        "types": "./dist/types/outlined/index.d.ts",
+        "import": "./dist/esm/outlined/index.js",
+        "require": "./dist/cjs/outlined/index.js"
+      },
+      "./outlined/*": {
+        "types": "./dist/types/outlined/*.d.ts",
+        "import": "./dist/esm/outlined/*.js",
+        "require": "./dist/cjs/outlined/*.js"
+      },
+      "./filled": {
+        "types": "./dist/types/filled/index.d.ts",
+        "import": "./dist/esm/filled/index.js",
+        "require": "./dist/cjs/filled/index.js"
+      },
+      "./filled/*": {
+        "types": "./dist/types/filled/*.d.ts",
+        "import": "./dist/esm/filled/*.js",
+        "require": "./dist/cjs/filled/*.js"
+      },
+      "./sharp": {
+        "types": "./dist/types/sharp/index.d.ts",
+        "import": "./dist/esm/sharp/index.js",
+        "require": "./dist/cjs/sharp/index.js"
+      },
+      "./sharp/*": {
+        "types": "./dist/types/sharp/*.d.ts",
+        "import": "./dist/esm/sharp/*.js",
+        "require": "./dist/cjs/sharp/*.js"
+      },
+      "./two-tone": {
+        "types": "./dist/types/two-tone/index.d.ts",
+        "import": "./dist/esm/two-tone/index.js",
+        "require": "./dist/cjs/two-tone/index.js"
+      },
+      "./two-tone/*": {
+        "types": "./dist/types/two-tone/*.d.ts",
+        "import": "./dist/esm/two-tone/*.js",
+        "require": "./dist/cjs/two-tone/*.js"
+      },
+      "./hand-drawn": {
+        "types": "./dist/types/hand-drawn/index.d.ts",
+        "import": "./dist/esm/hand-drawn/index.js",
+        "require": "./dist/cjs/hand-drawn/index.js"
+      },
+      "./hand-drawn/*": {
+        "types": "./dist/types/hand-drawn/*.d.ts",
+        "import": "./dist/esm/hand-drawn/*.js",
+        "require": "./dist/cjs/hand-drawn/*.js"
+      },
+      "./riso": {
+        "types": "./dist/types/riso/index.d.ts",
+        "import": "./dist/esm/riso/index.js",
+        "require": "./dist/cjs/riso/index.js"
+      },
+      "./riso/*": {
+        "types": "./dist/types/riso/*.d.ts",
+        "import": "./dist/esm/riso/*.js",
+        "require": "./dist/cjs/riso/*.js"
+      },
+      "./pixel": {
+        "types": "./dist/types/pixel/index.d.ts",
+        "import": "./dist/esm/pixel/index.js",
+        "require": "./dist/cjs/pixel/index.js"
+      },
+      "./pixel/*": {
+        "types": "./dist/types/pixel/*.d.ts",
+        "import": "./dist/esm/pixel/*.js",
+        "require": "./dist/cjs/pixel/*.js"
+      },
+      "./glass": {
+        "types": "./dist/types/glass/index.d.ts",
+        "import": "./dist/esm/glass/index.js",
+        "require": "./dist/cjs/glass/index.js"
+      },
+      "./glass/*": {
+        "types": "./dist/types/glass/*.d.ts",
+        "import": "./dist/esm/glass/*.js",
+        "require": "./dist/cjs/glass/*.js"
+      },
+      "./neon": {
+        "types": "./dist/types/neon/index.d.ts",
+        "import": "./dist/esm/neon/index.js",
+        "require": "./dist/cjs/neon/index.js"
+      },
+      "./neon/*": {
+        "types": "./dist/types/neon/*.d.ts",
+        "import": "./dist/esm/neon/*.js",
+        "require": "./dist/cjs/neon/*.js"
+      }
+    }
+  },
+  "scripts": {
+    "build": "tsup && node ../../scripts/build-icon-modules.mjs && tsc -p tsconfig.build.json",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "motion": ">=14",
+    "react": ">=19",
+    "react-dom": ">=19"
+  },
+  "devDependencies": {
+    "@fetaui/core": "workspace:^",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "motion": "14.9.1",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "tsup": "^9.0.0",
+    "typescript": "^5.7.2",
+    "vitest": "5.1.0"
+  }
+}

@@ -1,0 +1,60 @@
+/* Input: FetaUI 31 Input Handoff and Motion. */
+.wrap {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: var(--feta-space-1-5);
+}
+
+.control[data-size="sm"] { height: var(--feta-size-input-sm); font-size: 13px; }
+.control[data-size="lg"] { height: var(--feta-size-input-lg); font-size: 16px; }
+.control[data-end] { padding-right: var(--feta-space-1); }
+
+.entry:not([type="password"]) { text-overflow: ellipsis; }
+
+.action { flex: none; }
+
+.tick { display: inline-flex; }
+
+.meter {
+  display: flex;
+  align-items: center;
+  gap: var(--feta-space-2);
+  padding-inline: var(--feta-space-1);
+}
+
+.bars {
+  display: grid;
+  flex: 1;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--feta-space-1);
+}
+
+.bar {
+  height: 4px;
+  overflow: hidden;
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-alpha-ink-base-8);
+  transition: background-color var(--feta-motion-duration-base) var(--feta-motion-ease-out);
+}
+
+.meter[data-still] .bar { transition: none; }
+.meter[data-level="1"] .bar[data-on] { background-color: var(--feta-status-danger); }
+.meter[data-level="2"] .bar[data-on] { background-color: var(--feta-status-caution); }
+.meter[data-level="3"] .bar[data-on],
+.meter[data-level="4"] .bar[data-on] { background-color: var(--feta-status-success-strong); }
+
+.level {
+  min-width: 42px;
+  text-align: end;
+  color: var(--feta-text-secondary);
+  font: var(--feta-text-caption-default);
+  letter-spacing: var(--feta-text-caption-default-tracking);
+}
+
+/* 16 px stops iOS zooming on focus. */
+@media (max-width: 640px) {
+  .control[data-size] { font-size: 16px; }
+}
+
+[data-platform="mobile"] .control[data-size] { font-size: 16px; }

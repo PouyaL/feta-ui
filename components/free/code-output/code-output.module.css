@@ -1,0 +1,84 @@
+/* Code Output: FetaUI 18 Code Block Handoff and Motion. */
+.tray {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  padding: var(--feta-space-1);
+  border-radius: var(--feta-radius-tray);
+  background-color: var(--feta-alpha-ink-base-4);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--feta-space-2);
+  height: 36px;
+  padding-inline: var(--feta-space-3);
+}
+
+.status {
+  display: inline-flex;
+  flex: none;
+  width: 16px;
+  height: 16px;
+  color: var(--feta-text-secondary);
+}
+
+.mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-status-success-strong);
+  color: var(--feta-status-on-solid);
+}
+
+.tray[data-state="failed"] .mark { background-color: var(--feta-status-danger); }
+.mark svg { width: 11px; height: 11px; }
+
+.command {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--feta-text-primary);
+  font: var(--feta-text-body-row);
+  letter-spacing: var(--feta-text-body-row-tracking);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.command code { font: var(--feta-text-mono-meta); }
+.tray[data-state="failed"] .command { color: var(--feta-status-danger-text); }
+
+.duration {
+  flex: none;
+  color: var(--feta-text-tertiary);
+  font: var(--feta-text-mono-meta);
+}
+
+.card {
+  padding: var(--feta-space-3);
+  overflow-x: auto;
+  border-radius: var(--feta-radius-card);
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft);
+  font: var(--feta-text-mono-caption);
+  transition: background-color var(--feta-motion-duration-slow) var(--feta-motion-ease-out);
+}
+
+.tray[data-state="failed"] .card { background-color: var(--feta-bg-danger-subtle); }
+
+.prompt,
+.line,
+.footer {
+  margin: 0;
+  white-space: pre;
+}
+
+.prompt { color: var(--feta-text-primary); }
+.line { color: var(--feta-text-secondary); }
+.footer { color: var(--feta-text-tertiary); }
+.tray[data-state="failed"] .line { color: var(--feta-status-danger-text); }
+

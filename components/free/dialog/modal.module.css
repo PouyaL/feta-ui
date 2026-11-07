@@ -1,0 +1,81 @@
+.dialog {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  /* Clip, not hidden: focus on a panel still sliding in must not scroll the dialog in WebKit. */
+  overflow: clip;
+}
+
+.dialog:not([open]) { display: none; }
+.dialog::backdrop { background: none; }
+
+.scrim {
+  position: absolute;
+  inset: 0;
+  background-color: var(--feta-effect-scrim);
+}
+
+.scrim[data-blur] { backdrop-filter: blur(4px); }
+
+.panel {
+  --inset: 8px;
+  position: absolute;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: min(var(--modal-width, 440px), calc(100vw - 16px));
+  outline: none;
+  will-change: transform, opacity;
+}
+
+.panel[data-placement="center"] {
+  inset: 0;
+  height: fit-content;
+  max-height: calc(100dvh - 32px);
+  margin: auto;
+}
+
+.panel[data-placement="right"] { top: var(--inset); bottom: var(--inset); right: var(--inset); }
+.panel[data-placement="left"] { top: var(--inset); bottom: var(--inset); left: var(--inset); }
+.panel[data-placement="top"] { top: var(--inset); left: var(--inset); right: var(--inset); width: auto; max-height: calc(100dvh - 16px); }
+.panel[data-placement="bottom"] { bottom: var(--inset); left: var(--inset); right: var(--inset); width: auto; max-height: calc(100dvh - 16px); margin-inline: auto; }
+
+/* The Mobile preview frame sits on a wide page, so a sheet keeps the 390 reference there. */
+[data-mobile] > .panel[data-placement="bottom"] { --inset: 0px; width: 100%; max-width: 390px; max-height: calc(100dvh - 32px); }
+
+.grabber {
+  flex: none;
+  display: flex;
+  justify-content: center;
+  padding: var(--feta-space-0-5) 0 var(--feta-space-1);
+  touch-action: none;
+  cursor: grab;
+}
+
+.grabber > span {
+  width: 36px;
+  height: 5px;
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-alpha-ink-base-10);
+  transition: transform var(--feta-motion-duration-fast) var(--feta-motion-ease-out), background-color var(--feta-motion-duration-fast) var(--feta-motion-ease-out);
+}
+
+.grabber:active > span,
+[data-dragging] .grabber > span {
+  transform: scaleX(1.33);
+  background-color: var(--feta-text-tertiary);
+}
+
+@keyframes fade { from { opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .panel[data-fade] { animation: fade var(--feta-motion-duration-fast) linear; }
+}

@@ -1,0 +1,71 @@
+/* Theme Toggle: FetaUI 06 Motion Buttons Handoff and Motion. */
+.toggle[data-kind="round"] {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-alpha-ink-base-4);
+}
+
+.face {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  overflow: hidden;
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft);
+  color: var(--feta-text-primary);
+  transition: background-color var(--feta-motion-duration-fast) var(--feta-motion-ease-out-soft);
+}
+
+.toggle[data-value="dark"] .face {
+  background-color: var(--feta-bg-inverse);
+  box-shadow: none;
+  color: var(--feta-text-inverse);
+}
+
+.toggle[data-kind="labeled"],
+.toggle[data-kind="icon"] {
+  height: var(--feta-size-button-md);
+  overflow: hidden;
+  background-color: var(--feta-bg-surface);
+  color: var(--feta-text-primary);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft);
+}
+
+.toggle[data-kind="labeled"] {
+  min-width: 80px;
+  padding: 0 var(--feta-space-3-5) 0 var(--feta-space-3);
+  border-radius: var(--feta-radius-xl);
+}
+
+.toggle[data-kind="icon"] {
+  width: var(--feta-size-button-md);
+  border-radius: var(--feta-radius-full);
+}
+
+.toggle[data-kind="labeled"][data-value="dark"],
+.toggle[data-kind="icon"][data-value="dark"] {
+  background-color: var(--feta-bg-inverse);
+  color: var(--feta-text-inverse);
+  box-shadow: none;
+}
+
+.row {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--feta-space-2);
+}
+
+.toggle.toggle.toggle:disabled {
+  background-color: var(--feta-alpha-ink-base-5);
+  box-shadow: none;
+  color: var(--feta-text-quaternary);
+}
+
+.toggle:disabled .face {
+  background-color: transparent;
+  box-shadow: none;
+  color: inherit;
+}

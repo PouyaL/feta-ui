@@ -1,0 +1,137 @@
+/* Switch: FetaUI 61 Switch Handoff and Motion. */
+.track {
+  --w: 36px;
+  --h: 20px;
+  --thumb: 16px;
+  --stretch: 6px;
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: flex-start;
+  box-sizing: border-box;
+  width: var(--w);
+  height: var(--h);
+  padding: var(--feta-space-0-5);
+  border: 0;
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-alpha-ink-base-8);
+  cursor: pointer;
+  outline: 1.5px solid transparent;
+  outline-offset: 3px;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color var(--feta-motion-duration-fast) var(--feta-motion-ease-out),
+    box-shadow var(--feta-motion-duration-fast) var(--feta-motion-ease-out),
+    outline-color var(--feta-motion-duration-focus) var(--feta-motion-ease-out);
+}
+
+.track:focus-visible { outline-color: var(--feta-text-primary); }
+.track[data-on] { background-color: var(--feta-text-primary); }
+.track:disabled { opacity: 0.4; cursor: not-allowed; }
+
+@media (hover: hover) {
+  .track:hover:not(:disabled):not([data-on]) { background-color: var(--feta-alpha-ink-base-10); }
+}
+
+.track[data-invalid]:not([data-on]) {
+  background-color: var(--feta-bg-danger-subtle);
+  box-shadow: inset 0 0 0 1px var(--feta-status-danger);
+}
+
+.track[data-invalid][data-on] { background-color: var(--feta-status-danger); }
+
+.track[data-invalid]:not([data-still]) { animation: shake 240ms var(--feta-motion-ease-out) 1; }
+
+.track[data-still],
+.track[data-still] * { transition: none; animation: none; }
+
+.thumb {
+  position: relative;
+  display: block;
+  width: var(--thumb);
+  height: var(--thumb);
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-bg-surface);
+  box-shadow: var(--feta-elevation-soft);
+  /* The track's 2px padding on each side leaves this much travel. The curve overshoots a touch, like the old spring. */
+  --travel: calc(var(--w) - var(--thumb) - 4px);
+  transition:
+    width var(--feta-motion-duration-press) var(--feta-motion-ease-out),
+    transform 260ms cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+
+.thumb[data-pressed] { width: calc(var(--thumb) + var(--stretch)); }
+.track[data-on] .thumb { transform: translateX(var(--travel)); }
+/* Stretching while on grows to the left, so the thumb stays against the right end. */
+.track[data-on] .thumb[data-pressed] { transform: translateX(calc(var(--travel) - var(--stretch))); }
+
+.halo {
+  position: absolute;
+  inset: -5px;
+  z-index: -1;
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-alpha-ink-base-5);
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity var(--feta-motion-duration-fast) var(--feta-motion-ease-out), transform var(--feta-motion-duration-fast) var(--feta-motion-ease-out);
+}
+
+.track[data-on] .halo { background-color: var(--feta-alpha-ink-base-10); }
+
+@media (hover: hover) {
+  .track:hover:not(:disabled) .halo { opacity: 1; transform: scale(1); }
+}
+
+.glint {
+  position: absolute;
+  top: 50%;
+  left: 8px;
+  width: 4px;
+  height: 4px;
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-text-inverse);
+  opacity: 0;
+  transform: translateY(-50%);
+  transition: opacity var(--feta-motion-duration-focus) var(--feta-motion-ease-out);
+}
+
+.track[data-on] .glint { opacity: 0.5; }
+
+@keyframes shake {
+  25% { transform: translateX(-2px); }
+  75% { transform: translateX(2px); }
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 360px;
+  gap: var(--feta-space-3);
+  cursor: pointer;
+}
+
+.row[data-disabled] { opacity: 0.5; cursor: not-allowed; }
+
+.text { display: flex; flex-direction: column; min-width: 0; }
+
+.title {
+  color: var(--feta-text-primary);
+  font: var(--feta-text-label-default);
+  letter-spacing: var(--feta-text-label-default-tracking);
+}
+
+.description {
+  color: var(--feta-text-secondary);
+  font: var(--feta-text-body-small);
+  letter-spacing: var(--feta-text-body-small-tracking);
+}
+
+@media (max-width: 640px) {
+  .track { --w: 46px; --h: 28px; --thumb: 24px; }
+}
+
+[data-platform="mobile"] .track { --w: 46px; --h: 28px; --thumb: 24px; }
+[data-platform="web"] .track { --w: 36px; --h: 20px; --thumb: 16px; }

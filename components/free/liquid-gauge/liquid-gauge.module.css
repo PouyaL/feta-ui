@@ -1,0 +1,61 @@
+/* Liquid Gauge: FetaUI 16.3 Showcase Cards Handoff and Motion. */
+.gaugeCard { max-width: 300px; }
+
+.header { display: flex; align-items: center; justify-content: space-between; gap: var(--feta-space-2); }
+.titleRow { display: flex; align-items: center; gap: var(--feta-space-2); min-width: 0; }
+.tile { display: grid; flex: none; place-items: center; width: 28px; height: 28px; border-radius: var(--feta-radius-field); background-color: var(--feta-alpha-ink-base-5); color: var(--feta-text-secondary); }
+.title { margin: 0; font: 600 14px/20px var(--feta-type-font-sans); letter-spacing: var(--feta-text-title-total-tracking); }
+
+.gauge {
+  --liquid: var(--feta-bg-inverse);
+  --on-liquid: var(--feta-text-inverse);
+  position: relative;
+  align-self: center;
+  overflow: hidden;
+  width: 168px;
+  height: 168px;
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-alpha-ink-base-5);
+  isolation: isolate;
+}
+
+.gauge[data-full] { --liquid: var(--feta-status-danger-strong); --on-liquid: var(--feta-status-on-solid); }
+
+/* Its top edge is the liquid surface. */
+.level { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+
+.wave, .waveBack { position: absolute; left: -168px; width: 504px; height: 160px; transform-origin: 50% 12px; }
+.wave { top: -12px; }
+.wave path { fill: var(--liquid); }
+.waveBack { top: -17px; }
+.waveBack path { fill: var(--feta-alpha-ink-base-60); opacity: 0.5; }
+
+.clip { position: absolute; top: 0; left: 0; overflow: hidden; width: 100%; height: 168px; }
+/* Starts well under the surface: the wave body covers the top, so a tilt never shows its flat edge. */
+.fill { position: absolute; inset: 100px 0 0; background-color: var(--liquid); }
+
+/* The same readout twice: ink behind the liquid, and clipped to the liquid on top of it. */
+.readout, .readoutOn { position: absolute; top: 54px; left: 0; display: flex; flex-direction: column; align-items: center; width: 100%; text-align: center; }
+.readout { color: var(--feta-text-primary); }
+.readoutOn { color: var(--on-liquid); }
+.percent { font: 600 36px/44px var(--feta-type-font-sans); letter-spacing: var(--feta-text-title-total-tracking); }
+.free { font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); opacity: 0.6; }
+
+.spoken { position: absolute; width: 1px; height: 1px; overflow: hidden; margin: 0; clip-path: inset(50%); white-space: nowrap; }
+
+.stats { display: flex; justify-content: space-between; margin: 0; }
+.stat { display: flex; flex-direction: column; gap: var(--feta-space-0-5); }
+.stat[data-end] { text-align: right; }
+.stat dt { color: var(--feta-text-tertiary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); }
+.stat dd { margin: 0; font: 600 14px/20px var(--feta-type-font-sans); letter-spacing: var(--feta-text-title-total-tracking); }
+
+.footer { padding: var(--feta-space-2) var(--feta-space-1) var(--feta-space-1); }
+
+[data-platform='mobile'] .gaugeCard { max-width: 358px; }
+
+@media (max-width: 640px) {
+  .gaugeCard { max-width: 358px; }
+}
+
+/* The vessel answers the pointer: it tips the liquid and splashes on a press. */
+.gauge[data-live] { cursor: pointer; touch-action: pan-y; }

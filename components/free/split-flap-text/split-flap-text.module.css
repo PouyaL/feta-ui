@@ -1,0 +1,44 @@
+/* Split Flap Text: FetaUI Text page. The board stays dark in both themes. */
+.board {
+  display: flex;
+  gap: var(--feta-space-0-5);
+  width: 100%;
+  perspective: 300px;
+}
+
+.cell {
+  position: relative;
+  display: inline-flex;
+  flex: 1 1 22px;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  max-width: 32px;
+  aspect-ratio: 22 / 32;
+  overflow: hidden;
+  border-radius: var(--feta-radius-sm);
+  background-color: var(--feta-zinc-900);
+  color: var(--feta-white);
+  font: 600 20px/1 var(--feta-type-font-mono);
+}
+
+/* The hinge across the middle. */
+.cell::after {
+  content: '';
+  position: absolute;
+  inset: 50% 0 auto;
+  height: 1px;
+  background-color: var(--feta-black);
+}
+
+.cell[data-flip] .char {
+  animation: flapDrop 70ms linear;
+  transform-origin: 50% 50%;
+}
+
+.board[data-still] .char { animation: none; }
+
+@keyframes flapDrop {
+  from { transform: rotateX(70deg); opacity: 0.4; }
+  to { transform: rotateX(0deg); opacity: 1; }
+}

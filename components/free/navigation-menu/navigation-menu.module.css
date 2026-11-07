@@ -1,0 +1,214 @@
+/* FetaUI 52 Navigation Handoff: Navigation Menu. */
+.root {
+  position: relative;
+  display: inline-flex;
+  max-width: 100%;
+  height: fit-content;
+}
+
+.bar {
+  display: inline-flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  max-width: 100%;
+  gap: var(--feta-space-2);
+  padding: var(--feta-space-1);
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-alpha-ink-base-4);
+}
+
+.brand { display: inline-flex; flex: none; align-items: center; padding-inline: var(--feta-space-2); }
+.end { display: inline-flex; flex: none; align-items: center; gap: var(--feta-space-2); margin-inline-start: auto; }
+
+.tray {
+  display: inline-flex;
+  flex-wrap: nowrap;
+  max-width: 100%;
+  gap: var(--feta-space-0-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.viewport {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + var(--feta-space-1-5));
+  left: 0;
+  box-sizing: border-box;
+  max-width: calc(100vw - 16px);
+  padding: var(--feta-space-1-5);
+  transform-origin: top left;
+}
+
+/* The panel's surface. Moving between triggers scales it from the last panel's size to the next. */
+.surface {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  /* Divided by the live scale, so the corners stay 18 round while the surface morphs. */
+  border-radius: calc(var(--feta-radius-card) / var(--sx, 1)) / calc(var(--feta-radius-card) / var(--sy, 1));
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft);
+  transform-origin: top left;
+}
+
+.viewport > :not(.surface) { position: relative; }
+
+.content { display: flex; gap: var(--feta-space-1-5); }
+.feature { flex: 0 0 40%; min-width: 0; }
+.linksWrap { flex: 1; min-width: 0; }
+
+.heading {
+  padding: var(--feta-space-1-5) var(--feta-space-2-5);
+  color: var(--feta-text-tertiary);
+  font: var(--feta-text-mono-micro);
+  letter-spacing: 0;
+}
+
+.links {
+  display: grid;
+  gap: var(--feta-space-0-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.links[data-columns="2"] { grid-template-columns: 1fr 1fr; }
+
+.link {
+  display: flex;
+  gap: var(--feta-space-2-5);
+  padding: var(--feta-space-2) var(--feta-space-2-5);
+  border-radius: var(--feta-radius-xl);
+  text-decoration: none;
+  outline: 2px solid transparent;
+  outline-offset: -2px;
+  transition: background-color var(--feta-motion-duration-focus) var(--feta-motion-ease-out);
+}
+
+.link:focus-visible { outline-color: var(--feta-text-primary); }
+
+@media (hover: hover) {
+  .link:hover { background-color: var(--feta-alpha-ink-base-4); }
+}
+
+.linkIcon { display: inline-flex; flex: none; padding-top: var(--feta-space-0-5); color: var(--feta-alpha-ink-base-60); }
+.linkIcon svg { display: block; width: var(--feta-size-icon); height: var(--feta-size-icon); }
+.linkBody { display: flex; flex-direction: column; min-width: 0; }
+
+.panelFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--feta-space-1-5);
+  padding: var(--feta-space-2) var(--feta-space-2-5) var(--feta-space-1);
+  color: var(--feta-text-secondary);
+  font: var(--feta-text-mono-meta);
+  letter-spacing: 0;
+}
+
+.linkTitle {
+  color: var(--feta-text-primary);
+  font: var(--feta-text-label-default);
+  letter-spacing: var(--feta-text-label-default-tracking);
+  font-weight: 500;
+}
+
+.linkText {
+  color: var(--feta-text-secondary);
+  font: var(--feta-text-caption-default);
+  letter-spacing: var(--feta-text-caption-default-tracking);
+}
+
+.accordion { width: 100%; padding-top: var(--feta-space-1); box-sizing: border-box; }
+.accordion .content { flex-direction: column; }
+.accordion .links[data-columns="2"] { grid-template-columns: 1fr; }
+
+@media (max-width: 640px) {
+  .root,
+  .bar { display: flex; width: 100%; }
+  .bar { box-sizing: border-box; flex-wrap: wrap; border-radius: var(--feta-radius-card); }
+  .tray { display: flex; flex-direction: column; flex-basis: 100%; order: 3; }
+}
+
+/*
+ * Collapsed (Figma Navigation Examples, Mobile Menu): a top bar with the brand and a menu toggle,
+ * then a 4% tray with search, a surface card of 46 rows that open in place, and a footer.
+ * Web uses it too when the one line bar does not fit.
+ */
+.root[data-compact] { display: flex; width: 100%; }
+
+.mobile {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--feta-space-2);
+  padding: 0 var(--feta-space-1) var(--feta-space-3);
+}
+
+.sheet {
+  display: flex;
+  flex-direction: column;
+  padding: var(--feta-space-1);
+  border-radius: var(--feta-radius-frame);
+  background-color: var(--feta-alpha-ink-base-4);
+}
+
+.sheetSearch { display: flex; padding: var(--feta-space-0-5) var(--feta-space-0-5) var(--feta-space-2); }
+.sheetSearch > * { flex: 1; min-width: 0; }
+
+.sheetCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--feta-space-0-5);
+  margin: 0;
+  padding: var(--feta-space-1-5);
+  list-style: none;
+  border-radius: var(--feta-radius-panel);
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft);
+}
+
+.root[data-compact] .section {
+  min-height: 46px;
+  padding: 0 var(--feta-space-3) 0 var(--feta-space-3-5);
+  border-radius: var(--feta-radius-control);
+}
+
+.root[data-compact] .section[data-open] { background-color: var(--feta-alpha-ink-base-5); }
+
+.root[data-compact] .accordion { padding: var(--feta-space-1) 0; }
+.root[data-compact] .accordion .link { padding: var(--feta-space-2-5); border-radius: var(--feta-radius-control); }
+
+.sheetFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--feta-space-2);
+  padding: var(--feta-space-2-5) var(--feta-space-1-5) var(--feta-space-1-5) var(--feta-space-3);
+}
+
+.meta {
+  color: var(--feta-text-tertiary);
+  font: var(--feta-text-mono-micro);
+  letter-spacing: 0;
+}
+
+.sheetEnd { display: inline-flex; align-items: center; gap: var(--feta-space-2); }
+
+[data-platform="mobile"] .root,
+[data-platform="mobile"] .bar { display: flex; width: 100%; }
+[data-platform="mobile"] .bar { box-sizing: border-box; flex-wrap: wrap; border-radius: var(--feta-radius-card); }
+[data-platform="web"] .root:not([data-compact]),
+[data-platform="web"] .root:not([data-compact]) .bar { display: inline-flex; width: auto; }
+[data-platform="web"] .root:not([data-compact]) .bar { flex-wrap: nowrap; border-radius: var(--feta-radius-full); }
+[data-platform="web"] .root:not([data-compact]) .tray { display: inline-flex; flex-direction: row; flex-basis: auto; order: 0; }
+[data-platform="mobile"] .tray { display: flex; flex-direction: column; flex-basis: 100%; order: 3; }

@@ -1,0 +1,297 @@
+/* Accordion: FetaUI 01 Accordion Handoff and Motion. */
+.accordion {
+  --row: 48px;
+  --indicator: 16px;
+  --title-size: 15px;
+  --title-line: 20px;
+  --panel-size: 14px;
+  --panel-line: 21px;
+  --panel-end: 16px;
+  --editorial-size: 20px;
+  --editorial-line: 28px;
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+}
+
+[data-platform="mobile"] .accordion {
+  --row: 56px;
+  --indicator: 20px;
+  --title-size: 16px;
+  --title-line: 22px;
+  --panel-size: 15px;
+  --panel-line: 22px;
+  --panel-end: 18px;
+  --editorial-size: 18px;
+  --editorial-line: 26px;
+}
+
+@media (max-width: 640px) {
+  :root:not([data-platform="web"]) .accordion {
+    --row: 56px;
+    --indicator: 20px;
+    --title-size: 16px;
+    --title-line: 22px;
+    --panel-size: 15px;
+    --panel-line: 22px;
+    --panel-end: 18px;
+    --editorial-size: 18px;
+    --editorial-line: 26px;
+  }
+}
+
+.accordion[data-style="soft"] {
+  gap: var(--feta-space-0-5);
+  padding: var(--feta-space-1);
+  border-radius: var(--feta-radius-tray);
+  background-color: var(--feta-alpha-ink-base-4);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--feta-space-3);
+  height: 40px;
+  padding-inline: var(--feta-space-4);
+}
+
+.headerTitle {
+  color: var(--feta-text-primary);
+  font: 500 13px/16px var(--feta-type-font-sans);
+  letter-spacing: -0.04em;
+}
+
+.meta {
+  color: var(--feta-text-tertiary);
+  font: var(--feta-text-mono-meta);
+}
+
+.item { position: relative; }
+
+.accordion[data-style="classic"] .item + .item { border-top: 1px solid var(--feta-alpha-ink-base-8); }
+
+/* Soft: the open item lifts out of the tray. */
+.card {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--feta-radius-card);
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--feta-motion-duration-exit) var(--ease-in-out);
+}
+
+.accordion:not([data-style="soft"]) .card { display: none; }
+
+.item[data-open] .card {
+  opacity: 1;
+  transition: opacity var(--feta-motion-duration-base) var(--feta-motion-ease-out-soft);
+}
+
+.heading {
+  position: relative;
+  margin: 0;
+  font: inherit;
+}
+
+.trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--feta-space-3);
+  box-sizing: border-box;
+  width: 100%;
+  min-height: var(--row);
+  margin: 0;
+  padding: var(--feta-space-1) var(--feta-space-4);
+  border: 0;
+  border-radius: var(--feta-radius-control);
+  background: transparent;
+  color: var(--feta-text-primary);
+  font: 500 var(--title-size)/var(--title-line) var(--feta-type-font-sans);
+  letter-spacing: -0.04em;
+  text-align: left;
+  cursor: pointer;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color var(--feta-motion-duration-fast) var(--feta-motion-ease-out-soft),
+    color var(--feta-motion-duration-fast) var(--feta-motion-ease-out-soft),
+    transform var(--feta-motion-duration-fast) var(--ease-standard);
+}
+
+.trigger:focus-visible { outline-color: var(--feta-alpha-ink-base-60); }
+
+.trigger:active:not([data-disabled]) {
+  background-color: var(--feta-alpha-ink-base-8);
+  transform: scale(var(--feta-motion-scale-press));
+  transition-duration: var(--feta-motion-duration-press);
+}
+
+@media (hover: hover) {
+  .trigger:hover:not([data-disabled]):not(:active) { background-color: var(--feta-alpha-ink-base-4); }
+  .accordion[data-style="editorial"] .trigger:hover:not([data-disabled]):not(:active) { background: transparent; color: var(--feta-text-secondary); }
+}
+
+.trigger[data-disabled] {
+  color: color-mix(in srgb, var(--feta-text-primary) 35%, transparent);
+  cursor: not-allowed;
+}
+
+.trigger[data-disabled] .indicator { opacity: 0.3; }
+.trigger[data-locked] { color: var(--feta-text-tertiary); }
+
+.title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pro { flex: none; }
+
+.indicator {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--indicator);
+  height: var(--indicator);
+  color: var(--feta-text-secondary);
+}
+
+.indicator svg {
+  display: block;
+  width: var(--indicator);
+  height: var(--indicator);
+}
+
+.indicator[data-nudge] { animation: accordionNudge 240ms var(--ease-in-out); }
+
+@keyframes accordionNudge {
+  0%, 100% { transform: translateX(0); }
+  33% { transform: translateX(3px); }
+  66% { transform: translateX(-3px); }
+}
+
+/* The arrow glyph points up: closed turns it down, open brings it back. */
+.chevron {
+  display: inline-flex;
+  transform: rotate(180deg);
+  transition: transform var(--feta-motion-duration-base) var(--ease-in-out);
+}
+
+.item[data-open] .chevron { transform: rotate(0deg); }
+
+.indicator .spinner { width: var(--indicator); height: var(--indicator); }
+
+/* The Figma Motion frame sets panel height through grid rows. */
+.panel {
+  position: relative;
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--feta-motion-duration-exit) var(--ease-in-out) 40ms;
+}
+
+.item[data-open] .panel {
+  grid-template-rows: 1fr;
+  transition-duration: var(--feta-motion-duration-slow);
+  transition-timing-function: var(--feta-motion-ease-out-soft);
+  transition-delay: 0ms;
+}
+
+.panelInner {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.content {
+  padding: 0 var(--feta-space-4) var(--panel-end);
+  color: var(--feta-alpha-ink-base-60);
+  font: 400 var(--panel-size)/var(--panel-line) var(--feta-type-font-sans);
+  letter-spacing: -0.04em;
+  opacity: 0;
+  translate: 0 -4px;
+  transition: opacity 120ms var(--ease-standard), translate 120ms var(--ease-standard);
+}
+
+.item[data-open] .content {
+  opacity: 1;
+  translate: 0 0;
+  transition:
+    opacity var(--feta-motion-duration-base) var(--feta-motion-ease-out-soft) var(--feta-motion-delay-content),
+    translate var(--feta-motion-duration-base) var(--feta-motion-ease-out-soft) var(--feta-motion-delay-content);
+}
+
+.skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: var(--feta-space-2);
+  padding-block: var(--feta-space-1);
+  animation: accordionPulse 1200ms var(--ease-in-out) infinite alternate;
+}
+
+.skeleton span {
+  height: 10px;
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-alpha-ink-base-5);
+}
+
+.skeleton span:nth-child(2) { width: 88%; }
+.skeleton span:nth-child(3) { width: 56%; }
+
+@keyframes accordionPulse {
+  from { opacity: 1; }
+  to { opacity: 0.5; }
+}
+
+/* Editorial: large type and no chrome. */
+.accordion[data-style="editorial"] .trigger {
+  min-height: 0;
+  padding: var(--feta-space-1) 0;
+  color: var(--feta-text-tertiary);
+  font: 400 var(--editorial-size)/var(--editorial-line) var(--feta-type-font-sans);
+  border-radius: var(--feta-radius-md);
+}
+
+.accordion[data-style="editorial"] .item[data-open] .trigger { color: var(--feta-text-primary); }
+.accordion[data-style="editorial"] .trigger[data-disabled] { color: var(--feta-text-quaternary); }
+.accordion[data-style="editorial"] .title { white-space: normal; }
+
+.accordion[data-style="editorial"] .content {
+  padding: 0 0 var(--feta-space-2);
+  color: var(--feta-text-secondary);
+}
+
+.accordion[data-style="editorial"] .item[data-open] .panel { transition-duration: 300ms; }
+
+.accordion[data-still] .panel,
+.accordion[data-still] .item[data-open] .panel,
+.accordion[data-still] .card,
+.accordion[data-still] .item[data-open] .card,
+.accordion[data-still] .chevron,
+.accordion[data-still] .trigger { transition: none; }
+
+.accordion[data-still] .trigger:active:not([data-disabled]) { transform: none; }
+
+.accordion[data-still] .content,
+.accordion[data-still] .item[data-open] .content {
+  translate: none;
+  transition: none;
+}
+
+.accordion[data-still] .skeleton { animation: none; }
+.accordion[data-still] .indicator[data-nudge] { animation: none; }
+
+/* Reduced motion crossfades the content. `animated={false}` adds `data-off` and skips this. */
+@media (prefers-reduced-motion: reduce) {
+  .accordion[data-still]:not([data-off]) .content,
+  .accordion[data-still]:not([data-off]) .item[data-open] .content { transition: opacity 120ms linear; }
+}

@@ -1,0 +1,34 @@
+/* Member Row: FetaUI 222 Member Row Handoff and Motion. */
+.row {
+  container-type: inline-size;
+  display: flex;
+  align-items: center;
+  gap: var(--feta-space-3);
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 640px;
+  min-height: 60px;
+  padding: var(--feta-space-2) var(--feta-space-3);
+  border-radius: var(--feta-radius-control);
+  color: var(--feta-text-primary);
+  letter-spacing: -0.04em;
+  transition: background-color 120ms cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.row:hover, .row[data-hovered] { background-color: var(--feta-alpha-ink-base-4); }
+.who { display: flex; flex: 1; flex-direction: column; min-width: 0; }
+.nameRow { display: flex; align-items: center; gap: var(--feta-space-1-5); min-width: 0; }
+.name { overflow: hidden; font: var(--feta-text-label-row); letter-spacing: -0.04em; text-overflow: ellipsis; white-space: nowrap; }
+.email { overflow: hidden; color: var(--feta-text-secondary); font: var(--feta-text-caption-default); letter-spacing: -0.04em; text-overflow: ellipsis; white-space: nowrap; }
+.activity { flex: none; color: var(--feta-text-tertiary); font: var(--feta-text-caption-default); letter-spacing: -0.04em; white-space: nowrap; }
+.role { flex: none; min-width: 96px; color: var(--feta-text-secondary); font: var(--feta-text-caption-default); letter-spacing: -0.04em; }
+.plainRole { color: var(--feta-text-tertiary); }
+.mobileRole { display: none; }
+.resend { flex: none; }
+.row[data-status="deactivated"] .name { color: var(--feta-text-tertiary); }
+
+@container (max-width: 480px) {
+  .activity, .select, .resend { display: none; }
+  .mobileRole { display: inline; }
+  .role { min-width: 0; }
+}

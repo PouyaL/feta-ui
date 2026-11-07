@@ -1,0 +1,193 @@
+/* Expandable Card: FetaUI 19 Expandable Handoff and Motion. */
+.tray {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--feta-space-1);
+  border-radius: var(--feta-radius-tray);
+  background-color: var(--feta-alpha-ink-base-4);
+}
+
+.trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--feta-space-3);
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 56px;
+  margin: 0;
+  padding: var(--feta-space-2) var(--feta-space-2) var(--feta-space-2) var(--feta-space-3);
+  border: 0;
+  border-radius: var(--feta-radius-card);
+  background: transparent;
+  color: var(--feta-text-primary);
+  text-align: left;
+  cursor: pointer;
+  outline: 2px solid transparent;
+  outline-offset: -2px;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color var(--feta-motion-duration-focus) var(--feta-motion-ease-out);
+}
+
+.trigger:focus-visible { outline-color: var(--feta-text-primary); }
+.trigger:active { background-color: var(--feta-alpha-ink-base-4); }
+
+@media (hover: hover) {
+  .trigger:hover { background-color: var(--feta-alpha-ink-base-4); }
+}
+
+.ring {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  width: 28px;
+  height: 28px;
+}
+
+.ring svg { display: block; rotate: -90deg; }
+.ringTrack { fill: none; stroke: var(--feta-alpha-ink-base-8); }
+
+.ringArc {
+  fill: none;
+  stroke: var(--feta-bg-inverse);
+  stroke-linecap: round;
+  transition: stroke-dashoffset 600ms var(--feta-motion-ease-out);
+}
+
+.tray[data-still] .ringArc { transition: none; }
+
+.mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-status-success-strong);
+  color: var(--feta-status-on-solid);
+}
+
+.mark svg { width: 16px; height: 16px; rotate: 0deg; }
+
+.summary {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.title {
+  font: var(--feta-text-title-row);
+  letter-spacing: var(--feta-text-title-row-tracking);
+}
+
+.meta {
+  color: var(--feta-text-secondary);
+  font: var(--feta-text-caption-default);
+  letter-spacing: var(--feta-text-caption-default-tracking);
+}
+
+.chevron {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--feta-size-button-sm);
+  height: var(--feta-size-button-sm);
+  color: var(--feta-text-secondary);
+  transform: rotate(180deg);
+  transition: transform var(--feta-motion-duration-base) var(--feta-motion-ease-out);
+}
+
+.tray[data-open] .chevron { transform: rotate(0deg); }
+
+@media (hover: hover) {
+  .trigger:hover .chevron {
+    border-radius: var(--feta-radius-full);
+    background-color: var(--feta-alpha-ink-base-8);
+  }
+}
+.tray[data-still] .chevron { transition: none; }
+
+.chevron svg {
+  display: block;
+  width: var(--feta-size-icon);
+  height: var(--feta-size-icon);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--feta-space-2);
+  box-sizing: border-box;
+  margin-top: var(--feta-space-1);
+  padding: var(--feta-space-4);
+  border-radius: var(--feta-radius-card);
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8);
+}
+
+.heading {
+  margin: 0;
+  color: var(--feta-text-primary);
+  font: var(--feta-text-title-row);
+  letter-spacing: var(--feta-text-title-row-tracking);
+}
+
+.body {
+  margin: 0;
+  color: var(--feta-alpha-ink-base-60);
+  font: 400 14px/21px var(--feta-type-font-sans);
+  letter-spacing: -0.04em;
+}
+
+.steps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: var(--feta-space-3);
+  padding-block: var(--feta-space-2);
+  border-top: 1px solid var(--feta-alpha-ink-base-5);
+}
+
+.stepText {
+  display: flex;
+  flex: 1;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--feta-space-3);
+  min-width: 0;
+}
+
+.stepLabel {
+  color: var(--feta-text-primary);
+  font: var(--feta-text-body-row);
+  letter-spacing: var(--feta-text-body-row-tracking);
+}
+
+.stepMeta {
+  flex: none;
+  color: var(--feta-text-secondary);
+  font: var(--feta-text-caption-default);
+  letter-spacing: var(--feta-text-caption-default-tracking);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+[data-platform="mobile"] .body { font-size: 15px; line-height: 22px; }
+
+@media (max-width: 640px) {
+  :root:not([data-platform="web"]) .body { font-size: 15px; line-height: 22px; }
+}

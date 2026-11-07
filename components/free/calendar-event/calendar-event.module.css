@@ -1,0 +1,43 @@
+/* Calendar Event: FetaUI 157 Handoff. 140 wide, p6 8 6 6, r8, tone subtle fill, 2 px tag. Selected is bg/inverse. Now has a 2 px status/danger ring and breathes the tag at motion/duration-breath. */
+.event { display: flex; gap: var(--feta-space-1-5); box-sizing: border-box; width: 140px; max-width: 100%; min-width: 0; margin: 0; padding: var(--feta-space-1-5) var(--feta-space-2) var(--feta-space-1-5) var(--feta-space-1-5); overflow: hidden; border: 0; border-radius: var(--feta-radius-lg); background: var(--fill); color: var(--feta-text-primary); text-align: start; outline: 2px solid transparent; outline-offset: -2px; transition: outline-color 240ms cubic-bezier(0.25, 0.1, 0.25, 1), background-color 240ms cubic-bezier(0.25, 0.1, 0.25, 1), color 240ms cubic-bezier(0.25, 0.1, 0.25, 1); --fill: var(--feta-alpha-ink-base-4); --ink: var(--feta-text-secondary); }
+button.event { cursor: pointer; font: inherit; }
+.event[data-still] { transition: none; }
+.event[data-tone="accent"] { --fill: var(--feta-bg-accent-subtle); --ink: var(--feta-chart-accent); }
+.event[data-tone="success"] { --fill: var(--feta-bg-success-subtle); --ink: var(--feta-status-success-strong); }
+.event[data-tone="warning"] { --fill: var(--feta-bg-warning-subtle); --ink: var(--feta-status-warning); }
+/* Selected inverts whatever the tone. Now rings the block in status/danger. */
+.event[data-state="selected"] { --fill: var(--feta-bg-inverse); --ink: var(--feta-text-inverse); color: var(--feta-text-inverse); }
+.event[data-state="selected"] .time { color: var(--feta-text-inverse); }
+.event[data-state="selected"] .people i { border-color: var(--feta-bg-inverse); }
+.event[data-state="now"] { outline-color: var(--feta-status-danger); }
+.event[data-dense] { align-items: center; padding-block: var(--feta-space-0-5); }
+.event[data-dense] .tag { align-self: stretch; }
+.tag { flex: none; width: 2px; border-radius: var(--feta-radius-xs); background: var(--ink); }
+.event[data-state="now"] .tag { animation: breathe var(--feta-motion-duration-breath) ease-in-out infinite; }
+.event[data-state="now"][data-offscreen] .tag, .event[data-still] .tag { animation: none; }
+@keyframes breathe { 50% { opacity: 0.4; } }
+.text { display: flex; flex: 1; flex-direction: column; gap: var(--feta-space-0-5); min-width: 0; }
+.title { overflow: hidden; font: 500 12px/16px var(--feta-type-font-sans); letter-spacing: -0.04em; text-overflow: ellipsis; white-space: nowrap; }
+.time { overflow: hidden; color: var(--feta-text-secondary); font: 400 10px/12px var(--feta-type-font-mono); letter-spacing: 0; white-space: nowrap; }
+.people { display: flex; padding-top: var(--feta-space-0-5); }
+.people i { width: 12px; height: 12px; margin-left: calc(-1 * var(--feta-space-1)); box-sizing: border-box; border: 2px solid var(--feta-bg-surface); border-radius: var(--feta-radius-full); background: var(--feta-status-accent); }
+.people i:first-child { margin-left: 0; }
+.people i[data-i="1"] { background: var(--feta-status-success-strong); }
+.people i[data-i="2"] { background: var(--feta-status-warning); }
+
+/* Micro motion: the tag widens and the attendees fan out under the pointer; a button lifts, presses in and pops when picked. */
+.event { transition: outline-color 240ms cubic-bezier(0.25, 0.1, 0.25, 1), background-color 240ms cubic-bezier(0.25, 0.1, 0.25, 1), color 240ms cubic-bezier(0.25, 0.1, 0.25, 1), transform 240ms cubic-bezier(0.23, 1, 0.32, 1), box-shadow 240ms cubic-bezier(0.23, 1, 0.32, 1); }
+.tag { transition: width 240ms cubic-bezier(0.23, 1, 0.32, 1); }
+.people i { transition: margin-left 320ms cubic-bezier(0.34, 1.56, 0.64, 1); }
+@media (hover: hover) {
+  .event:not([data-still]):hover .tag { width: 3px; }
+  .event:not([data-still]):hover .people i:not(:first-child) { margin-left: calc(-1 * var(--feta-space-0-5)); }
+  button.event:not([data-still]):hover { transform: translateY(-1px); box-shadow: var(--feta-elevation-soft); }
+}
+button.event:not([data-still]):active { transform: scale(0.97); transition-duration: 100ms; }
+button.event:focus-visible { outline-color: var(--feta-text-primary); }
+button.event[data-state="now"]:focus-visible { outline-color: var(--feta-status-danger); }
+.event[data-state="selected"]:not([data-still]) { animation: picked 320ms cubic-bezier(0.34, 1.56, 0.64, 1); }
+@keyframes picked { from { transform: scale(0.95); } }
+.event[data-still], .event[data-still] .tag, .event[data-still] .people i { transition: none; }
+@media (prefers-reduced-motion: reduce) { .event, .tag, .people i { transition: none; } .event[data-state="selected"] { animation: none; } }

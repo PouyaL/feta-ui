@@ -1,0 +1,104 @@
+/* Smooth Drawer: Drawer · Soft frames 227:1463. 8 in from the sides, docked to the bottom and
+   running 2 px past it so the bottom stroke never shows. 424 wide on Web, width minus 16 on Mobile. */
+.sheet {
+  /* Expanded hugs its content up to this far from the top. The handoff says 64, but the Mobile
+     Expanded frame sits 54 from the top of a 720 screen, so the cap leaves room for it. */
+  --expanded-gap: 48px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(-1 * var(--feta-space-0-5));
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--feta-space-1-5);
+  width: min(424px, calc(100% - 16px));
+  max-height: calc(100dvh - var(--expanded-gap));
+  margin-inline: auto;
+  padding: 0 var(--feta-space-2-5) var(--feta-space-4-5);
+  border-radius: var(--feta-radius-sheet) var(--feta-radius-sheet) 0 0;
+  background-color: var(--feta-bg-canvas);
+  color: var(--feta-text-primary);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8);
+  outline: none;
+  will-change: transform;
+  font: var(--feta-text-body-compact);
+  letter-spacing: var(--feta-text-body-compact-tracking);
+}
+
+.sheet[data-mobile] { width: calc(min(100%, 390px) - 16px); }
+
+/* 19 high: 6 above the 36 by 5 handle and 8 below. */
+.grabber { flex: none; display: flex; justify-content: center; padding: var(--feta-space-1-5) 0 var(--feta-space-2); touch-action: none; cursor: grab; }
+.grabber > span {
+  width: 36px;
+  height: 5px;
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-alpha-ink-base-10);
+  transition: transform var(--feta-motion-duration-fast) var(--feta-motion-ease-out), background-color var(--feta-motion-duration-fast) var(--feta-motion-ease-out);
+}
+.sheet[data-dragging] > .grabber > span { transform: scaleX(1.33); background-color: var(--feta-text-tertiary); }
+.sheet[data-still] > .grabber > span { transition: none; }
+
+.summary {
+  flex: none;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--feta-space-3);
+  min-height: 44px;
+  padding: 0 var(--feta-space-1-5);
+  touch-action: none;
+}
+
+.heading { display: flex; flex-direction: column; gap: var(--feta-space-0-5); min-width: 0; }
+.title { margin: 0; font: var(--feta-text-title-total); letter-spacing: var(--feta-text-title-total-tracking); }
+.description { margin: 0; color: var(--feta-text-secondary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); }
+.aside { flex: none; text-align: end; }
+
+/* The 12 px spacer in the frames sits between two 6 px gaps, so 24 from the summary. */
+.peek { flex: none; display: flex; flex-direction: column; margin-top: var(--feta-space-4-5); }
+.peek > * { width: 100%; }
+
+.toggleRow { flex: none; display: flex; justify-content: center; }
+.toggle { color: var(--feta-text-secondary); }
+.chevron { display: inline-flex; }
+
+.details {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--feta-space-3-5);
+  min-height: 0;
+  padding-top: var(--feta-space-1-5);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  outline: none;
+}
+
+.details:focus-visible { box-shadow: inset 0 0 0 2px var(--feta-text-primary); border-radius: var(--feta-radius-card); }
+
+.option {
+  position: relative;
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--feta-space-0-5);
+  min-width: 0;
+  padding: var(--feta-space-2-5) var(--feta-space-3);
+  border-radius: var(--feta-radius-control);
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8);
+  cursor: pointer;
+  transition: box-shadow 160ms var(--feta-motion-ease-out);
+}
+
+.option[data-selected] { box-shadow: inset 0 0 0 1.5px var(--feta-text-primary); }
+.option[data-still] { transition: none; }
+.option:has(:focus-visible) { outline: 2px solid var(--feta-text-primary); outline-offset: 2px; }
+
+.radio { position: absolute; opacity: 0; pointer-events: none; }
+.optionRow { display: flex; align-items: center; justify-content: space-between; gap: var(--feta-space-2); }
+.optionTitle { font: var(--feta-text-label-default); letter-spacing: var(--feta-text-label-default-tracking); }
+.optionPrice { color: var(--feta-text-secondary); font: var(--feta-text-mono-code); letter-spacing: var(--feta-text-mono-code-tracking); }
+.optionMeta { color: var(--feta-text-secondary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); }

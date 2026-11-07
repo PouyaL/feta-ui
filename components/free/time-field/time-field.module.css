@@ -1,0 +1,55 @@
+/* Time Field: FetaUI 24 Time and Date Picker Handoff and Motion. */
+.wrap {
+  display: inline-flex;
+  flex-direction: column;
+  width: 170px;
+  max-width: 100%;
+  gap: var(--feta-space-1-5);
+}
+
+.field {
+  --pad: var(--feta-space-3);
+  height: 44px;
+  gap: var(--feta-space-0-5);
+}
+
+.field > :first-child { margin-right: var(--feta-space-1-5); }
+
+.segment {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 26px;
+  min-width: 26px;
+  padding-inline: var(--feta-space-1);
+  border-radius: var(--feta-radius-lg);
+  outline: 0;
+  color: var(--feta-text-primary);
+  font-family: var(--feta-type-font-mono);
+  font-size: 14px;
+  cursor: default;
+  caret-color: transparent;
+  transition: background-color var(--feta-motion-duration-fast) var(--feta-motion-ease-out), color var(--feta-motion-duration-fast) var(--feta-motion-ease-out);
+}
+
+.segment[data-empty] { color: var(--feta-alpha-ink-base-60); opacity: 0.67; }
+
+.segment:focus {
+  background-color: var(--feta-bg-inverse);
+  color: var(--feta-text-inverse);
+  opacity: 1;
+}
+
+.field[data-still] .segment { transition: none; }
+
+.colon { color: var(--feta-text-tertiary); }
+
+.message { padding-inline: var(--feta-space-1); }
+
+@media (max-width: 640px) {
+  .wrap { width: 100%; }
+  .field { height: 48px; }
+}
+
+[data-platform="mobile"] .wrap { width: 100%; }
+[data-platform="mobile"] .field { height: 48px; }

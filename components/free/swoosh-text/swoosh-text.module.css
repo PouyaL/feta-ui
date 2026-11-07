@@ -1,0 +1,32 @@
+/* Swoosh Text: FetaUI Text page. */
+.word {
+  --dx: 1;
+  display: inline-flex;
+  flex-wrap: wrap;
+  color: var(--feta-text-primary);
+  font: 700 40px/48px var(--feta-type-font-sans);
+  letter-spacing: -0.04em;
+  cursor: default;
+  user-select: none;
+  touch-action: none;
+}
+
+.letter {
+  --sink: 0;
+  --tilt: 0deg;
+  --x: calc(var(--depth) * var(--dx));
+  display: inline-block;
+  text-shadow:
+    calc(var(--x) * 0.25) 2px 0 var(--feta-text-tertiary),
+    calc(var(--x) * 0.5) 4px 0 var(--feta-text-tertiary),
+    calc(var(--x) * 0.75) 6px 0 var(--feta-text-secondary),
+    var(--x) 8px 0 var(--feta-text-secondary);
+  transform: translateY(calc(var(--sink) * 5px)) rotate(var(--tilt));
+  transition: transform var(--feta-motion-duration-slow) var(--feta-motion-ease-out);
+}
+
+.word[data-still] .letter { transition: none; transform: none; }
+
+@media (max-width: 640px) {
+  .word { font-size: 32px; line-height: 40px; }
+}

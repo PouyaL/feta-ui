@@ -1,0 +1,164 @@
+/* Voice Control: FetaUI 05 Button Handoff and Motion. */
+.control {
+  flex: none;
+  width: var(--feta-size-voice);
+  height: var(--feta-size-voice);
+  padding: 0;
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-alpha-ink-base-5);
+  color: var(--feta-text-primary);
+}
+
+.control svg {
+  display: block;
+  width: 20px;
+  height: 20px;
+}
+
+.control[data-control="more"] { background-color: transparent; }
+
+.control[data-control="muted"] {
+  background-color: var(--feta-bg-danger-subtle);
+  color: var(--feta-status-danger-text);
+}
+
+.control[data-control="captions-on"],
+.control[data-control="stop"] {
+  background-color: var(--feta-bg-inverse);
+  color: var(--feta-text-inverse);
+}
+
+.control[data-control="listening"],
+.control[data-control="end"] {
+  background-color: var(--feta-status-danger-strong);
+  color: var(--feta-status-on-solid);
+}
+
+.control[data-control="end"] { width: var(--feta-size-voice-wide); }
+
+@media (hover: hover) {
+  .control[data-control="mic"]:hover:not(:disabled),
+  .control[data-control="captions"]:hover:not(:disabled) { background-color: var(--feta-alpha-ink-base-8); }
+  .control[data-control="more"]:hover:not(:disabled) { background-color: var(--feta-alpha-ink-base-5); }
+}
+
+.control[data-control="mic"]:active:not(:disabled),
+.control[data-control="captions"]:active:not(:disabled) { background-color: var(--feta-alpha-ink-base-10); }
+.control[data-control="more"]:active:not(:disabled) { background-color: var(--feta-alpha-ink-base-8); }
+
+.control:disabled {
+  background-color: var(--feta-alpha-ink-base-5);
+  color: var(--feta-text-quaternary);
+}
+
+.halo {
+  position: absolute;
+  inset: -4px;
+  z-index: -1;
+  border-radius: inherit;
+  background-color: var(--feta-alpha-status-danger-15);
+  animation: pulse 1200ms ease-in-out infinite;
+}
+
+.control[data-still] .halo { animation: none; }
+.control:disabled .halo { display: none; }
+
+.level {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--feta-space-0-5);
+}
+
+.bar {
+  width: 3px;
+  border-radius: var(--feta-radius-xs);
+  background-color: currentColor;
+  transition: height var(--feta-motion-duration-press) linear;
+}
+
+.bar[data-live] { animation: level 900ms ease-in-out infinite alternate; }
+.bar:nth-child(2) { animation-delay: -300ms; }
+.bar:nth-child(3) { animation-delay: -600ms; }
+.bar:nth-child(4) { animation-delay: -150ms; }
+.bar:nth-child(5) { animation-delay: -450ms; }
+
+.control:disabled .bar,
+.control[data-still] .bar[data-live] { animation: none; }
+
+.barTray {
+  width: fit-content;
+  max-width: 100%;
+}
+
+.bar2 {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--feta-space-3);
+  padding: var(--feta-space-2) var(--feta-space-4) var(--feta-space-2) var(--feta-space-2);
+}
+
+.meta {
+  display: flex;
+  min-width: 57px;
+  flex-direction: column;
+}
+
+.status {
+  font: var(--feta-text-label-default);
+  letter-spacing: var(--feta-text-label-default-tracking);
+  white-space: nowrap;
+}
+
+.wave {
+  display: inline-flex;
+  align-items: center;
+  width: 50px;
+  height: 24px;
+  gap: var(--feta-space-0-5);
+  overflow: hidden;
+}
+
+.wave span {
+  flex: none;
+  width: 2px;
+  border-radius: var(--feta-radius-xs);
+  background-color: var(--feta-alpha-ink-base-10);
+}
+
+.wave[data-state="listening"] span {
+  background-color: var(--feta-text-primary);
+  animation: level 900ms ease-in-out infinite alternate;
+}
+
+.wave[data-still] span { animation: none; }
+
+.wave span:nth-child(3n) { animation-delay: -300ms; }
+.wave span:nth-child(3n + 1) { animation-delay: -600ms; }
+
+/* Set by watchOffscreen: loops rest while out of view and carry on from where they stopped. */
+.control[data-offscreen] .halo,
+.control[data-offscreen] .bar,
+.wave[data-offscreen] span { animation-play-state: paused; }
+
+.controls {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--feta-space-2);
+}
+
+@keyframes pulse {
+  50% { transform: scale(1.14); opacity: 0.6; }
+}
+
+@keyframes level {
+  to { transform: scaleY(0.45); }
+}
+
+[data-platform="mobile"] .wave { display: none; }
+[data-platform="mobile"] .bar2 { padding-inline-end: var(--feta-space-2); }
+
+@media (max-width: 480px) {
+  .wave { display: none; }
+  .bar2 { padding-inline-end: var(--feta-space-2); }
+}

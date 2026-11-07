@@ -1,0 +1,209 @@
+/* Avatar Picker: FetaUI 10 Avatar Handoff and Motion. */
+.tray {
+  display: flex;
+  flex-direction: column;
+  gap: var(--feta-space-1);
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 360px;
+  padding: var(--feta-space-1);
+  border-radius: var(--feta-radius-tray);
+  background-color: var(--feta-alpha-ink-base-4);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--feta-space-3);
+  padding: var(--feta-space-6) var(--feta-space-5) var(--feta-space-5);
+  border-radius: var(--feta-radius-card);
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft);
+}
+
+.title {
+  margin: 0;
+  color: var(--feta-text-primary);
+  font: var(--feta-text-title-total);
+  letter-spacing: var(--feta-text-title-total-tracking);
+  text-align: center;
+}
+
+.hint {
+  margin: calc(-1 * var(--feta-space-2)) 0 0;
+  min-height: 16px;
+  color: var(--feta-text-secondary);
+  font: var(--feta-text-caption-default);
+  letter-spacing: var(--feta-text-caption-default-tracking);
+  text-align: center;
+}
+
+.stage {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 176px;
+  perspective: 800px;
+}
+
+/* The dial: a 4% ink disc with fine ticks and one index mark at the top. */
+.bezel {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 176px;
+  height: 176px;
+  border-radius: var(--feta-radius-full);
+  background: repeating-conic-gradient(var(--feta-alpha-ink-base-8) 0deg 1deg, transparent 1deg 6deg);
+  transform: translate(-50%, -50%);
+}
+
+.bezel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background-color: var(--feta-alpha-ink-base-4);
+}
+
+.bezel::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 50%;
+  width: 2px;
+  height: 7px;
+  margin-left: calc(-1 * var(--feta-space-0-5));
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-text-primary);
+}
+
+.coinHit {
+  position: relative;
+  width: 128px;
+  height: 128px;
+  border-radius: var(--feta-radius-full);
+  touch-action: pan-y;
+  cursor: grab;
+  outline: 2px solid transparent;
+  outline-offset: 6px;
+}
+
+.coinHit:active { cursor: grabbing; }
+.coinHit:focus-visible { outline-color: var(--feta-text-primary); }
+
+.coin {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  transform-style: preserve-3d;
+}
+
+.side {
+  position: absolute;
+  inset: 0;
+  display: block;
+  overflow: hidden;
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-avatar-bg);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.side[data-back] { transform: rotateY(180deg); }
+
+.side[data-empty] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--feta-bg-muted);
+  color: var(--feta-text-quaternary);
+}
+
+.side[data-empty] svg { width: 44px; height: 44px; }
+
+.shade {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--feta-effect-clear-black), var(--feta-effect-scrim));
+  pointer-events: none;
+}
+
+/* The picked mark: success, 22 on a 2 px surface ring. */
+.badge {
+  position: absolute;
+  top: calc(50% + 36px);
+  left: calc(50% + 36px);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 26px;
+  height: 26px;
+  border: 2px solid var(--feta-bg-surface);
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-status-success-strong);
+  color: var(--feta-status-on-solid);
+}
+
+.badge svg { width: 14px; height: 14px; }
+
+.caption {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: var(--feta-space-2);
+  margin: 0;
+  color: var(--feta-text-primary);
+  font: var(--feta-text-title-row);
+  letter-spacing: var(--feta-text-title-row-tracking);
+}
+
+.number {
+  color: var(--feta-text-tertiary);
+  font: var(--feta-text-mono-meta);
+}
+
+.options {
+  display: flex;
+  align-items: center;
+  gap: var(--feta-space-1);
+}
+
+.spacer { flex: 1; }
+
+.option {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--feta-radius-xl);
+  background: transparent;
+  cursor: pointer;
+  outline: 2px solid transparent;
+  outline-offset: 1px;
+}
+
+.option:focus-visible { outline-color: var(--feta-text-primary); }
+
+.ring {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--feta-radius-full);
+  box-shadow: inset 0 0 0 2px var(--feta-text-primary);
+}
+
+.continue { width: 100%; }
+[data-platform="mobile"] .tray { max-width: 358px; }

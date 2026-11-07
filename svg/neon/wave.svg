@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+  <defs><path id="feta-neon-wave-s0" d="M3 12L6 12C7.105 12 8 11.105 8 10L8 7C8 5.895 8.895 5 10 5C11.105 5 12 5.895 12 7L12 17C12 18.105 12.895 19 14 19C15.104 19 16 18.105 16 17L16 14C16 12.895 16.895 12 18 12L21 12"/><filter id="feta-neon-wave-glow-outer" filterUnits="userSpaceOnUse" x="-6" y="-6" width="36" height="36"><feGaussianBlur stdDeviation="1.5"/></filter><filter id="feta-neon-wave-glow-inner" filterUnits="userSpaceOnUse" x="-6" y="-6" width="36" height="36"><feGaussianBlur stdDeviation="0.4"/></filter></defs>
+  <g data-feta="glow-outer" opacity="0.55" filter="url(#feta-neon-wave-glow-outer)" fill="none" stroke-width="4.8" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--feta-neon-glow, #FF4FD8)"><use href="#feta-neon-wave-s0"/></g>
+  <g data-feta="glow-inner" filter="url(#feta-neon-wave-glow-inner)" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--feta-neon-glow, #FF4FD8)"><use href="#feta-neon-wave-s0"/></g>
+  <g data-feta="core" fill="none" stroke-width="1.125" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--feta-neon-core, #FFE6FA)"><use href="#feta-neon-wave-s0"/></g>
+</svg>

@@ -1,0 +1,120 @@
+/* Card Stack: FetaUI 16.2 Showcase Cards Handoff and Motion. */
+.stack { max-width: 448px; }
+
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* The stage replaces the inset card: the prints are the cards here. */
+.stage.stage { position: relative; padding: 0; background: none; box-shadow: none; }
+
+.scene { --lift: 0; position: relative; height: 380px; }
+.scene[data-details] { display: flex; justify-content: center; height: auto; padding: var(--feta-space-4) 0; }
+
+.print {
+  --depth-y: 0px;
+  --next-y: 0px;
+  --depth-r: 0deg;
+  --next-r: 0deg;
+  --depth-s: 1;
+  --next-s: 1;
+  position: absolute;
+  top: 24px;
+  left: 50%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--feta-space-2-5);
+  width: 232px;
+  height: 282px;
+  margin: 0 0 0 calc(-1 * var(--feta-space-29));
+  padding: var(--feta-space-2) var(--feta-space-2) var(--feta-space-3);
+  border: 0;
+  border-radius: var(--feta-radius-card);
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft);
+  color: var(--feta-text-primary);
+  font: inherit;
+  letter-spacing: inherit;
+  text-align: left;
+  transform: translateY(calc(var(--depth-y) + (var(--next-y) - var(--depth-y)) * var(--lift))) rotate(calc(var(--depth-r) + (var(--next-r) - var(--depth-r)) * var(--lift))) scale(calc(var(--depth-s) + (var(--next-s) - var(--depth-s)) * var(--lift)));
+}
+
+button.print { cursor: grab; touch-action: pan-y; outline: 2px solid transparent; outline-offset: 2px; transition: outline-color var(--feta-motion-duration-focus) var(--feta-motion-ease-out); }
+button.print:active { cursor: grabbing; }
+button.print:focus-visible { outline-color: var(--feta-text-primary); }
+
+/* Positions from the frame. Each sits one step behind the last. */
+.print[data-depth='1'] { --depth-y: -6.5px; --depth-r: -3deg; --depth-s: 0.961; }
+.print[data-depth='2'] { --depth-y: -9px; --next-y: -6.5px; --depth-r: 6deg; --next-r: -3deg; --depth-s: 0.918; --next-s: 0.961; }
+.print[data-depth='3'] { --depth-y: -10.5px; --next-y: -9px; --depth-r: -8deg; --next-r: 6deg; --depth-s: 0.879; --next-s: 0.918; }
+
+.print[data-held] { transform: translate(70px, -10px) rotate(9deg); }
+
+.art { display: block; flex: none; width: 216px; height: 216px; overflow: hidden; border-radius: var(--feta-radius-xl); background-color: var(--feta-avatar-bg); color: var(--feta-avatar-ink); }
+.artSvg { display: block; width: 100%; height: 100%; }
+
+.caption { box-sizing: border-box; display: flex; justify-content: space-between; gap: var(--feta-space-2); width: 100%; padding: 0 var(--feta-space-1); }
+.captionText { display: flex; flex-direction: column; gap: var(--feta-space-0-5); min-width: 0; }
+.name { font: var(--feta-text-title-small); letter-spacing: var(--feta-text-title-small-tracking); white-space: nowrap; }
+.meta { color: var(--feta-text-tertiary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); white-space: nowrap; }
+
+.hint {
+  position: absolute;
+  z-index: 2;
+  top: 6px;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  gap: var(--feta-space-1);
+  padding: var(--feta-space-2) var(--feta-space-3) var(--feta-space-2) var(--feta-space-2-5);
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-bg-inverse);
+  color: var(--feta-text-inverse);
+  font: var(--feta-text-caption-medium);
+  letter-spacing: var(--feta-text-caption-medium-tracking);
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.hint[data-held] { opacity: 1; transform: translateX(calc(-50% + 66px)); }
+
+/* Details */
+.detail {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--feta-space-2-5);
+  width: 300px;
+  max-width: 100%;
+  padding: var(--feta-space-2) var(--feta-space-2) var(--feta-space-3);
+  border-radius: var(--feta-radius-card);
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft);
+  transform-origin: top center;
+}
+
+.detail .art { width: 100%; height: auto; aspect-ratio: 1; }
+.more { display: flex; flex-direction: column; gap: var(--feta-space-3); padding: var(--feta-space-1) var(--feta-space-1) 0; }
+.description { margin: 0; color: var(--feta-text-secondary); font: 400 12px/20px var(--feta-type-font-sans); letter-spacing: var(--feta-text-caption-default-tracking); }
+.specs { display: flex; justify-content: space-between; margin: 0; }
+.spec { display: flex; flex-direction: column; gap: var(--feta-space-0-5); }
+.spec:nth-child(2) { align-items: center; }
+.spec:last-child { align-items: flex-end; }
+.specValue { margin: 0; font: 600 14px/20px var(--feta-type-font-sans); letter-spacing: var(--feta-text-body-row-tracking); }
+.add { width: 100%; }
+
+.controls.controls { justify-content: space-between; padding: var(--feta-space-1-5) var(--feta-space-1-5) var(--feta-space-1); }
+.counter { color: var(--feta-text-tertiary); font: var(--feta-text-mono-meta); }
+
+[data-platform='mobile'] .stack { max-width: 358px; }
+[data-platform='mobile'] .controls.controls { --feta-size-button-sm: 36px; }
+[data-platform='mobile'] .controls.controls > button { flex: none; }
+[data-platform='mobile'] .add { --feta-size-button-md: var(--feta-size-button-lg); }
+
+@media (max-width: 640px) {
+  .stack { max-width: 358px; }
+  .controls.controls.controls { --feta-size-button-sm: 36px; }
+  .controls.controls.controls > button { flex: none; }
+  .add { --feta-size-button-md: var(--feta-size-button-lg); }
+}

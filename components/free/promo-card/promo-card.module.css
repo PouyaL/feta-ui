@@ -1,0 +1,53 @@
+/* Promo Card: FetaUI 16.6 Showcase Cards Handoff and Motion. */
+.tray {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--feta-space-1);
+  width: 100%;
+  max-width: 320px;
+  padding: var(--feta-space-1);
+  border-radius: var(--feta-radius-tray);
+  background-color: var(--feta-alpha-ink-base-4);
+  color: var(--feta-text-primary);
+  font-family: var(--feta-type-font-sans);
+  letter-spacing: var(--feta-text-body-row-tracking);
+}
+
+.header { display: flex; align-items: center; justify-content: space-between; gap: var(--feta-space-2); min-height: 40px; box-sizing: border-box; padding: var(--feta-space-2) var(--feta-space-2) var(--feta-space-1-5) var(--feta-space-3); }
+.brand { display: flex; align-items: center; gap: var(--feta-space-1-5); min-width: 0; }
+.brandName { font: 600 14px/20px var(--feta-type-font-sans); letter-spacing: var(--feta-text-body-row-tracking); }
+.price { margin: 0; color: var(--feta-text-tertiary); font: var(--feta-text-body-compact); letter-spacing: var(--feta-text-body-compact-tracking); }
+.timer { display: flex; margin: 0; color: var(--feta-text-primary); font: var(--feta-text-mono-meta); white-space: pre; font-variant-numeric: tabular-nums; }
+
+.tray .inset.inset.inset { min-height: 218px; padding: var(--feta-space-5); }
+.views { display: grid; flex: 1; min-height: 178px; }
+.view { display: flex; grid-area: 1 / 1; flex-direction: column; gap: var(--feta-space-1-5); min-width: 0; }
+
+.title { margin: 0; font: var(--feta-text-title-total); letter-spacing: var(--feta-text-title-total-tracking); }
+.description { margin: 0; color: var(--feta-text-secondary); font: 400 14px/22px var(--feta-type-font-sans); letter-spacing: var(--feta-text-body-row-tracking); }
+.meta { margin: 0; color: var(--feta-text-tertiary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); }
+.now { color: var(--feta-text-primary); font-weight: 500; }
+.meta s { margin: 0 var(--feta-space-0-5); }
+.action.action { width: 100%; margin-top: auto; }
+
+.claimedTitle { display: flex; align-items: center; gap: var(--feta-space-2-5); }
+.mark { display: grid; flex: none; place-items: center; width: 28px; height: 28px; border-radius: var(--feta-radius-full); background-color: var(--feta-status-success-strong); color: var(--feta-status-on-solid); }
+
+.arrow { display: inline-flex; transition: transform var(--feta-motion-duration-fast) var(--feta-motion-ease-out); }
+
+@media (hover: hover) {
+  button:hover > * .arrow, button:hover .arrow { transform: translate(2px, -2px); }
+}
+button:focus-visible .arrow { transform: translate(2px, -2px); }
+.tray[data-still] .arrow { transform: none; transition: none; }
+
+[data-platform='mobile'] .tray { max-width: 358px; }
+[data-platform='mobile'] .tray .inset.inset.inset { min-height: 226px; }
+[data-platform='mobile'] .views { min-height: 186px; }
+
+@media (max-width: 640px) {
+  .tray { max-width: 358px; }
+  .tray .inset.inset.inset { min-height: 226px; }
+  .views { min-height: 186px; }
+}

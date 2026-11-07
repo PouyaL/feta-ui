@@ -1,0 +1,136 @@
+/* Label: FetaUI 38 Label Handoff and Motion. */
+.row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 20px;
+  gap: var(--feta-space-2);
+  color: var(--feta-text-primary);
+  font: var(--feta-text-label-default);
+  letter-spacing: var(--feta-text-label-default-tracking);
+  transition: color var(--feta-motion-duration-fast) var(--feta-motion-ease-out);
+}
+
+.row[data-invalid] { color: var(--feta-status-danger-text); }
+.row[data-disabled] { opacity: 0.5; }
+
+.name {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  cursor: inherit;
+}
+
+/* The name and its tags: optional, badge and hint. */
+.lead {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  gap: var(--feta-space-2);
+}
+
+.dot {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  margin-top: -3px;
+  border-radius: var(--feta-radius-full);
+  background-color: currentColor;
+}
+
+.asterisk {
+  margin-left: var(--feta-space-0-5);
+  color: var(--feta-status-danger-text);
+}
+
+.optional {
+  color: var(--feta-text-tertiary);
+  font: var(--feta-text-caption-default);
+  letter-spacing: var(--feta-text-caption-default-tracking);
+}
+
+.badge {
+  padding: var(--feta-space-0-5) var(--feta-space-1-5);
+  border-radius: var(--feta-radius-md);
+  background-color: var(--feta-alpha-ink-base-5);
+  color: var(--feta-text-secondary);
+  font: var(--feta-text-label-micro);
+  letter-spacing: var(--feta-text-label-micro-tracking);
+}
+
+.hint { position: relative; display: inline-flex; }
+
+.hintButton {
+  display: inline-flex;
+  padding: 0;
+  border: 0;
+  border-radius: var(--feta-radius-full);
+  background: transparent;
+  color: var(--feta-text-tertiary);
+  cursor: help;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  transition: color var(--feta-motion-duration-fast) var(--feta-motion-ease-out);
+}
+
+.hintButton:hover { color: var(--feta-text-primary); }
+.hintButton:focus-visible { outline-color: var(--feta-text-primary); }
+.hintButton svg { display: block; width: 14px; height: 14px; }
+
+.tip {
+  position: absolute;
+  z-index: 20;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  width: max-content;
+  max-width: 220px;
+  padding: var(--feta-space-1) var(--feta-space-2);
+  border-radius: var(--feta-radius-lg);
+  background-color: var(--feta-bg-inverse);
+  color: var(--feta-text-inverse);
+  font: var(--feta-text-caption-default);
+  letter-spacing: var(--feta-text-caption-default-tracking);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 4px);
+  transition: opacity var(--feta-motion-duration-fast) var(--feta-motion-ease-out), transform var(--feta-motion-duration-fast) var(--feta-motion-ease-out);
+}
+
+.tip[data-open] { opacity: 1; transform: translate(-50%, 0); }
+.row[data-still] .tip { transition: none; }
+
+/* Invalid: the alert closes the row, after any action or count. */
+.alert { display: inline-flex; flex: none; margin-left: auto; color: var(--feta-status-danger-text); }
+.action ~ .alert, .count ~ .alert { margin-left: 0; }
+.alert svg { display: block; width: 14px; height: 14px; }
+
+.action {
+  margin-left: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--feta-text-secondary);
+  font: var(--feta-text-label-small);
+  letter-spacing: var(--feta-text-label-small-tracking);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.count {
+  display: inline-flex;
+  margin-left: auto;
+  color: var(--feta-text-tertiary);
+  font: var(--feta-text-mono-tag);
+}
+
+.count[data-over] { color: var(--feta-status-danger-text); }
+
+@media (max-width: 640px) {
+  .row { font-size: 15px; }
+}
+
+[data-platform="mobile"] .row { font-size: 15px; }
+[data-platform="web"] .row { font-size: 14px; }

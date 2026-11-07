@@ -1,0 +1,96 @@
+/* Day Strip: FetaUI 24 Time and Date Picker Handoff and Motion. */
+.strip {
+  --cap: 64px;
+  --cap-h: 88px;
+  --cap-on: 76px;
+  --cap-on-h: 124px;
+  --disc: 50px;
+  --disc-on: 56px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  max-width: 100%;
+  gap: var(--feta-space-2);
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--feta-space-2);
+  min-width: 0;
+}
+
+.weekday {
+  position: relative;
+  color: var(--feta-text-tertiary);
+  font: var(--feta-text-mono-tag);
+}
+
+.weekday[data-on] { color: var(--feta-text-primary); font-weight: 600; }
+
+.pointer {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  width: 8px;
+  height: 6px;
+  margin-left: calc(-1 * var(--feta-space-1));
+  background-color: var(--feta-text-primary);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+
+.capsule {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  box-sizing: border-box;
+  width: var(--cap);
+  height: var(--cap-h);
+  padding: var(--feta-space-2) 0 0;
+  border: 0;
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft);
+  color: var(--feta-text-secondary);
+  cursor: pointer;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  transition: width var(--feta-motion-duration-base) var(--feta-motion-ease-out), height var(--feta-motion-duration-base) var(--feta-motion-ease-out), background-color var(--feta-motion-duration-fast) var(--feta-motion-ease-out);
+}
+
+.capsule:focus-visible { outline-color: var(--feta-text-primary); }
+.capsule[data-past] { background-color: var(--feta-alpha-ink-base-4); box-shadow: none; color: var(--feta-text-tertiary); }
+.capsule[data-on] { width: var(--cap-on); height: var(--cap-on-h); }
+
+.disc {
+  display: grid;
+  place-items: center;
+  width: var(--disc);
+  height: var(--disc);
+  border-radius: var(--feta-radius-full);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8);
+  font: var(--feta-text-title-row);
+  transition: background-color var(--feta-motion-duration-fast) var(--feta-motion-ease-out), width var(--feta-motion-duration-base) var(--feta-motion-ease-out), height var(--feta-motion-duration-base) var(--feta-motion-ease-out);
+}
+
+.capsule[data-on] .disc {
+  width: var(--disc-on);
+  height: var(--disc-on);
+  background-color: var(--feta-bg-inverse);
+  box-shadow: none;
+  color: var(--feta-text-inverse);
+}
+
+@media (hover: hover) {
+  .capsule:hover:not([data-on]) .disc { background-color: var(--feta-alpha-ink-base-5); }
+}
+
+.strip[data-still] .capsule,
+.strip[data-still] .disc { transition: none; }
+
+@media (max-width: 640px) {
+  .strip { --cap: 56px; --cap-h: 80px; --cap-on: 66px; --cap-on-h: 108px; --disc: 44px; --disc-on: 50px; gap: var(--feta-space-1-5); }
+}
+
+[data-platform="mobile"] .strip { --cap: 56px; --cap-h: 80px; --cap-on: 66px; --cap-on-h: 108px; --disc: 44px; --disc-on: 50px; gap: var(--feta-space-1-5); }

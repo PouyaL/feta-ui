@@ -1,0 +1,11 @@
+/* Usage Meter: FetaUI 220 Handoff. 420 by 154, 8 px track. */
+.meter { display: flex; flex-direction: column; gap: var(--feta-space-2); box-sizing: border-box; width: 100%; max-width: 420px; padding: var(--feta-space-4) var(--feta-space-5); border-radius: var(--feta-radius-panel); background-color: var(--feta-bg-surface); box-shadow: 0 0 0 4px var(--feta-alpha-ink-base-4); color: var(--feta-text-primary); text-align: left; }
+.top { display: flex; align-items: center; justify-content: space-between; gap: var(--feta-space-2); min-height: 24px; }
+.metric { display: inline-flex; align-items: center; gap: var(--feta-space-1-5); font: var(--feta-text-title-row); letter-spacing: var(--feta-text-title-row-tracking); }
+.meta, .limit, .hint { color: var(--feta-text-secondary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); }
+.numbers { margin: 0; }
+.used { font: var(--feta-text-heading-small); letter-spacing: var(--feta-text-heading-small-tracking); }
+.hint { margin: 0; }
+.meter[data-state="over"] .hint { color: var(--feta-status-danger-text); }
+[data-platform="mobile"] .meter { max-width: 358px; }
+@media (max-width: 640px) { .meter { max-width: 358px; } }

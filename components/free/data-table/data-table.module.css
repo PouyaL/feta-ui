@@ -1,0 +1,69 @@
+/* Data Table, Data Table Header, Table Toolbar: FetaUI 23 Table Handoff and Motion. */
+.tray {
+  container: datatable / inline-size;
+  display: flex;
+  flex-direction: column;
+  gap: var(--feta-space-1);
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 760px;
+  padding: var(--feta-space-1);
+  border-radius: var(--feta-radius-tray);
+  background-color: var(--feta-alpha-ink-base-4);
+  color: var(--feta-text-primary);
+  text-align: left;
+}
+
+.header { display: flex; flex-direction: column; gap: var(--feta-space-1); }
+.bar, .bulk { display: flex; align-items: center; gap: var(--feta-space-2); box-sizing: border-box; min-height: 48px; padding: var(--feta-space-1) var(--feta-space-2) var(--feta-space-1) var(--feta-space-3); }
+.bulk { border-radius: var(--feta-radius-card); background-color: var(--feta-bg-surface); }
+.bulkCount { font: var(--feta-text-label-row); letter-spacing: var(--feta-text-label-row-tracking); }
+.spacer { flex: 1; }
+.title { display: inline-flex; flex: none; align-items: baseline; gap: var(--feta-space-1-5); margin-right: auto; font: var(--feta-text-title-row); letter-spacing: var(--feta-text-title-row-tracking); }
+.count { color: var(--feta-text-secondary); font: var(--feta-text-mono-meta); letter-spacing: var(--feta-text-mono-meta-tracking); }
+.searchSlot { flex: 0 1 220px; min-width: 120px; }
+.search { width: 100%; }
+.narrow { display: none; }
+.bulkAction { display: inline-flex; }
+
+.toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--feta-space-1-5); min-height: 44px; box-sizing: border-box; padding: var(--feta-space-1-5) var(--feta-space-2) var(--feta-space-1-5) var(--feta-space-3); border-radius: var(--feta-radius-tray); background-color: var(--feta-alpha-ink-base-4); }
+.none { color: var(--feta-text-tertiary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); }
+.addSlot { flex: 1; }
+.chip { display: inline-flex; align-items: center; gap: var(--feta-space-1); height: 28px; padding-inline: var(--feta-space-2-5) var(--feta-space-1); border-radius: var(--feta-radius-full); background-color: var(--feta-alpha-ink-base-5); font: var(--feta-text-label-micro); }
+.chipKey { color: var(--feta-text-secondary); font-weight: 400; }
+.chipRemove { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; padding: 0; border: 0; border-radius: var(--feta-radius-full); background: transparent; color: var(--feta-text-secondary); cursor: pointer; outline: 2px solid transparent; }
+.chipRemove:hover { background-color: var(--feta-alpha-ink-base-5); }
+.chipRemove:focus-visible { outline-color: var(--feta-text-primary); }
+
+.card { overflow: hidden; border-radius: var(--feta-radius-card); background-color: var(--feta-bg-surface); }
+.tall { height: 52px; }
+.cards { display: none; }
+
+.empty { display: flex; flex-direction: column; align-items: center; gap: var(--feta-space-1); padding: var(--feta-space-10) var(--feta-space-4); text-align: center; }
+.emptyTitle { margin: 0; font: var(--feta-text-title-row); letter-spacing: var(--feta-text-title-row-tracking); }
+.emptyText { margin: 0 0 var(--feta-space-2); color: var(--feta-text-secondary); font: var(--feta-text-body-row); letter-spacing: var(--feta-text-body-row-tracking); }
+
+.footer { display: flex; align-items: center; min-height: 40px; padding: var(--feta-space-0-5) var(--feta-space-1-5) var(--feta-space-0-5) var(--feta-space-3-5); }
+.footer > nav, .footer > div { flex: 1; }
+.note { color: var(--feta-text-secondary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); }
+
+.rowCard { display: flex; flex-direction: column; gap: var(--feta-space-2); padding: var(--feta-space-3) var(--feta-space-4); border-bottom: 1px solid var(--feta-alpha-ink-base-5); }
+.rowCard:last-child { border-bottom: 0; }
+.rowCard[data-selected] { background-color: var(--feta-alpha-ink-base-4); }
+.rowCardTop { display: flex; align-items: center; gap: var(--feta-space-3); }
+.rowCardTitle { flex: 1; min-width: 0; font: var(--feta-text-title-row); letter-spacing: var(--feta-text-title-row-tracking); }
+.rowCardValue { font: var(--feta-text-label-row); letter-spacing: var(--feta-text-label-row-tracking); font-variant-numeric: tabular-nums; }
+.rowCardMeta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--feta-space-2); color: var(--feta-text-secondary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); }
+
+@container datatable (max-width: 620px) {
+  .tableWide :is(th, td) { padding-inline: var(--feta-space-2); }
+}
+@container datatable (max-width: 520px) {
+  .tableWide { display: none; }
+  .wide { display: none; }
+  .narrow { display: inline-flex; }
+  .cards { display: block; }
+  .bar { flex-wrap: wrap; }
+  .searchSlot { display: none; }
+  .searchSlot[data-open] { display: block; flex: 1 1 100%; order: 3; }
+}

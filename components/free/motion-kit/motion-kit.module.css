@@ -1,0 +1,162 @@
+/* Base styles for the expressive buttons: FetaUI 06 Motion Buttons Handoff. */
+.control {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  border: 0;
+  margin: 0;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  font: var(--feta-text-label-default);
+  letter-spacing: var(--feta-text-label-default-tracking);
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  transition:
+    background-color var(--feta-motion-duration-fast) var(--feta-motion-ease-out-soft),
+    color var(--feta-motion-duration-fast) var(--feta-motion-ease-out-soft),
+    box-shadow var(--feta-motion-duration-fast) var(--feta-motion-ease-out-soft),
+    outline-color var(--feta-motion-duration-focus) var(--feta-motion-ease-out-soft);
+}
+
+.control:focus-visible { outline-color: var(--feta-text-primary); }
+
+.control:disabled {
+  background: var(--feta-alpha-ink-base-5);
+  box-shadow: none;
+  color: var(--feta-text-quaternary);
+  cursor: not-allowed;
+}
+
+.surface {
+  background-color: var(--feta-bg-surface);
+  color: var(--feta-text-primary);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft);
+}
+
+.inverse {
+  background-color: var(--feta-bg-inverse);
+  color: var(--feta-text-inverse);
+}
+
+.soft {
+  background-color: var(--feta-alpha-ink-base-5);
+  color: var(--feta-text-primary);
+}
+
+@media (hover: hover) {
+  .surface:hover:not(:disabled):not(:active) { background-color: var(--feta-bg-subtle); }
+  .inverse:hover:not(:disabled):not(:active) { background-color: color-mix(in oklab, var(--feta-bg-inverse) 88%, var(--feta-bg-canvas)); }
+  .soft:hover:not(:disabled):not(:active) { background-color: var(--feta-alpha-ink-base-8); }
+}
+
+.surface:active:not(:disabled) {
+  background-color: var(--feta-alpha-ink-base-5);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8);
+}
+
+.inverse:active:not(:disabled) { background-color: color-mix(in oklab, var(--feta-bg-inverse) 80%, var(--feta-bg-canvas)); }
+.soft:active:not(:disabled) { background-color: var(--feta-alpha-ink-base-10); }
+
+.icon {
+  display: inline-flex;
+  flex: none;
+}
+
+.icon svg {
+  display: block;
+  width: var(--feta-size-icon);
+  height: var(--feta-size-icon);
+}
+
+.tray {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  padding: var(--feta-space-1);
+  border-radius: var(--feta-radius-tray);
+  background-color: var(--feta-alpha-ink-base-4);
+  color: var(--feta-text-primary);
+  font: var(--feta-text-label-default);
+  letter-spacing: var(--feta-text-label-default-tracking);
+}
+
+.trayHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--feta-space-2);
+  padding: var(--feta-space-2) var(--feta-space-3) var(--feta-space-2-5);
+}
+
+.trayTitle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--feta-space-2);
+}
+
+.meta {
+  font: var(--feta-text-caption-default);
+  color: var(--feta-text-secondary);
+}
+
+.card {
+  box-sizing: border-box;
+  border-radius: var(--feta-radius-card);
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft);
+}
+
+/* Flex, not inline-block: an icon alone would sit on a text baseline and ride high. */
+.swap {
+  display: inline-flex;
+  align-items: center;
+  will-change: transform, opacity;
+}
+
+.rolling {
+  display: inline-flex;
+  font-variant-numeric: tabular-nums;
+}
+
+.digit {
+  display: inline-block;
+  overflow: hidden;
+  white-space: pre;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .control { transition-duration: var(--feta-motion-duration-focus); }
+}
+
+.control[data-still] { transition: none; }
+
+/* Roll: text rolls up to a copy of itself while its host is hovered or focused. Hosts carry data-roll-host. */
+.roll { position: relative; display: inline-grid; overflow: hidden; vertical-align: top; max-width: 100%; }
+.roll > span { grid-area: 1 / 1; overflow: hidden; text-overflow: ellipsis; transition: transform var(--feta-motion-duration-slow) var(--feta-motion-ease-out-soft); }
+.roll > span + span { transform: translateY(105%); }
+@media (hover: hover) {
+  [data-roll-host]:hover .roll:not([data-still]) > span { transform: translateY(-105%); }
+  [data-roll-host]:hover .roll:not([data-still]) > span + span { transform: translateY(0); }
+}
+[data-roll-host]:focus-visible .roll:not([data-still]) > span,
+[data-roll-host]:focus-within:has(:focus-visible) .roll:not([data-still]) > span { transform: translateY(-105%); }
+[data-roll-host]:focus-visible .roll:not([data-still]) > span + span,
+[data-roll-host]:focus-within:has(:focus-visible) .roll:not([data-still]) > span + span { transform: translateY(0); }
+.roll[data-still] > span { transition: none; }
+/* Pressed: the roll stops and the text rests, without moving, until the pointer leaves. */
+[data-roll-host][data-roll-pressed] .roll > span { transform: none !important; transition: none; }
+[data-roll-host][data-roll-pressed] .roll > span + span { transform: translateY(105%) !important; }
+@media (prefers-reduced-motion: reduce) { .roll > span { transition: none; } .roll > span + span { visibility: hidden; } }

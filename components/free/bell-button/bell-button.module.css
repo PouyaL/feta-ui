@@ -1,0 +1,32 @@
+/* Bell Button: FetaUI 06 Motion Buttons Handoff and Motion. */
+.button {
+  height: var(--feta-size-button-md);
+  padding: 0 var(--feta-space-4) 0 var(--feta-space-3-5);
+  gap: var(--feta-space-1-5);
+}
+
+.button[data-variant="compact"] {
+  height: var(--feta-size-button-sm);
+  padding-inline: var(--feta-space-2-5);
+  font: var(--feta-text-label-small);
+  letter-spacing: var(--feta-text-label-small-tracking);
+}
+
+.button[data-variant="icon"] {
+  width: var(--feta-size-button-md);
+  padding: 0;
+}
+
+.bell {
+  transform-origin: 50% 10%;
+}
+
+.clapper {
+  display: inline-flex;
+  transform-origin: 50% 10%;
+}
+
+.label {
+  display: inline-flex;
+  white-space: nowrap;
+}

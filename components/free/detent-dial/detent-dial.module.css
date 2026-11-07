@@ -1,0 +1,129 @@
+/* Detent Dial: FetaUI 25 Detent Dial Handoff and Motion. */
+.tray {
+  box-sizing: border-box;
+  width: 300px;
+  max-width: 100%;
+  padding: var(--feta-space-1);
+  border-radius: var(--feta-radius-tray);
+  background-color: var(--feta-alpha-ink-base-4);
+}
+
+.tray[data-disabled] { opacity: 0.5; }
+
+.card {
+  display: grid;
+  place-items: center;
+  padding: var(--feta-space-3);
+  border-radius: var(--feta-radius-card);
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft);
+}
+
+.dial {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 240px;
+  max-width: 100%;
+  aspect-ratio: 1;
+  border-radius: var(--feta-radius-full);
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  outline: 0;
+}
+
+.dial:active { cursor: grabbing; }
+.dial[aria-disabled] { cursor: not-allowed; }
+
+.ticks {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.ticks line {
+  stroke: var(--feta-alpha-ink-base-10);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.ticks line[data-on] { stroke: var(--feta-text-primary); }
+.dial[data-limit] .ticks line[data-on] { stroke: var(--feta-status-warning-text); }
+
+.knob {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 64%;
+  aspect-ratio: 1;
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft);
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+.dial:focus-visible .knob { outline-color: var(--feta-text-primary); }
+
+.pointer {
+  position: absolute;
+  inset: 0;
+}
+
+.indicator {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  width: 3px;
+  height: 10px;
+  margin-left: calc(-1 * var(--feta-space-0-5));
+  border-radius: var(--feta-radius-xs);
+  background-color: var(--feta-text-primary);
+}
+
+.dial[data-limit] .indicator { background-color: var(--feta-status-warning-text); }
+
+.readout {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: opacity var(--feta-motion-duration-fast) var(--feta-motion-ease-out);
+}
+
+.readout[data-turning] { opacity: 0.75; }
+.tray[data-still] .readout { transition: none; }
+
+.value {
+  color: var(--feta-text-primary);
+  font-size: 34px;
+  font-weight: 600;
+  line-height: 40px;
+  letter-spacing: -0.04em;
+}
+
+.label {
+  color: var(--feta-text-secondary);
+  font: var(--feta-text-caption-default);
+  letter-spacing: var(--feta-text-caption-default-tracking);
+}
+
+.range {
+  color: var(--feta-alpha-ink-base-60);
+  font: var(--feta-text-mono-micro);
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--feta-space-2);
+}
+
+.now {
+  color: var(--feta-text-secondary);
+  font: var(--feta-text-mono-micro);
+}

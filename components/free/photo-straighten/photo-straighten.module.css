@@ -1,0 +1,151 @@
+/* Photo Straighten: FetaUI 39 Media Handoff and Motion. */
+.tray {
+  --photo: 300px;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 480px;
+  margin-inline: auto;
+  padding: var(--feta-space-1);
+  border-radius: var(--feta-radius-tray);
+  background-color: var(--feta-alpha-ink-base-4);
+}
+
+[data-platform="mobile"] .tray { --photo: 230px; }
+
+@media (max-width: 640px) {
+  :root:not([data-platform="web"]) .tray { --photo: 230px; }
+}
+
+.body {
+  padding: var(--feta-space-2);
+  border-radius: var(--feta-radius-card);
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft);
+}
+
+.photo {
+  position: relative;
+  height: var(--photo);
+  overflow: hidden;
+  border-radius: var(--feta-radius-control);
+}
+
+/* Scaled 1.16, so a rotated photo never shows its corners. */
+.image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  scale: 1.16;
+  user-select: none;
+}
+
+.grid {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(rgb(255 255 255 / 45%) 0 0) 33.33% 0 / 1px 100% no-repeat,
+    linear-gradient(rgb(255 255 255 / 45%) 0 0) 66.66% 0 / 1px 100% no-repeat,
+    linear-gradient(rgb(255 255 255 / 45%) 0 0) 0 33.33% / 100% 1px no-repeat,
+    linear-gradient(rgb(255 255 255 / 45%) 0 0) 0 66.66% / 100% 1px no-repeat;
+  opacity: 0;
+  transition: opacity var(--feta-motion-duration-fast) var(--feta-motion-ease-out);
+  pointer-events: none;
+}
+
+.tray[data-active] .grid { opacity: 1; }
+
+.chip {
+  position: absolute;
+  top: var(--feta-space-2);
+  left: var(--feta-space-2);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--feta-space-1);
+  padding: var(--feta-space-0-5) var(--feta-space-2);
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-bg-inverse);
+  color: var(--feta-text-inverse);
+  font: var(--feta-text-label-micro);
+  letter-spacing: -0.04em;
+  transition: background-color var(--feta-motion-duration-base) var(--feta-motion-ease-out), color var(--feta-motion-duration-base) var(--feta-motion-ease-out);
+}
+
+.chip svg { width: 12px; height: 12px; }
+.chip:empty { display: none; }
+
+.tray[data-level] .chip {
+  background-color: var(--feta-status-success-strong);
+  color: var(--feta-status-on-solid);
+}
+
+.controls { padding: var(--feta-space-2) var(--feta-space-2) var(--feta-space-1); }
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--feta-space-1);
+}
+
+.angle {
+  flex: 1;
+  color: var(--feta-text-primary);
+  font: 500 13px/16px var(--feta-type-font-mono);
+  text-align: center;
+  transition: color var(--feta-motion-duration-base) var(--feta-motion-ease-out);
+}
+
+.tray[data-level] .angle { color: var(--feta-status-success-text); }
+
+.ruler {
+  position: relative;
+  height: 44px;
+  overflow: hidden;
+  cursor: ew-resize;
+  touch-action: pan-y;
+  outline: 2px solid transparent;
+  outline-offset: -2px;
+  border-radius: var(--feta-radius-field);
+  mask: linear-gradient(90deg, transparent, #000 15%, #000 85%, transparent);
+}
+
+.ruler:focus-visible { outline-color: var(--feta-text-primary); }
+
+/* 9 px per degree, a taller major every 5. */
+.scale {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  width: 540px;
+  height: 14px;
+  margin-left: calc(-1 * var(--feta-space-67-5));
+  background:
+    repeating-linear-gradient(90deg, var(--feta-alpha-ink-base-60) 0 1px, transparent 1px 45px) 0 0 / 541px 14px no-repeat,
+    repeating-linear-gradient(90deg, var(--feta-alpha-ink-base-10) 0 1px, transparent 1px 9px) 0 3px / 541px 8px no-repeat;
+}
+
+.scale .tickLabel {
+  position: absolute;
+  top: 17px;
+  color: var(--feta-text-tertiary);
+  font: var(--feta-text-mono-micro);
+  white-space: nowrap;
+  margin-left: var(--feta-space-67-5);
+  transform: translateX(-50%);
+}
+
+.centre {
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  width: 2px;
+  height: 22px;
+  margin-left: calc(-1 * var(--feta-space-0-5));
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-bg-inverse);
+  pointer-events: none;
+}
+
+.tray[data-still] .grid,
+.tray[data-still] .chip,
+.tray[data-still] .angle { transition: none; }

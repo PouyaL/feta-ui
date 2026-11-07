@@ -1,0 +1,107 @@
+/* Alert: FetaUI 04 Alert Handoff and Motion. */
+.alert {
+  --tone: var(--feta-bg-inverse);
+  --tone-ink: var(--feta-text-inverse);
+  --tint: var(--feta-alpha-ink-base-4);
+  --tone-text: var(--feta-text-primary);
+
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  box-sizing: border-box;
+  width: 100%;
+  overflow: hidden;
+  font-family: var(--feta-type-font-sans);
+  letter-spacing: -0.04em;
+  color: var(--feta-text-primary);
+  touch-action: pan-y;
+}
+.alert[data-tone="info"] { --tone: var(--feta-status-info); --tone-ink: var(--feta-status-on-solid); --tint: var(--feta-bg-info-subtle); --tone-text: var(--feta-status-info-text); }
+.alert[data-tone="success"] { --tone: var(--feta-status-success-strong); --tone-ink: var(--feta-status-on-solid); --tint: var(--feta-bg-success-subtle); --tone-text: var(--feta-status-success-text); }
+.alert[data-tone="warning"] { --tone: var(--feta-status-warning); --tone-ink: var(--feta-status-on-solid); --tint: var(--feta-bg-warning-subtle); --tone-text: var(--feta-status-warning-text); }
+.alert[data-tone="danger"] { --tone: var(--feta-status-danger-strong); --tone-ink: var(--feta-status-on-solid); --tint: var(--feta-bg-danger-subtle); --tone-text: var(--feta-status-danger-text); }
+.alert[data-tone="accent"] { --tone: var(--feta-status-accent); --tone-ink: var(--feta-status-on-solid); --tint: var(--feta-bg-accent-subtle); --tone-text: var(--feta-status-accent-text); }
+
+.alert[data-variant="card"] {
+  max-width: 560px;
+  padding: var(--feta-space-3-5) var(--feta-space-3) var(--feta-space-3-5) var(--feta-space-4);
+  gap: var(--feta-space-3);
+  border-radius: var(--feta-radius-card);
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft);
+}
+.alert[data-variant="inline"] {
+  padding: var(--feta-space-3) var(--feta-space-3-5);
+  gap: var(--feta-space-2-5);
+  border-radius: var(--feta-radius-control);
+  background-color: var(--tint);
+}
+.alert[data-variant="banner"] {
+  align-items: center;
+  padding: var(--feta-space-2-5) var(--feta-space-4);
+  gap: var(--feta-space-3);
+  background-color: var(--feta-alpha-ink-base-4);
+  box-shadow: inset 0 -1px 0 0 var(--feta-alpha-ink-base-8);
+}
+
+.badge {
+  --d: 24px;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--d);
+  height: var(--d);
+  border-radius: var(--feta-radius-full);
+  color: var(--tone-ink, var(--feta-status-on-solid));
+  background-color: var(--tone, var(--feta-bg-inverse));
+}
+.badge[data-size="sm"] { --d: 20px; }
+.badge[data-size="lg"] { --d: 32px; }
+.badge :where(svg) { width: 60%; height: 60%; }
+.badge[data-tone="neutral"] { --tone: var(--feta-bg-inverse); --tone-ink: var(--feta-text-inverse); }
+.badge[data-tone="info"] { --tone: var(--feta-status-info); --tone-ink: var(--feta-status-on-solid); }
+.badge[data-tone="success"] { --tone: var(--feta-status-success-strong); --tone-ink: var(--feta-status-on-solid); }
+.badge[data-tone="warning"] { --tone: var(--feta-status-warning); --tone-ink: var(--feta-status-on-solid); }
+.badge[data-tone="danger"] { --tone: var(--feta-status-danger-strong); --tone-ink: var(--feta-status-on-solid); }
+.badge[data-tone="accent"] { --tone: var(--feta-status-accent); --tone-ink: var(--feta-status-on-solid); }
+
+.icon { display: inline-flex; flex: none; margin-top: var(--feta-space-0-5); color: var(--tone-text); }
+.text { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: var(--feta-space-0-5); }
+.title { font: var(--feta-text-title-small); letter-spacing: -0.04em; color: var(--feta-text-primary); }
+.alert[data-variant="inline"] .title { color: var(--tone-text); }
+.description { font-size: 13px; line-height: 20px; color: var(--feta-text-secondary); }
+.line { margin: 0; font-size: 13px; line-height: 20px; color: var(--feta-text-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.line strong { font-weight: 500; color: var(--feta-text-primary); }
+
+.action, .dismiss { flex: none; }
+.action { display: inline-flex; align-self: center; }
+.alert[data-variant="card"] .dismiss { align-self: center; margin-left: calc(-1 * var(--feta-space-2)); }
+
+.timer {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 2px;
+  transform-origin: left;
+  background-color: var(--tone);
+  animation: drain linear forwards;
+}
+.timer[data-paused] { animation-play-state: paused; }
+.timer[data-still] { animation: none; }
+
+@keyframes drain { to { transform: scaleX(0); } }
+
+@media (max-width: 640px) {
+  :root:not([data-platform="web"]) .alert[data-variant="card"] { flex-wrap: wrap; padding: var(--feta-space-4) var(--feta-space-3) var(--feta-space-4) var(--feta-space-4); max-width: none; }
+  :root:not([data-platform="web"]) .alert[data-variant="card"] .text { flex-basis: calc(100% - 84px); }
+  :root:not([data-platform="web"]) .alert[data-variant="card"] .action { order: 3; flex-basis: 100%; padding-left: var(--feta-space-10); }
+  :root:not([data-platform="web"]) .alert[data-variant="card"] .dismiss { align-self: flex-start; margin: calc(-1 * var(--feta-space-2)) calc(-1 * var(--feta-space-1)) 0 0; }
+  :root:not([data-platform="web"]) .alert[data-variant="banner"] { padding: var(--feta-space-3) var(--feta-space-4); }
+  :root:not([data-platform="web"]) .line { white-space: normal; }
+}
+[data-platform="mobile"] .alert[data-variant="card"] { flex-wrap: wrap; padding: var(--feta-space-4) var(--feta-space-3) var(--feta-space-4) var(--feta-space-4); max-width: none; }
+[data-platform="mobile"] .alert[data-variant="card"] .text { flex-basis: calc(100% - 84px); }
+[data-platform="mobile"] .alert[data-variant="card"] .action { order: 3; flex-basis: 100%; padding-left: var(--feta-space-10); }
+[data-platform="mobile"] .alert[data-variant="card"] .dismiss { align-self: flex-start; margin: calc(-1 * var(--feta-space-2)) calc(-1 * var(--feta-space-1)) 0 0; }
+[data-platform="mobile"] .alert[data-variant="banner"] { padding: var(--feta-space-3) var(--feta-space-4); }
+[data-platform="mobile"] .line { white-space: normal; }

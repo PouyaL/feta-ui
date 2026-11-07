@@ -1,0 +1,117 @@
+/* FetaUI 55 Marking Menu Handoff. */
+.area {
+  --disc: 224px;
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 320px;
+  overflow: hidden;
+  border-radius: var(--feta-radius-card);
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8);
+  color: var(--feta-text-secondary);
+  cursor: default;
+  outline: 2px solid transparent;
+  outline-offset: -2px;
+  touch-action: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.area:focus-visible { outline-color: var(--feta-text-primary); }
+
+.disc {
+  position: absolute;
+  z-index: 5;
+  width: var(--disc);
+  height: var(--disc);
+  margin: calc(var(--disc) / -2) 0 0 calc(var(--disc) / -2);
+  border-radius: var(--feta-radius-full);
+  background: linear-gradient(var(--feta-alpha-ink-base-4), var(--feta-alpha-ink-base-4)), var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft);
+}
+
+.wedge {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  fill: var(--feta-alpha-ink-base-5);
+}
+
+.target {
+  position: absolute;
+  top: calc(50% - 20px);
+  left: calc(50% - 20px);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--feta-radius-full);
+  color: var(--feta-text-secondary);
+}
+
+.target svg { display: block; width: 20px; height: 20px; }
+
+.target[data-on] {
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1.5px var(--feta-text-primary);
+  color: var(--feta-text-primary);
+}
+
+.target[data-picked] { background-color: var(--feta-alpha-ink-base-10); }
+
+.hub {
+  position: absolute;
+  top: calc(50% - 32px);
+  left: calc(50% - 32px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 64px;
+  height: 64px;
+  padding: var(--feta-space-1);
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-alpha-ink-base-4);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8);
+  color: var(--feta-text-primary);
+  font-family: var(--feta-type-font-sans);
+  font-size: 11px;
+  line-height: 14px;
+  letter-spacing: -0.04em;
+  font-weight: 500;
+  text-align: center;
+}
+
+.trail {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  stroke: var(--feta-alpha-ink-base-60);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.chip {
+  position: absolute;
+  bottom: var(--feta-space-4);
+  left: 50%;
+  margin-left: calc(-1 * var(--feta-space-20));
+  width: 160px;
+  padding: var(--feta-space-1-5) var(--feta-space-3);
+  box-sizing: border-box;
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-bg-inverse);
+  color: var(--feta-text-inverse);
+  font: var(--feta-text-label-default);
+  letter-spacing: var(--feta-text-label-default-tracking);
+  text-align: center;
+}
+
+@media (max-width: 640px) { .area { --disc: 232px; } }
+[data-platform="mobile"] .area { --disc: 232px; }
+[data-platform="web"] .area { --disc: 224px; }

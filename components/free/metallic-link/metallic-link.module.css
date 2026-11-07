@@ -1,0 +1,115 @@
+/* Metallic Link: FetaUI 06 Motion Buttons Handoff and Motion. */
+.link {
+  --base: var(--feta-bg-surface);
+  /* Silver for the hover face: the chrome ramp mixed into the base, so it reads on light and dark. */
+  --silver-hi: color-mix(in srgb, var(--feta-chrome-hi) 55%, var(--base));
+  --silver-lo: color-mix(in srgb, var(--feta-chrome-lo) 30%, var(--base));
+  position: relative;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  height: 40px;
+  /* The 2px rim is drawn inside the box, so the padding carries those 2px. */
+  padding: 0 calc(var(--feta-space-3) + 2px) 0 calc(var(--feta-space-3-5) + 2px);
+  gap: var(--feta-space-1-5);
+  overflow: hidden;
+  border: 0;
+  border-radius: var(--feta-radius-full);
+  color: var(--feta-text-primary);
+  background-color: var(--base);
+  box-shadow: inset 0 1px 0 var(--feta-effect-sheen-inverse), inset 0 -1px 0 var(--feta-alpha-ink-base-10);
+  font: var(--feta-text-label-default);
+  letter-spacing: var(--feta-text-label-default-tracking);
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  -webkit-tap-highlight-color: transparent;
+  transition: outline-color var(--feta-motion-duration-focus) var(--feta-motion-ease-out-soft);
+}
+
+.link[data-kind="inverted"] {
+  --base: var(--feta-bg-inverse);
+  color: var(--feta-text-inverse);
+}
+
+.link:focus-visible { outline-color: var(--feta-text-primary); }
+
+/* The 2px chrome rim: a ring cut from the box, with the gradient turning inside it. */
+.rim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  padding: 2px;
+  overflow: hidden;
+  border-radius: inherit;
+  -webkit-mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  pointer-events: none;
+}
+
+.rimTurn {
+  /* Centered by offsets, not a translate: WebKit freezes a keyframed translate plus rotate here. Margins
+     resolve against the width, so -75% lifts the 150% square by half its side. */
+  position: absolute;
+  top: 50%;
+  left: -25%;
+  width: 150%;
+  aspect-ratio: 1;
+  margin-top: -75%;
+  background: conic-gradient(from 135deg, var(--feta-chrome-hi), var(--feta-chrome-mid), var(--feta-chrome-lo), var(--feta-chrome-deep), var(--feta-chrome-lo), var(--feta-chrome-mid), var(--feta-chrome-hi));
+  /* Turns on its own at rest, one slow lap. */
+  animation: turn 6s linear infinite;
+}
+
+/* The silver face, shown on hover: a soft band of light drifting across. The face is three link widths
+   wide, starts one tile (two widths) to the left and slides one tile right, so the drift is a transform
+   the compositor runs, not a repainted background-position. The link's overflow and radius clip it. */
+.face {
+  position: absolute;
+  inset: 0 auto 0 -200%;
+  width: 300%;
+  background: linear-gradient(110deg, var(--silver-lo) 0%, var(--silver-hi) 30%, var(--silver-lo) 50%, var(--silver-hi) 75%, var(--silver-lo) 100%);
+  background-size: calc(200% / 3) 100%;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 240ms var(--feta-motion-ease-out);
+  animation: drift 2.4s linear infinite;
+  animation-play-state: paused;
+}
+
+.content { position: relative; z-index: 2; }
+
+.arrow { transition: transform 240ms var(--feta-motion-ease-out); }
+
+@media (hover: hover) {
+  .link:not([data-disabled]):hover .face { opacity: 1; animation-play-state: running; }
+  /* Up-right turns to point right. */
+  .link:not([data-disabled]):hover .arrow { transform: rotate(45deg); }
+}
+
+/* Pressed: a deeper face. */
+.link:not([data-disabled]):active .face { opacity: 1; filter: brightness(0.94); }
+
+.link[data-disabled] {
+  opacity: 0.4;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.link[data-offscreen] .rimTurn,
+.link[data-offscreen] .face { animation-play-state: paused; }
+
+.link[data-still] .rimTurn,
+.link[data-still] .face { animation: none; }
+.link[data-still] .face,
+.link[data-still] .arrow { transition: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .rimTurn, .face { animation: none; }
+  .face, .arrow { transition: none; }
+}
+
+@keyframes turn { to { transform: rotate(360deg); } }
+@keyframes drift { to { transform: translateX(calc(200% / 3)); } }

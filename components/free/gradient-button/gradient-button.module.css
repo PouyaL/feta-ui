@@ -1,0 +1,126 @@
+/* Gradient Button: FetaUI 06 Motion Buttons Handoff and Motion, with a pointer light, a turning ring, a magnetic pull and a press burst. */
+.button {
+  --from: var(--feta-gradient-emerald-from);
+  --to: var(--feta-gradient-emerald-to);
+  --deep: var(--feta-gradient-emerald-deep);
+  --mx: 50%;
+  --my: 50%;
+  --tx: 0px;
+  --ty: 0px;
+  position: relative;
+  isolation: isolate;
+  height: var(--feta-size-button-lg);
+  padding-inline: var(--feta-space-5);
+  gap: var(--feta-space-2);
+  overflow: hidden;
+  border-radius: var(--feta-radius-control);
+  color: var(--feta-status-on-solid);
+  background-image: linear-gradient(to bottom, var(--from), var(--to));
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--feta-status-on-solid) 35%, transparent),
+    0 6px 16px -8px var(--to);
+  translate: var(--tx) var(--ty);
+  transition:
+    translate 420ms cubic-bezier(0.23, 1, 0.32, 1),
+    box-shadow 320ms cubic-bezier(0.23, 1, 0.32, 1),
+    scale 120ms cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.button[data-color="violet"] {
+  --from: var(--feta-gradient-violet-from);
+  --to: var(--feta-gradient-violet-to);
+  --deep: var(--feta-gradient-violet-deep);
+}
+
+.button[data-color="orange"] {
+  --from: var(--feta-gradient-orange-from);
+  --to: var(--feta-gradient-orange-to);
+  --deep: var(--feta-gradient-orange-deep);
+}
+
+/* Pressed: it deepens and sinks in. */
+.button:active:not(:disabled) {
+  background-image: linear-gradient(to bottom, var(--to), var(--deep));
+  box-shadow: inset 0 2px 6px color-mix(in srgb, var(--deep) 70%, transparent), 0 2px 6px -4px var(--to);
+  scale: 0.97;
+}
+
+/* The sheen sweeps once as the pointer enters. */
+.button::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background-image: linear-gradient(105deg, transparent 30%, var(--feta-effect-sheen-on-solid) 50%, transparent 70%);
+  opacity: 0;
+  transform: translateX(-100%);
+  pointer-events: none;
+}
+
+/* A soft light that follows the cursor. */
+.light {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: radial-gradient(90px circle at var(--mx) var(--my), color-mix(in srgb, var(--feta-white) 32%, transparent), transparent 70%);
+  opacity: 0;
+  transition: opacity 240ms ease;
+  pointer-events: none;
+}
+
+/* A thin ring of the button's own colors that turns around the edge on hover. */
+.ring {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  padding: 1.5px;
+  border-radius: inherit;
+  background: conic-gradient(from var(--spin, 0deg), transparent 0 25%, color-mix(in srgb, var(--feta-white) 85%, var(--from)) 38%, transparent 50%, transparent 75%, color-mix(in srgb, var(--feta-white) 60%, var(--to)) 88%, transparent);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  opacity: 0;
+  transition: opacity 320ms ease;
+  pointer-events: none;
+}
+@property --spin { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+@keyframes spin { to { --spin: 360deg; } }
+
+.content { position: relative; z-index: 2; }
+.icon { transition: transform 420ms cubic-bezier(0.34, 1.56, 0.64, 1); }
+
+/* The press burst: a ripple and sparks out from where it was pressed. */
+.burst { position: absolute; z-index: 1; width: 0; height: 0; pointer-events: none; }
+.ripple { position: absolute; left: -60px; top: -60px; width: 120px; height: 120px; border-radius: var(--feta-radius-full); background: radial-gradient(closest-side, color-mix(in srgb, var(--feta-white) 45%, transparent), transparent); animation: ripple 600ms cubic-bezier(0.23, 1, 0.32, 1) both; }
+.spark { position: absolute; left: -2px; top: -2px; width: 4px; height: 4px; border-radius: var(--feta-radius-full); background: var(--feta-white); animation: spark 560ms cubic-bezier(0.23, 1, 0.32, 1) both; }
+@keyframes ripple { from { opacity: 1; transform: scale(0.1); } to { opacity: 0; transform: scale(2.4); } }
+@keyframes spark { from { opacity: 1; transform: rotate(var(--a)) translateX(4px) scale(1); } to { opacity: 0; transform: rotate(var(--a)) translateX(26px) scale(0.3); } }
+
+@media (hover: hover) {
+  .button:not(:disabled):not([data-still]):hover { box-shadow: inset 0 1px 0 color-mix(in srgb, var(--feta-status-on-solid) 35%, transparent), 0 10px 24px -10px var(--to); }
+  .button:not(:disabled):not([data-still]):hover::after {
+    opacity: 1;
+    transform: translateX(100%);
+    transition: transform var(--feta-motion-duration-sheen) var(--feta-motion-ease-sheen);
+  }
+  .button:not(:disabled):not([data-still]):hover .light { opacity: 1; }
+  .button:not(:disabled):not([data-still]):hover .ring { opacity: 1; animation: spin 2400ms linear infinite; }
+  .button:not(:disabled):not([data-still]):hover .icon { transform: rotate(-12deg) scale(1.12); }
+}
+
+.button:focus-visible { outline: 2px solid var(--to); outline-offset: 2px; }
+
+.button[data-still] { translate: none; transition: none; }
+.button[data-still] .light, .button[data-still] .ring { display: none; }
+
+.button:disabled {
+  background-image: none;
+  translate: none;
+}
+.button:disabled .light, .button:disabled .ring { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .button { translate: none; transition: none; }
+  .ring, .light, .burst { display: none; }
+  .icon { transition: none; }
+}

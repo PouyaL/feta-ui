@@ -1,0 +1,9 @@
+/* Inside <ComponentAnimation animated={false}> nothing moves, except what shows status. */
+.scope { display: contents; }
+
+.off *:not([data-keep-motion]),
+.off *:not([data-keep-motion])::before,
+.off *:not([data-keep-motion])::after {
+  animation: none !important;
+  transition: none !important;
+}

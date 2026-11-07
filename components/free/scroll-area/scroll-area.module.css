@@ -1,0 +1,232 @@
+/* Scroll Area: FetaUI 46 Scroll Area Handoff and Motion. */
+.frame {
+  --bar: 10px;
+  --thumb: 4px;
+  --thumb-wide: 6px;
+  --fade-end: 56px;
+  position: relative;
+  display: block;
+  min-width: 0;
+  background-color: inherit;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+[data-platform="mobile"] .frame { --bar: 6px; --thumb: 3px; --thumb-wide: 3px; }
+
+@media (max-width: 640px) {
+  :root:not([data-platform="web"]) .frame { --bar: 6px; --thumb: 3px; --thumb-wide: 3px; }
+}
+
+.viewport {
+  position: relative;
+  overflow: auto;
+  scrollbar-width: none;
+  overscroll-behavior: contain;
+  outline: 2px solid transparent;
+  outline-offset: -2px;
+  border-radius: inherit;
+}
+
+.viewport::-webkit-scrollbar { display: none; }
+.viewport:focus-visible { outline-color: var(--feta-text-primary); }
+.viewport[data-orientation="vertical"] { overflow-x: hidden; }
+.viewport[data-orientation="horizontal"] { overflow-y: hidden; }
+
+/* The bar floats over the content, so a showing vertical bar gets its own gutter: bar, its 2px inset and 4px of air. */
+.frame:has(.bar[data-orientation="vertical"]:not([data-fits])) .viewport:not([data-orientation="horizontal"]) { padding-right: calc(var(--bar) + 6px); }
+
+.fadeTop,
+.fadeBottom,
+.fadeEnd {
+  position: absolute;
+  z-index: 1;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms var(--feta-motion-ease-out);
+}
+
+.frame:not([data-fades]) .fadeTop,
+.frame:not([data-fades]) .fadeBottom,
+.frame:not([data-fades]) .fadeEnd { display: none; }
+
+.fadeTop {
+  inset: 0 0 auto;
+  height: 28px;
+  background: linear-gradient(to bottom, var(--feta-bg-surface), var(--feta-effect-clear-surface));
+}
+
+.fadeBottom {
+  inset: auto 0 0;
+  height: var(--fade-end);
+  background: linear-gradient(to top, var(--feta-bg-surface), var(--feta-effect-clear-surface));
+}
+
+.fadeEnd {
+  inset: 0 0 0 auto;
+  width: var(--fade-end);
+  background: linear-gradient(to left, var(--feta-bg-surface), var(--feta-effect-clear-surface));
+}
+
+.frame[data-top] .fadeTop,
+.frame[data-bottom] .fadeBottom,
+.frame[data-end] .fadeEnd { opacity: 1; }
+
+.frame[data-still] .fadeTop,
+.frame[data-still] .fadeBottom,
+.frame[data-still] .fadeEnd { transition: none; }
+
+/* The bar */
+.bar {
+  position: absolute;
+  z-index: 2;
+  box-sizing: border-box;
+  border-radius: var(--feta-radius-full);
+  transition: opacity var(--feta-motion-duration-focus) var(--feta-motion-ease-out), background-color 160ms var(--feta-motion-ease-out);
+  touch-action: none;
+}
+
+.bar[data-orientation="vertical"] {
+  top: 2px;
+  right: 2px;
+  bottom: 2px;
+  width: var(--bar);
+  padding: var(--feta-space-0-5) 0;
+}
+
+.bar[data-orientation="horizontal"] {
+  right: 2px;
+  bottom: 2px;
+  left: 2px;
+  height: var(--bar);
+  padding: 0 var(--feta-space-0-5);
+}
+
+.bar[data-hidden] {
+  opacity: 0;
+  transition: opacity 240ms cubic-bezier(0.4, 0, 1, 1);
+}
+
+.bar[data-fits] { display: none; }
+.bar[data-still] { transition: none; }
+
+.thumb {
+  position: relative;
+  box-sizing: border-box;
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-alpha-ink-base-10);
+  transition: background-color var(--feta-motion-duration-focus) var(--feta-motion-ease-out), width 160ms var(--feta-motion-ease-out), height 160ms var(--feta-motion-ease-out);
+  cursor: default;
+}
+
+.bar[data-orientation="vertical"] .thumb {
+  width: var(--thumb);
+  margin-left: auto;
+  margin-right: calc((var(--bar) - var(--thumb)) / 2);
+}
+
+.bar[data-orientation="horizontal"] .thumb {
+  height: var(--thumb);
+  margin-top: calc((var(--bar) - var(--thumb)) / 2);
+}
+
+.bar[data-still] .thumb { transition: none; }
+
+.bar[data-dragging] { background-color: var(--feta-alpha-ink-base-5); }
+.bar[data-dragging] .thumb { background-color: var(--feta-text-primary); }
+.bar[data-orientation="vertical"][data-dragging] .thumb { width: var(--thumb-wide); }
+.bar[data-orientation="horizontal"][data-dragging] .thumb { height: var(--thumb-wide); }
+
+@media (hover: hover) {
+  .bar:hover { background-color: var(--feta-alpha-ink-base-4); }
+  .bar:hover .thumb { background-color: var(--feta-text-tertiary); }
+  .bar[data-orientation="vertical"]:hover .thumb { width: var(--thumb-wide); }
+  .bar[data-orientation="horizontal"]:hover .thumb { height: var(--thumb-wide); }
+  .bar[data-dragging]:hover .thumb { background-color: var(--feta-text-primary); }
+}
+
+/* Mono position tip, 8 from the thumb. Web only. */
+.tip {
+  position: absolute;
+  padding: var(--feta-space-0-5) var(--feta-space-1-5);
+  border-radius: var(--feta-radius-md);
+  background-color: var(--feta-bg-inverse);
+  color: var(--feta-text-inverse);
+  font: 400 10px/12px var(--feta-type-font-mono);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--feta-motion-duration-focus) var(--feta-motion-ease-out), translate var(--feta-motion-duration-focus) var(--feta-motion-ease-out);
+}
+
+.bar[data-orientation="vertical"] .tip {
+  top: 50%;
+  right: calc(100% + 8px);
+  transform: translateY(-50%);
+  translate: 0 4px;
+}
+
+.bar[data-orientation="horizontal"] .tip {
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  translate: 0 4px;
+}
+
+.bar[data-dragging] .tip {
+  opacity: 1;
+  translate: 0 0;
+}
+
+[data-platform="mobile"] .tip { display: none; }
+
+@media (max-width: 640px) {
+  :root:not([data-platform="web"]) .tip { display: none; }
+}
+
+/* The Soft tray shell */
+.tray {
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--feta-space-1);
+  border-radius: var(--feta-radius-tray);
+  background-color: var(--feta-alpha-ink-base-4);
+}
+
+.shellHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--feta-space-2);
+  min-height: 36px;
+  padding-inline: var(--feta-space-3);
+}
+
+.shellTitle {
+  color: var(--feta-text-primary);
+  font: var(--feta-text-title-row);
+  letter-spacing: var(--feta-text-title-row-tracking);
+}
+
+.shellMeta {
+  margin-left: auto;
+  color: var(--feta-text-tertiary);
+  font: var(--feta-text-mono-meta);
+}
+
+.shellActions {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--feta-space-1);
+  margin-left: auto;
+}
+
+.shellMeta + .shellActions { margin-left: 0; }
+
+.body {
+  box-sizing: border-box;
+  padding: var(--feta-space-1-5);
+  overflow: hidden;
+  border-radius: var(--feta-radius-card);
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8);
+}

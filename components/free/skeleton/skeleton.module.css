@@ -1,0 +1,64 @@
+/* Skeleton: FetaUI 57 Skeleton Handoff and Motion. */
+.skeleton {
+  --w: 100%;
+  --h: 12px;
+  --r: var(--feta-radius-full);
+  position: relative;
+  display: block;
+  flex: none;
+  max-width: 100%;
+  width: var(--w);
+  height: var(--h);
+  overflow: hidden;
+  border-radius: var(--r);
+  background-color: var(--feta-alpha-ink-base-5);
+}
+.skeleton[data-shape="circle"] { --w: var(--h); --h: 36px; width: var(--h); }
+.skeleton[data-shape="block"] { --r: var(--feta-radius-xl); --h: 36px; }
+.skeleton[data-delayed] { animation: show 160ms var(--feta-motion-ease-out) var(--delay) backwards; }
+
+.skeleton[data-shimmer]::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 45%;
+  background: linear-gradient(90deg, transparent, var(--feta-alpha-ink-base-8), transparent);
+  transform: translateX(-100%);
+  animation: sheen 1.6s var(--feta-motion-ease-spread) infinite;
+}
+.skeleton[data-still]::after { animation: none; display: none; }
+[data-loop][data-offscreen].skeleton::after { animation-play-state: paused; }
+
+.shell {
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--feta-space-1);
+  border-radius: var(--feta-radius-frame);
+  background-color: var(--feta-alpha-ink-base-4);
+}
+.header { display: flex; align-items: center; justify-content: space-between; gap: var(--feta-space-2); padding: var(--feta-space-2) var(--feta-space-3); }
+.title { font: var(--feta-text-title-small); letter-spacing: var(--feta-text-title-small-tracking); color: var(--feta-text-primary); }
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--feta-space-1-5);
+  font: var(--feta-text-mono-micro);
+  letter-spacing: var(--feta-text-mono-micro-tracking);
+  color: var(--feta-text-tertiary);
+}
+.body {
+  box-sizing: border-box;
+  padding: var(--feta-space-4);
+  border-radius: var(--feta-radius-panel);
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft);
+}
+
+@keyframes sheen { to { transform: translateX(222%); } }
+@keyframes show { from { opacity: 0; } }
+@keyframes pulse { 50% { opacity: 0.7; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton[data-shimmer]::after { display: none; animation: none; }
+  .skeleton[data-shimmer]:not([data-still]) { animation: pulse 2s linear infinite; }
+}

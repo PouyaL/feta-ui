@@ -1,0 +1,64 @@
+/* Spending Ring: FetaUI 16.1 Showcase Cards Handoff and Motion. */
+.body.body { padding: var(--feta-space-5); }
+.body > div:first-child { gap: var(--feta-space-4); }
+
+.header { display: flex; align-items: center; justify-content: space-between; gap: var(--feta-space-2); }
+.title { margin: 0; font: 600 14px/20px var(--feta-type-font-sans); letter-spacing: var(--feta-text-body-row-tracking); }
+
+.wrap { display: flex; justify-content: center; padding: var(--feta-space-1) 0; }
+.ring { position: relative; width: 200px; height: 200px; }
+.svg { display: block; width: 100%; height: 100%; overflow: visible; }
+
+.arc { stroke: var(--feta-alpha-ink-base-10); cursor: pointer; transition: stroke var(--feta-motion-duration-base) var(--feta-motion-ease-out); }
+.arc[data-on] { stroke: var(--feta-bg-inverse); }
+
+.readout {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--feta-space-0-5);
+  width: 128px;
+  text-align: center;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.name { display: flex; align-items: center; gap: var(--feta-space-1-5); color: var(--feta-text-secondary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); }
+.nameDot { width: 6px; height: 6px; border-radius: var(--feta-radius-full); background-color: var(--feta-bg-inverse); }
+.amount { font: var(--feta-text-heading-small); letter-spacing: var(--feta-text-heading-small-tracking); }
+.share { color: var(--feta-text-secondary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); }
+.delta { color: var(--feta-text-tertiary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); text-wrap: balance; }
+
+.legend { display: grid; grid-template-columns: 1fr 1fr; gap: var(--feta-space-0-5) var(--feta-space-1); }
+
+.item {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: var(--feta-space-2);
+  min-width: 0;
+  padding: var(--feta-space-1-5) var(--feta-space-2);
+  border: 0;
+  border-radius: var(--feta-radius-field);
+  background: transparent;
+  color: var(--feta-text-primary);
+  cursor: pointer;
+  font: var(--feta-text-body-compact);
+  letter-spacing: var(--feta-text-body-compact-tracking);
+  outline: 2px solid transparent;
+  outline-offset: 1px;
+  text-align: left;
+  transition: background-color var(--feta-motion-duration-fast) var(--feta-motion-ease-out);
+}
+
+.item[data-on] { background-color: var(--feta-alpha-ink-base-5); }
+.item:focus-visible { outline-color: var(--feta-text-primary); }
+.legend[data-still] .item { transition: none; }
+.dot { flex: none; width: 8px; height: 8px; border-radius: var(--feta-radius-full); background-color: var(--feta-alpha-ink-base-10); }
+.item[data-on] .dot { background-color: var(--feta-bg-inverse); }
+.itemName { overflow: hidden; flex: 1; min-width: 0; color: var(--feta-text-secondary); text-overflow: ellipsis; white-space: nowrap; }
+.item[data-on] .itemName { color: var(--feta-text-primary); }
+.itemValue { font: var(--feta-text-title-small); letter-spacing: var(--feta-text-title-small-tracking); }

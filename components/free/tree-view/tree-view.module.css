@@ -1,0 +1,20 @@
+/* Tree View: FetaUI 23 Table Handoff. 300 wide, rows 44 and 48 on Mobile in the frame; file trees use the 32 row. */
+.tree { display: flex; flex-direction: column; gap: var(--feta-space-1); box-sizing: border-box; width: 100%; max-width: 300px; padding: var(--feta-space-1); border-radius: var(--feta-radius-tray); background-color: var(--feta-alpha-ink-base-4); color: var(--feta-text-primary); text-align: left; }
+.headingRow { display: flex; align-items: center; justify-content: space-between; padding-left: var(--feta-space-3); }
+.tools { display: inline-flex; }
+.heading { margin: 0; color: var(--feta-text-secondary); font: var(--feta-text-caption-default); letter-spacing: 0; }
+.card { display: flex; flex-direction: column; margin: 0; padding: var(--feta-space-2) var(--feta-space-1-5); list-style: none; border-radius: var(--feta-radius-card); background-color: var(--feta-bg-surface); }
+.item { display: flex; align-items: center; gap: var(--feta-space-1); min-height: 27px; padding-inline: var(--feta-space-1) var(--feta-space-2); border-radius: var(--feta-radius-field); color: var(--feta-text-primary); font: var(--feta-text-body-row); letter-spacing: var(--feta-text-body-row-tracking); cursor: pointer; outline: 2px solid transparent; outline-offset: -2px; }
+.item:focus-visible { outline-color: var(--feta-text-primary); }
+@media (hover: hover) { .item:hover { background-color: var(--feta-alpha-ink-base-4); } }
+.item[aria-selected="true"] { background-color: var(--feta-alpha-ink-base-8); color: var(--feta-text-primary); }
+.guide { align-self: stretch; flex: none; width: 14px; background: linear-gradient(var(--feta-alpha-ink-base-8), var(--feta-alpha-ink-base-8)) center / 1px 100% no-repeat; }
+.chevron { display: inline-flex; flex: none; width: 14px; color: var(--feta-text-secondary); }
+.name { overflow: hidden; flex: 1; min-width: 0; text-overflow: ellipsis; white-space: nowrap; }
+.ext { opacity: 0.6; }
+.mark { margin-left: auto; color: var(--feta-status-warning-text); font: var(--feta-text-mono-micro); }
+.rename { flex: 1; min-width: 0; height: 24px; padding-inline: var(--feta-space-1); border: 0; border-radius: var(--feta-radius-md); background-color: var(--feta-bg-surface); box-shadow: inset 0 0 0 1.5px var(--feta-text-primary); color: var(--feta-text-primary); font: inherit; letter-spacing: inherit; outline: none; }
+.footer { margin: 0; padding: var(--feta-space-2) var(--feta-space-3); overflow: hidden; color: var(--feta-text-tertiary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); text-overflow: ellipsis; white-space: nowrap; }
+[data-platform="mobile"] .tree { max-width: 358px; }
+[data-platform="mobile"] .item { min-height: 44px; }
+@media (max-width: 640px) { .tree { max-width: 358px; } .item { min-height: 44px; } }

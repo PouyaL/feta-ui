@@ -1,0 +1,47 @@
+/* Currency Transfer: FetaUI 16.3 Showcase Cards Handoff and Motion. */
+.transfer { max-width: 384px; }
+
+.body { padding: var(--feta-space-5); }
+.body > div:first-child { gap: var(--feta-space-4-5); }
+
+.recipient { display: flex; align-items: center; gap: var(--feta-space-3); min-width: 0; }
+.who { display: flex; flex: 1; flex-direction: column; gap: var(--feta-space-0-5); min-width: 0; }
+.name { overflow: hidden; margin: 0; font: var(--feta-text-label-row); letter-spacing: var(--feta-text-label-row-tracking); text-overflow: ellipsis; white-space: nowrap; }
+.meta { display: block; overflow: hidden; margin: 0; color: var(--feta-text-tertiary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); text-overflow: ellipsis; white-space: nowrap; }
+
+.amount { display: flex; flex-direction: column; gap: var(--feta-space-1); }
+.value { margin: 0; font: 600 32px/38px var(--feta-type-font-sans); letter-spacing: var(--feta-text-title-total-tracking); transition: opacity var(--feta-motion-duration-slow) var(--feta-motion-ease-out); }
+.amount[data-status='failed'] .value { opacity: 0.4; }
+.summary { margin: 0; color: var(--feta-text-secondary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); }
+
+.timeline { display: flex; flex-direction: column; gap: var(--feta-space-0-5); margin: 0; padding: 0; list-style: none; }
+.step { display: flex; gap: var(--feta-space-3); min-width: 0; }
+.rail { display: flex; flex: none; flex-direction: column; align-items: center; gap: var(--feta-space-1); width: 24px; }
+
+.mark { display: grid; flex: none; place-items: center; width: 24px; height: 24px; border-radius: var(--feta-radius-full); }
+.mark[data-state='done'] { background-color: var(--feta-bg-inverse); color: var(--feta-text-inverse); }
+.mark[data-state='active'], .mark[data-state='waiting'] { background-color: var(--feta-alpha-ink-base-5); color: var(--feta-text-secondary); }
+.mark[data-state='failed'] { background-color: var(--feta-status-danger-strong); color: var(--feta-status-on-solid); }
+
+.track { position: relative; display: block; overflow: hidden; width: 2px; height: 22px; background-color: var(--feta-alpha-ink-base-10); }
+.line { position: absolute; inset: 0; background-color: var(--feta-bg-inverse); transform-origin: top; }
+
+.text { display: flex; flex: 1; flex-direction: column; gap: var(--feta-space-0-5); min-width: 0; padding-top: var(--feta-space-0-5); }
+.stepTitle { font: var(--feta-text-title-small); letter-spacing: var(--feta-text-title-small-tracking); }
+.step[data-state='failed'] .stepTitle { color: var(--feta-status-danger); }
+.hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+.footer { align-items: center; justify-content: space-between; padding: var(--feta-space-2) var(--feta-space-2) var(--feta-space-1) var(--feta-space-3); }
+.reference { display: flex; flex-direction: column; min-width: 0; }
+.code { color: var(--feta-text-secondary); font: var(--feta-text-mono-meta); letter-spacing: var(--feta-text-mono-meta-tracking); }
+.note { color: var(--feta-text-tertiary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); }
+.action { display: inline-flex; flex: none; }
+
+/* The tray keeps its Small Buttons here: the reference shares the row. */
+[data-platform='mobile'] .transfer { max-width: 358px; }
+[data-platform='mobile'] .footer { --feta-size-button-sm: 36px; }
+
+@media (max-width: 640px) {
+  .transfer { max-width: 358px; }
+  .footer { --feta-size-button-sm: 36px; }
+}

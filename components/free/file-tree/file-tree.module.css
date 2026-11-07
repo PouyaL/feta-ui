@@ -1,0 +1,15 @@
+/* FetaUI 184 File Tree Handoff. */
+.down svg { transform: rotate(180deg); }
+
+/*
+ * Handoff width: 320 on Web, 358 on Mobile (the Tree card defaults to 280). The doubled class
+ * outranks the Tree card's own platform rules.
+ */
+.card.card { width: 320px; }
+
+@media (max-width: 640px) {
+  .card.card { width: 358px; }
+}
+
+[data-platform="mobile"] .card.card { width: 358px; }
+[data-platform="web"] .card.card { width: 320px; }

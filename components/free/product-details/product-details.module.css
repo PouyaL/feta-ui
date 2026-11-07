@@ -1,0 +1,89 @@
+/* Product Details: FetaUI 19 Expandable Handoff and Motion. */
+.tray {
+  display: flex;
+  flex-direction: column;
+  gap: var(--feta-space-1);
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--feta-space-1);
+  border-radius: var(--feta-radius-tray);
+  background-color: var(--feta-alpha-ink-base-4);
+}
+
+.card {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--feta-space-4);
+  padding: var(--feta-space-3);
+  border-radius: var(--feta-radius-card);
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft);
+}
+
+.media {
+  flex: none;
+  width: 34%;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: var(--feta-radius-control);
+}
+
+.copy {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--feta-space-2);
+  min-width: 0;
+}
+
+.head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--feta-space-1) var(--feta-space-3);
+}
+
+.name {
+  margin: 0;
+  color: var(--feta-text-primary);
+  font: var(--feta-text-title-total);
+  letter-spacing: var(--feta-text-title-total-tracking);
+}
+
+.price {
+  margin: 0;
+  color: var(--feta-text-primary);
+  font: var(--feta-text-label-default);
+  letter-spacing: var(--feta-text-label-default-tracking);
+}
+
+.note { color: var(--feta-text-secondary); font-weight: 400; }
+
+.reviewsHead {
+  display: flex;
+  align-items: center;
+  gap: var(--feta-space-2);
+  height: 40px;
+  padding-inline: var(--feta-space-3);
+}
+
+.reviewsTitle {
+  margin: 0;
+  color: var(--feta-text-primary);
+  font: var(--feta-text-title-row);
+  letter-spacing: var(--feta-text-title-row-tracking);
+}
+
+.score {
+  color: var(--feta-text-tertiary);
+  font: var(--feta-text-mono-meta);
+}
+
+[data-platform="mobile"] .card { flex-direction: column; }
+[data-platform="mobile"] .media { width: 100%; aspect-ratio: 16 / 10; }
+
+@media (max-width: 640px) {
+  :root:not([data-platform="web"]) .card { flex-direction: column; }
+  :root:not([data-platform="web"]) .media { width: 100%; aspect-ratio: 16 / 10; }
+}

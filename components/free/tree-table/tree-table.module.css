@@ -1,0 +1,17 @@
+/* Tree Table: FetaUI 23 Table Handoff and Motion. Rows 44, 48 on Mobile. */
+@keyframes unfold { from { opacity: 0; transform: translateY(-6px); } }
+.tray { container: treetable / inline-size; display: flex; flex-direction: column; gap: var(--feta-space-1); box-sizing: border-box; width: 100%; max-width: 760px; padding: var(--feta-space-1); border-radius: var(--feta-radius-tray); background-color: var(--feta-alpha-ink-base-4); color: var(--feta-text-primary); text-align: left; }
+.card { overflow: hidden; border-radius: var(--feta-radius-card); background-color: var(--feta-bg-surface); }
+.row { outline: 2px solid transparent; outline-offset: -2px; }
+.row:focus-visible { outline-color: var(--feta-text-primary); }
+.unfold { animation: unfold 240ms cubic-bezier(0.23, 1, 0.32, 1) both; }
+[data-still] .unfold { animation: none; }
+.footer { display: flex; align-items: center; justify-content: space-between; gap: var(--feta-space-2); min-height: 44px; padding: var(--feta-space-1) var(--feta-space-1-5) var(--feta-space-1) var(--feta-space-3-5); color: var(--feta-text-secondary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); }
+.footerActions { display: inline-flex; align-items: center; gap: var(--feta-space-1); }
+.total { color: var(--feta-text-primary); font-weight: 500; }
+.nameHead { display: inline-flex; align-items: center; gap: var(--feta-space-1); }
+.toggleAll { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; padding: 0; border: 0; border-radius: var(--feta-radius-md); background: transparent; color: var(--feta-text-primary); cursor: pointer; outline: 2px solid transparent; }
+.toggleAll:focus-visible { outline-color: var(--feta-text-primary); }
+.toggleIcon { display: inline-flex; }
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@container treetable (max-width: 520px) { .wide { display: none; } }

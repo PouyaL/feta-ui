@@ -1,0 +1,233 @@
+/* FetaUI 41 Pagination Handoff. */
+.pagination {
+  --item: 32px;
+  --item-radius: var(--feta-radius-field);
+  --item-size: 13px;
+  display: inline-flex;
+  max-width: 100%;
+  color: var(--feta-text-secondary);
+  font: var(--feta-text-label-default);
+  letter-spacing: var(--feta-text-label-default-tracking);
+}
+
+.pagination[data-kind="table"] { display: flex; width: 100%; }
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--feta-space-2);
+}
+
+.row[data-spread] { flex: 1; justify-content: space-between; }
+
+.tray {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--feta-space-1);
+  gap: var(--feta-space-0-5);
+  border-radius: var(--feta-radius-control);
+  background-color: var(--feta-alpha-ink-base-4);
+}
+
+.item {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  /* Fallbacks so a PageItem outside a Pagination keeps its 32 px size. */
+  min-width: var(--item, 32px);
+  height: var(--item, 32px);
+  padding: 0;
+  border: 0;
+  border-radius: var(--item-radius, var(--feta-radius-field));
+  background: transparent;
+  color: var(--feta-text-secondary);
+  font-family: var(--feta-type-font-mono);
+  font-size: var(--item-size, 13px);
+  line-height: 20px;
+  letter-spacing: 0;
+  cursor: pointer;
+  outline: 2px solid transparent;
+  outline-offset: -2px;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color var(--feta-motion-duration-focus) var(--feta-motion-ease-out);
+}
+
+.item[data-still] { transition: none; }
+.item:focus-visible { outline-color: var(--feta-text-primary); }
+.item[aria-current="page"] { color: var(--feta-text-primary); }
+.item:disabled { opacity: 0.4; cursor: not-allowed; }
+
+@media (hover: hover) {
+  .item:hover:not(:disabled):not([aria-current]) { background-color: var(--feta-alpha-ink-base-5); }
+}
+
+.pill {
+  position: absolute;
+  inset: 0;
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft);
+}
+
+.number { position: relative; display: inline-flex; }
+.number svg { display: block; width: var(--feta-size-icon); height: var(--feta-size-icon); }
+
+.status strong { color: var(--feta-text-primary); font-weight: 500; font-family: var(--feta-type-font-mono); letter-spacing: 0; }
+.status { font-variant-numeric: tabular-nums; }
+
+.caption { white-space: nowrap; }
+
+.perPage {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--feta-space-2);
+}
+
+.perSelect { width: 80px; }
+
+.pager {
+  display: flex;
+  align-items: center;
+  gap: var(--feta-space-2);
+}
+
+.range {
+  color: var(--feta-text-primary);
+  font: var(--feta-text-mono-meta);
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+
+.jumpInput { width: 56px; }
+.inlineJump { display: inline-flex; }
+
+.load {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--feta-space-2);
+}
+
+.track {
+  display: block;
+  width: 200px;
+  max-width: 100%;
+  height: 4px;
+  overflow: hidden;
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-alpha-ink-base-8);
+}
+
+.fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background-color: var(--feta-text-primary);
+  transform-origin: left;
+}
+
+/* Each dot is a 20 wide bar clipped to 6, and the ones after the current slide over: no layout moves. */
+.dots {
+  --dot: 6px;
+  --long: 20px;
+  --gap: var(--feta-space-2);
+  position: relative;
+  display: block;
+  width: calc(var(--count) * var(--dot) + (var(--count) - 1) * var(--gap) + var(--long) - var(--dot));
+  height: 24px;
+}
+
+.dotButton {
+  position: absolute;
+  top: 0;
+  left: calc(var(--index) * (var(--dot) + var(--gap)) - var(--gap) / 2);
+  width: calc(var(--dot) + var(--gap));
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--feta-radius-full);
+  background: transparent;
+  cursor: pointer;
+  outline: 2px solid transparent;
+  outline-offset: 0;
+  transition: transform var(--feta-motion-duration-base) var(--feta-motion-ease-out);
+}
+
+.dotButton:focus-visible { outline-color: var(--feta-text-primary); }
+.dotButton[data-after] { transform: translateX(calc(var(--long) - var(--dot))); }
+.dotButton[data-state="on"] { width: calc(var(--long) + var(--gap)); }
+
+.dot {
+  position: absolute;
+  top: 9px;
+  left: calc(var(--gap) / 2);
+  width: var(--long);
+  height: var(--dot);
+  background-color: var(--feta-alpha-ink-base-10);
+  clip-path: inset(0 calc(var(--long) - var(--dot)) 0 0 round 3px);
+  transition:
+    clip-path var(--feta-motion-duration-base) var(--feta-motion-ease-out),
+    background-color var(--feta-motion-duration-base) var(--feta-motion-ease-out);
+}
+
+.dotButton[data-state="seen"] .dot { background-color: var(--feta-alpha-ink-base-60); }
+.dotButton[data-state="on"] .dot { background-color: var(--feta-text-primary); clip-path: inset(0 0 0 0 round 3px); }
+.dotButton[data-still],
+.dotButton[data-still] .dot { transition: none; }
+
+.narrow { display: none; }
+
+/*
+ * Mobile (Figma Pagination Mobile, 358 wide): Numbered is one 48 row, the 44 arrows at the ends and
+ * first, current and last between them. Table drops Rows per page so the range and arrows fit one 44 row.
+ * Compact spaces its 44 arrows 16 from the count. Page Items are 40 with Mono 14.
+ */
+@media (max-width: 640px) {
+  .pagination,
+  .item { --item: 40px; --item-radius: var(--feta-radius-xl); --item-size: 14px; }
+  .tray { border-radius: var(--feta-radius-2xl); }
+  .wide { display: none; }
+  .narrow { display: inline-flex; }
+  .pagination[data-kind="numbered"] { display: flex; width: 100%; container-type: inline-size; }
+  .pagination[data-kind="numbered"] .row,
+  .pagination[data-kind="table"] .row { flex-wrap: nowrap; justify-content: space-between; width: 100%; }
+  .pagination[data-kind="compact"] .row { gap: var(--feta-space-4); }
+  .pagination[data-kind="table"] .perPage { display: none; }
+  .pagination[data-kind="table"] .range { color: var(--feta-text-secondary); font: var(--feta-text-body-compact); letter-spacing: var(--feta-text-body-compact-tracking); }
+  .pager { gap: var(--feta-space-1); }
+}
+
+[data-platform="mobile"] .pagination,
+[data-platform="mobile"] .item { --item: 40px; --item-radius: var(--feta-radius-xl); --item-size: 14px; }
+[data-platform="mobile"] .tray { border-radius: var(--feta-radius-2xl); }
+[data-platform="mobile"] .wide { display: none; }
+[data-platform="mobile"] .narrow { display: inline-flex; }
+[data-platform="mobile"] .pagination[data-kind="numbered"] { display: flex; width: 100%; container-type: inline-size; }
+[data-platform="mobile"] .pagination[data-kind="numbered"] .row,
+[data-platform="mobile"] .pagination[data-kind="table"] .row { flex-wrap: nowrap; justify-content: space-between; width: 100%; }
+[data-platform="mobile"] .pagination[data-kind="compact"] .row { gap: var(--feta-space-4); }
+[data-platform="mobile"] .pagination[data-kind="table"] .perPage { display: none; }
+[data-platform="mobile"] .pagination[data-kind="table"] .range { color: var(--feta-text-secondary); font: var(--feta-text-body-compact); letter-spacing: var(--feta-text-body-compact-tracking); }
+[data-platform="mobile"] .pager { gap: var(--feta-space-1); }
+
+/* Narrower than a phone row (a docs frame, a card): the ellipses go so 1, current and last still fit. */
+@container (max-width: 303px) {
+  .narrow .item[data-gap] { display: none; }
+}
+
+[data-platform="web"] .pagination,
+[data-platform="web"] .item { --item: 32px; --item-radius: var(--feta-radius-field); --item-size: 13px; }
+[data-platform="web"] .tray { border-radius: var(--feta-radius-control); }
+[data-platform="web"] .wide { display: inline-flex; }
+[data-platform="web"] .narrow { display: none; }
+[data-platform="web"] .pagination[data-kind="numbered"] { display: inline-flex; width: auto; container-type: normal; }
+[data-platform="web"] .pagination[data-kind="numbered"] .row,
+[data-platform="web"] .pagination[data-kind="table"] .row { flex-wrap: wrap; width: auto; }
+[data-platform="web"] .pagination[data-kind="table"] .row[data-spread] { justify-content: space-between; }
+[data-platform="web"] .pagination[data-kind="compact"] .row { gap: var(--feta-space-2); }
+[data-platform="web"] .pagination[data-kind="table"] .perPage { display: inline-flex; }
+[data-platform="web"] .pagination[data-kind="table"] .range { color: var(--feta-text-primary); font: var(--feta-text-mono-meta); letter-spacing: 0; }
+[data-platform="web"] .pager { gap: var(--feta-space-2); }

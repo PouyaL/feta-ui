@@ -1,0 +1,133 @@
+/* FetaUI 214 Tree Item and 215 Tree Handoff. */
+.card {
+  box-sizing: border-box;
+  width: 280px;
+  max-width: 100%;
+  padding: var(--feta-space-1);
+  border-radius: var(--feta-radius-frame);
+  background-color: var(--feta-alpha-ink-base-4);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: var(--feta-space-2);
+  padding: var(--feta-space-2-5) var(--feta-space-2) var(--feta-space-2);
+}
+
+.heading { display: flex; flex-direction: column; min-width: 0; }
+
+.title {
+  color: var(--feta-text-primary);
+  font: var(--feta-text-label-default);
+  letter-spacing: var(--feta-text-label-default-tracking);
+  font-weight: 500;
+}
+
+.caption {
+  color: var(--feta-text-secondary);
+  font: var(--feta-text-caption-default);
+  letter-spacing: var(--feta-text-caption-default-tracking);
+}
+
+.actions {
+  display: inline-flex;
+  gap: var(--feta-space-0-5);
+  margin-inline-start: auto;
+}
+
+.body {
+  padding: var(--feta-space-1-5) var(--feta-space-2) var(--feta-space-2);
+  border-radius: var(--feta-radius-panel);
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8);
+}
+
+.tree {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 32px;
+  gap: var(--feta-space-1-5);
+  padding-inline-end: var(--feta-space-2);
+  border-radius: var(--feta-radius-field);
+  color: var(--feta-text-primary);
+  font: var(--feta-text-label-default);
+  letter-spacing: var(--feta-text-label-default-tracking);
+  font-weight: 400;
+  cursor: pointer;
+  outline: 2px solid transparent;
+  outline-offset: -2px;
+  user-select: none;
+  transition: background-color var(--feta-motion-duration-focus) var(--feta-motion-ease-out);
+}
+
+.item[data-still] { transition: none; }
+.item:focus-visible { outline-color: var(--feta-text-primary); }
+.item[aria-selected="true"] { background-color: var(--feta-alpha-ink-base-8); font-weight: 500; }
+.item[aria-disabled="true"] { opacity: 0.4; cursor: not-allowed; }
+
+@media (hover: hover) {
+  .item:hover:not([aria-selected="true"]):not([aria-disabled="true"]) { background-color: var(--feta-alpha-ink-base-4); }
+}
+
+.guide {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background-color: var(--feta-alpha-ink-base-10);
+}
+
+.chevron,
+.turn,
+.icon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.chevron { width: 14px; height: 14px; color: var(--feta-alpha-ink-base-60); }
+.chevron svg { display: block; width: 14px; height: 14px; }
+.icon { color: var(--feta-alpha-ink-base-60); }
+.icon svg { display: block; width: var(--feta-size-icon); height: var(--feta-size-icon); }
+
+.check { display: inline-flex; flex: none; }
+
+.label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.count,
+.mark {
+  flex: none;
+  color: var(--feta-text-secondary);
+  font: var(--feta-text-mono-meta);
+  letter-spacing: 0;
+}
+
+.mark[data-mark="M"] { color: var(--feta-status-warning-text); }
+.mark[data-mark="U"] { color: var(--feta-status-success-text); }
+
+@media (max-width: 640px) {
+  .card { width: 358px; }
+  .item { min-height: 44px; }
+}
+
+[data-platform="mobile"] .card { width: 358px; }
+[data-platform="mobile"] .item { min-height: 44px; }
+[data-platform="web"] .card { width: 280px; }
+[data-platform="web"] .item { min-height: 32px; }

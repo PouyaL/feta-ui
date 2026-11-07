@@ -1,0 +1,133 @@
+/* Expanding Arrow Button: FetaUI Motion Buttons, component set 71:3667. Everything is flex. */
+.button {
+  --chip: var(--feta-bg-surface);
+  --mark: var(--feta-text-primary);
+  --edge: inset 0 0 0 0 transparent;
+  /* Rest. The expanded rules below only change these. */
+  --open: 0;
+  --chip-width: 32px;
+  --end: 16px;
+  --gap: var(--feta-space-3);
+  justify-content: flex-start;
+  gap: var(--gap);
+  width: 180px;
+  max-width: 100%;
+  height: 40px;
+  padding: var(--feta-space-1) var(--end) var(--feta-space-1) var(--feta-space-1);
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-bg-inverse);
+  box-shadow: var(--edge);
+  color: var(--feta-text-inverse);
+  font: var(--feta-text-label-large);
+  letter-spacing: var(--feta-text-label-large-tracking);
+  transition:
+    background-color var(--feta-motion-duration-fast) var(--feta-motion-ease-out-soft),
+    color var(--feta-motion-duration-fast) var(--feta-motion-ease-out-soft),
+    box-shadow var(--feta-motion-duration-fast) var(--feta-motion-ease-out-soft),
+    padding var(--feta-motion-duration-chip) var(--feta-motion-ease-chip),
+    gap var(--feta-motion-duration-chip) var(--feta-motion-ease-chip);
+}
+
+.button[data-kind="secondary"] {
+  --chip: var(--feta-bg-inverse);
+  --mark: var(--feta-text-inverse);
+  /* An inset edge, so Secondary lays out like Primary and the chip still opens to 172. */
+  --edge: inset 0 0 0 1px var(--feta-alpha-ink-base-8);
+  background-color: var(--feta-alpha-ink-base-5);
+  color: var(--feta-text-primary);
+}
+
+.button[data-kind="secondary"][data-pressed] { background-color: var(--feta-alpha-ink-base-10); }
+
+.button:focus-visible {
+  outline-color: transparent;
+  box-shadow: var(--edge), 0 0 0 2px var(--feta-bg-surface), 0 0 0 4px var(--feta-text-primary);
+}
+
+.button:disabled { --chip: var(--feta-alpha-ink-base-5); }
+.button[data-kind="secondary"]:disabled { background-color: var(--feta-alpha-ink-base-4); }
+
+/* Hover and focus share the expanded look. Pressing returns to rest. */
+.button:focus-visible:not([data-pressed]) {
+  --open: 1;
+  --chip-width: 100%;
+  --end: 4px;
+  --gap: 0px;
+}
+
+@media (hover: hover) {
+  .button:hover:not([data-pressed]):not(:disabled) {
+    --open: 1;
+    --chip-width: 100%;
+    --end: 4px;
+    --gap: 0px;
+  }
+}
+
+.chip {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--feta-space-4);
+  box-sizing: border-box;
+  width: var(--chip-width);
+  height: 32px;
+  padding-left: var(--feta-space-3);
+  overflow: hidden;
+  border-radius: var(--feta-radius-2xl);
+  background-color: var(--chip);
+  color: var(--mark);
+  transition: width var(--feta-motion-duration-chip) var(--feta-motion-ease-chip);
+}
+
+.label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  opacity: calc(1 - var(--open));
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: opacity var(--feta-motion-duration-base) var(--feta-motion-ease-out);
+}
+
+/* One chevron: 10 by 18, three columns. At rest they all stack, 1 px left of the padding to sit centered in the 32 px chip. */
+.trail {
+  --i: 0;
+  --shade: 1;
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--feta-space-0-5);
+  opacity: calc(var(--shade) * var(--open));
+  transform: translateX(calc((1 - var(--open)) * (var(--i) * -26px - 1px)));
+  transition:
+    transform var(--feta-motion-duration-chip) var(--feta-motion-ease-chip),
+    opacity var(--feta-motion-duration-chip) var(--feta-motion-ease-chip);
+}
+
+.trail:nth-child(1) { opacity: 1; }
+.trail:nth-child(2) { --i: 1; --shade: 0.72; }
+.trail:nth-child(3) { --i: 2; --shade: 0.5; }
+.trail:nth-child(4) { --i: 3; --shade: 0.3; }
+.trail:nth-child(5) { --i: 4; --shade: 0.15; }
+
+.column {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.column:nth-child(1) { height: 18px; }
+.column:nth-child(2) { height: 10px; }
+
+.dot {
+  width: 2px;
+  height: 2px;
+  border-radius: var(--feta-radius-full);
+  background-color: currentColor;
+}
+
+.button[data-still] .chip,
+.button[data-still] .label,
+.button[data-still] .trail { transition: none; }

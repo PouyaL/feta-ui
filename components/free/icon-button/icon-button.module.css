@@ -1,0 +1,11 @@
+/* Icon Button: FetaUI 05 Button Handoff. Doubled class: Button's size rules set the padding.
+   Icon per size from the Icon Button set: Small 14 and Medium --feta-size-icon come from Button,
+   Large is 18 on Web and Mobile. */
+.iconButton.iconButton {
+  gap: 0;
+  padding-inline: 0;
+}
+
+.iconButton.iconButton[data-size="sm"] { width: var(--feta-size-button-sm); }
+.iconButton.iconButton[data-size="md"] { width: var(--feta-size-button-md); }
+.iconButton.iconButton[data-size="lg"] { --icon: 18px; width: var(--feta-size-button-lg); }

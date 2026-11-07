@@ -1,0 +1,54 @@
+/* Slide Text Button: FetaUI 06 Motion Buttons Handoff and Motion. */
+.button {
+  height: 40px;
+  padding-inline: var(--feta-space-6);
+  border-radius: var(--feta-radius-xl);
+}
+
+.window {
+  display: inline-grid;
+  height: 20px;
+  overflow: hidden;
+  justify-items: center;
+  text-align: center;
+}
+
+.row {
+  grid-area: 1 / 1;
+  transition:
+    transform var(--feta-motion-duration-base) var(--feta-motion-ease-slide-text),
+    opacity var(--feta-motion-duration-base) var(--feta-motion-ease-slide-text);
+}
+
+.row:nth-child(2) {
+  opacity: 0;
+  transform: translateY(100%);
+}
+
+.button:focus-visible .row:nth-child(1) {
+  opacity: 0;
+  transform: translateY(-100%);
+}
+
+.button:focus-visible .row:nth-child(2) {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (hover: hover) {
+  .button:not([data-still]):hover:not(:disabled) .row:nth-child(1) {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+  .button:not([data-still]):hover:not(:disabled) .row:nth-child(2) {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.button[data-still] .row,
+.button[data-still] .row:nth-child(n) {
+  transform: none;
+  transition-duration: var(--feta-motion-duration-focus);
+  transition-timing-function: linear;
+}

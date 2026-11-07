@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+  <defs><linearGradient id="feta-glass-code-fill" gradientUnits="userSpaceOnUse" x1="3" y1="3" x2="21" y2="21"><stop offset="0" style="stop-color:var(--feta-glass-from, #BFE3FF);stop-opacity:1"/><stop offset="1" style="stop-color:var(--feta-glass-to, #4F8BFF);stop-opacity:1"/></linearGradient></defs>
+  <g data-feta="ink" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="stroke:url(#feta-glass-code-fill)"><path d="M16 7L19.066 9.643C20.355 10.754 21 11.31 21 12C21 12.69 20.356 13.246 19.066 14.357L16 17"/><path d="M8 7L4.934 9.643C3.645 10.754 3 11.31 3 12C3 12.69 3.645 13.246 4.934 14.357L8 17"/></g>
+</svg>

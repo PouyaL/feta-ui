@@ -1,0 +1,147 @@
+/* Page Flip: FetaUI 16.4 Showcase Cards Handoff and Motion. */
+.flip { max-width: 672px; }
+
+.flip .body { padding: 0; border-radius: 0; background: none; box-shadow: none; }
+.flip .footer { align-items: center; justify-content: space-between; padding: var(--feta-space-1-5) var(--feta-space-1-5) var(--feta-space-1) var(--feta-space-3); }
+
+.counter { color: var(--feta-text-tertiary); font: var(--feta-text-mono-meta); }
+.nav { display: flex; gap: var(--feta-space-1); }
+
+.spread {
+  --page-w: 324px;
+  --page-h: 456px;
+  position: relative;
+  display: flex;
+  box-sizing: border-box;
+  height: calc(var(--page-h) + 16px);
+  padding: var(--feta-space-2);
+  border-radius: var(--feta-radius-card);
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  perspective: 1000px;
+  touch-action: pan-y;
+  transition: outline-color var(--feta-motion-duration-focus) var(--feta-motion-ease-out);
+}
+
+.spread:focus-visible { outline-color: var(--feta-text-primary); }
+
+.spread[data-single] { --page-h: 480px; overflow: hidden; }
+
+.slot { position: relative; flex: 1 1 0; min-width: 0; height: 100%; }
+.spread[data-single] .slot[data-side='left'] { display: none; }
+
+.page, .face {
+  position: relative;
+  box-sizing: border-box;
+  height: 100%;
+  border-radius: var(--feta-radius-control);
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft);
+}
+
+.page[data-inverse], .face[data-inverse] { background-color: var(--feta-bg-inverse); box-shadow: var(--feta-elevation-soft); }
+
+.spread[data-fade] .page { animation: page-fade 150ms var(--feta-motion-ease-out); }
+
+@keyframes page-fade { from { opacity: 0; } }
+
+.quiet { height: 100%; }
+.page[data-quiet] .quiet { opacity: 0.35; }
+
+/* The Turning frame: the page tilted 6 degrees with a shade. */
+.tilt {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+  border-radius: var(--feta-radius-control);
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft);
+  transform: translateY(-6px) rotate(-6deg);
+  transform-origin: left top;
+}
+
+.tiltShade { position: absolute; inset: 0; background: linear-gradient(135deg, var(--feta-zinc-950), transparent); opacity: 0.3; pointer-events: none; }
+
+/* The leaf hinges on the spine, which is the page's left edge. */
+.leaf {
+  position: absolute;
+  z-index: 3;
+  top: 8px;
+  bottom: 8px;
+  left: 50%;
+  right: 8px;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.spread[data-single] .leaf { left: 8px; }
+
+.face { position: absolute; inset: 0; overflow: hidden; backface-visibility: hidden; }
+.face[data-back] { transform: rotateY(180deg); }
+
+.shade { position: absolute; inset: 0; background: linear-gradient(90deg, var(--feta-zinc-950), transparent); pointer-events: none; }
+
+/* Corner */
+.corner {
+  position: absolute;
+  z-index: 1;
+  right: 0;
+  bottom: 0;
+  width: 72px;
+  height: 72px;
+  padding: 0;
+  border: 0;
+  border-bottom-right-radius: var(--feta-radius-control);
+  background: none;
+  cursor: pointer;
+}
+
+.fold {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 56px;
+  height: 56px;
+  background-color: var(--feta-bg-muted);
+  clip-path: polygon(100% 0, 0 100%, 8% 8%);
+  transform: scale(0);
+  transform-origin: right bottom;
+  transition: transform var(--feta-motion-duration-base) var(--feta-motion-ease-out);
+}
+
+[data-still] .fold { transition: none; }
+.corner[data-peek] .fold { transform: scale(1); }
+
+@media (hover: hover) { .corner:hover .fold { transform: scale(1); } }
+
+/* Content */
+.sheet { box-sizing: border-box; display: flex; flex-direction: column; gap: var(--feta-space-3-5); height: 100%; padding: var(--feta-space-7) var(--feta-space-7) var(--feta-space-6); }
+.kicker, .note, .folio { margin: 0; color: var(--feta-text-tertiary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); }
+.heading { margin: 0; font: var(--feta-text-heading-small); letter-spacing: var(--feta-text-heading-small-tracking); }
+.text { margin: 0 0 var(--feta-space-5); color: var(--feta-text-secondary); font: var(--feta-text-body-small); letter-spacing: var(--feta-text-body-small-tracking); }
+.folio { margin-top: auto; }
+.folio[data-side='end'] { text-align: right; }
+
+.dish { display: flex; flex-direction: column; gap: var(--feta-space-0-5); }
+.dishRow { display: flex; align-items: center; gap: var(--feta-space-2); margin: 0; font: var(--feta-text-title-small); letter-spacing: var(--feta-text-title-small-tracking); }
+.leader { flex: 1; height: 1px; background-color: var(--feta-alpha-ink-base-10); }
+.price { font: 500 14px/20px var(--feta-type-font-mono); }
+
+.row { display: flex; justify-content: space-between; gap: var(--feta-space-3); margin: 0; color: var(--feta-text-tertiary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); }
+.row strong { color: var(--feta-text-primary); font: var(--feta-text-caption-medium); letter-spacing: var(--feta-text-caption-medium-tracking); }
+
+.cover { box-sizing: border-box; display: flex; flex-direction: column; gap: var(--feta-space-2-5); height: 100%; padding: var(--feta-space-8) var(--feta-space-7) var(--feta-space-7); color: var(--feta-text-inverse); }
+.coverKicker { margin: 0; font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); opacity: 0.6; }
+.coverTitle { margin: 0; font: 600 30px/36px var(--feta-type-font-sans); letter-spacing: var(--feta-text-heading-small-tracking); }
+.coverFoot { display: flex; align-items: center; gap: var(--feta-space-1-5); margin: auto 0 0; font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); opacity: 0.6; }
+
+/* Card grows tray Buttons on Mobile. These stay at the Small touch size from the frame. */
+@media (max-width: 640px) {
+  .flip { max-width: 358px; }
+  .flip .footer { --feta-size-button-sm: 36px; }
+}
+
+[data-platform='mobile'] .flip { max-width: 358px; }
+[data-platform='mobile'] .flip .footer { --feta-size-button-sm: 36px; }

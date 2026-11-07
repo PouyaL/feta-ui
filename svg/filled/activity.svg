@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+  <path d="M4.318 19.682C3 18.364 3 16.243 3 12C3 7.757 3 5.636 4.318 4.318C5.636 3 7.757 3 12 3C16.243 3 18.364 3 19.682 4.318C21 5.636 21 7.757 21 12C21 16.243 21 18.364 19.682 19.682C18.364 21 16.243 21 12 21C7.757 21 5.636 21 4.318 19.682Z" data-feta="body" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <g data-feta="knockout"><path d="M7 14L9.793 11.207C10.183 10.817 10.817 10.817 11.207 11.207L12.793 12.793C13.183 13.183 13.817 13.183 14.207 12.793L17 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--feta-knockout, #FFFFFF)"/></g>
+</svg>

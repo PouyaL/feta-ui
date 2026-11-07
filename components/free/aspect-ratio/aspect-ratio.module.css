@@ -1,0 +1,216 @@
+/* Aspect Ratio: FetaUI 08 Aspect Ratio Handoff and Motion. */
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--feta-space-2);
+  width: 100%;
+  margin: 0;
+}
+
+.frame {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  aspect-ratio: var(--ratio);
+  border-radius: var(--feta-radius-card);
+  background-color: var(--feta-alpha-ink-base-5);
+  transition: background-color var(--feta-motion-duration-fast) var(--feta-motion-ease-out-soft);
+}
+
+/* The frame never resizes. Its ring sits above the media. */
+.frame::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8);
+  pointer-events: none;
+}
+
+.frame[data-state="empty"]::after { content: none; }
+.frame[data-state="empty"] { background-color: var(--feta-alpha-ink-base-4); }
+.frame[data-over] { background-color: var(--feta-alpha-ink-base-8); }
+
+.media {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.media[data-hidden] { visibility: hidden; }
+
+.loading {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.shimmer {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 30%, var(--feta-alpha-ink-base-8) 50%, transparent 70%);
+  transform: translateX(-50%);
+  animation: arShimmer 1400ms linear infinite;
+}
+
+.loadingIcon {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--feta-text-quaternary);
+}
+
+.loadingIcon svg { width: 20px; height: 20px; }
+
+[data-offscreen] .shimmer { animation-play-state: paused; }
+.frame[data-still] .shimmer { animation: none; opacity: 0; }
+
+@keyframes arShimmer {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(150%); }
+}
+
+.scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, var(--feta-effect-scrim), var(--feta-effect-clear-black) 70%);
+  opacity: 0.9;
+  transition: opacity var(--feta-motion-duration-fast) var(--feta-motion-ease-out-soft);
+}
+
+@media (hover: hover) {
+  .frame:hover .scrim { opacity: 1; }
+}
+
+.play {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Two classes, so it beats the button size padding and the icon sits in the middle. */
+.play .playButton {
+  width: var(--feta-size-button-lg);
+  padding: 0;
+  gap: 0;
+  justify-content: center;
+  background-color: var(--feta-bg-surface);
+}
+
+/* `play` is a Pro icon, and a Free component may use only Free icons. */
+.playGlyph {
+  display: block;
+  /* A triangle reads left of centre, so it sits a little right of the box centre. */
+  margin-left: 2px;
+  width: 14px;
+  height: 16px;
+  background-color: currentColor;
+  clip-path: polygon(8% 2%, 100% 50%, 8% 98%);
+}
+
+.chip {
+  position: absolute;
+  right: var(--feta-space-2);
+  bottom: var(--feta-space-2);
+  padding: var(--feta-space-0-5) var(--feta-space-1-5);
+  border-radius: var(--feta-radius-md);
+  background-color: var(--feta-effect-scrim);
+  color: var(--feta-status-on-solid);
+  font: var(--feta-text-mono-meta);
+}
+
+.message {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--feta-space-2);
+  padding: var(--feta-space-3);
+  text-align: center;
+}
+
+.dash {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.dash rect {
+  width: calc(100% - 1px);
+  height: calc(100% - 1px);
+  fill: none;
+  stroke: var(--feta-alpha-ink-base-10);
+  stroke-width: 1;
+  stroke-dasharray: 6 4;
+  transition: stroke var(--feta-motion-duration-fast) var(--feta-motion-ease-out-soft);
+}
+
+.frame[data-over] .dash rect { stroke: var(--feta-alpha-ink-base-60); }
+
+.messageIcon {
+  display: inline-flex;
+  color: var(--feta-text-secondary);
+}
+
+.messageIcon[data-danger] { color: var(--feta-status-danger); }
+
+.messageIcon svg {
+  display: block;
+  width: 24px;
+  height: 24px;
+}
+
+.title {
+  color: var(--feta-text-primary);
+  font: var(--feta-text-title-header);
+  letter-spacing: var(--feta-text-title-header-tracking);
+}
+
+.hint {
+  margin-top: calc(-1 * var(--feta-space-1-5));
+  color: var(--feta-text-secondary);
+  font: var(--feta-text-caption-default);
+  letter-spacing: var(--feta-text-caption-default-tracking);
+}
+
+.file {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.caption {
+  color: color-mix(in srgb, var(--feta-text-primary) 40%, transparent);
+  font: var(--feta-text-caption-default);
+  letter-spacing: var(--feta-text-caption-default-tracking);
+}
+
+.scene {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.sky { fill: var(--feta-gradient-sky-from); }
+.sun { fill: var(--feta-gradient-amber-from); }
+.dune { fill: var(--feta-gradient-emerald-from); }
+.duneNear { fill: var(--feta-gradient-emerald-to); }
+
+[data-platform="mobile"] .caption { font-size: 14px; line-height: 18px; }
+[data-platform="mobile"] .playButton { width: var(--feta-size-button-lg); }
+
+@media (max-width: 640px) {
+  :root:not([data-platform="web"]) .caption { font-size: 14px; line-height: 18px; }
+}

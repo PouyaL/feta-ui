@@ -1,0 +1,87 @@
+/* Bento Grid: FetaUI 16.5 Showcase Cards Handoff and Motion. */
+.tray {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 664px;
+  padding: var(--feta-space-1);
+  border-radius: var(--feta-radius-tray);
+  background-color: var(--feta-alpha-ink-base-4);
+}
+
+.grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-rows: 176px; grid-auto-flow: dense; gap: var(--feta-space-1); }
+
+.tile { position: relative; min-width: 0; border-radius: var(--feta-radius-card); }
+.tile[data-span='medium'] { grid-column: span 2; }
+.tile:has([data-open]) { z-index: 5; }
+
+.lift { height: 100%; transition: opacity var(--feta-motion-duration-base) var(--feta-motion-ease-out); }
+.web, .mobile { height: 100%; }
+.mobile { display: none; }
+
+.grip {
+  appearance: none;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--feta-radius-full);
+  background: none;
+  color: inherit;
+  cursor: grab;
+  outline: 2px solid transparent;
+  outline-offset: 0;
+  touch-action: none;
+  transition: background-color var(--feta-motion-duration-fast) var(--feta-motion-ease-out), outline-color var(--feta-motion-duration-focus) var(--feta-motion-ease-out);
+}
+
+.grip:focus-visible { outline-color: var(--feta-text-primary); }
+.grip:active { cursor: grabbing; }
+
+/* Lifted: the rest quiet, and a dashed slot shows where it lands. */
+.grid[data-lifting] .tile:not([data-lifted]) .lift { opacity: 0.4; }
+
+.tile[data-lifted] { z-index: 4; }
+.tile[data-lifted]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  box-sizing: border-box;
+  border: 1.5px dashed var(--feta-text-tertiary);
+  border-radius: var(--feta-radius-card);
+}
+
+.tile[data-lifted] .lift { position: relative; pointer-events: none; }
+.tile[data-lifted] [role='region'] { --ring: var(--feta-text-tertiary); box-shadow: inset 0 0 0 1px var(--feta-text-tertiary), var(--feta-elevation-soft), 0 18px 32px -14px var(--feta-shadow-soft-lg); }
+.tile[data-lifted] .lift .grip > * { opacity: 0.7; }
+
+/* Reduced motion: ring and slot only. The picked tile stays fully opaque; only the rest dim. */
+.tray[data-still] .lift { transition: none; }
+.tray[data-still] .tile[data-lifted] [role='region'] { box-shadow: inset 0 0 0 2px var(--feta-text-primary); }
+
+/* The Figma Lifted frame, as a still. */
+.lift[data-preview] { transform: translate(-124px, -54px) rotate(-3deg); }
+
+.live { position: absolute; width: 1px; height: 1px; margin: calc(-1 * var(--feta-space-0-5)); overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+[data-platform='mobile'] .tray { max-width: 358px; }
+[data-platform='mobile'] .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 168px; grid-auto-flow: row; }
+[data-platform='mobile'] .tile { order: var(--mobile-order); }
+[data-platform='mobile'] .tile[data-mobile-span='small'] { grid-column: auto; }
+[data-platform='mobile'] .tile[data-mobile-span='medium'] { grid-column: span 2; }
+[data-platform='mobile'] .web { display: none; }
+[data-platform='mobile'] .mobile { display: block; }
+[data-platform='mobile'] .lift[data-preview] { transform: translate(36px, -20px) rotate(-3deg); }
+
+@media (max-width: 640px) {
+  .tray { max-width: 358px; }
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 168px; grid-auto-flow: row; }
+  .tile { order: var(--mobile-order); }
+  .tile[data-mobile-span='small'] { grid-column: auto; }
+  .tile[data-mobile-span='medium'] { grid-column: span 2; }
+  .web { display: none; }
+  .mobile { display: block; }
+  .lift[data-preview] { transform: translate(36px, -20px) rotate(-3deg); }
+}

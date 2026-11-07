@@ -1,0 +1,136 @@
+/* Padlock: Input OTP · Soft, Padlock · Illustration. Fixed gunmetal from the zinc ramp, so it reads as metal in Light and Dark.
+   Only the emblem takes status color. */
+.lock {
+  position: relative;
+  display: block;
+  max-width: 100%;
+  aspect-ratio: 180 / 214;
+}
+
+/* Every layer draws the same 180 by 214 space over the whole box. Shadows spill past it. */
+.layer,
+.layers {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+.layer {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* The moving layers keep their own compositor layer, so a lift, give or shake moves pixels and never re-runs the filters inside. */
+.moving { will-change: transform; }
+/* While the glint runs, it and the emblem over it get layers of their own, so each frame repaints only the band. */
+.lock[data-glint] .looping { will-change: transform; }
+
+/* Shackle chrome, left to right across the bow. */
+.steel0 { stop-color: var(--feta-zinc-800); }
+.steel1 { stop-color: color-mix(in srgb, var(--feta-zinc-400) 60%, var(--feta-zinc-500)); }
+.steel2 { stop-color: var(--feta-zinc-200); }
+.steel3 { stop-color: var(--feta-zinc-500); }
+.steel4 { stop-color: var(--feta-zinc-800); }
+.steel5 { stop-color: var(--feta-zinc-600); }
+.steel6 { stop-color: var(--feta-zinc-900); }
+
+/* Body, top to bottom. */
+.body0 { stop-color: var(--feta-zinc-700); }
+.body1 { stop-color: var(--feta-zinc-800); }
+.body2 { stop-color: var(--feta-zinc-900); }
+.body3 { stop-color: var(--feta-zinc-950); }
+
+.sheen0 { stop-color: var(--feta-white); stop-opacity: 0.16; }
+.sheen1 { stop-color: var(--feta-white); stop-opacity: 0; }
+.glint { stop-color: var(--feta-white); stop-opacity: 0.09; }
+
+.shadeFlood { flood-color: var(--feta-black); }
+.lightFlood { flood-color: var(--feta-white); }
+
+.floor { fill: var(--feta-black); fill-opacity: 0.28; }
+.castSource { fill: var(--feta-black); }
+
+.specular {
+  fill: none;
+  stroke: var(--feta-white);
+  stroke-opacity: 0.55;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+}
+
+/* Sockets where the legs enter. The right one opens into a hole with a lit rim when the leg comes free. */
+.socket { fill: var(--feta-black); fill-opacity: 0.55; }
+.socketOpen {
+  fill: var(--feta-black);
+  fill-opacity: 0.8;
+  stroke: var(--feta-white);
+  stroke-opacity: 0.12;
+  stroke-width: 1;
+  opacity: 0;
+}
+.socketClosed,
+.socketOpen { transition: opacity var(--feta-motion-duration-base) var(--feta-motion-ease-out) 60ms; }
+.lock[data-status="open"] .socketClosed { opacity: 0; }
+.lock[data-status="open"] .socketOpen { opacity: 1; }
+
+/* Engraved four ring emblem: a dark cut with a hairline of light below it. */
+.ringLight { stroke: var(--feta-white); stroke-opacity: 0.1; stroke-width: 1; }
+.ring { stroke: var(--feta-black); stroke-opacity: 0.75; stroke-width: 1.6; }
+
+.lit { opacity: 0; transition: opacity var(--feta-motion-duration-base) var(--feta-motion-ease-out); }
+.lit[data-tone="success"] { stroke: var(--feta-status-success-strong); }
+.lit[data-tone="danger"] { stroke: var(--feta-status-danger); }
+.litRing {
+  stroke-width: 1.6;
+  opacity: 0;
+  transition: opacity var(--feta-motion-duration-base) var(--feta-motion-ease-out);
+}
+
+.lock[data-status="open"] .lit[data-tone="success"],
+.lock[data-status="error"] .lit[data-tone="danger"],
+.lock[data-status="open"] .lit[data-tone="success"] .litRing,
+.lock[data-status="error"] .lit[data-tone="danger"] .litRing { opacity: 1; }
+
+/* The rings light one after another, clockwise, as the shackle pops. */
+.lock[data-status="open"] .litRing:nth-child(1),
+.lock[data-status="error"] .litRing:nth-child(1) { transition-delay: 40ms; }
+.lock[data-status="open"] .litRing:nth-child(2),
+.lock[data-status="error"] .litRing:nth-child(2) { transition-delay: 75ms; }
+.lock[data-status="open"] .litRing:nth-child(3),
+.lock[data-status="error"] .litRing:nth-child(3) { transition-delay: 110ms; }
+.lock[data-status="open"] .litRing:nth-child(4),
+.lock[data-status="error"] .litRing:nth-child(4) { transition-delay: 145ms; }
+
+/* Checking: a faint glint crosses the face while the code is checked. */
+.glintTrack { opacity: 0; transition: opacity var(--feta-motion-duration-base) var(--feta-motion-ease-out); }
+.lock[data-status="checking"] .glintTrack { opacity: 1; }
+.glintBand { transform: translateX(0) skewX(-14deg); }
+.lock[data-glint] .glintBand { animation: padlockGlint 2.2s var(--feta-motion-ease-out) infinite; }
+.lock[data-offscreen] .glintBand { animation-play-state: paused; }
+
+@keyframes padlockGlint {
+  0% { transform: translateX(0) skewX(-14deg); }
+  60%, 100% { transform: translateX(220px) skewX(-14deg); }
+}
+
+/* Reduced motion: no glint, no stagger, states only fade. */
+/* :nth-child(n) matches every ring and lifts this to the stagger rules' specificity, so reduced motion fades all rings at once. */
+.lock[data-fade] .litRing:nth-child(n) { transition-delay: 0ms; }
+.lock[data-fade] .glintTrack { opacity: 0; }
+
+/* animated={false}: nothing moves or fades. */
+.lock[data-still]:not([data-fade]) .lit,
+.lock[data-still]:not([data-fade]) .litRing,
+.lock[data-still]:not([data-fade]) .socketClosed,
+.lock[data-still]:not([data-fade]) .socketOpen,
+.lock[data-still]:not([data-fade]) .glintTrack { transition: none; }
+.lock[data-still] .glintBand { animation: none; }
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

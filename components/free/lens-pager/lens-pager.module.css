@@ -1,0 +1,112 @@
+/* FetaUI 41 Pagination Handoff, Lens Pager. */
+.tray {
+  --lens: 220px;
+  --mark: 40px;
+  --rule: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  max-width: 100%;
+  gap: var(--feta-space-3);
+  padding: var(--feta-space-1) var(--feta-space-7);
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-alpha-ink-base-4);
+}
+
+.arrow { flex: none; }
+.arrow[data-warm]:not(:disabled) { background-color: var(--feta-alpha-ink-base-10); }
+
+.lens {
+  position: relative;
+  flex: none;
+  width: var(--lens);
+  height: var(--lens);
+  overflow: hidden;
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft);
+}
+
+.rule {
+  position: absolute;
+  right: 26px;
+  left: 26px;
+  height: 1px;
+  background-color: var(--feta-alpha-ink-base-8);
+}
+
+.rule[data-side="top"] { top: calc(50% - var(--rule) - 1px); }
+.rule[data-side="bottom"] { top: calc(50% + var(--rule)); }
+
+/* The fixed V the current page sits over. */
+.notch {
+  position: absolute;
+  top: -3px;
+  left: calc(50% - 4px);
+  width: 8px;
+  height: 8px;
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 1px 1px 0 var(--feta-alpha-ink-base-8);
+  transform: rotate(45deg);
+}
+
+.mark {
+  position: absolute;
+  top: calc(50% - 17px);
+  width: 2px;
+  height: 34px;
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-bg-inverse);
+}
+
+.mark[data-side="left"] { left: calc(50% - var(--mark) - 1px); }
+.mark[data-side="right"] { left: calc(50% + var(--mark) - 1px); }
+
+.window {
+  position: absolute;
+  top: calc(50% - 22px);
+  right: 0;
+  left: 0;
+  height: 44px;
+}
+
+.number {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 60px;
+  margin-left: calc(-1 * var(--feta-space-8));
+  color: var(--feta-text-tertiary);
+  font-family: var(--feta-type-font-mono);
+  font-size: 30px;
+  line-height: 44px;
+  font-weight: 300;
+  text-align: center;
+  transition: color var(--feta-motion-duration-fast) var(--feta-motion-ease-out);
+}
+
+.number[data-on] { color: var(--feta-text-primary); font-weight: 500; }
+.number[data-warm] { color: var(--feta-text-secondary); }
+.tray[data-still] .number { transition: none; }
+
+.count {
+  position: absolute;
+  right: 0;
+  bottom: 36px;
+  left: 0;
+  color: var(--feta-text-tertiary);
+  font: var(--feta-text-mono-micro);
+  letter-spacing: 0;
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .tray { --lens: 184px; --mark: 34px; --rule: 30px; padding-inline: var(--feta-space-3); }
+  .number { font-size: 26px; }
+}
+
+[data-platform="mobile"] .tray { --lens: 184px; --mark: 34px; --rule: 30px; padding-inline: var(--feta-space-3); }
+[data-platform="mobile"] .number { font-size: 26px; }
+[data-platform="web"] .tray { --lens: 220px; --mark: 40px; --rule: 34px; padding-inline: var(--feta-space-7); }
+[data-platform="web"] .number { font-size: 30px; }

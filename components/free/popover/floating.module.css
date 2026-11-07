@@ -1,0 +1,33 @@
+.floating {
+  position: fixed;
+  inset: auto;
+  left: 0;
+  top: 0;
+  width: max-content;
+  height: fit-content;
+  max-width: calc(100vw - 16px);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  overflow: visible;
+}
+
+.measure { visibility: hidden; }
+
+
+.wash { fill: var(--nub-wash, transparent); }
+
+/* Points down by default, for a panel above its trigger. */
+.nub {
+  position: absolute;
+  display: block;
+  fill: var(--nub-fill, var(--feta-bg-surface));
+  pointer-events: none;
+}
+
+[data-side="top"] > * .nub { left: var(--nub-at); bottom: -7px; transform: translateX(-50%); }
+[data-side="bottom"] > * .nub { left: var(--nub-at); top: -7px; transform: translateX(-50%) rotate(180deg); }
+[data-side="left"] > * .nub { top: var(--nub-at); right: -11px; transform: translateY(-50%) rotate(-90deg); }
+[data-side="right"] > * .nub { top: var(--nub-at); left: -11px; transform: translateY(-50%) rotate(90deg); }

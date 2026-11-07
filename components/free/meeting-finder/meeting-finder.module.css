@@ -1,0 +1,305 @@
+/* Meeting Finder: FetaUI 207 Meeting Finder Handoff and Motion. */
+
+/* A white body on a 4% tray: tray 24, body 20, 4 px between. */
+.finder {
+  --name: var(--feta-space-14);
+  --gutter: calc(20px + var(--feta-space-2) * 2 + var(--name));
+  box-sizing: border-box;
+  width: 600px;
+  max-width: 100%;
+  padding: var(--feta-space-1);
+  border-radius: var(--feta-radius-frame);
+  background-color: var(--feta-alpha-ink-base-4);
+  color: var(--feta-text-primary);
+  font-family: var(--feta-type-font-sans);
+  letter-spacing: -0.04em;
+  /* Panel: fade and rise 8 in 400 ms on the standard ease, on first render. */
+  animation: finderEnter 400ms ease backwards;
+}
+.finder[data-still] { animation: none; }
+
+.body {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  overflow: hidden;
+  border: 1px solid var(--feta-alpha-ink-base-8);
+  border-radius: var(--feta-radius-panel);
+  background-color: var(--feta-bg-surface);
+}
+
+/* Prompt: 16 icon, one line of Body/Row, Find times on the right. */
+.prompt {
+  display: flex;
+  align-items: center;
+  gap: var(--feta-space-2-5);
+  padding: var(--feta-space-2-5) var(--feta-space-2-5) var(--feta-space-2-5) var(--feta-space-3-5);
+  border-radius: calc(var(--feta-radius-panel) - 1px) calc(var(--feta-radius-panel) - 1px) 0 0;
+}
+.prompt:has(.entry:focus-visible) { box-shadow: inset 0 0 0 1.5px var(--feta-text-primary); }
+.spark { flex: none; width: 16px; height: 16px; color: var(--feta-text-secondary); }
+.entry {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 20px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--feta-text-primary);
+  font: var(--feta-text-body-row);
+  letter-spacing: var(--feta-text-body-row-tracking);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.entry::placeholder { color: var(--feta-text-tertiary); opacity: 1; }
+.prompt:has(.area:focus) { box-shadow: inset 0 0 0 1.5px var(--feta-text-primary); }
+/* Mobile prompt: a textarea over a mirror that clamps to two lines with an ending ellipsis. */
+.wrap { display: none; flex: 1 1 0; min-width: 0; }
+.area,
+.mirror {
+  grid-area: 1 / 1;
+  box-sizing: border-box;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: var(--feta-text-body-row);
+  letter-spacing: var(--feta-text-body-row-tracking);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.area {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  overflow: hidden;
+  outline: none;
+  background: transparent;
+  color: transparent;
+  caret-color: var(--feta-text-primary);
+  resize: none;
+}
+.area::placeholder { color: transparent; opacity: 1; }
+.area:focus { overflow-y: auto; color: var(--feta-text-primary); }
+.area:focus::placeholder { color: var(--feta-text-tertiary); }
+.mirror {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--feta-text-primary);
+  pointer-events: none;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+.mirror[data-empty] { color: var(--feta-text-tertiary); }
+.area:focus + .mirror { visibility: hidden; }
+/* Mobile keeps the Web size from Figma, 28 tall with Label/Micro, and reaches 44 px through an invisible hit area. */
+.prompt .findShort[data-size] {
+  --icon: 14px;
+  position: relative;
+  display: none;
+  height: var(--feta-space-7);
+  padding-inline: var(--feta-space-2-5);
+  font: var(--feta-text-label-micro);
+  letter-spacing: var(--feta-text-label-micro-tracking);
+}
+.prompt .findShort[data-size]::after {
+  content: none;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 44px;
+  transform: translateY(-50%);
+}
+.go :where(path) { stroke-width: 2.57; }
+
+/* Chips: 30 tall with a 1 px 10% hairline. */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--feta-space-1-5);
+  margin: 0;
+  padding: 0 var(--feta-space-3-5) var(--feta-space-3);
+  list-style: none;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  height: 30px;
+  gap: var(--feta-space-1-5);
+  padding: 0 var(--feta-space-2-5);
+  border: 1px solid var(--feta-alpha-ink-base-10);
+  border-radius: var(--feta-radius-full);
+  white-space: nowrap;
+}
+.chipIcon { display: inline-flex; flex: none; color: var(--feta-text-secondary); }
+.chipIcon svg { width: 12px; height: 12px; }
+.chipIcon svg :where(path, circle) { stroke-width: 2; }
+.chipLabel { color: var(--feta-text-primary); font: var(--feta-text-label-micro); letter-spacing: var(--feta-text-label-micro-tracking); }
+.chipValue { color: var(--feta-text-tertiary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); }
+.remove {
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  margin-right: calc(var(--feta-space-1) * -1);
+  padding: 0;
+  border: 0;
+  border-radius: var(--feta-radius-full);
+  background: transparent;
+  color: var(--feta-text-tertiary);
+  cursor: pointer;
+}
+.remove:hover { color: var(--feta-text-primary); }
+.remove:focus-visible { outline: 2px solid var(--feta-text-primary); outline-offset: 1px; }
+.remove svg { width: 12px; height: 12px; }
+.remove svg :where(path) { stroke-width: 2; }
+
+.rule { flex: none; height: 1px; background-color: var(--feta-alpha-ink-base-8); }
+
+/* Day: head, a 20 px lane per person, the hour axis. */
+.day {
+  display: flex;
+  flex-direction: column;
+  gap: var(--feta-space-2);
+  padding: var(--feta-space-3-5) var(--feta-space-4);
+}
+.head { display: flex; align-items: flex-start; gap: var(--feta-space-2); }
+.dayName { flex: 1 1 0; min-width: 0; overflow: hidden; font: var(--feta-text-label-row); letter-spacing: var(--feta-text-label-row-tracking); text-overflow: ellipsis; white-space: nowrap; }
+.range { flex: none; color: var(--feta-text-tertiary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); white-space: nowrap; }
+.lanes { position: relative; display: flex; overflow-x: clip; flex-direction: column; gap: var(--feta-space-1-5); }
+.person { display: grid; grid-template-columns: 20px var(--name) minmax(0, 1fr); align-items: center; gap: var(--feta-space-2); }
+.name { overflow: hidden; color: var(--feta-text-primary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); text-overflow: ellipsis; white-space: nowrap; }
+.lane { position: relative; height: 20px; border-radius: var(--feta-radius-md); background-color: var(--feta-alpha-ink-base-4); }
+.busy { position: absolute; top: 0; bottom: 0; border-radius: var(--feta-radius-md); background-color: var(--feta-alpha-ink-base-10); }
+/* The proposed slot rings every lane: 2 px emerald, 4 px past the first and last lane. */
+.track { position: absolute; top: calc(var(--feta-space-1) * -1); bottom: calc(var(--feta-space-1) * -1); left: var(--gutter); right: 0; pointer-events: none; }
+.proposed {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  box-sizing: border-box;
+  border: 2px solid var(--feta-gradient-emerald-deep);
+  border-radius: var(--feta-radius-lg);
+  background-color: var(--feta-alpha-ink-base-4);
+}
+.axis {
+  display: flex;
+  justify-content: space-between;
+  margin-left: calc(var(--gutter) - var(--feta-space-1));
+  color: var(--feta-text-tertiary);
+  font: var(--feta-text-micro-default);
+  letter-spacing: var(--feta-text-micro-default-tracking);
+  white-space: nowrap;
+}
+
+/* Results: skeletons while searching, then ranked slots. */
+.results { display: flex; flex-direction: column; }
+.skeletons { display: flex; flex-direction: column; gap: var(--feta-space-2); padding: var(--feta-space-3-5) var(--feta-space-4); }
+.skeleton { position: relative; height: 40px; overflow: hidden; border-radius: var(--feta-radius-xl); background-color: var(--feta-alpha-ink-base-4); }
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 30%, var(--feta-alpha-ink-base-4) 50%, transparent 70%);
+  transform: translateX(-100%);
+  animation: finderShimmer 1400ms linear infinite;
+}
+.skeletons[data-offscreen] .skeleton::after { animation-play-state: paused; }
+.finder[data-still] .skeleton::after { animation: none; opacity: 0; }
+.message { margin: 0; padding: var(--feta-space-3-5) var(--feta-space-4); color: var(--feta-text-secondary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); }
+.message[data-failed] { color: var(--feta-status-danger); }
+
+.list { display: flex; flex-direction: column; gap: var(--feta-space-1); margin: 0; padding: var(--feta-space-2); list-style: none; }
+/* Rows: opacity 0 to 1 in 240 ms with a 40 ms stagger. */
+.row { animation: finderFade 240ms ease backwards; animation-delay: calc(var(--i, 0) * 40ms); }
+.finder[data-still] .row { animation: none; }
+.suggestion {
+  position: relative;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  gap: var(--feta-space-2-5);
+  padding: var(--feta-space-2-5) var(--feta-space-3);
+  border: 0;
+  border-radius: var(--feta-radius-xl);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  outline: 2px solid transparent;
+  outline-offset: 1px;
+  transition: transform 120ms ease, outline-color var(--feta-motion-duration-focus) ease;
+}
+/* The fill sits on a layer so hover and pick only fade its opacity. */
+.suggestion::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-color: var(--feta-alpha-ink-base-4);
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+.suggestion:hover::before { opacity: 0.6; }
+.suggestion[aria-pressed="true"]::before { opacity: 1; }
+.suggestion:active { transform: scale(0.98); }
+.suggestion:focus-visible { outline-color: var(--feta-text-primary); }
+.finder[data-still] .suggestion,
+.finder[data-still] .suggestion::before { transition: none; }
+.finder[data-still] .suggestion:active { transform: none; }
+.text { position: relative; display: flex; flex: 1 1 0; flex-direction: column; gap: var(--feta-space-0-5); min-width: 0; }
+.slot { overflow: hidden; color: var(--feta-text-primary); font: var(--feta-text-label-row); letter-spacing: var(--feta-text-label-row-tracking); text-overflow: ellipsis; white-space: pre; }
+.note { display: flex; align-items: center; gap: var(--feta-space-1); min-width: 0; color: var(--feta-status-success-text); }
+.note[data-warning] { color: var(--feta-status-warning-text); }
+.noteIcon { flex: none; width: 12px; height: 12px; }
+.noteIcon :where(path) { stroke-width: 3; }
+.noteText { overflow: hidden; color: var(--feta-text-secondary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); text-overflow: ellipsis; white-space: nowrap; }
+.suggestion .best { position: relative; flex: none; }
+/* The Best badge keeps 4 px sides and Label/Small text, so it beats Badge's own size rules. */
+.list .suggestion .best.best[data-size="sm"] { --right: var(--feta-space-1); --font: var(--feta-type-label-sm-size); }
+.chevron { position: relative; flex: none; width: 14px; height: 14px; color: var(--feta-text-tertiary); }
+.chevron :where(path) { stroke-width: 2.57; }
+
+/* Mobile drops secondary values rather than shrinking text, and the name column narrows to 44. */
+@media (max-width: 640px) {
+  .finder { --name: calc(var(--feta-space-10) + var(--feta-space-1)); width: 100%; }
+  .chipValue,
+  .chips:not([data-removable]) .chip:nth-child(n + 4) { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; border: 0; clip-path: inset(50%); white-space: nowrap; }
+  .prompt .entry { display: none; }
+  .prompt .wrap { display: grid; }
+  .prompt .findLong { display: none; }
+  .prompt .findShort[data-size] { display: inline-flex; }
+  .prompt .findShort[data-size]::after { content: ""; }
+}
+[data-platform="mobile"] .finder { --name: calc(var(--feta-space-10) + var(--feta-space-1)); width: 100%; }
+[data-platform="mobile"] .chipValue,
+[data-platform="mobile"] .chips:not([data-removable]) .chip:nth-child(n + 4) { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; border: 0; clip-path: inset(50%); white-space: nowrap; }
+[data-platform="mobile"] .prompt .entry { display: none; }
+[data-platform="mobile"] .prompt .wrap { display: grid; }
+[data-platform="mobile"] .prompt .findLong { display: none; }
+[data-platform="mobile"] .prompt .findShort[data-size] { display: inline-flex; }
+[data-platform="mobile"] .prompt .findShort[data-size]::after { content: ""; }
+
+@media (prefers-reduced-motion: reduce) {
+  .finder { animation-name: finderFade; }
+}
+
+@keyframes finderEnter {
+  from { opacity: 0; transform: translateY(8px); }
+}
+@keyframes finderFade {
+  from { opacity: 0; }
+}
+@keyframes finderShimmer {
+  to { transform: translateX(100%); }
+}

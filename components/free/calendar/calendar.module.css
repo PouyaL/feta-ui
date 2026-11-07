@@ -1,0 +1,194 @@
+/* Calendar: FetaUI 15 Calendar Handoff and Motion. */
+.calendar {
+  --cell: 36px;
+  --cell-radius: var(--feta-radius-xl);
+  box-sizing: border-box;
+  width: max-content;
+  max-width: 100%;
+  padding: var(--feta-space-1);
+  border-radius: var(--feta-radius-tray);
+  background-color: var(--feta-alpha-ink-base-4);
+}
+
+.card {
+  box-sizing: border-box;
+  padding: var(--feta-space-3);
+  border-radius: var(--feta-radius-card);
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8);
+}
+
+/* Two months wrap when the space is narrower than both (577 with the tray), instead of clipping.
+   The divider sits in the gap, and the row's clip hides it once the second month wraps. */
+.monthsRow {
+  --month-clip: var(--feta-space-1);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--feta-space-5) calc(var(--feta-space-5) * 2 + 1px);
+  margin: calc(var(--month-clip) * -1);
+  padding: var(--month-clip);
+  overflow: hidden;
+}
+
+.month + .month { position: relative; }
+
+.month + .month::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--feta-space-5) * -1 - 1px);
+  width: 1px;
+  background-color: var(--feta-alpha-ink-base-5);
+}
+
+.month { width: calc(var(--cell) * 7); max-width: 100%; }
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--feta-space-1);
+}
+
+.navSpace { width: var(--feta-size-button-sm); }
+
+.titleBox {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+  text-align: center;
+}
+
+.selects {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  gap: var(--feta-space-1);
+}
+
+.title {
+  display: inline-block;
+  color: var(--feta-text-primary);
+  font: var(--feta-text-label-default);
+  font-weight: 600;
+  letter-spacing: var(--feta-text-label-default-tracking);
+}
+
+.grid { outline: 0; }
+
+.week {
+  display: grid;
+  /* Columns may narrow below a cell when the space is tighter than seven of them. */
+  grid-template-columns: repeat(7, minmax(0, var(--cell)));
+  margin-bottom: var(--feta-space-0-5);
+}
+
+.weekday {
+  display: grid;
+  place-items: center;
+  height: 24px;
+  color: var(--feta-alpha-ink-base-60);
+  font: var(--feta-text-caption-medium);
+}
+
+.rows {
+  position: relative;
+  height: calc((var(--cell) + 2px) * 6);
+  overflow: hidden;
+}
+
+.page { width: 100%; }
+
+.day {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  max-width: var(--cell);
+  height: var(--cell);
+  padding: 0;
+  border: 0;
+  border-radius: var(--cell-radius);
+  background: transparent;
+  color: var(--feta-text-primary);
+  font: var(--feta-text-label-default);
+  letter-spacing: var(--feta-text-label-default-tracking);
+  cursor: pointer;
+  outline: 2px solid transparent;
+  outline-offset: -2px;
+  transition: background-color var(--feta-motion-duration-fast) var(--feta-motion-ease-out);
+}
+
+.calendar[data-still] .day { transition: none; }
+
+.day:focus-visible { outline-color: var(--feta-text-primary); }
+
+@media (hover: hover) {
+  .day:hover:not([aria-disabled]):not([aria-selected]):not([data-band]) { background-color: var(--feta-alpha-ink-base-5); }
+}
+
+.day[data-today] { box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-10); font-weight: 600; }
+.day[data-outside] { color: var(--feta-alpha-ink-base-60); opacity: 0.67; }
+.day[data-off] { opacity: 0.3; cursor: not-allowed; }
+.day[data-booked] { cursor: not-allowed; color: var(--feta-text-tertiary); text-decoration: line-through; }
+
+.day[data-band] { border-radius: 0; background-color: var(--feta-alpha-ink-base-5); }
+.day[data-start] { border-radius: var(--cell-radius) 0 0 var(--cell-radius); background-color: var(--feta-alpha-ink-base-5); }
+.day[data-end] { border-radius: 0 var(--cell-radius) var(--cell-radius) 0; background-color: var(--feta-alpha-ink-base-5); }
+
+.chip {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--cell-radius);
+  background-color: var(--feta-bg-inverse);
+}
+
+.day[aria-selected] .number { color: var(--feta-text-inverse); }
+
+.number { position: relative; }
+
+.day[data-event]::after {
+  content: '';
+  position: absolute;
+  bottom: 8px;
+  width: 4px;
+  height: 4px;
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-alpha-ink-base-60);
+}
+
+.day[data-event][aria-selected]::after { background-color: var(--feta-text-inverse); }
+
+.slots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--feta-space-1-5);
+  padding: var(--feta-space-2) var(--feta-space-2) var(--feta-space-1);
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  gap: var(--feta-space-1);
+  padding: var(--feta-space-2) var(--feta-space-3);
+}
+
+.summary {
+  flex: 1;
+  min-width: 0;
+  color: var(--feta-text-secondary);
+  font: var(--feta-text-label-small);
+  letter-spacing: var(--feta-text-label-small-tracking);
+}
+
+@media (max-width: 640px) {
+  .calendar { --cell: 44px; --cell-radius: var(--feta-radius-control); }
+  .monthsRow { flex-direction: column; }
+  .month + .month::before { display: none; }
+}
+
+[data-platform="mobile"] .calendar { --cell: 44px; --cell-radius: var(--feta-radius-control); }
+[data-platform="mobile"] .monthsRow { flex-direction: column; }
+[data-platform="mobile"] .month + .month::before { display: none; }

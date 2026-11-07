@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+  <g data-feta="plate" transform="translate(1.4 1.4)"><path d="M21.996 12C21.996 17.523 17.519 22 11.996 22C6.473 22 1.996 17.523 1.996 12C1.996 6.477 6.473 2 11.996 2" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--feta-riso, #FF8A5B)"/></g>
+  <g data-feta="ink"><path d="M21.996 12C21.996 17.523 17.519 22 11.996 22C6.473 22 1.996 17.523 1.996 12C1.996 6.477 6.473 2 11.996 2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>
+</svg>

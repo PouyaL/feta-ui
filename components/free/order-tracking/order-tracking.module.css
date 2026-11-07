@@ -1,0 +1,71 @@
+/* Order Tracking: FetaUI 204 Order Tracking Handoff and Motion. */
+.order {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 680px;
+  border-radius: var(--feta-radius-panel);
+  font-family: var(--feta-type-font-sans);
+  letter-spacing: -0.04em;
+  color: var(--feta-text-primary);
+  background-color: var(--feta-bg-surface);
+  box-shadow: 0 0 0 4px var(--feta-alpha-ink-base-4), inset 0 0 0 1px var(--feta-alpha-ink-base-8);
+  --ease-standard: cubic-bezier(0.25, 0.1, 0.25, 1);
+  animation: enter 400ms var(--ease-standard) backwards;
+}
+.top { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--feta-space-4); padding: var(--feta-space-4) var(--feta-space-5) 0; }
+.title { margin: 0; font: var(--feta-text-heading-small); letter-spacing: -0.04em; }
+.sub { display: block; margin: 0; font-size: 12px; line-height: 16px; color: var(--feta-text-secondary); }
+.top .sub { font-size: 13px; line-height: 20px; }
+.eta { text-align: right; }
+.time { font: var(--feta-text-heading-medium); letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
+
+.track { list-style: none; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--feta-space-1); padding: var(--feta-space-4) var(--feta-space-5); margin: 0; border-bottom: 1px solid var(--feta-alpha-ink-base-8); }
+.track li { position: relative; display: flex; min-width: 0; flex-direction: column; gap: var(--feta-space-2); }
+.bar { position: relative; display: block; height: 4px; border-radius: var(--feta-radius-full); background-color: var(--feta-alpha-ink-base-8); }
+/* Values: a reached bar fills 0 to 1 over 240 ms, 40 ms after the one before it. Adding data-reached replays it, so a new stage tweens in place. */
+.fill { position: absolute; inset: 0; border-radius: var(--feta-radius-full); background-color: var(--feta-text-primary); transform: scaleX(0); transform-origin: 0 50%; }
+.track [data-reached] .fill { transform: scaleX(1); animation: fill 240ms var(--ease-standard) var(--i) backwards; }
+.head { position: absolute; top: 50%; right: -4px; width: 8px; height: 8px; margin-top: calc(-1 * var(--feta-space-1)); border-radius: var(--feta-radius-full); background-color: var(--feta-text-primary); animation: pop 240ms var(--ease-standard) calc(var(--i) + 240ms) backwards; }
+.stage { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; line-height: 16px; color: var(--feta-text-tertiary); }
+[data-reached] > .stage { color: var(--feta-text-secondary); }
+[aria-current] > .stage { font-weight: 500; color: var(--feta-text-primary); }
+
+.details { display: grid; grid-template-columns: 1fr 1fr; gap: var(--feta-space-5); padding: var(--feta-space-4) var(--feta-space-5); border-bottom: 1px solid var(--feta-alpha-ink-base-8); }
+.heading { margin: 0; font: var(--feta-text-title-small); letter-spacing: -0.04em; }
+.updates, .items { list-style: none; display: flex; flex-direction: column; gap: var(--feta-space-3); padding: 0; margin: var(--feta-space-3) 0 0; }
+.updates li { display: grid; grid-template-columns: 40px 8px 1fr; gap: var(--feta-space-2); align-items: start; animation: fade 240ms var(--ease-standard) var(--i) backwards; }
+.clock { font: var(--feta-text-mono-meta); letter-spacing: 0; color: var(--feta-text-tertiary); }
+.dot { width: 6px; height: 6px; margin: var(--feta-space-1-5) var(--feta-space-0-5); border-radius: var(--feta-radius-full); background-color: var(--feta-alpha-ink-base-10); }
+[data-latest] > .dot { background-color: var(--feta-text-primary); }
+.line { display: block; font-size: 13px; line-height: 18px; color: var(--feta-text-primary); }
+.storeHead { display: flex; align-items: baseline; justify-content: space-between; }
+.count { font-size: 12px; line-height: 16px; color: var(--feta-text-tertiary); }
+.items li { display: flex; align-items: center; gap: var(--feta-space-2-5); }
+.thumb { display: inline-flex; flex: none; width: 36px; height: 36px; overflow: hidden; border-radius: var(--feta-radius-lg); background-color: var(--feta-alpha-ink-base-5); }
+.address { display: flex; align-items: center; gap: var(--feta-space-1-5); margin: var(--feta-space-3) 0 0; padding-top: var(--feta-space-3); border-top: 1px solid var(--feta-alpha-ink-base-8); font-size: 12px; line-height: 16px; color: var(--feta-text-secondary); }
+.footer { display: flex; align-items: center; justify-content: space-between; gap: var(--feta-space-3); padding: var(--feta-space-2-5) var(--feta-space-5); }
+.order[data-still], .order[data-still] li, .order[data-still] .track [data-reached] .fill, .order[data-still] .head { animation: none; }
+@keyframes enter { from { opacity: 0; transform: translateY(8px); } }
+@keyframes fade { from { opacity: 0; } }
+@keyframes fill { from { transform: scaleX(0); } }
+@keyframes pop { from { opacity: 0; transform: scale(0); } }
+/* Reduced motion: the panel only fades, and updates and bars swap at once. */
+@media (prefers-reduced-motion: reduce) {
+  .order:not([data-off]) { animation: fade 400ms var(--ease-standard) backwards; }
+  .order li, .order .track [data-reached] .fill, .order .head { animation: none; }
+}
+
+@media (max-width: 640px) {
+  :root:not([data-platform="web"]) .order { max-width: 358px; }
+  :root:not([data-platform="web"]) .top { flex-direction: column; gap: var(--feta-space-3); padding-inline: var(--feta-space-4); }
+  :root:not([data-platform="web"]) .eta { text-align: left; }
+  :root:not([data-platform="web"]) .track, :root:not([data-platform="web"]) .details, :root:not([data-platform="web"]) .footer { padding-inline: var(--feta-space-4); }
+  :root:not([data-platform="web"]) .stage { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  :root:not([data-platform="web"]) .details { grid-template-columns: 1fr; }
+}
+[data-platform="mobile"] .order { max-width: 358px; }
+[data-platform="mobile"] .top { flex-direction: column; gap: var(--feta-space-3); padding-inline: var(--feta-space-4); }
+[data-platform="mobile"] .eta { text-align: left; }
+[data-platform="mobile"] .track, [data-platform="mobile"] .details, [data-platform="mobile"] .footer { padding-inline: var(--feta-space-4); }
+[data-platform="mobile"] .stage { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+[data-platform="mobile"] .details { grid-template-columns: 1fr; }

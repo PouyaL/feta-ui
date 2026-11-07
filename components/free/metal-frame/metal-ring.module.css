@@ -1,0 +1,44 @@
+/* The shared chrome ring of Metal Frame and Bezel Frame. */
+.ring {
+  /* Read by the shader: the surface under the ring picks the light or dark palette. */
+  color: var(--feta-bg-surface);
+  --ring-tint-light: var(--feta-sky-400);
+  --ring-tint-deep: var(--feta-blue-700);
+  --ring-lo: color-mix(in srgb, var(--feta-text-primary) 46%, transparent);
+  --ring-hi: var(--feta-alpha-ink-base-8);
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.ring[data-tint="sky"] {
+  --ring-lo: var(--feta-blue-700);
+  --ring-hi: color-mix(in srgb, var(--feta-sky-400) 30%, transparent);
+}
+
+/* The static ring: no WebGL, animated off, reduced motion or disabled. The same band with its bands held still. */
+.fallback {
+  position: absolute;
+  inset: 0;
+  box-sizing: border-box;
+  padding: var(--ring-width, 1.5px);
+  border-radius: inherit;
+  background: conic-gradient(from 200deg, var(--ring-lo) 0deg, var(--ring-hi) 55deg, var(--ring-lo) 120deg, var(--ring-hi) 185deg, var(--ring-lo) 250deg, var(--ring-hi) 310deg, var(--ring-lo) 360deg);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+
+.ring[data-gl] .fallback { visibility: hidden; }
+
+/* Reaches 10 px past the box so the bend can swell outward. Sized by the script, never animated. */
+.canvas {
+  position: absolute;
+  inset: -10px;
+  width: calc(100% + 20px);
+  height: calc(100% + 20px);
+  pointer-events: none;
+}

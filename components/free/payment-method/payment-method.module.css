@@ -1,0 +1,16 @@
+/* Payment Method: FetaUI 219 Handoff. 420 by 68, Add 58. */
+.row { display: flex; align-items: center; gap: var(--feta-space-3); box-sizing: border-box; width: 100%; max-width: 420px; min-height: 68px; padding: var(--feta-space-3) var(--feta-space-4); border: 0; border-radius: var(--feta-radius-card); background-color: var(--feta-bg-surface); box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8); color: var(--feta-text-primary); text-align: left; transition: box-shadow var(--feta-motion-duration-fast) var(--feta-motion-ease-out); }
+.row[data-selected] { background-color: var(--feta-bg-subtle); box-shadow: inset 0 0 0 2px var(--feta-text-primary); }
+label.row { cursor: pointer; }
+.add { min-height: 58px; background: transparent; box-shadow: none; outline: 1px dashed var(--feta-alpha-ink-base-10); outline-offset: -1px; font: inherit; cursor: pointer; }
+.add:focus-visible { outline: 2px solid var(--feta-text-primary); }
+@media (hover: hover) { .add:hover { background-color: var(--feta-alpha-ink-base-4); } }
+.tile, .addTile { display: inline-flex; flex: none; align-items: center; justify-content: center; width: 40px; height: 28px; border-radius: var(--feta-radius-md); background-color: var(--feta-alpha-ink-base-5); font: var(--feta-text-mono-micro); font-weight: 600; letter-spacing: 0.02em; }
+.addTile { color: var(--feta-text-secondary); }
+.text { display: flex; flex: 1; flex-direction: column; min-width: 0; }
+.label { overflow: hidden; flex: 1; font: var(--feta-text-title-row); letter-spacing: var(--feta-text-title-row-tracking); text-overflow: ellipsis; white-space: nowrap; }
+.expiry { color: var(--feta-text-secondary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); }
+.expiry[data-expired] { color: var(--feta-status-danger-text); }
+.chevron { color: var(--feta-text-tertiary); }
+[data-platform="mobile"] .row { max-width: 358px; }
+@media (max-width: 640px) { .row { max-width: 358px; } }

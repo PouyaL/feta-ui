@@ -1,0 +1,106 @@
+/* Receipt Printer: FetaUI 16.4 Showcase Cards Handoff and Motion. */
+.printer {
+  --ink: var(--feta-avatar-ink);
+  --ink-soft: color-mix(in srgb, var(--feta-avatar-ink) 70%, transparent);
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 300px;
+  height: 606px;
+  padding: var(--feta-space-1);
+  overflow: hidden;
+  border-radius: var(--feta-radius-tray);
+  background-color: var(--feta-alpha-ink-base-4);
+  color: var(--feta-text-primary);
+  font-family: var(--feta-type-font-sans);
+}
+
+.header {
+  position: relative;
+  z-index: 2;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--feta-space-4-5);
+  height: 78px;
+  flex: none;
+  padding: var(--feta-space-5) var(--feta-space-5) var(--feta-space-3-5);
+  border-radius: var(--feta-radius-card) var(--feta-radius-card) 0 0;
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft);
+}
+
+.titleRow { display: flex; align-items: center; justify-content: space-between; gap: var(--feta-space-2); height: 20px; }
+.title { margin: 0; font: var(--feta-text-label-row); letter-spacing: var(--feta-text-label-row-tracking); }
+.status { color: var(--feta-text-secondary); font: var(--feta-text-body-row); letter-spacing: var(--feta-text-body-row-tracking); }
+.printer .again { height: 20px; }
+.slot { display: flex; justify-content: center; height: 6px; }
+.slot span { width: calc(100% - 16px); border-radius: var(--feta-radius-full); background-color: var(--feta-alpha-ink-base-8); }
+
+.output { position: relative; flex: 1; min-height: 0; overflow: hidden; }
+
+.feed { position: absolute; top: 0; right: 32px; left: 32px; }
+.feed:active { cursor: grabbing; }
+.printer[data-state='hanging'] .feed { cursor: grab; touch-action: none; }
+
+/* Paper stays white with ink type in both modes. */
+.paper {
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--feta-space-3-5);
+  padding: var(--feta-space-7);
+  background-color: var(--feta-white);
+  box-shadow: 0 1px 2px var(--feta-shadow-soft-sm), 0 6px 20px -10px var(--feta-shadow-soft-lg);
+  color: var(--ink);
+  letter-spacing: var(--feta-text-body-row-tracking);
+  font: 400 14px/18px var(--feta-type-font-sans);
+}
+
+.paper[data-state='printing'] { animation-name: feed; animation-fill-mode: backwards; }
+.paper[data-frozen] { animation: none; transform: translateY(calc(230px - 100%)); }
+.printer[data-still] .paper { animation: none; }
+
+@keyframes feed { from { transform: translateY(-100%); } }
+
+/* Torn edges: a 12 px zigzag along the cut. */
+.paper::after, .paper::before {
+  content: '';
+  position: absolute;
+  right: 0;
+  left: 0;
+  height: 6px;
+  background-color: var(--feta-white);
+  mask: conic-gradient(from -45deg at 50% 100%, #0000, #000 1deg 89deg, #0000 90deg) 0 0 / 12px 100%;
+  opacity: 0;
+}
+
+.paper::after { bottom: -6px; mask: conic-gradient(from 135deg at 50% 0, #0000, #000 1deg 89deg, #0000 90deg) 0 0 / 12px 100%; }
+.paper::before { top: -6px; }
+
+.paper[data-state='hanging']::after, .paper[data-state='torn']::after, .paper[data-state='torn']::before { opacity: 1; }
+
+/* Perforation under the slot while it hangs. */
+.paper[data-state='hanging'] { background-image: linear-gradient(90deg, var(--ink-soft) 50%, transparent 50%); background-position: 0 8px; background-repeat: repeat-x; background-size: 4px 1px; }
+
+.head { display: flex; flex-direction: column; gap: var(--feta-space-0-5); align-items: center; color: var(--ink-soft); text-align: center; }
+.head strong { color: var(--ink); font: 600 14px/20px var(--feta-type-font-sans); letter-spacing: var(--feta-text-body-row-tracking); }
+
+.rule { width: 100%; height: 0; margin: 0; border: 0; border-top: 1px dashed color-mix(in srgb, var(--feta-avatar-ink) 35%, transparent); }
+.lines { display: flex; flex-direction: column; gap: var(--feta-space-1); }
+.line { display: flex; justify-content: space-between; gap: var(--feta-space-2); margin: 0; font-variant-numeric: tabular-nums; }
+.line[data-soft] { color: var(--ink-soft); }
+.line[data-total] { font: 600 14px/20px var(--feta-type-font-sans); letter-spacing: var(--feta-text-body-row-tracking); }
+.barcode { align-self: center; width: 132px; height: 52px; fill: var(--ink); }
+.thanks { margin: 0; color: var(--ink-soft); text-align: center; }
+
+.action { position: absolute; z-index: 1; right: 0; bottom: 28px; left: 0; display: flex; justify-content: center; }
+
+[data-platform='mobile'] .printer { max-width: 358px; height: 608px; }
+
+@media (max-width: 640px) {
+  .printer { max-width: 358px; height: 608px; }
+}

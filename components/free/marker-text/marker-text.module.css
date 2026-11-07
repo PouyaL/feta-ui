@@ -1,0 +1,60 @@
+/* Marker Text: FetaUI Text page. */
+.copy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--feta-space-3);
+}
+
+.heading {
+  margin: 0;
+  color: var(--feta-text-primary);
+  font: var(--feta-text-heading-small);
+  letter-spacing: var(--feta-text-heading-small-tracking);
+}
+
+.body {
+  margin: 0;
+  color: var(--feta-text-secondary);
+  font: 400 14px/26px var(--feta-type-font-sans);
+  letter-spacing: -0.04em;
+}
+
+.mark { position: relative; white-space: nowrap; }
+.mark[data-mark="highlight"] { white-space: normal; }
+
+/* A slanted marker stroke that sweeps across the words. */
+.mark[data-mark="highlight"] {
+  padding-inline: var(--feta-space-0-5);
+  background-image: linear-gradient(100deg, transparent 1%, var(--feta-gradient-amber-from) 3%, var(--feta-gradient-amber-from) 97%, transparent 99%);
+  background-repeat: no-repeat;
+  background-size: 0% 100%;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  animation: markSweep 600ms ease-in-out forwards;
+}
+
+.mark[data-mark="highlight"][data-still] { animation: none; background-size: 100% 100%; }
+
+@keyframes markSweep { to { background-size: 100% 100%; } }
+
+.draw {
+  position: absolute;
+  inset: -3px -6px;
+  width: calc(100% + 12px);
+  height: calc(100% + 6px);
+  overflow: visible;
+  pointer-events: none;
+}
+
+.draw path {
+  fill: none;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+
+.mark[data-mark="underline"] .draw path { stroke: var(--feta-status-warning); }
+.mark[data-mark="circle"] .draw path { stroke: var(--feta-status-accent); }
+.mark[data-mark="box"] .draw path { stroke: var(--feta-status-success-strong); }
+.mark[data-mark="strike"] .draw path { stroke: var(--feta-status-danger); }
+
+.replay { margin-left: calc(var(--feta-space-2) * -1); }

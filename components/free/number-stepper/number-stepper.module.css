@@ -1,0 +1,4 @@
+/* Number Stepper: Figma 593:17865, Handoff 156. p2 inside a 1 px 10% ring (laid out inside), gap 4, a 32 wide value: 102 x 34 on Web, 118 x 42 on Mobile. */
+.stepper { display: inline-flex; flex: none; align-items: center; gap: var(--feta-space-1); box-sizing: border-box; padding: var(--feta-space-0-5); border: 1px solid var(--feta-alpha-ink-base-10); border-radius: var(--feta-radius-full); }
+.stepper[data-disabled] { opacity: 0.5; }
+.value { width: 32px; min-width: 2ch; color: var(--feta-text-primary); font: 500 14px/20px var(--feta-type-font-sans); letter-spacing: -0.04em; font-variant-numeric: tabular-nums; text-align: center; }

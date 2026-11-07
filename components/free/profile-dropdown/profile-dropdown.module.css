@@ -1,0 +1,333 @@
+/* FetaUI 28 Dropdown Handoff, Profile Dropdown. */
+.root {
+  --menu-width: 100%;
+  position: relative;
+  display: inline-flex;
+  width: 260px;
+  max-width: 100%;
+  height: fit-content;
+}
+
+/* Rest: 4% ink with an 8% hairline. Open: surface with a 1.5 px ink ring. */
+.trigger {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  gap: var(--feta-space-2-5);
+  padding: var(--feta-space-1-5) var(--feta-space-2-5) var(--feta-space-1-5) var(--feta-space-1-5);
+  border: 0;
+  border-radius: var(--feta-radius-card);
+  background-color: var(--feta-alpha-ink-base-4);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8);
+  color: var(--feta-text-primary);
+  text-align: start;
+  cursor: pointer;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  transition:
+    background-color var(--feta-motion-duration-press) var(--feta-motion-ease-out),
+    box-shadow var(--feta-motion-duration-press) var(--feta-motion-ease-out);
+}
+
+.trigger:focus-visible { outline-color: var(--feta-text-primary); }
+.trigger[data-open] { background-color: var(--feta-bg-surface); box-shadow: inset 0 0 0 1.5px var(--feta-text-primary); }
+.root[data-still] .trigger { transition: none; }
+
+@media (hover: hover) {
+  .trigger:hover:not([data-open]) { background-color: var(--feta-alpha-ink-base-5); }
+}
+
+.who {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  color: var(--feta-text-secondary);
+  font: var(--feta-text-caption-default);
+  letter-spacing: var(--feta-text-caption-default-tracking);
+}
+
+.who > * { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Trigger and account rows: Label, which is 14/20 on Web and 16/22 on Mobile. */
+.who strong {
+  color: var(--feta-text-primary);
+  font: var(--feta-text-label-default);
+  letter-spacing: var(--feta-text-label-default-tracking);
+}
+
+/* The card name stays 14/20 SemiBold on both platforms. */
+.cardWho strong {
+  font: var(--feta-text-body-row);
+  letter-spacing: var(--feta-text-body-row-tracking);
+  font-weight: 600;
+}
+
+.turn { display: inline-flex; flex: none; color: var(--feta-text-secondary); }
+.turn svg { display: block; width: var(--feta-size-icon); height: var(--feta-size-icon); }
+
+.pop {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + var(--feta-space-2));
+  left: 0;
+  box-sizing: border-box;
+  width: 280px;
+  padding: var(--feta-space-1-5);
+  overflow: hidden;
+  border-radius: var(--feta-radius-tray);
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft);
+  transform-origin: top left;
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--feta-space-0-5);
+}
+
+/* Account card: padding 12, gap 12, radius 16, then a 4 px gap before the rows. */
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--feta-space-3);
+  margin-bottom: var(--feta-space-1-5);
+  padding: var(--feta-space-3);
+  border-radius: var(--feta-radius-2xl);
+  background-color: var(--feta-alpha-ink-base-4);
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  gap: var(--feta-space-2-5);
+}
+
+.plan {
+  flex: none;
+  padding: var(--feta-space-0-5) var(--feta-space-2);
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-bg-inverse);
+  color: var(--feta-text-inverse);
+  font: var(--feta-text-label-micro);
+  letter-spacing: var(--feta-text-label-micro-tracking);
+}
+
+.setting {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--feta-space-2);
+}
+
+.settingName {
+  color: var(--feta-text-secondary);
+  font: var(--feta-text-body-compact);
+  letter-spacing: var(--feta-text-body-compact-tracking);
+}
+
+/* Status is a Segment group: 2 px tray on 5% ink, segments 28 (36 on Mobile) with radius 10. */
+.setting .statusGroup.statusGroup,
+.setting .themeGroup.themeGroup {
+  gap: var(--feta-space-0-5);
+  padding: var(--feta-space-0-5);
+  background-color: var(--feta-alpha-ink-base-5);
+}
+
+.statusGroup.statusGroup > button {
+  padding-inline: var(--feta-space-3);
+  border-radius: var(--feta-radius-field);
+  font: var(--feta-text-label-default);
+  letter-spacing: var(--feta-text-label-default-tracking);
+}
+
+/* Theme is three round Icon Buttons; the chosen one sits on a 5% wash, not a lifted card. */
+.themeGroup.themeGroup > button svg { width: 14px; height: 14px; }
+
+.themeGroup.themeGroup > button[data-on][data-appearance] {
+  --fill: var(--feta-alpha-ink-base-5);
+  --ring: transparent;
+  --lift: 0 0 transparent;
+}
+
+.themeGroup.themeGroup > button[data-on][data-slides] > span:first-child {
+  background-color: var(--feta-alpha-ink-base-5);
+  box-shadow: none;
+}
+
+.note {
+  display: flex;
+  align-items: center;
+  gap: var(--feta-space-1-5);
+  margin: 0;
+  padding: var(--feta-space-2) var(--feta-space-2-5);
+  border-radius: var(--feta-radius-xl);
+  background-color: var(--feta-bg-surface);
+  color: var(--feta-text-secondary);
+  font: var(--feta-text-caption-default);
+  letter-spacing: var(--feta-text-caption-default-tracking);
+  transform-origin: top center;
+}
+
+.noteIcon { display: inline-flex; flex: none; }
+.noteIcon svg { display: block; width: 14px; height: 14px; }
+
+.panel .rows {
+  width: 100%;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+/* Separator · Soft: a 1 px 8% rule, inset 6, centred in 9 px. */
+.separator {
+  flex: none;
+  height: 1px;
+  margin: var(--feta-space-1) var(--feta-space-1-5);
+  background-color: var(--feta-alpha-ink-base-8);
+}
+
+/* Rows are 36, two taller than the Figma rows, so the rule sits 2 closer to keep Sign out in place. */
+.rows + .separator { margin-top: var(--feta-space-0-5); }
+
+.signOut {
+  position: relative;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  height: 36px;
+  gap: var(--feta-space-2-5);
+  padding-inline: var(--feta-space-2-5);
+  overflow: hidden;
+  border: 0;
+  border-radius: var(--feta-radius-xl);
+  background-color: transparent;
+  color: var(--feta-text-primary);
+  font: var(--feta-text-body-row);
+  letter-spacing: var(--feta-text-body-row-tracking);
+  text-align: start;
+  cursor: pointer;
+  outline: 2px solid transparent;
+  outline-offset: -2px;
+  touch-action: none;
+  user-select: none;
+}
+
+.signOut:focus-visible { outline-color: var(--feta-text-primary); }
+.signOut[data-holding] { background-color: var(--feta-alpha-status-danger-15); color: var(--feta-status-danger-text); }
+.signOut[data-holding] .signOutLabel { font-weight: 500; }
+
+.fill {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--feta-space-2-5);
+  padding-inline: var(--feta-space-2-5);
+  background-color: var(--feta-status-danger);
+  color: var(--feta-status-on-solid);
+}
+
+.signOutIcon { position: relative; display: inline-flex; flex: none; }
+.signOutIcon svg { display: block; width: var(--feta-size-icon); height: var(--feta-size-icon); }
+.signOutLabel { position: relative; flex: 1; }
+
+.hint {
+  position: relative;
+  color: var(--feta-text-tertiary);
+  font: var(--feta-text-caption-default);
+  letter-spacing: var(--feta-text-caption-default-tracking);
+}
+
+.signOut[data-holding] .hint,
+.fill .hint { color: inherit; }
+
+/* Switch account: a 28 Back button and the title, 4 apart. */
+.head {
+  display: flex;
+  align-items: center;
+  gap: var(--feta-space-1);
+  padding: 0 var(--feta-space-1-5) var(--feta-space-0-5) 0;
+  color: var(--feta-text-primary);
+  font: var(--feta-text-label-default);
+  letter-spacing: var(--feta-text-label-default-tracking);
+}
+
+.back.back svg { width: 14px; height: 14px; }
+
+.accounts { display: flex; flex-direction: column; gap: var(--feta-space-0-5); outline: 0; }
+
+.accountRow {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  gap: var(--feta-space-2-5);
+  padding: var(--feta-space-2) var(--feta-space-2-5) var(--feta-space-2) var(--feta-space-2);
+  border: 0;
+  border-radius: var(--feta-radius-control);
+  background: transparent;
+  text-align: start;
+  cursor: pointer;
+  outline: 0;
+  transition: background-color var(--feta-motion-duration-press) var(--feta-motion-ease-out);
+}
+
+.root[data-still] .accountRow { transition: none; }
+.accountRow:focus-visible,
+.accountRow:focus { background-color: var(--feta-alpha-ink-base-4); }
+
+@media (hover: hover) {
+  .accountRow:hover { background-color: var(--feta-alpha-ink-base-4); }
+}
+
+.tick { display: inline-flex; flex: none; color: var(--feta-text-primary); }
+.tick svg { display: block; width: var(--feta-size-icon); height: var(--feta-size-icon); }
+
+.addIcon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 28px;
+  height: 28px;
+  border: 1px dashed var(--feta-alpha-ink-base-10);
+  border-radius: var(--feta-radius-full);
+  color: var(--feta-text-secondary);
+}
+
+.addIcon svg { display: block; width: 14px; height: 14px; }
+
+.addLabel {
+  color: var(--feta-text-primary);
+  font: var(--feta-text-body-row);
+  letter-spacing: var(--feta-text-body-row-tracking);
+}
+
+.srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* Mobile rows are 46 with a 2 px gap, as in Figma, so the rule needs no correction there. */
+@media (max-width: 640px) {
+  .panel .rows > div { display: flex; flex-direction: column; gap: var(--feta-space-0-5); }
+  .rows + .separator { margin-top: var(--feta-space-1); }
+}
+
+[data-platform="mobile"] .panel .rows > div { display: flex; flex-direction: column; gap: var(--feta-space-0-5); }
+[data-platform="mobile"] .rows + .separator { margin-top: var(--feta-space-1); }
+[data-platform="web"] .panel .rows > div { display: block; }
+[data-platform="web"] .rows + .separator { margin-top: var(--feta-space-0-5); }
+
+@media (max-width: 640px) {
+  .root { width: 358px; }
+  .signOut { height: 44px; font: var(--feta-text-body-large); }
+}
+
+.root[data-platform="mobile"],
+[data-platform="mobile"] .root { width: 358px; }
+[data-platform="mobile"] .signOut { height: 44px; font: var(--feta-text-body-large); }
+[data-platform="web"] .root { width: 260px; }
+[data-platform="web"] .signOut { height: 36px; font: var(--feta-text-body-row); }

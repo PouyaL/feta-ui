@@ -1,0 +1,292 @@
+/* Table: FetaUI 62 Data Grid & Table Handoff and 23 Table Handoff. */
+.scroll {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: var(--feta-radius-control);
+  -webkit-overflow-scrolling: touch;
+}
+.scroll[data-no-scroll] { overflow: visible; }
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  color: var(--feta-text-primary);
+  font: var(--feta-text-body-row);
+  letter-spacing: var(--feta-text-body-row-tracking);
+  font-variant-numeric: tabular-nums;
+}
+
+.table[data-density="compact"] { font-size: 13px; line-height: 18px; }
+
+.caption {
+  padding: var(--feta-space-2) var(--feta-space-3);
+  caption-side: top;
+  color: var(--feta-text-secondary);
+  font: var(--feta-text-caption-default);
+  letter-spacing: var(--feta-text-caption-default-tracking);
+  text-align: left;
+}
+
+.tray {
+  display: flex;
+  flex-direction: column;
+  gap: var(--feta-space-1);
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--feta-space-1);
+  border-radius: var(--feta-radius-tray);
+  background-color: var(--feta-alpha-ink-base-4);
+}
+
+.trayHead { display: flex; align-items: center; justify-content: space-between; gap: var(--feta-space-2); padding: var(--feta-space-2) var(--feta-space-3); }
+.trayTitle { font: var(--feta-text-title-small); letter-spacing: var(--feta-text-title-small-tracking); }
+.trayMeta { color: var(--feta-text-secondary); font: var(--feta-text-mono-micro); letter-spacing: 0.04em; }
+.trayCaption { margin: 0; padding: var(--feta-space-2) var(--feta-space-3); color: var(--feta-text-tertiary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); text-align: center; }
+
+.card {
+  padding: var(--feta-space-1);
+  border-radius: var(--feta-radius-card);
+  background-color: var(--feta-bg-surface);
+}
+
+/* The table sits in a 14 radius frame inside the body card. */
+/* The ring is drawn over the cells, so cell rings and fills never cover the frame edge. */
+.frame {
+  position: relative;
+  border-radius: var(--feta-radius-control);
+}
+.frame::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8);
+  pointer-events: none;
+}
+
+.cell {
+  position: relative;
+  box-sizing: border-box;
+  height: 44px;
+  padding: 0 var(--feta-space-3);
+  text-align: left;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.head {
+  height: 40px;
+  color: var(--feta-text-secondary);
+  font: var(--feta-text-label-default);
+  letter-spacing: var(--feta-text-label-default-tracking);
+}
+
+/* Compact: 36 px rows and head, head in 12 medium. */
+.table[data-density="compact"] .cell { height: 36px; }
+.table[data-density="compact"] .head {
+  font: var(--feta-text-label-small);
+  letter-spacing: var(--feta-text-label-small-tracking);
+}
+
+/* Plain: 5% row rules only. */
+.table[data-style="plain"] .body { border-bottom: 1px solid var(--feta-alpha-ink-base-5); }
+.table[data-style="plain"] .head { border-bottom: 1px solid var(--feta-alpha-ink-base-5); }
+.table[data-style="plain"] .row:last-child .body { border-bottom: 0; }
+
+/* Grid: 8% dividers and rules on a 4% header. */
+.table[data-style="grid"] .cell {
+  border-right: 1px solid var(--feta-alpha-ink-base-8);
+  border-bottom: 1px solid var(--feta-alpha-ink-base-8);
+}
+.table[data-style="grid"] .cell:last-child,
+.table[data-style="grid"] .cell[data-no-divider] { border-right: 0; }
+.table[data-style="grid"] .head { background-color: var(--feta-alpha-ink-base-4); }
+.table[data-style="grid"] .cell[data-no-rule],
+.table .body[data-no-rule] { border-bottom: 0; }
+
+.table[data-striped] .row:nth-child(even) .body { background-color: var(--feta-alpha-ink-base-4); }
+
+.footer .body {
+  height: 44px;
+  background-color: var(--feta-alpha-ink-base-4);
+  font: var(--feta-text-label-row);
+  letter-spacing: var(--feta-text-label-row-tracking);
+}
+
+/* Types. */
+.body[data-type="title"] { font-weight: 500; }
+.body[data-type="muted"] { color: var(--feta-text-secondary); }
+.cell[data-type="number"],
+.cell[data-type="amount"],
+.cell[data-type="mono"] { text-align: right; }
+.body[data-type="number"] { color: var(--feta-text-secondary); }
+.body[data-type="amount"] { font-weight: 500; }
+.body[data-type="mono"] {
+  font: var(--feta-text-mono-meta);
+  letter-spacing: var(--feta-text-mono-meta-tracking);
+}
+.cell[data-type="checkbox"] { width: 40px; padding-inline: var(--feta-space-3); }
+.cell[data-type="action"] { width: 44px; padding-inline: var(--feta-space-1); text-align: right; }
+
+.table[data-density="compact"] .body[data-type="mono"] { font-size: 12px; }
+
+/* States. Selection never animates, so keyboard work stays fast. */
+@media (hover: hover) {
+  .row:hover .body { background-color: var(--feta-alpha-ink-base-4); }
+}
+.body[data-sorted], .row[data-selected] .body, .table[data-style="plain"] .body[data-selected] { background-color: var(--feta-alpha-ink-base-4); }
+.head[data-sorted] { background-color: var(--feta-alpha-ink-base-4); color: var(--feta-text-primary); }
+
+/* Grid selection: 5% wash, 1.5 ink ring inside the cell, 6 px handle on the corner. */
+.table[data-style="grid"] .body[data-selected] { background-color: var(--feta-alpha-ink-base-5); }
+
+/* Rings are drawn inside the cell; on the table's outer edge they step in past the 1 px frame. */
+.table[data-style="grid"] .body[data-selected]::after,
+.body[data-editing]::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border: 1.5px solid var(--feta-text-primary);
+  pointer-events: none;
+}
+.body[data-editing]::after {
+  border-width: 2px;
+  transition: opacity var(--feta-motion-duration-focus) var(--feta-motion-ease-out);
+}
+@starting-style {
+  .body[data-editing]::after { opacity: 0; }
+}
+.table[data-still] .body[data-editing]::after { transition: none; }
+.body:first-child[data-selected]::after, .body:first-child[data-editing]::after { left: 1px; }
+.body:last-child[data-selected]::after, .body:last-child[data-editing]::after { right: 1px; }
+.row:last-child > .body[data-selected]::after, .row:last-child > .body[data-editing]::after { bottom: 1px; }
+
+.handle {
+  position: absolute;
+  right: calc(-1 * var(--feta-space-0-5));
+  bottom: calc(-1 * var(--feta-space-0-5));
+  z-index: 2;
+  width: 6px;
+  height: 6px;
+  box-sizing: border-box;
+  border: 1px solid var(--feta-bg-surface);
+  border-radius: var(--feta-radius-sm);
+  background-color: var(--feta-text-primary);
+}
+.table[data-style="plain"] .handle { display: none; }
+/* On the table's outer edge the handle tucks inside, so the frame never clips it. */
+.body:last-child > .handle { right: 1px; }
+.row:last-child > .body > .handle { bottom: 1px; }
+
+.body[data-editing] { background-color: var(--feta-bg-surface); }
+
+/* The lifted surface sits 2 px inside the cell, so its 12 radius stays concentric with the 14 frame. */
+.body[data-elevated] { isolation: isolate; }
+.body[data-elevated]::before {
+  content: '';
+  position: absolute;
+  inset: var(--feta-space-0-5);
+  z-index: -1;
+  border-radius: var(--feta-radius-xl);
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft);
+  pointer-events: none;
+}
+
+/* Parts. */
+.sortButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--feta-space-1);
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  border-radius: var(--feta-radius-sm);
+}
+.sortButton:focus-visible { outline-color: var(--feta-text-primary); }
+.cell[data-type="number"] .sortButton,
+.cell[data-type="amount"] .sortButton,
+.cell[data-type="mono"] .sortButton { flex-direction: row-reverse; }
+
+.arrow { display: inline-flex; opacity: 0; transition: opacity var(--feta-motion-duration-fast) var(--feta-motion-ease-out); }
+.arrow[data-on] { opacity: 1; }
+.sortButton:hover .arrow:not([data-on]), .sortButton:focus-visible .arrow:not([data-on]) { opacity: 0.4; }
+
+.avatar, .tree { display: flex; align-items: center; gap: var(--feta-space-2); min-width: 0; }
+/* Tree: 20 px guides, 16 px toggle, 6 px gap. */
+.tree { gap: var(--feta-space-1-5); }
+
+.treeName { display: flex; align-items: baseline; gap: var(--feta-space-1-5); min-width: 0; }
+.stack { display: flex; flex-direction: column; min-width: 0; }
+.truncate { overflow: hidden; text-overflow: ellipsis; }
+.sub {
+  overflow: hidden;
+  color: var(--feta-text-secondary);
+  font: var(--feta-text-mono-meta);
+  letter-spacing: var(--feta-text-mono-meta-tracking);
+  text-overflow: ellipsis;
+}
+
+/* The guide takes 20 px in the row; its line spans the full cell height without making the row taller. */
+.guide {
+  flex: none;
+  align-self: stretch;
+  width: 20px;
+}
+.guide::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  margin-left: 10px;
+  transform: translateX(-50%);
+  background-color: var(--feta-alpha-ink-base-8);
+}
+
+.chevronSlot { flex: none; width: 16px; }
+.chevron {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--feta-radius-md);
+  background: transparent;
+  color: var(--feta-text-secondary);
+  cursor: pointer;
+  outline: 2px solid transparent;
+  outline-offset: 1px;
+}
+/* A 24 px hit area around the 16 px toggle. */
+.chevron::after { content: ''; position: absolute; inset: calc(-1 * var(--feta-space-1)); }
+.chevron:hover { background-color: var(--feta-alpha-ink-base-5); }
+.chevron:focus-visible { outline-color: var(--feta-text-primary); }
+.chevronIcon { display: inline-flex; }
+
+[data-platform="mobile"] .table { font-size: 15px; }
+[data-platform="mobile"] .table[data-density="compact"] { font-size: 15px; line-height: 20px; }
+[data-platform="mobile"] .cell { height: 52px; }
+[data-platform="mobile"] .chevron::after { inset: calc(-1 * var(--feta-space-3-5)); }
+[data-platform="mobile"] .sortButton { min-height: 44px; }
+
+@media (max-width: 640px) {
+  .table, .table[data-density="compact"] { font-size: 15px; line-height: 20px; }
+  .cell { height: 52px; }
+  .chevron::after { inset: calc(-1 * var(--feta-space-3-5)); }
+  .sortButton { min-height: 44px; }
+}

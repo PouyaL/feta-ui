@@ -1,0 +1,26 @@
+/* Inbox Bulk Actions: FetaUI 182 Handoff and Motion. 640 wide. */
+.head { display: flex; align-items: center; gap: var(--feta-space-3); min-height: 52px; padding-inline: var(--feta-space-4) var(--feta-space-3); border-bottom: 1px solid var(--feta-alpha-ink-base-5); border-radius: var(--feta-radius-panel) var(--feta-radius-panel) 0 0; }
+.head[data-bulk] { background-color: var(--feta-alpha-ink-base-4); }
+.bar { display: flex; flex: 1; align-items: center; justify-content: space-between; gap: var(--feta-space-2); min-width: 0; }
+.titles { display: inline-flex; align-items: baseline; gap: var(--feta-space-2); min-width: 0; }
+.title { font: var(--feta-text-title-row); letter-spacing: var(--feta-text-title-row-tracking); white-space: nowrap; }
+.count { color: var(--feta-text-tertiary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); white-space: nowrap; }
+.actions { display: inline-flex; align-items: center; gap: var(--feta-space-1); }
+.list { overflow: hidden; margin: 0; padding: 0; list-style: none; border-radius: 0 0 var(--feta-radius-panel) var(--feta-radius-panel); }
+.row { display: flex; align-items: center; gap: var(--feta-space-3); box-sizing: border-box; min-height: 48px; padding: var(--feta-space-2) var(--feta-space-4); }
+.list[data-long] .row { height: 56px; }
+.row[data-selected] { background-color: var(--feta-alpha-ink-base-4); }
+@media (hover: hover) { .row:hover { background-color: var(--feta-alpha-ink-base-4); } }
+.text { display: grid; flex: 1; grid-template-columns: 104px minmax(0, 1fr) auto; align-items: center; gap: var(--feta-space-3); min-width: 0; }
+.from { overflow: hidden; font: var(--feta-text-title-row); letter-spacing: var(--feta-text-title-row-tracking); text-overflow: ellipsis; white-space: nowrap; }
+.row[data-unread] .from { font-weight: 600; }
+.subjectLine { display: flex; align-items: center; gap: var(--feta-space-2); min-width: 0; }
+.subject { min-width: 0; color: var(--feta-text-secondary); font: var(--feta-text-body-row); letter-spacing: var(--feta-text-body-row-tracking); }
+.list[data-long] .subject { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.time { color: var(--feta-text-tertiary); font: var(--feta-text-mono-meta); letter-spacing: var(--feta-text-mono-meta-tracking); white-space: nowrap; }
+@container panel (max-width: 480px) {
+  .row { align-items: flex-start; gap: var(--feta-space-2); }
+  .text { grid-template-columns: minmax(0, 1fr) auto; gap: 0 var(--feta-space-2); }
+  .subjectLine { grid-column: 1 / -1; grid-row: 2; }
+  .label, .wideOnly { display: none; }
+}

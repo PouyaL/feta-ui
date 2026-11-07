@@ -1,0 +1,112 @@
+/* Toggle: FetaUI 66 Toggle Handoff and Motion. */
+.toggle {
+  --fill: transparent;
+  --fill-hover: var(--feta-alpha-ink-base-5);
+  --ink: var(--feta-text-secondary);
+  --ink-hover: var(--feta-text-primary);
+  --ring: transparent;
+  --lift: 0 0 transparent;
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  height: var(--feta-size-button-sm);
+  padding-inline: var(--feta-space-2-5);
+  gap: var(--feta-space-1-5);
+  border: 0;
+  margin: 0;
+  border-radius: var(--feta-radius-full);
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  font: var(--feta-text-label-small);
+  letter-spacing: var(--feta-text-label-small-tracking);
+  color: var(--ink);
+  background-color: var(--fill);
+  box-shadow: inset 0 0 0 1px var(--ring), var(--lift);
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  transition:
+    background-color var(--feta-motion-duration-lift) var(--feta-motion-ease-out),
+    color var(--feta-motion-duration-lift) var(--feta-motion-ease-out),
+    box-shadow var(--feta-motion-duration-lift) var(--feta-motion-ease-out),
+    outline-color var(--feta-motion-duration-focus) var(--feta-motion-ease-out-soft);
+}
+
+.toggle[data-content="icon"] {
+  width: var(--feta-size-button-sm);
+  padding-inline: 0;
+}
+
+.toggle:focus-visible { outline-color: var(--feta-text-primary); }
+
+.toggle[data-appearance="ghost"][data-on] {
+  --fill: var(--feta-alpha-ink-base-10);
+  --fill-hover: var(--fill);
+  --ink: var(--feta-text-primary);
+}
+
+.toggle[data-appearance="outline"] {
+  --fill: var(--feta-bg-surface);
+  --fill-hover: var(--feta-bg-subtle);
+  --ink: var(--feta-text-primary);
+  --ring: var(--feta-alpha-ink-base-8);
+  --lift: var(--feta-elevation-soft);
+}
+
+.toggle[data-appearance="outline"][data-on] {
+  --fill: var(--feta-alpha-ink-base-5);
+  --fill-hover: var(--fill);
+  --lift: 0 0 transparent;
+}
+
+.toggle[data-appearance="segment"] { --ink: var(--feta-alpha-ink-base-60); }
+
+/* The lift. In a single choice group it is the sliding underlay instead. */
+.toggle[data-appearance="segment"][data-on]:not([data-slides]) {
+  --fill: var(--feta-bg-surface);
+  --fill-hover: var(--fill);
+  --ring: var(--feta-alpha-ink-base-8);
+  --lift: var(--feta-elevation-soft);
+}
+
+.toggle[data-appearance="segment"][data-on] {
+  --ink: var(--feta-text-primary);
+}
+
+.toggle[data-slides][data-on] { --fill-hover: transparent; }
+
+@media (hover: hover) {
+  .toggle:hover:not(:disabled) {
+    background-color: var(--fill-hover);
+    color: var(--ink-hover);
+  }
+}
+
+.toggle:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.icon {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+}
+
+.icon svg {
+  display: block;
+  width: 15px;
+  height: 15px;
+}
+
+.text { position: relative; }
+
+.toggle[data-still] { transition: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .toggle { transition-property: background-color, color, outline-color; }
+}

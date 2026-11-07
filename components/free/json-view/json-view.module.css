@@ -1,0 +1,246 @@
+/* JSON View: FetaUI 18 Code Block Handoff and Motion. */
+.tray {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  padding: var(--feta-space-1);
+  border-radius: var(--feta-radius-tray);
+  background-color: var(--feta-alpha-ink-base-4);
+}
+
+.request {
+  display: flex;
+  align-items: center;
+  gap: var(--feta-space-2);
+  height: 36px;
+  padding-inline: var(--feta-space-3);
+  color: var(--feta-text-primary);
+  font: var(--feta-text-mono-meta);
+}
+
+.method {
+  flex: none;
+  font: var(--feta-text-label-small);
+  letter-spacing: -0.04em;
+}
+
+.path {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dot {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-status-success-strong);
+}
+
+.status,
+.duration { flex: none; }
+.duration { color: var(--feta-text-tertiary); }
+
+.card {
+  overflow: hidden;
+  border-radius: var(--feta-radius-card);
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft);
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--feta-space-1);
+  padding: var(--feta-space-2);
+  border-bottom: 1px solid var(--feta-alpha-ink-base-5);
+}
+
+.search {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: var(--feta-space-1-5);
+  min-width: 0;
+  height: var(--feta-size-button-sm);
+  padding-inline: var(--feta-space-2-5);
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-alpha-ink-base-4);
+  color: var(--feta-text-secondary);
+}
+
+.search:focus-within,
+.search:has(input:not(:placeholder-shown)) { box-shadow: inset 0 0 0 1.5px var(--feta-text-primary); background-color: var(--feta-bg-surface); }
+
+.clear {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-alpha-ink-base-8);
+  color: var(--feta-text-secondary);
+  cursor: pointer;
+}
+
+.clear svg { width: 12px; height: 12px; }
+.searchIcon { display: inline-flex; flex: none; }
+.searchIcon svg { width: 14px; height: 14px; }
+
+.search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--feta-text-primary);
+  font: var(--feta-text-caption-default);
+  letter-spacing: -0.04em;
+  appearance: none;
+}
+
+.shortcut { flex: none; }
+
+.matchCount {
+  flex: none;
+  color: var(--feta-text-tertiary);
+  font: var(--feta-text-mono-meta);
+}
+
+.tree {
+  padding: var(--feta-space-1);
+  max-height: 340px;
+  overflow: auto;
+  font: var(--feta-text-mono-meta);
+}
+
+.row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 30px;
+  padding-right: var(--feta-space-2);
+  border-radius: var(--feta-radius-lg);
+  color: var(--feta-text-primary);
+  cursor: default;
+  white-space: nowrap;
+  outline: 2px solid transparent;
+  outline-offset: -2px;
+  transition: background-color var(--feta-motion-duration-focus) var(--feta-motion-ease-out);
+}
+
+.row:focus-visible { outline-color: var(--feta-text-primary); }
+.row[aria-selected="true"],
+.row[data-current] { background-color: var(--feta-alpha-ink-base-5); }
+
+.caret {
+  display: inline-flex;
+  flex: none;
+  width: 16px;
+  color: var(--feta-text-secondary);
+  transition: transform var(--feta-motion-duration-base) var(--feta-motion-ease-out);
+}
+
+.caret[data-open] { transform: rotate(90deg); }
+.tray[data-still] .caret { transition: none; }
+.caret svg { width: 14px; height: 14px; }
+.key { font-weight: 500; }
+.row u { text-underline-offset: 2px; }
+.card [data-json="string"] { color: var(--feta-code-string); }
+.card [data-json="attr"] { color: var(--feta-code-attr); }
+.card [data-json="punct"] { color: var(--feta-code-punct); }
+
+.count {
+  margin-left: var(--feta-space-2);
+  color: var(--feta-text-tertiary);
+}
+
+.actions {
+  position: absolute;
+  right: 2px;
+  display: none;
+  background-color: var(--feta-bg-surface);
+  border-radius: var(--feta-radius-lg);
+}
+
+.row[aria-selected="true"] .actions { display: inline-flex; }
+
+@media (hover: hover) {
+  .row:hover .actions { display: inline-flex; }
+  .row:hover { background-color: var(--feta-alpha-ink-base-4); }
+}
+
+.empty {
+  padding: var(--feta-space-8) var(--feta-space-4);
+  text-align: center;
+}
+
+.emptyIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--feta-size-button-sm);
+  height: var(--feta-size-button-sm);
+  margin-bottom: var(--feta-space-2);
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-alpha-ink-base-5);
+  color: var(--feta-text-secondary);
+}
+
+.emptyIcon svg { width: 14px; height: 14px; }
+
+.emptyTitle {
+  margin: 0;
+  color: var(--feta-text-primary);
+  font: var(--feta-text-title-row);
+  letter-spacing: var(--feta-text-title-row-tracking);
+}
+
+.emptyHint {
+  margin: var(--feta-space-1) 0 0;
+  color: var(--feta-text-secondary);
+  font: var(--feta-text-caption-default);
+  letter-spacing: var(--feta-text-caption-default-tracking);
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  gap: var(--feta-space-2);
+  min-height: 36px;
+  padding: 0 var(--feta-space-1) 0 var(--feta-space-3);
+  border-top: 1px solid var(--feta-alpha-ink-base-5);
+  color: var(--feta-text-secondary);
+  font: var(--feta-text-mono-meta);
+}
+
+.footPath {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--feta-text-primary);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.footType {
+  flex: none;
+  margin-left: auto;
+}
+
+.copied { flex: none; }
+
+/* The tip sits on the tray, below the card. */
+.hint {
+  margin: 0;
+  padding: var(--feta-space-2) var(--feta-space-3) var(--feta-space-1);
+  color: var(--feta-text-secondary);
+  font: var(--feta-text-caption-default);
+  letter-spacing: var(--feta-text-caption-default-tracking);
+}

@@ -1,0 +1,234 @@
+/* Avatar: FetaUI 10 Avatar Handoff and Motion. */
+.avatar {
+  --size: 36px;
+  --initials: 14px;
+  --radius: var(--feta-radius-full);
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  box-sizing: border-box;
+  width: var(--size);
+  height: var(--size);
+  vertical-align: middle;
+  border-radius: var(--radius);
+}
+
+.avatar[data-size="xs"] { --size: 20px; --initials: 10px; }
+.avatar[data-size="sm"] { --size: 28px; --initials: 12px; }
+.avatar[data-size="md"] { --size: 36px; --initials: 14px; }
+.avatar[data-size="lg"] { --size: 44px; --initials: 16px; }
+.avatar[data-size="xl"] { --size: 64px; --initials: 22px; }
+
+/* Rounded is 28% of the size. */
+.avatar[data-shape="rounded"] { --radius: calc(var(--size) * 0.28); }
+
+.frame {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: inherit;
+  background-color: var(--feta-alpha-ink-base-5);
+  isolation: isolate;
+}
+
+/* The 8% hairline keeps media crisp on any surface. */
+.frame[data-media]::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8);
+  pointer-events: none;
+}
+
+.frame[data-loading] { background: linear-gradient(90deg, var(--feta-alpha-ink-base-5), var(--feta-alpha-ink-base-10) 50%, var(--feta-alpha-ink-base-5)); }
+
+.image,
+.photo {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.initials {
+  color: var(--feta-text-secondary);
+  font-family: var(--feta-type-font-sans);
+  font-size: var(--initials);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  user-select: none;
+}
+
+.icon {
+  display: inline-flex;
+  color: var(--feta-text-secondary);
+}
+
+.icon svg {
+  display: block;
+  width: calc(var(--size) * 0.44);
+  height: calc(var(--size) * 0.44);
+}
+
+/* Story ring: 2 px with a 2 px gap, following the shape. */
+.avatar[data-ring]::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: calc(var(--radius) + 4px);
+  box-shadow: inset 0 0 0 2px var(--feta-text-primary);
+  pointer-events: none;
+}
+
+.avatar[data-shape="circle"][data-ring]::before { border-radius: var(--feta-radius-full); }
+.avatar[data-ring="live"]::before { content: none; }
+
+.liveRing {
+  position: absolute;
+  inset: -4px;
+  border-radius: var(--feta-radius-full);
+  background: conic-gradient(var(--feta-text-primary), var(--feta-alpha-ink-base-10), var(--feta-text-primary));
+  /* Keeps only the outer 2 px of the disc, so the gap shows whatever is behind the avatar. */
+  mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 2px));
+  animation: avatarTurn 1200ms linear infinite;
+}
+
+.avatar[data-shape="rounded"] .liveRing { border-radius: calc(var(--radius) + 4px); }
+.liveRing[data-still] { animation: none; }
+
+[data-offscreen] .liveRing,
+.liveRing[data-offscreen] { animation-play-state: paused; }
+
+@keyframes avatarTurn { to { transform: rotate(360deg); } }
+
+/* Badge: a solid dot on a 2 px surface ring, on the 45° point. */
+.badge {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: content-box;
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--feta-bg-surface);
+  border-radius: var(--feta-radius-full);
+  color: var(--feta-status-on-solid);
+  transition: background-color var(--feta-motion-duration-fast) var(--feta-motion-ease-out);
+}
+
+.badge[data-size="sm"] { width: 8px; height: 8px; }
+.badge[data-size="md"] { width: 12px; height: 12px; }
+.badge[data-size="lg"] { width: 18px; height: 18px; }
+
+.badge svg {
+  display: block;
+  width: 70%;
+  height: 70%;
+}
+
+.badge[data-type="online"] { background-color: var(--feta-status-success-strong); }
+.badge[data-type="away"] { background-color: var(--feta-status-warning); }
+.badge[data-type="busy"] { background-color: var(--feta-status-danger); }
+.badge[data-type="verified"] { background-color: var(--feta-status-info); }
+.badge[data-type="edit"] { background-color: var(--feta-bg-inverse); color: var(--feta-text-inverse); }
+
+/* Offline stays hollow, so it never reads as a colour. */
+.badge[data-type="offline"] { background-color: var(--feta-bg-surface); }
+
+.badge[data-type="offline"]::after {
+  content: '';
+  width: 60%;
+  height: 60%;
+  box-sizing: border-box;
+  border: 2px solid var(--feta-text-tertiary);
+  border-radius: var(--feta-radius-full);
+}
+
+.badge[data-type="offline"][data-size="sm"]::after { border-width: 1.5px; }
+
+.badgeSlot {
+  position: absolute;
+  /* The centre of the badge sits on the circle at 45°, about 85% across. */
+  right: calc(var(--size) * 0.146);
+  bottom: calc(var(--size) * 0.146);
+  z-index: 1;
+  translate: 50% 50%;
+}
+
+/* Avatar Group */
+.group {
+  --face: var(--feta-size-button-md);
+  --overlap: 8px;
+  --spread: 0px;
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+}
+
+.group[data-size="sm"] { --face: var(--feta-size-button-sm); --overlap: 6px; }
+.group[data-size="md"] { --face: var(--feta-size-button-md); --overlap: 8px; }
+.group[data-size="lg"] { --face: var(--feta-size-button-lg); --overlap: 10px; }
+
+/* Mobile: the faces step up to match the 44 Icon Button, so the set's sizes follow Button's. */
+.group .avatar { --size: var(--face); }
+
+.slot {
+  position: relative;
+  display: inline-flex;
+  box-sizing: content-box;
+  padding: var(--feta-space-0-5);
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-bg-surface);
+}
+
+/* The spread takes real space, so it moves neighbours instead of sliding over them. */
+.slot + .slot {
+  margin-left: calc(var(--spread) - var(--overlap));
+  transition: margin-left var(--feta-motion-duration-fast) var(--feta-motion-ease-out);
+}
+
+/* Faces move from an overlap of 8 to 2, in transform so nothing around the group shifts. */
+@media (hover: hover) {
+  .group:not([data-still]):hover,
+  .group:not([data-still]):focus-within { --spread: calc(var(--overlap) - 2px); }
+}
+
+.count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: var(--face);
+  height: var(--face);
+  padding: 0;
+  border: 0;
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-alpha-ink-base-5);
+  color: var(--feta-text-secondary);
+  font: var(--feta-text-label-default);
+  letter-spacing: var(--feta-text-label-default-tracking);
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  user-select: none;
+}
+
+button.count { cursor: pointer; }
+button.count:focus-visible { outline-color: var(--feta-text-primary); }
+
+@media (hover: hover) {
+  button.count:hover { background-color: var(--feta-alpha-ink-base-8); }
+}

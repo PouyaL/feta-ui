@@ -1,0 +1,73 @@
+/* Add to Cart Button: FetaUI 06 Motion Buttons Handoff and Motion. */
+.root {
+  position: relative;
+  display: inline-flex;
+  height: var(--feta-size-button-md);
+}
+
+.add {
+  width: 100%;
+  height: 100%;
+  gap: var(--feta-space-1-5);
+  border-radius: var(--feta-radius-full);
+}
+
+.stepIcon {
+  display: inline-flex;
+}
+
+.stepIcon svg {
+  display: block;
+  width: 14px;
+  height: 14px;
+}
+
+.stepper {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+  padding-inline: var(--feta-space-1);
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-bg-inverse);
+  color: var(--feta-text-inverse);
+}
+
+.off { opacity: 0.4; }
+
+.step {
+  width: var(--feta-size-button-sm);
+  height: var(--feta-size-button-sm);
+  border-radius: var(--feta-radius-full);
+  background: transparent;
+  color: inherit;
+}
+
+.step:focus-visible { outline-color: var(--feta-text-inverse); outline-offset: -2px; }
+.step[aria-disabled] { opacity: 0.4; cursor: not-allowed; }
+
+@media (hover: hover) {
+  .step:hover:not([aria-disabled]) { background-color: color-mix(in srgb, var(--feta-text-inverse) 16%, transparent); }
+}
+
+.count {
+  display: inline-flex;
+  font: var(--feta-text-label-default);
+  letter-spacing: var(--feta-text-label-default-tracking);
+}
+
+.tip {
+  position: absolute;
+  bottom: calc(100% + var(--feta-space-1-5));
+  left: 50%;
+  translate: -50% 0;
+  padding: var(--feta-space-1) var(--feta-space-2);
+  border-radius: var(--feta-radius-lg);
+  background-color: var(--feta-bg-inverse);
+  color: var(--feta-text-inverse);
+  font: var(--feta-text-label-micro);
+  letter-spacing: var(--feta-text-label-micro-tracking);
+  white-space: nowrap;
+}

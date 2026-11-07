@@ -1,0 +1,100 @@
+/* Tear Button: FetaUI 06 Motion Buttons Handoff and Motion. */
+.ticket {
+  position: relative;
+  display: inline-flex;
+  width: 304px;
+  max-width: 100%;
+  height: 64px;
+  color: var(--feta-text-primary);
+}
+
+.body {
+  box-sizing: border-box;
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  align-items: center;
+  gap: var(--feta-space-3);
+  padding-inline: var(--feta-space-3-5);
+  border-radius: var(--feta-radius-card) 0 0 var(--feta-radius-card);
+  background-color: var(--feta-bg-surface);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8), var(--feta-elevation-soft);
+}
+
+.ticket[data-torn] .body { border-radius: var(--feta-radius-card); }
+
+.badge {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-bg-inverse);
+  color: var(--feta-text-inverse);
+}
+
+.badge svg {
+  width: 14px;
+  height: 14px;
+}
+
+.ticket[data-tone="muted"] .badge {
+  background-color: var(--feta-alpha-ink-base-5);
+  color: var(--feta-text-secondary);
+}
+
+.ticket[data-tone="danger"] .badge {
+  background-color: var(--feta-status-danger-strong);
+  color: var(--feta-status-on-solid);
+}
+
+.ticket[data-torn] .badge {
+  background-color: var(--feta-status-success-strong);
+  color: var(--feta-status-on-solid);
+}
+
+.text {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--feta-space-0-5);
+}
+
+.title {
+  font: var(--feta-text-title-small);
+  letter-spacing: var(--feta-text-title-small-tracking);
+}
+
+.stub {
+  box-sizing: border-box;
+  flex: none;
+  display: flex;
+  width: 72px;
+  height: 64px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--feta-space-0-5);
+  padding: 0;
+  border: 0;
+  border-left: 2px dotted var(--feta-alpha-ink-base-10);
+  border-radius: 0 var(--feta-radius-card) var(--feta-radius-card) 0;
+  background-color: var(--feta-alpha-ink-base-4);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8);
+  color: var(--feta-text-primary);
+  cursor: grab;
+  font: var(--feta-text-label-micro);
+  letter-spacing: var(--feta-text-label-micro-tracking);
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  transform-origin: left center;
+  touch-action: none;
+  user-select: none;
+}
+
+.stub:active { cursor: grabbing; }
+.stub:focus-visible { outline-color: var(--feta-text-primary); }
+.stub[data-fallen] { position: absolute; right: 0; pointer-events: none; }
+.ticket[data-disabled] { opacity: 0.4; }
+.ticket[data-disabled] .stub { cursor: not-allowed; }

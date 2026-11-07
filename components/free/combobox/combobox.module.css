@@ -1,0 +1,131 @@
+/* Combobox: FetaUI 20 Combobox Handoff and Motion. */
+.combobox {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+}
+
+.field {
+  height: auto;
+  min-height: 44px;
+  flex-wrap: wrap;
+  padding: var(--feta-space-1-5) var(--feta-space-3-5);
+  gap: var(--feta-space-1) var(--feta-space-2);
+  cursor: text;
+  font-size: 15px;
+}
+
+.clear { flex: none; margin-block: calc(-1 * var(--feta-space-0-5)); }
+
+.spin {
+  display: inline-flex;
+  animation: spin 800ms linear infinite;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  gap: var(--feta-space-1);
+  padding: var(--feta-space-0-5) var(--feta-space-1);
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-alpha-ink-base-5);
+  font: var(--feta-text-label-small);
+  letter-spacing: var(--feta-text-label-small-tracking);
+}
+
+.avatar {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-alpha-ink-base-10);
+  color: var(--feta-text-primary);
+  font: var(--feta-text-label-micro);
+}
+
+.item .avatar { width: 28px; height: 28px; }
+
+.remove {
+  display: inline-grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--feta-radius-full);
+  background: transparent;
+  color: var(--feta-text-secondary);
+  cursor: pointer;
+}
+
+.remove:hover { background-color: var(--feta-alpha-ink-base-8); }
+.remove svg { display: block; width: 12px; height: 12px; }
+
+.more {
+  padding: var(--feta-space-0-5) var(--feta-space-2);
+  border-radius: var(--feta-radius-full);
+  background-color: var(--feta-bg-inverse);
+  color: var(--feta-text-inverse);
+  font: var(--feta-text-label-small);
+}
+
+.pop {
+  right: 0;
+  padding: var(--feta-space-1-5);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  max-height: 260px;
+  gap: var(--feta-space-0-5);
+  overflow-y: auto;
+}
+
+.item {
+  padding: var(--feta-space-2) var(--feta-space-2-5);
+  border-radius: var(--feta-radius-control);
+}
+
+.title {
+  display: block;
+  font: var(--feta-text-label-default);
+  letter-spacing: var(--feta-text-label-default-tracking);
+  font-weight: inherit;
+}
+
+.match { font-weight: 600; }
+
+.description {
+  display: block;
+  color: var(--feta-text-secondary);
+  font: var(--feta-text-caption-default);
+  letter-spacing: var(--feta-text-caption-default-tracking);
+}
+
+.empty {
+  padding: var(--feta-space-4) var(--feta-space-3);
+  color: var(--feta-text-secondary);
+  font: var(--feta-text-body-small);
+  letter-spacing: var(--feta-text-body-small-tracking);
+  text-align: center;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 640px) {
+  .field { min-height: 48px; font-size: 16px; }
+  .title { font-size: 16px; line-height: 22px; }
+}
+
+[data-platform="mobile"] .field { min-height: 48px; font-size: 16px; }
+[data-platform="mobile"] .title { font-size: 16px; line-height: 22px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .spin { animation-duration: 2s; }
+}

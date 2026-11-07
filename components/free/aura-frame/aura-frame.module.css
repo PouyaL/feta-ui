@@ -1,0 +1,161 @@
+/* Aura Frame: FetaUI 35 Frame Handoff and Motion. Glow, glyph and hairline colours come from the colour ramps; the pink has no token yet. */
+.aura {
+  --voice: 0;
+  --warm: var(--feta-orange-500);
+  --cool: var(--feta-blue-500);
+  --warm-ink: var(--feta-orange-500);
+  --cool-ink: var(--feta-blue-400);
+  --line-1: var(--feta-gradient-orange-from);
+  /* No pink ramp in the tokens yet; nearest is --feta-red-400. */
+  --line-2: #F472B6;
+  --line-3: var(--feta-gradient-violet-from);
+  --line-4: var(--feta-violet-500);
+  /* Rest, then raised by state below. */
+  --warm-glow: 0.28;
+  --cool-glow: 0.28;
+  --warm-glyphs: 0.42;
+  --cool-glyphs: 0.42;
+  --line: 50%;
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 560px;
+  margin-inline: auto;
+  isolation: isolate;
+}
+
+.aura:focus-within { --warm-glow: 0.6; --cool-glow: 0.6; --warm-glyphs: 0.7; --cool-glyphs: 0.7; --line: 100%; }
+.aura[data-state="thinking"] { --warm-glow: 0.85; --cool-glow: 0.35; --warm-glyphs: 0.98; --cool-glyphs: 0.4; --line: 100%; }
+.aura[data-state="listening"] { --warm-glow: 0.3; --cool-glow: 0.85; --warm-glyphs: 0.35; --cool-glyphs: 0.98; --line: 100%; }
+
+/* Glows: 300 by 140 with a 46 blur in Figma, warm off the top left, cool off the bottom right. */
+.warm,
+.cool {
+  position: absolute;
+  z-index: -2;
+  width: 300px;
+  max-width: 54%;
+  height: 140px;
+  border-radius: var(--feta-radius-full);
+  filter: blur(24px);
+  transition: opacity 400ms var(--feta-motion-ease-out), transform 400ms var(--feta-motion-ease-out);
+  pointer-events: none;
+}
+
+.warm { top: -20px; left: -24px; background-color: var(--warm); opacity: var(--warm-glow); }
+.cool { right: -24px; bottom: -50px; background-color: var(--cool); opacity: var(--cool-glow); }
+
+.aura[data-state="thinking"] .warm { animation: auraBreathe 2.4s ease-in-out infinite alternate; }
+.aura[data-state="listening"] .cool { transform: scale(calc(1 + var(--voice) * 0.15)); }
+.aura[data-offscreen] .warm { animation-play-state: paused; }
+
+/* Thinking: the warm glow breathes between 60% and full of its state strength. */
+@keyframes auraBreathe {
+  from { opacity: calc(var(--warm-glow) * 0.6); }
+  to { opacity: var(--warm-glow); }
+}
+
+/* Glyphs: 12/18 mono, 283 by 162, fading out from their centre, behind the box. */
+.glyphs {
+  position: absolute;
+  z-index: -1;
+  width: 283px;
+  max-width: 52%;
+  height: 162px;
+  margin: 0;
+  overflow: hidden;
+  font: 400 12px/18px var(--feta-type-font-mono);
+  letter-spacing: 0;
+  white-space: pre;
+  -webkit-mask: radial-gradient(closest-side, #000 0%, rgb(0 0 0 / 0.6) 55%, transparent 100%);
+  mask: radial-gradient(closest-side, #000 0%, rgb(0 0 0 / 0.6) 55%, transparent 100%);
+  transition: opacity 400ms var(--feta-motion-ease-out);
+  pointer-events: none;
+}
+
+.glyphs[data-side="warm"] { top: -44px; left: -40px; color: var(--warm-ink); opacity: var(--warm-glyphs); }
+.glyphs[data-side="cool"] { right: -14px; bottom: -98px; color: var(--cool-ink); opacity: var(--cool-glyphs); }
+
+/* The box: radius 22, padding 16 14 14 18, a 1 px gradient hairline at half strength until focus. */
+.box {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--feta-space-3-5);
+  padding: var(--feta-space-4) var(--feta-space-3-5) var(--feta-space-3-5) var(--feta-space-4-5);
+  border: 1px solid transparent;
+  border-radius: var(--feta-radius-tray);
+  background:
+    linear-gradient(var(--feta-bg-surface), var(--feta-bg-surface)) padding-box,
+    linear-gradient(90deg,
+      color-mix(in srgb, var(--line-1) var(--line), transparent),
+      color-mix(in srgb, var(--line-2) var(--line), transparent) 35%,
+      color-mix(in srgb, var(--line-3) var(--line), transparent) 65%,
+      color-mix(in srgb, var(--line-4) var(--line), transparent)) border-box;
+  box-shadow: 0 12px 32px -12px var(--feta-shadow-soft-lg), 0 12px 32px -12px var(--feta-shadow-soft-lg);
+}
+
+.field {
+  display: flex;
+  align-items: center;
+  gap: var(--feta-space-1-5);
+}
+
+.lead {
+  display: inline-flex;
+  flex: none;
+  color: var(--feta-text-primary);
+}
+
+.lead svg { width: 16px; height: 16px; }
+
+.input {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--feta-text-primary);
+  font: var(--feta-text-body-default);
+  letter-spacing: var(--feta-text-body-default-tracking);
+  caret-color: var(--feta-text-primary);
+}
+
+.input::placeholder { color: var(--feta-text-tertiary); }
+
+.footer {
+  display: flex;
+  align-items: center;
+  gap: var(--feta-space-1-5);
+  min-width: 0;
+}
+
+.spacer { flex: 1; }
+.down { display: inline-flex; transform: rotate(180deg); }
+.voice { display: inline-flex; }
+.voiceIcon { display: none; }
+
+/* Mobile: 358 wide, 200 by 110 glows, 16/24 input, the plus, the mode, a voice icon and the send. */
+[data-platform="mobile"] .aura .deep,
+[data-platform="mobile"] .aura .voice { display: none; }
+[data-platform="mobile"] .aura .voiceIcon { display: inline-flex; }
+[data-platform="mobile"] .aura .warm,
+[data-platform="mobile"] .aura .cool { width: 200px; height: 110px; }
+[data-platform="mobile"] .aura .glyphs { width: 196px; height: 126px; }
+[data-platform="mobile"] .aura .input { font: var(--feta-text-body-large); letter-spacing: var(--feta-text-body-large-tracking); }
+
+@media (max-width: 640px) {
+  :root:not([data-platform="web"]) .aura .deep,
+  :root:not([data-platform="web"]) .aura .voice { display: none; }
+  :root:not([data-platform="web"]) .aura .voiceIcon { display: inline-flex; }
+  :root:not([data-platform="web"]) .aura .warm,
+  :root:not([data-platform="web"]) .aura .cool { width: 200px; height: 110px; }
+  :root:not([data-platform="web"]) .aura .glyphs { width: 196px; height: 126px; }
+  :root:not([data-platform="web"]) .aura .input { font: var(--feta-text-body-large); letter-spacing: var(--feta-text-body-large-tracking); }
+}
+
+/* Reduced motion and animated off: glows fixed by state, glyphs still. */
+.aura[data-still] .warm,
+.aura[data-still] .cool,
+.aura[data-still] .glyphs { animation: none; transition: none; }

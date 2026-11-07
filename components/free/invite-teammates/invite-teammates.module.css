@@ -1,0 +1,41 @@
+/* Invite Teammates: FetaUI 195 Invite Teammates Handoff and Motion. */
+.tray { --panel: 600px; }
+.header { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--feta-space-3); }
+.field { position: relative; margin-top: var(--feta-space-4); }
+.alert { position: absolute; top: 50%; right: 12px; display: inline-flex; color: var(--feta-status-danger); pointer-events: none; transform: translateY(-50%); }
+.helpRow { display: flex; align-items: center; justify-content: space-between; gap: var(--feta-space-3); margin-top: var(--feta-space-2); min-height: 20px; }
+.help { margin: 0; color: var(--feta-text-tertiary); font: var(--feta-text-caption-default); letter-spacing: -0.04em; }
+.error { margin: 0; color: var(--feta-status-danger-text); font: var(--feta-text-caption-default); letter-spacing: -0.04em; }
+
+.sample { flex: none; }
+
+.usage { margin-top: var(--feta-space-4); padding-bottom: var(--feta-space-4); border-bottom: 1px solid var(--feta-alpha-ink-base-8); }
+.usageHead { display: flex; align-items: baseline; justify-content: space-between; gap: var(--feta-space-3); }
+.total { color: var(--feta-text-secondary); font: var(--feta-text-body-row); letter-spacing: -0.04em; }
+.total b { display: inline-flex; color: var(--feta-text-primary); font-weight: 500; }
+.total[data-over] b { color: var(--feta-status-danger-text); }
+.bar { display: flex; gap: var(--feta-space-1); height: 6px; margin-top: var(--feta-space-2); }
+.segment { flex-basis: 0; border-radius: var(--feta-radius-sm); background-color: var(--feta-alpha-ink-base-4); }
+.segment[data-part="members"] { background-color: var(--feta-alpha-ink-base-60); }
+.segment[data-part="pending"] { background-color: var(--feta-alpha-ink-base-10); }
+.segment[data-part="new"] { background-color: var(--feta-text-primary); }
+.segment[data-part="over"] { background-color: var(--feta-status-danger); }
+.keys { display: flex; flex-wrap: wrap; gap: var(--feta-space-3); margin: var(--feta-space-2) 0 0; padding: 0; color: var(--feta-text-secondary); font: var(--feta-text-caption-default); letter-spacing: -0.04em; list-style: none; }
+.key { display: inline-flex; align-items: center; gap: var(--feta-space-1-5); }
+.keyDot { width: 8px; height: 8px; border-radius: var(--feta-radius-full); background-color: var(--feta-text-primary); }
+.keyDot[data-tone="members"] { background-color: var(--feta-alpha-ink-base-60); }
+.keyDot[data-tone="pending"] { background-color: var(--feta-alpha-ink-base-10); }
+.keyDot[data-tone="over"] { background-color: var(--feta-status-danger); }
+.actions { display: flex; align-items: center; justify-content: flex-end; gap: var(--feta-space-3); margin-top: var(--feta-space-2-5); }
+.pendingTitle { display: inline-flex; align-items: baseline; gap: var(--feta-space-2); margin: 0; font: var(--feta-text-label-row); letter-spacing: -0.04em; }
+.count { color: var(--feta-text-tertiary); font: var(--feta-text-mono-micro); }
+.list { margin: var(--feta-space-2) 0 0; padding: 0; list-style: none; }
+.person { display: flex; align-items: center; gap: var(--feta-space-3); min-height: 44px; }
+.who { display: flex; flex: 1; flex-direction: column; min-width: 0; }
+.name { font: var(--feta-text-label-row); letter-spacing: -0.04em; }
+.detail { color: var(--feta-text-secondary); font: var(--feta-text-caption-default); letter-spacing: -0.04em; overflow-wrap: anywhere; }
+.sent { flex: none; color: var(--feta-text-tertiary); font: var(--feta-text-caption-default); letter-spacing: -0.04em; }
+
+@container (max-width: 480px) {
+  .sample, .sent { display: none; }
+}

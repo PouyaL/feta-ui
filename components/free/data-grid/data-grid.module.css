@@ -1,0 +1,100 @@
+/* Data Grid: FetaUI 62 Data Grid & Table Handoff and Motion. Compact cells: 13 px on 36 px rows. */
+.shell { display: flex; flex-direction: column; gap: var(--feta-space-1); box-sizing: border-box; width: 100%; max-width: 1120px; padding: var(--feta-space-1); border-radius: var(--feta-radius-tray); background-color: var(--feta-alpha-ink-base-4); color: var(--feta-text-primary); text-align: left; font-variant-numeric: tabular-nums; }
+.titleBar { display: flex; align-items: center; justify-content: space-between; gap: var(--feta-space-2); padding: var(--feta-space-1) var(--feta-space-1) 0 var(--feta-space-3); }
+.title { font: var(--feta-text-title-row); letter-spacing: var(--feta-text-title-row-tracking); }
+.toolbar { min-height: 48px; }
+.tools { display: flex; flex-wrap: wrap; align-items: center; gap: var(--feta-space-1); min-height: 44px; padding: var(--feta-space-1) var(--feta-space-2); }
+.search { flex: 0 1 200px; min-width: 120px; }
+.rowCount, .bulkCount { color: var(--feta-text-secondary); font: var(--feta-text-mono-micro); letter-spacing: 0.04em; white-space: nowrap; }
+.bulkCount { color: var(--feta-text-primary); font: var(--feta-text-label-row); letter-spacing: var(--feta-text-label-row-tracking); padding-inline: var(--feta-space-2); }
+.spacer { flex: 1; }
+
+/* The 1 px 8% ring is an outline, so it paints over the cells at the rounded edge; focus thickens it. */
+.scroller { position: relative; overflow: auto; overscroll-behavior: contain; border-radius: var(--feta-radius-card); background-color: var(--feta-bg-surface); outline: 1px solid var(--feta-alpha-ink-base-8); outline-offset: -1px; }
+.scroller:focus-visible { outline: 2px solid var(--feta-alpha-ink-base-10); outline-offset: -2px; }
+
+.head, .row, .foot { display: grid; box-sizing: border-box; height: 36px; min-width: 100%; }
+.head { position: sticky; top: 0; z-index: 3; background-color: var(--feta-bg-surface); }
+.foot { position: sticky; bottom: 0; z-index: 3; background-color: var(--feta-bg-surface); }
+.rows { position: relative; }
+.row { position: absolute; top: 0; left: 0; }
+
+.corner, .number {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  border-right: 1px solid var(--feta-alpha-ink-base-8);
+  border-bottom: 1px solid var(--feta-alpha-ink-base-8);
+  background-color: var(--feta-bg-surface);
+  color: var(--feta-text-primary);
+  font: 400 13px/18px var(--feta-type-font-mono);
+}
+.numberCheck { display: none; }
+.row:hover .numberText, .row[data-selected] .numberText { display: none; }
+.row:hover .numberCheck, .row[data-selected] .numberCheck { display: inline-flex; }
+
+.headCell, .cell, .footCell {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  min-width: 0;
+  gap: var(--feta-space-1-5);
+  padding-inline: var(--feta-space-3);
+  border-right: 1px solid var(--feta-alpha-ink-base-8);
+  border-bottom: 1px solid var(--feta-alpha-ink-base-8);
+  font-size: 13px;
+  line-height: 18px;
+  letter-spacing: -0.04em;
+}
+/* Head and footer: 12 medium on 36 px rows. */
+.headCell { position: relative; justify-content: space-between; background-color: var(--feta-alpha-ink-base-4); color: var(--feta-text-secondary); font: var(--feta-text-label-small); letter-spacing: var(--feta-text-label-small-tracking); }
+.corner { background-color: var(--feta-bg-subtle); }
+.headLabel { display: inline-flex; align-items: center; gap: var(--feta-space-1); min-width: 0; padding: 0; border: 0; background: transparent; color: inherit; font: inherit; letter-spacing: inherit; cursor: pointer; outline: 2px solid transparent; outline-offset: 2px; border-radius: var(--feta-radius-sm); }
+.headLabel:focus-visible, .headMenu:focus-visible { outline-color: var(--feta-text-primary); }
+.headMenu { display: inline-flex; flex: none; align-items: center; justify-content: center; width: 20px; height: 20px; padding: 0; border: 0; border-radius: var(--feta-radius-sm); background: transparent; color: var(--feta-text-tertiary); cursor: pointer; opacity: 0; outline: 2px solid transparent; }
+.headCell:hover .headMenu, .headMenu:focus-visible, .headMenu[data-pressed] { opacity: 1; }
+.headCell[data-numeric] .headLabel { margin-left: auto; }
+.cell[data-numeric], .footCell[data-numeric] { justify-content: flex-end; }
+.cell[data-numeric] .value { font-family: var(--feta-type-font-mono); letter-spacing: 0; }
+
+.cell { position: relative; background-color: var(--feta-bg-surface); cursor: cell; user-select: none; }
+.value { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.row:hover .cell { background-color: color-mix(in oklab, var(--feta-bg-surface) 96%, var(--feta-text-primary)); }
+.row[data-selected] .cell { background-color: color-mix(in oklab, var(--feta-bg-surface) 96%, var(--feta-text-primary)); }
+/* Range: a 4% wash and one 1.5 ink ring round the whole range, drawn inside the cells over their dividers. */
+.cell[data-range] { background-color: color-mix(in oklab, var(--feta-bg-surface) 96%, var(--feta-text-primary)); }
+.cell[data-active][data-range]:not([data-range="t b l r"]) { background-color: var(--feta-bg-surface); }
+.cell[data-range]::before { content: ""; position: absolute; inset: 0 -1px -1px 0; z-index: 1; border: 0 solid var(--feta-text-primary); pointer-events: none; }
+.cell[data-range~="t"]::before { border-top-width: 1.5px; }
+.cell[data-range~="b"]::before { border-bottom-width: 1.5px; }
+.cell[data-range~="l"]::before { border-left-width: 1.5px; }
+.cell[data-range~="r"]::before { border-right-width: 1.5px; }
+/* The 6 px fill handle sits on the range's bottom right corner. Its row lifts so the next row cannot cover it. */
+.row:has(.handle) { z-index: 1; }
+.handle { position: absolute; right: calc(-1 * var(--feta-space-0-5) - 1px); bottom: calc(-1 * var(--feta-space-0-5) - 1px); z-index: 2; box-sizing: border-box; width: 6px; height: 6px; border: 1px solid var(--feta-bg-surface); border-radius: var(--feta-radius-sm); background-color: var(--feta-text-primary); }
+.cell:last-child > .handle { right: 0; }
+
+/* Editing: surface and a 2 px ink ring over the cell's dividers, square like the cell. */
+.edit { position: absolute; inset: 0 -1px -1px 0; z-index: 2; box-sizing: border-box; padding-inline: var(--feta-space-3); border: 0; border-radius: 0; background-color: var(--feta-bg-surface); box-shadow: inset 0 0 0 2px var(--feta-text-primary); color: var(--feta-text-primary); font: inherit; letter-spacing: inherit; text-align: inherit; outline: none; }
+
+.pinned { position: sticky; left: var(--pin-left); z-index: 1; }
+.headCell.pinned { background-color: var(--feta-bg-subtle); }
+.pinned::after { content: ""; position: absolute; top: 0; right: -9px; bottom: 0; width: 8px; background: linear-gradient(90deg, var(--feta-alpha-ink-base-8), transparent); opacity: 0; pointer-events: none; transition: opacity var(--feta-motion-duration-focus) var(--feta-motion-ease-out); }
+.scroller[data-scrolled] .pinned::after { opacity: 1; }
+
+.footCell { background-color: var(--feta-bg-subtle); border-top: 1px solid var(--feta-alpha-ink-base-8); font: var(--feta-text-label-small); letter-spacing: var(--feta-text-label-small-tracking); white-space: nowrap; }
+.corner + .footCell { color: var(--feta-text-tertiary); }
+.footLabel { color: var(--feta-text-tertiary); font-weight: 400; }
+
+.status { display: flex; align-items: center; justify-content: space-between; gap: var(--feta-space-3); min-height: 32px; padding-inline: var(--feta-space-3); color: var(--feta-text-secondary); font: var(--feta-text-mono-micro); letter-spacing: 0.04em; white-space: pre; }
+.statusCell { color: var(--feta-text-primary); }
+.statusStats { overflow: hidden; text-overflow: ellipsis; }
+
+[data-platform="mobile"] .wideTool { display: none; }
+[data-platform="mobile"] .search { flex: 1 1 100%; }
+@media (max-width: 640px) { .wideTool { display: none; } .search { flex: 1 1 100%; } }
+[data-platform="mobile"] .headCell, [data-platform="mobile"] .cell, [data-platform="mobile"] .footCell { font-size: 13px; }

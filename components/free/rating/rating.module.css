@@ -1,0 +1,24 @@
+/* Rating: FetaUI 228 Rating Handoff and Motion. */
+.rating {
+  display: flex;
+  flex-direction: column;
+  gap: var(--feta-space-1-5);
+  width: 100%;
+  max-width: 280px;
+  font-family: var(--feta-type-font-sans);
+  letter-spacing: -0.04em;
+}
+.label { font: var(--feta-text-label-row); letter-spacing: -0.04em; color: var(--feta-text-primary); }
+.row { display: flex; align-items: center; justify-content: space-between; gap: var(--feta-space-3); }
+.stars { display: inline-flex; gap: var(--feta-space-1); }
+.stars[data-small] { gap: var(--feta-space-0-5); }
+.star { position: relative; display: inline-flex; color: var(--feta-text-quaternary); cursor: pointer; transition: color 120ms var(--feta-motion-ease-out); }
+.stars[data-small] .star { cursor: default; }
+.star[data-filled] { color: var(--feta-text-primary); }
+.star[data-filled] :where(svg) { fill: currentColor; }
+.star:has(input:focus-visible) { outline: 2px solid var(--feta-text-primary); outline-offset: 2px; border-radius: var(--feta-radius-sm); }
+.star:has(input:disabled) { cursor: not-allowed; opacity: 0.5; }
+.value { flex: none; font-size: 12px; line-height: 16px; font-variant-numeric: tabular-nums; color: var(--feta-text-secondary); }
+.rating[data-still] .star { transition: none; }
+@media (max-width: 640px) { :root:not([data-platform="web"]) .rating { max-width: 358px; } }
+[data-platform="mobile"] .rating { max-width: 358px; }

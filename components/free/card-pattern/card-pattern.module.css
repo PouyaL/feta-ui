@@ -1,0 +1,97 @@
+/* Card / Pattern: FetaUI 16 Card Handoff and Motion. */
+.pattern { width: 100%; max-width: 420px; }
+
+.title { margin: 0; font: var(--feta-text-title-total); letter-spacing: var(--feta-text-title-total-tracking); }
+.titleLg { margin: 0; font: 600 18px/26px var(--feta-type-font-sans); letter-spacing: var(--feta-text-title-total-tracking); }
+.description { margin: 0; color: var(--feta-text-secondary); font: var(--feta-text-body-row); letter-spacing: var(--feta-text-body-row-tracking); }
+.description22 { margin: 0; color: var(--feta-text-secondary); font: 400 14px/22px var(--feta-type-font-sans); letter-spacing: var(--feta-text-body-row-tracking); }
+.name { margin: 0; font: var(--feta-text-label-row); letter-spacing: var(--feta-text-label-row-tracking); }
+.small { margin: 0; color: var(--feta-text-tertiary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); }
+.legalText { margin: 0; color: var(--feta-text-tertiary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); text-align: center; }
+
+.stack { display: flex; flex-direction: column; gap: var(--feta-space-4); }
+.window { overflow: hidden; margin: calc(-1 * var(--feta-space-1)); padding: var(--feta-space-1); }
+.split { justify-content: space-between; padding: var(--feta-space-2) var(--feta-space-1) var(--feta-space-1); }
+.nav { display: flex; gap: var(--feta-space-2); }
+.wide { width: 100%; }
+
+/* Sign in */
+.signIn { padding: var(--feta-space-7) var(--feta-space-6) var(--feta-space-6); }
+.signIn > div:first-child { gap: var(--feta-space-5); }
+.heading { display: flex; flex-direction: column; align-items: center; gap: var(--feta-space-3); text-align: center; }
+.headingText { display: flex; flex-direction: column; gap: var(--feta-space-1); }
+.mark { display: grid; place-items: center; width: 40px; height: 40px; border-radius: var(--feta-radius-full); background-color: var(--feta-bg-inverse); color: var(--feta-text-inverse); }
+/* Wraps to more rows when there are many providers, so none runs off the card. */
+.providers { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: var(--feta-space-2); }
+.providers > button { min-width: 0; }
+.or { display: flex; align-items: center; gap: var(--feta-space-3); color: var(--feta-text-tertiary); font: var(--feta-text-caption-default); }
+.or::before, .or::after { content: ''; flex: 1; height: 1px; background-color: var(--feta-alpha-ink-base-8); }
+.form { display: flex; flex-direction: column; gap: var(--feta-space-5); }
+.form > button { width: 100%; }
+.legal { justify-content: center; padding: var(--feta-space-2-5) var(--feta-space-4) var(--feta-space-1-5); }
+
+/* Order summary */
+.product { display: flex; align-items: center; gap: var(--feta-space-3); }
+.productText { flex: 1; min-width: 0; }
+.tile { display: grid; flex: none; place-items: center; width: 44px; height: 44px; border-radius: var(--feta-radius-xl); background-color: var(--feta-alpha-ink-base-5); color: var(--feta-text-secondary); }
+.promo { display: flex; gap: var(--feta-space-2); }
+.promo > :first-child { flex: 1; min-width: 0; }
+.mono input, input.mono { font: var(--feta-text-mono-code); }
+.rule { width: 100%; height: 1px; margin: 0; border: 0; background-color: var(--feta-alpha-ink-base-5); }
+.lines { display: flex; flex-direction: column; gap: var(--feta-space-2); margin: 0; }
+.line { display: flex; justify-content: space-between; font: var(--feta-text-body-row); letter-spacing: var(--feta-text-body-row-tracking); }
+.line dt { color: var(--feta-text-secondary); }
+.line dd { margin: 0; font: var(--feta-text-label-row); letter-spacing: var(--feta-text-label-row-tracking); }
+.line dd[data-good] { color: var(--feta-status-success-text); }
+.total { display: flex; align-items: center; justify-content: space-between; }
+.total strong { font: var(--feta-text-heading-medium); letter-spacing: var(--feta-text-heading-medium-tracking); }
+.payFooter { flex-direction: column; gap: var(--feta-space-2); padding: var(--feta-space-2) var(--feta-space-1) var(--feta-space-1); }
+
+/* Onboarding */
+.onboarding { padding: var(--feta-space-5); }
+.art { display: flex; align-items: center; justify-content: center; height: 150px; border-radius: var(--feta-radius-control); background-color: var(--feta-alpha-ink-base-4); }
+.artTile { display: grid; place-items: center; width: 48px; height: 48px; margin-left: calc(-1 * var(--feta-space-2-5)); border-radius: var(--feta-radius-control); color: var(--feta-status-on-solid); }
+.artTile:first-child { margin-left: 0; }
+.artTile[data-tone='amber'] { background: linear-gradient(180deg, var(--feta-gradient-amber-from), var(--feta-gradient-amber-to)); }
+.artTile[data-tone='emerald'] { background: linear-gradient(180deg, var(--feta-gradient-emerald-from), var(--feta-gradient-emerald-to)); }
+.artTile[data-tone='red'] { background: linear-gradient(180deg, var(--feta-red-400), var(--feta-red-600)); }
+.onboarding .stack { gap: var(--feta-space-1); }
+.progress { display: flex; gap: var(--feta-space-1-5); }
+.progress span { width: 6px; height: 6px; border-radius: var(--feta-radius-sm); background-color: var(--feta-alpha-ink-base-10); transition: width var(--feta-motion-duration-slow) var(--feta-motion-ease-out), background-color var(--feta-motion-duration-slow) var(--feta-motion-ease-out); }
+.progress span[data-on] { width: 18px; background-color: var(--feta-bg-inverse); }
+
+/* Stepper */
+.stepper > div:first-child { gap: var(--feta-space-5); }
+.steps { display: flex; align-items: center; gap: var(--feta-space-2-5); margin: 0; padding: 0; list-style: none; }
+.stepItem { display: flex; flex: none; align-items: center; gap: var(--feta-space-2); color: var(--feta-text-tertiary); }
+.stepItem:not(:last-child) { flex: 1; min-width: 0; }
+.stepItem:not(:last-child)::after { content: ''; flex: 1; min-width: 8px; height: 1px; background-color: var(--feta-alpha-ink-base-10); }
+.stepItem[data-on], .stepItem[data-done] { color: var(--feta-text-primary); }
+.index { display: grid; flex: none; place-items: center; width: 24px; height: 24px; border-radius: var(--feta-radius-full); background-color: var(--feta-alpha-ink-base-5); font: var(--feta-text-caption-strong); transition: background-color var(--feta-motion-duration-base) var(--feta-motion-ease-out), color var(--feta-motion-duration-base) var(--feta-motion-ease-out); }
+.stepItem[data-on] .index, .stepItem[data-done] .index { background-color: var(--feta-bg-inverse); color: var(--feta-text-inverse); }
+.stepLabel { font: var(--feta-text-title-small); letter-spacing: var(--feta-text-title-small-tracking); white-space: nowrap; }
+.stepCount { padding-left: var(--feta-space-2); color: var(--feta-text-tertiary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); }
+.stepper .stack { gap: var(--feta-space-5); }
+
+/* Two-factor */
+.twoFactorHead { display: flex; align-items: center; justify-content: space-between; gap: var(--feta-space-2); }
+.scan { display: flex; gap: var(--feta-space-4); }
+.qr { display: grid; flex: none; place-items: center; width: 132px; height: 132px; border-radius: var(--feta-radius-2xl); background-color: var(--feta-avatar-bg); color: var(--feta-avatar-ink); }
+.qrArt { width: 105px; height: 105px; fill: currentColor; }
+.scanText { display: flex; flex-direction: column; gap: var(--feta-space-2); min-width: 0; }
+.apps { display: flex; flex-wrap: wrap; gap: var(--feta-space-1-5); }
+.keyBlock { display: flex; flex-direction: column; gap: var(--feta-space-1-5); }
+.keyBox { display: flex; align-items: center; justify-content: space-between; height: 40px; padding: 0 var(--feta-space-1) 0 var(--feta-space-3); border-radius: var(--feta-radius-xl); background-color: var(--feta-alpha-ink-base-5); }
+.key { overflow: hidden; font: var(--feta-text-mono-code); text-overflow: ellipsis; white-space: nowrap; }
+
+[data-platform='mobile'] .pattern { max-width: 358px; }
+[data-platform='mobile'] .scan { flex-direction: column; }
+[data-platform='mobile'] .qr { align-self: center; }
+[data-platform='mobile'] .split > button:first-child { flex: none; }
+
+@media (max-width: 640px) {
+  .pattern { max-width: 358px; }
+  .scan { flex-direction: column; }
+  .qr { align-self: center; }
+  .split > button:first-child { flex: none; }
+}
