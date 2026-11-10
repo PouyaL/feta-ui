@@ -1,0 +1,19 @@
+{
+  "extends": "../../components/tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "emitDeclarationOnly": true,
+    "declaration": true,
+    "rootDir": "../../components",
+    "outDir": "dist/types/ui"
+  },
+  "include": [
+    "../../components/free",
+    "../../components/motion-tokens.ts",
+    "../../components/css-modules.d.ts"
+  ],
+  "exclude": [
+    "../../components/free/**/*.test.tsx",
+    "../../components/free/**/*.stories.tsx"
+  ]
+}

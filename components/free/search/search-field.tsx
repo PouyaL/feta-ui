@@ -6,7 +6,7 @@ import { XIcon } from '@fetaui/react/rounded/x'
 import { form } from '../form-kit/form-kit'
 import { IconButton } from '../icon-button/icon-button'
 import { cx, useStill } from '../motion-kit/motion-kit'
-import styles from './search.module.css'
+import styles from './search-styles'
 import { useFocusShortcut } from './use-focus-shortcut'
 
 export type SearchFieldProps = {

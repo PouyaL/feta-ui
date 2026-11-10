@@ -11,7 +11,7 @@ import { form } from '../form-kit/form-kit'
 import { useDismiss } from '../form-kit/use-dismiss'
 import { cx, useStill } from '../motion-kit/motion-kit'
 import { SearchField } from './search-field'
-import styles from './search.module.css'
+import styles from './search-styles'
 import { useFocusShortcut } from './use-focus-shortcut'
 
 export { SearchField, type SearchFieldProps } from './search-field'

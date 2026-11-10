@@ -5,7 +5,7 @@ import { ChevronUpIcon } from '@fetaui/react/rounded/chevron-up'
 import { ease, scalePress, spring } from '../../motion-tokens'
 import { useLabelMotion } from '../button/label-motion'
 import { cx, useStill } from '../motion-kit/motion-kit'
-import styles from './sidebar.module.css'
+import styles from './sidebar-styles'
 
 const GROUP_S = 0.2
 

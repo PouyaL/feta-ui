@@ -18,6 +18,26 @@
       "dependsOn": [
         "^build"
       ]
+    },
+    "@fetaui/react#build": {
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        "dist/**"
+      ],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "$TURBO_ROOT$/components/free/**",
+        "$TURBO_ROOT$/components/tokens.css",
+        "$TURBO_ROOT$/components/motion-tokens.ts",
+        "$TURBO_ROOT$/components/css-modules.d.ts",
+        "$TURBO_ROOT$/components/tsconfig.json",
+        "$TURBO_ROOT$/components/package.json",
+        "$TURBO_ROOT$/tsconfig.base.json",
+        "$TURBO_ROOT$/scripts/build-icon-modules.mjs",
+        "$TURBO_ROOT$/scripts/build-ui-modules.mjs"
+      ]
     }
   }
 }

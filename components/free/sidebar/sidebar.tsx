@@ -5,7 +5,7 @@ import { ease } from '../../motion-tokens'
 import { cx, useStill } from '../motion-kit/motion-kit'
 import { Tooltip } from '../tooltip/tooltip'
 import { NavItem } from './nav-item'
-import styles from './sidebar.module.css'
+import styles from './sidebar-styles'
 
 export { NavItem, type NavItemProps } from './nav-item'
 

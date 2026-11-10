@@ -53,6 +53,10 @@ importers:
         version: 5.9.3
 
   packages/react:
+    dependencies:
+      '@number-flow/react':
+        specifier: 0.6.2
+        version: 0.6.2(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
     devDependencies:
       '@fetaui/core':
         specifier: workspace:^

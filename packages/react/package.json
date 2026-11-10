@@ -1,10 +1,12 @@
 {
   "name": "@fetaui/react",
-  "version": "0.0.0",
-  "description": "Animated React icons: the Free set in 10 styles.",
+  "version": "0.1.0",
+  "description": "Animated React icons in 10 styles and Free UI components with motion.",
   "license": "MIT",
   "type": "module",
-  "sideEffects": false,
+  "sideEffects": [
+    "**/*.css"
+  ],
   "files": [
     "dist",
     "LICENSE",
@@ -140,13 +142,821 @@
         "types": "./dist/types/neon/*.d.ts",
         "import": "./dist/esm/neon/*.js",
         "require": "./dist/cjs/neon/*.js"
+      },
+      "./tokens.css": "./dist/tokens.css",
+      "./ui/accordion": {
+        "types": "./dist/types/ui/free/accordion/accordion.d.ts",
+        "import": "./dist/esm/ui/free/accordion/accordion.js"
+      },
+      "./ui/account-health": {
+        "types": "./dist/types/ui/free/account-health/account-health.d.ts",
+        "import": "./dist/esm/ui/free/account-health/account-health.js"
+      },
+      "./ui/activity-rings": {
+        "types": "./dist/types/ui/free/activity-rings/activity-rings.d.ts",
+        "import": "./dist/esm/ui/free/activity-rings/activity-rings.js"
+      },
+      "./ui/activity-terrain": {
+        "types": "./dist/types/ui/free/activity-terrain/activity-terrain.d.ts",
+        "import": "./dist/esm/ui/free/activity-terrain/activity-terrain.js"
+      },
+      "./ui/add-to-cart-button": {
+        "types": "./dist/types/ui/free/add-to-cart-button/add-to-cart-button.d.ts",
+        "import": "./dist/esm/ui/free/add-to-cart-button/add-to-cart-button.js"
+      },
+      "./ui/alert": {
+        "types": "./dist/types/ui/free/alert/alert.d.ts",
+        "import": "./dist/esm/ui/free/alert/alert.js"
+      },
+      "./ui/alert-dialog": {
+        "types": "./dist/types/ui/free/alert-dialog/alert-dialog.d.ts",
+        "import": "./dist/esm/ui/free/alert-dialog/alert-dialog.js"
+      },
+      "./ui/amount-pad": {
+        "types": "./dist/types/ui/free/amount-pad/amount-pad.d.ts",
+        "import": "./dist/esm/ui/free/amount-pad/amount-pad.js"
+      },
+      "./ui/api-key": {
+        "types": "./dist/types/ui/free/api-key/api-key.d.ts",
+        "import": "./dist/esm/ui/free/api-key/api-key.js"
+      },
+      "./ui/aspect-ratio": {
+        "types": "./dist/types/ui/free/aspect-ratio/aspect-ratio.d.ts",
+        "import": "./dist/esm/ui/free/aspect-ratio/aspect-ratio.js"
+      },
+      "./ui/attachment": {
+        "types": "./dist/types/ui/free/attachment/attachment.d.ts",
+        "import": "./dist/esm/ui/free/attachment/attachment.js"
+      },
+      "./ui/attract-button": {
+        "types": "./dist/types/ui/free/attract-button/attract-button.d.ts",
+        "import": "./dist/esm/ui/free/attract-button/attract-button.js"
+      },
+      "./ui/aura-frame": {
+        "types": "./dist/types/ui/free/aura-frame/aura-frame.d.ts",
+        "import": "./dist/esm/ui/free/aura-frame/aura-frame.js"
+      },
+      "./ui/availability-cell": {
+        "types": "./dist/types/ui/free/availability-cell/availability-cell.d.ts",
+        "import": "./dist/esm/ui/free/availability-cell/availability-cell.js"
+      },
+      "./ui/availability-strip": {
+        "types": "./dist/types/ui/free/availability-strip/availability-strip.d.ts",
+        "import": "./dist/esm/ui/free/availability-strip/availability-strip.js"
+      },
+      "./ui/avatar": {
+        "types": "./dist/types/ui/free/avatar/avatar.d.ts",
+        "import": "./dist/esm/ui/free/avatar/avatar.js"
+      },
+      "./ui/avatar-picker": {
+        "types": "./dist/types/ui/free/avatar-picker/avatar-picker.d.ts",
+        "import": "./dist/esm/ui/free/avatar-picker/avatar-picker.js"
+      },
+      "./ui/avatar-upload": {
+        "types": "./dist/types/ui/free/avatar-upload/avatar-upload.d.ts",
+        "import": "./dist/esm/ui/free/avatar-upload/avatar-upload.js"
+      },
+      "./ui/badge": {
+        "types": "./dist/types/ui/free/badge/badge.d.ts",
+        "import": "./dist/esm/ui/free/badge/badge.js"
+      },
+      "./ui/bell-button": {
+        "types": "./dist/types/ui/free/bell-button/bell-button.d.ts",
+        "import": "./dist/esm/ui/free/bell-button/bell-button.js"
+      },
+      "./ui/bento-grid": {
+        "types": "./dist/types/ui/free/bento-grid/bento-grid.d.ts",
+        "import": "./dist/esm/ui/free/bento-grid/bento-grid.js"
+      },
+      "./ui/bento-widget": {
+        "types": "./dist/types/ui/free/bento-widget/bento-widget.d.ts",
+        "import": "./dist/esm/ui/free/bento-widget/bento-widget.js"
+      },
+      "./ui/bezel-frame": {
+        "types": "./dist/types/ui/free/bezel-frame/bezel-frame.d.ts",
+        "import": "./dist/esm/ui/free/bezel-frame/bezel-frame.js"
+      },
+      "./ui/billing-switch": {
+        "types": "./dist/types/ui/free/billing-switch/billing-switch.d.ts",
+        "import": "./dist/esm/ui/free/billing-switch/billing-switch.js"
+      },
+      "./ui/boarding-pass": {
+        "types": "./dist/types/ui/free/boarding-pass/boarding-pass.d.ts",
+        "import": "./dist/esm/ui/free/boarding-pass/boarding-pass.js"
+      },
+      "./ui/bottom-sheet": {
+        "types": "./dist/types/ui/free/bottom-sheet/bottom-sheet.d.ts",
+        "import": "./dist/esm/ui/free/bottom-sheet/bottom-sheet.js"
+      },
+      "./ui/breadcrumb": {
+        "types": "./dist/types/ui/free/breadcrumb/breadcrumb.d.ts",
+        "import": "./dist/esm/ui/free/breadcrumb/breadcrumb.js"
+      },
+      "./ui/button": {
+        "types": "./dist/types/ui/free/button/button.d.ts",
+        "import": "./dist/esm/ui/free/button/button.js"
+      },
+      "./ui/button-group": {
+        "types": "./dist/types/ui/free/button-group/button-group.d.ts",
+        "import": "./dist/esm/ui/free/button-group/button-group.js"
+      },
+      "./ui/calendar": {
+        "types": "./dist/types/ui/free/calendar/calendar.d.ts",
+        "import": "./dist/esm/ui/free/calendar/calendar.js"
+      },
+      "./ui/calendar-event": {
+        "types": "./dist/types/ui/free/calendar-event/calendar-event.d.ts",
+        "import": "./dist/esm/ui/free/calendar-event/calendar-event.js"
+      },
+      "./ui/calendar-schedule": {
+        "types": "./dist/types/ui/free/calendar-schedule/calendar-schedule.d.ts",
+        "import": "./dist/esm/ui/free/calendar-schedule/calendar-schedule.js"
+      },
+      "./ui/cancel-flow": {
+        "types": "./dist/types/ui/free/cancel-flow/cancel-flow.d.ts",
+        "import": "./dist/esm/ui/free/cancel-flow/cancel-flow.js"
+      },
+      "./ui/card": {
+        "types": "./dist/types/ui/free/card/card.d.ts",
+        "import": "./dist/esm/ui/free/card/card.js"
+      },
+      "./ui/card-field": {
+        "types": "./dist/types/ui/free/card-field/card-field.d.ts",
+        "import": "./dist/esm/ui/free/card-field/card-field.js"
+      },
+      "./ui/card-flip": {
+        "types": "./dist/types/ui/free/card-flip/card-flip.d.ts",
+        "import": "./dist/esm/ui/free/card-flip/card-flip.js"
+      },
+      "./ui/card-pattern": {
+        "types": "./dist/types/ui/free/card-pattern/card-pattern.d.ts",
+        "import": "./dist/esm/ui/free/card-pattern/card-pattern.js"
+      },
+      "./ui/card-stack": {
+        "types": "./dist/types/ui/free/card-stack/card-stack.d.ts",
+        "import": "./dist/esm/ui/free/card-stack/card-stack.js"
+      },
+      "./ui/carousel": {
+        "types": "./dist/types/ui/free/carousel/carousel.d.ts",
+        "import": "./dist/esm/ui/free/carousel/carousel.js"
+      },
+      "./ui/cart-button": {
+        "types": "./dist/types/ui/free/cart-button/cart-button.d.ts",
+        "import": "./dist/esm/ui/free/cart-button/cart-button.js"
+      },
+      "./ui/checkbox": {
+        "types": "./dist/types/ui/free/checkbox/checkbox.d.ts",
+        "import": "./dist/esm/ui/free/checkbox/checkbox.js"
+      },
+      "./ui/checkout": {
+        "types": "./dist/types/ui/free/checkout/checkout.d.ts",
+        "import": "./dist/esm/ui/free/checkout/checkout.js"
+      },
+      "./ui/clip-trimmer": {
+        "types": "./dist/types/ui/free/clip-trimmer/clip-trimmer.d.ts",
+        "import": "./dist/esm/ui/free/clip-trimmer/clip-trimmer.js"
+      },
+      "./ui/code-block": {
+        "types": "./dist/types/ui/free/code-block/code-block.d.ts",
+        "import": "./dist/esm/ui/free/code-block/code-block.js"
+      },
+      "./ui/code-output": {
+        "types": "./dist/types/ui/free/code-output/code-output.d.ts",
+        "import": "./dist/esm/ui/free/code-output/code-output.js"
+      },
+      "./ui/collapsible": {
+        "types": "./dist/types/ui/free/collapsible/collapsible.d.ts",
+        "import": "./dist/esm/ui/free/collapsible/collapsible.js"
+      },
+      "./ui/color-selector": {
+        "types": "./dist/types/ui/free/color-selector/color-selector.d.ts",
+        "import": "./dist/esm/ui/free/color-selector/color-selector.js"
+      },
+      "./ui/combobox": {
+        "types": "./dist/types/ui/free/combobox/combobox.d.ts",
+        "import": "./dist/esm/ui/free/combobox/combobox.js"
+      },
+      "./ui/command": {
+        "types": "./dist/types/ui/free/command/command.d.ts",
+        "import": "./dist/esm/ui/free/command/command.js"
+      },
+      "./ui/command-button": {
+        "types": "./dist/types/ui/free/command-button/command-button.d.ts",
+        "import": "./dist/esm/ui/free/command-button/command-button.js"
+      },
+      "./ui/comparison-table": {
+        "types": "./dist/types/ui/free/comparison-table/comparison-table.d.ts",
+        "import": "./dist/esm/ui/free/comparison-table/comparison-table.js"
+      },
+      "./ui/consent-card": {
+        "types": "./dist/types/ui/free/consent-card/consent-card.d.ts",
+        "import": "./dist/esm/ui/free/consent-card/consent-card.js"
+      },
+      "./ui/cookie-banner": {
+        "types": "./dist/types/ui/free/cookie-banner/cookie-banner.d.ts",
+        "import": "./dist/esm/ui/free/cookie-banner/cookie-banner.js"
+      },
+      "./ui/cookie-preferences": {
+        "types": "./dist/types/ui/free/cookie-preferences/cookie-preferences.d.ts",
+        "import": "./dist/esm/ui/free/cookie-preferences/cookie-preferences.js"
+      },
+      "./ui/credit-top-up": {
+        "types": "./dist/types/ui/free/credit-top-up/credit-top-up.d.ts",
+        "import": "./dist/esm/ui/free/credit-top-up/credit-top-up.js"
+      },
+      "./ui/currency-transfer": {
+        "types": "./dist/types/ui/free/currency-transfer/currency-transfer.d.ts",
+        "import": "./dist/esm/ui/free/currency-transfer/currency-transfer.js"
+      },
+      "./ui/data-grid": {
+        "types": "./dist/types/ui/free/data-grid/data-grid.d.ts",
+        "import": "./dist/esm/ui/free/data-grid/data-grid.js"
+      },
+      "./ui/data-table": {
+        "types": "./dist/types/ui/free/data-table/data-table.d.ts",
+        "import": "./dist/esm/ui/free/data-table/data-table.js"
+      },
+      "./ui/date-picker": {
+        "types": "./dist/types/ui/free/date-picker/date-picker.d.ts",
+        "import": "./dist/esm/ui/free/date-picker/date-picker.js"
+      },
+      "./ui/day-strip": {
+        "types": "./dist/types/ui/free/day-strip/day-strip.d.ts",
+        "import": "./dist/esm/ui/free/day-strip/day-strip.js"
+      },
+      "./ui/detent-dial": {
+        "types": "./dist/types/ui/free/detent-dial/detent-dial.d.ts",
+        "import": "./dist/esm/ui/free/detent-dial/detent-dial.js"
+      },
+      "./ui/dialog": {
+        "types": "./dist/types/ui/free/dialog/dialog.d.ts",
+        "import": "./dist/esm/ui/free/dialog/dialog.js"
+      },
+      "./ui/drawer": {
+        "types": "./dist/types/ui/free/drawer/drawer.d.ts",
+        "import": "./dist/esm/ui/free/drawer/drawer.js"
+      },
+      "./ui/dropdown": {
+        "types": "./dist/types/ui/free/dropdown/dropdown.d.ts",
+        "import": "./dist/esm/ui/free/dropdown/dropdown.js"
+      },
+      "./ui/dropdown-menu": {
+        "types": "./dist/types/ui/free/dropdown-menu/dropdown-menu.d.ts",
+        "import": "./dist/esm/ui/free/dropdown-menu/dropdown-menu.js"
+      },
+      "./ui/editor-tabs": {
+        "types": "./dist/types/ui/free/editor-tabs/editor-tabs.d.ts",
+        "import": "./dist/esm/ui/free/editor-tabs/editor-tabs.js"
+      },
+      "./ui/empty": {
+        "types": "./dist/types/ui/free/empty/empty.d.ts",
+        "import": "./dist/esm/ui/free/empty/empty.js"
+      },
+      "./ui/endpoint": {
+        "types": "./dist/types/ui/free/endpoint/endpoint.d.ts",
+        "import": "./dist/esm/ui/free/endpoint/endpoint.js"
+      },
+      "./ui/expandable-card": {
+        "types": "./dist/types/ui/free/expandable-card/expandable-card.d.ts",
+        "import": "./dist/esm/ui/free/expandable-card/expandable-card.js"
+      },
+      "./ui/expandable-text": {
+        "types": "./dist/types/ui/free/expandable-text/expandable-text.d.ts",
+        "import": "./dist/esm/ui/free/expandable-text/expandable-text.js"
+      },
+      "./ui/expanding-arrow-button": {
+        "types": "./dist/types/ui/free/expanding-arrow-button/expanding-arrow-button.d.ts",
+        "import": "./dist/esm/ui/free/expanding-arrow-button/expanding-arrow-button.js"
+      },
+      "./ui/feature-voting": {
+        "types": "./dist/types/ui/free/feature-voting/feature-voting.d.ts",
+        "import": "./dist/esm/ui/free/feature-voting/feature-voting.js"
+      },
+      "./ui/feedback-prompt": {
+        "types": "./dist/types/ui/free/feedback-prompt/feedback-prompt.d.ts",
+        "import": "./dist/esm/ui/free/feedback-prompt/feedback-prompt.js"
+      },
+      "./ui/field": {
+        "types": "./dist/types/ui/free/field/field.d.ts",
+        "import": "./dist/esm/ui/free/field/field.js"
+      },
+      "./ui/fieldset": {
+        "types": "./dist/types/ui/free/fieldset/fieldset.d.ts",
+        "import": "./dist/esm/ui/free/fieldset/fieldset.js"
+      },
+      "./ui/file-tree": {
+        "types": "./dist/types/ui/free/file-tree/file-tree.d.ts",
+        "import": "./dist/esm/ui/free/file-tree/file-tree.js"
+      },
+      "./ui/floating": {
+        "types": "./dist/types/ui/free/popover/floating.d.ts",
+        "import": "./dist/esm/ui/free/popover/floating.js"
+      },
+      "./ui/focal-point-picker": {
+        "types": "./dist/types/ui/free/focal-point-picker/focal-point-picker.d.ts",
+        "import": "./dist/esm/ui/free/focal-point-picker/focal-point-picker.js"
+      },
+      "./ui/frame-rule": {
+        "types": "./dist/types/ui/free/frame-rule/frame-rule.d.ts",
+        "import": "./dist/esm/ui/free/frame-rule/frame-rule.js"
+      },
+      "./ui/glitch-text": {
+        "types": "./dist/types/ui/free/glitch-text/glitch-text.d.ts",
+        "import": "./dist/esm/ui/free/glitch-text/glitch-text.js"
+      },
+      "./ui/goals-check-in": {
+        "types": "./dist/types/ui/free/goals-check-in/goals-check-in.d.ts",
+        "import": "./dist/esm/ui/free/goals-check-in/goals-check-in.js"
+      },
+      "./ui/gradient-button": {
+        "types": "./dist/types/ui/free/gradient-button/gradient-button.d.ts",
+        "import": "./dist/esm/ui/free/gradient-button/gradient-button.js"
+      },
+      "./ui/hold-to-confirm": {
+        "types": "./dist/types/ui/free/hold-to-confirm/hold-to-confirm.d.ts",
+        "import": "./dist/esm/ui/free/hold-to-confirm/hold-to-confirm.js"
+      },
+      "./ui/hover-card": {
+        "types": "./dist/types/ui/free/hover-card/hover-card.d.ts",
+        "import": "./dist/esm/ui/free/hover-card/hover-card.js"
+      },
+      "./ui/icon-button": {
+        "types": "./dist/types/ui/free/icon-button/icon-button.d.ts",
+        "import": "./dist/esm/ui/free/icon-button/icon-button.js"
+      },
+      "./ui/inbox-bulk-actions": {
+        "types": "./dist/types/ui/free/inbox-bulk-actions/inbox-bulk-actions.d.ts",
+        "import": "./dist/esm/ui/free/inbox-bulk-actions/inbox-bulk-actions.js"
+      },
+      "./ui/input": {
+        "types": "./dist/types/ui/free/input/input.d.ts",
+        "import": "./dist/esm/ui/free/input/input.js"
+      },
+      "./ui/input-group": {
+        "types": "./dist/types/ui/free/input-group/input-group.d.ts",
+        "import": "./dist/esm/ui/free/input-group/input-group.js"
+      },
+      "./ui/input-otp": {
+        "types": "./dist/types/ui/free/input-otp/input-otp.d.ts",
+        "import": "./dist/esm/ui/free/input-otp/input-otp.js"
+      },
+      "./ui/integrations": {
+        "types": "./dist/types/ui/free/integrations/integrations.d.ts",
+        "import": "./dist/esm/ui/free/integrations/integrations.js"
+      },
+      "./ui/invite-field": {
+        "types": "./dist/types/ui/free/invite-field/invite-field.d.ts",
+        "import": "./dist/esm/ui/free/invite-field/invite-field.js"
+      },
+      "./ui/invite-teammates": {
+        "types": "./dist/types/ui/free/invite-teammates/invite-teammates.d.ts",
+        "import": "./dist/esm/ui/free/invite-teammates/invite-teammates.js"
+      },
+      "./ui/invoice-row": {
+        "types": "./dist/types/ui/free/invoice-row/invoice-row.d.ts",
+        "import": "./dist/esm/ui/free/invoice-row/invoice-row.js"
+      },
+      "./ui/item": {
+        "types": "./dist/types/ui/free/item/item.d.ts",
+        "import": "./dist/esm/ui/free/item/item.js"
+      },
+      "./ui/json-view": {
+        "types": "./dist/types/ui/free/json-view/json-view.d.ts",
+        "import": "./dist/esm/ui/free/json-view/json-view.js"
+      },
+      "./ui/kanban-card": {
+        "types": "./dist/types/ui/free/kanban-card/kanban-card.d.ts",
+        "import": "./dist/esm/ui/free/kanban-card/kanban-card.js"
+      },
+      "./ui/kanban-column": {
+        "types": "./dist/types/ui/free/kanban-column/kanban-column.d.ts",
+        "import": "./dist/esm/ui/free/kanban-column/kanban-column.js"
+      },
+      "./ui/kbd": {
+        "types": "./dist/types/ui/free/kbd/kbd.d.ts",
+        "import": "./dist/esm/ui/free/kbd/kbd.js"
+      },
+      "./ui/label": {
+        "types": "./dist/types/ui/free/label/label.d.ts",
+        "import": "./dist/esm/ui/free/label/label.js"
+      },
+      "./ui/label-motion": {
+        "types": "./dist/types/ui/free/button/label-motion.d.ts",
+        "import": "./dist/esm/ui/free/button/label-motion.js"
+      },
+      "./ui/lens-pager": {
+        "types": "./dist/types/ui/free/lens-pager/lens-pager.d.ts",
+        "import": "./dist/esm/ui/free/lens-pager/lens-pager.js"
+      },
+      "./ui/lightbox-grid": {
+        "types": "./dist/types/ui/free/lightbox-grid/lightbox-grid.d.ts",
+        "import": "./dist/esm/ui/free/lightbox-grid/lightbox-grid.js"
+      },
+      "./ui/liquid-gauge": {
+        "types": "./dist/types/ui/free/liquid-gauge/liquid-gauge.d.ts",
+        "import": "./dist/esm/ui/free/liquid-gauge/liquid-gauge.js"
+      },
+      "./ui/liquid-ring": {
+        "types": "./dist/types/ui/free/liquid-ring/liquid-ring.d.ts",
+        "import": "./dist/esm/ui/free/liquid-ring/liquid-ring.js"
+      },
+      "./ui/liquid-slider": {
+        "types": "./dist/types/ui/free/liquid-slider/liquid-slider.d.ts",
+        "import": "./dist/esm/ui/free/liquid-slider/liquid-slider.js"
+      },
+      "./ui/loader": {
+        "types": "./dist/types/ui/free/loader/loader.d.ts",
+        "import": "./dist/esm/ui/free/loader/loader.js"
+      },
+      "./ui/logo-tile": {
+        "types": "./dist/types/ui/free/logo-tile/logo-tile.d.ts",
+        "import": "./dist/esm/ui/free/logo-tile/logo-tile.js"
+      },
+      "./ui/marker-text": {
+        "types": "./dist/types/ui/free/marker-text/marker-text.d.ts",
+        "import": "./dist/esm/ui/free/marker-text/marker-text.js"
+      },
+      "./ui/marking-menu": {
+        "types": "./dist/types/ui/free/marking-menu/marking-menu.d.ts",
+        "import": "./dist/esm/ui/free/marking-menu/marking-menu.js"
+      },
+      "./ui/meeting-finder": {
+        "types": "./dist/types/ui/free/meeting-finder/meeting-finder.d.ts",
+        "import": "./dist/esm/ui/free/meeting-finder/meeting-finder.js"
+      },
+      "./ui/member-row": {
+        "types": "./dist/types/ui/free/member-row/member-row.d.ts",
+        "import": "./dist/esm/ui/free/member-row/member-row.js"
+      },
+      "./ui/members": {
+        "types": "./dist/types/ui/free/members/members.d.ts",
+        "import": "./dist/esm/ui/free/members/members.js"
+      },
+      "./ui/menubar": {
+        "types": "./dist/types/ui/free/menubar/menubar.d.ts",
+        "import": "./dist/esm/ui/free/menubar/menubar.js"
+      },
+      "./ui/metal-frame": {
+        "types": "./dist/types/ui/free/metal-frame/metal-frame.d.ts",
+        "import": "./dist/esm/ui/free/metal-frame/metal-frame.js"
+      },
+      "./ui/metal-ring": {
+        "types": "./dist/types/ui/free/metal-frame/metal-ring.d.ts",
+        "import": "./dist/esm/ui/free/metal-frame/metal-ring.js"
+      },
+      "./ui/metallic-link": {
+        "types": "./dist/types/ui/free/metallic-link/metallic-link.d.ts",
+        "import": "./dist/esm/ui/free/metallic-link/metallic-link.js"
+      },
+      "./ui/metric-card": {
+        "types": "./dist/types/ui/free/metric-card/metric-card.d.ts",
+        "import": "./dist/esm/ui/free/metric-card/metric-card.js"
+      },
+      "./ui/modal": {
+        "types": "./dist/types/ui/free/dialog/modal.d.ts",
+        "import": "./dist/esm/ui/free/dialog/modal.js"
+      },
+      "./ui/morph-popover": {
+        "types": "./dist/types/ui/free/morph-popover/morph-popover.d.ts",
+        "import": "./dist/esm/ui/free/morph-popover/morph-popover.js"
+      },
+      "./ui/nav-item": {
+        "types": "./dist/types/ui/free/sidebar/nav-item.d.ts",
+        "import": "./dist/esm/ui/free/sidebar/nav-item.js"
+      },
+      "./ui/navigation-menu": {
+        "types": "./dist/types/ui/free/navigation-menu/navigation-menu.d.ts",
+        "import": "./dist/esm/ui/free/navigation-menu/navigation-menu.js"
+      },
+      "./ui/notification-stack": {
+        "types": "./dist/types/ui/free/notification-stack/notification-stack.d.ts",
+        "import": "./dist/esm/ui/free/notification-stack/notification-stack.js"
+      },
+      "./ui/now-playing": {
+        "types": "./dist/types/ui/free/now-playing/now-playing.d.ts",
+        "import": "./dist/esm/ui/free/now-playing/now-playing.js"
+      },
+      "./ui/nps-scale": {
+        "types": "./dist/types/ui/free/nps-scale/nps-scale.d.ts",
+        "import": "./dist/esm/ui/free/nps-scale/nps-scale.js"
+      },
+      "./ui/number-stepper": {
+        "types": "./dist/types/ui/free/number-stepper/number-stepper.d.ts",
+        "import": "./dist/esm/ui/free/number-stepper/number-stepper.js"
+      },
+      "./ui/onboarding-question": {
+        "types": "./dist/types/ui/free/onboarding-question/onboarding-question.d.ts",
+        "import": "./dist/esm/ui/free/onboarding-question/onboarding-question.js"
+      },
+      "./ui/order-tracking": {
+        "types": "./dist/types/ui/free/order-tracking/order-tracking.d.ts",
+        "import": "./dist/esm/ui/free/order-tracking/order-tracking.js"
+      },
+      "./ui/otp-form": {
+        "types": "./dist/types/ui/free/otp-form/otp-form.d.ts",
+        "import": "./dist/esm/ui/free/otp-form/otp-form.js"
+      },
+      "./ui/padlock": {
+        "types": "./dist/types/ui/free/padlock/padlock.d.ts",
+        "import": "./dist/esm/ui/free/padlock/padlock.js"
+      },
+      "./ui/page-flip": {
+        "types": "./dist/types/ui/free/page-flip/page-flip.d.ts",
+        "import": "./dist/esm/ui/free/page-flip/page-flip.js"
+      },
+      "./ui/pagination": {
+        "types": "./dist/types/ui/free/pagination/pagination.d.ts",
+        "import": "./dist/esm/ui/free/pagination/pagination.js"
+      },
+      "./ui/particle-button": {
+        "types": "./dist/types/ui/free/particle-button/particle-button.d.ts",
+        "import": "./dist/esm/ui/free/particle-button/particle-button.js"
+      },
+      "./ui/payment-method": {
+        "types": "./dist/types/ui/free/payment-method/payment-method.d.ts",
+        "import": "./dist/esm/ui/free/payment-method/payment-method.js"
+      },
+      "./ui/photo-straighten": {
+        "types": "./dist/types/ui/free/photo-straighten/photo-straighten.d.ts",
+        "import": "./dist/esm/ui/free/photo-straighten/photo-straighten.js"
+      },
+      "./ui/plan-card": {
+        "types": "./dist/types/ui/free/plan-card/plan-card.d.ts",
+        "import": "./dist/esm/ui/free/plan-card/plan-card.js"
+      },
+      "./ui/popover": {
+        "types": "./dist/types/ui/free/popover/popover.d.ts",
+        "import": "./dist/esm/ui/free/popover/popover.js"
+      },
+      "./ui/product-details": {
+        "types": "./dist/types/ui/free/product-details/product-details.d.ts",
+        "import": "./dist/esm/ui/free/product-details/product-details.js"
+      },
+      "./ui/profile-dropdown": {
+        "types": "./dist/types/ui/free/profile-dropdown/profile-dropdown.d.ts",
+        "import": "./dist/esm/ui/free/profile-dropdown/profile-dropdown.js"
+      },
+      "./ui/progress": {
+        "types": "./dist/types/ui/free/progress/progress.d.ts",
+        "import": "./dist/esm/ui/free/progress/progress.js"
+      },
+      "./ui/promo-card": {
+        "types": "./dist/types/ui/free/promo-card/promo-card.d.ts",
+        "import": "./dist/esm/ui/free/promo-card/promo-card.js"
+      },
+      "./ui/pull-chain-light": {
+        "types": "./dist/types/ui/free/pull-chain-light/pull-chain-light.d.ts",
+        "import": "./dist/esm/ui/free/pull-chain-light/pull-chain-light.js"
+      },
+      "./ui/questionnaire": {
+        "types": "./dist/types/ui/free/questionnaire/questionnaire.d.ts",
+        "import": "./dist/esm/ui/free/questionnaire/questionnaire.js"
+      },
+      "./ui/radio": {
+        "types": "./dist/types/ui/free/radio/radio.d.ts",
+        "import": "./dist/esm/ui/free/radio/radio.js"
+      },
+      "./ui/rail-card": {
+        "types": "./dist/types/ui/free/rail-card/rail-card.d.ts",
+        "import": "./dist/esm/ui/free/rail-card/rail-card.js"
+      },
+      "./ui/rating": {
+        "types": "./dist/types/ui/free/rating/rating.d.ts",
+        "import": "./dist/esm/ui/free/rating/rating.js"
+      },
+      "./ui/receipt-printer": {
+        "types": "./dist/types/ui/free/receipt-printer/receipt-printer.d.ts",
+        "import": "./dist/esm/ui/free/receipt-printer/receipt-printer.js"
+      },
+      "./ui/request-log": {
+        "types": "./dist/types/ui/free/request-log/request-log.d.ts",
+        "import": "./dist/esm/ui/free/request-log/request-log.js"
+      },
+      "./ui/review-card": {
+        "types": "./dist/types/ui/free/review-card/review-card.d.ts",
+        "import": "./dist/esm/ui/free/review-card/review-card.js"
+      },
+      "./ui/rich-text-editor": {
+        "types": "./dist/types/ui/free/rich-text-editor/rich-text-editor.d.ts",
+        "import": "./dist/esm/ui/free/rich-text-editor/rich-text-editor.js"
+      },
+      "./ui/save-button": {
+        "types": "./dist/types/ui/free/save-button/save-button.d.ts",
+        "import": "./dist/esm/ui/free/save-button/save-button.js"
+      },
+      "./ui/scroll-area": {
+        "types": "./dist/types/ui/free/scroll-area/scroll-area.d.ts",
+        "import": "./dist/esm/ui/free/scroll-area/scroll-area.js"
+      },
+      "./ui/search": {
+        "types": "./dist/types/ui/free/search/search.d.ts",
+        "import": "./dist/esm/ui/free/search/search.js"
+      },
+      "./ui/search-field": {
+        "types": "./dist/types/ui/free/search/search-field.d.ts",
+        "import": "./dist/esm/ui/free/search/search-field.js"
+      },
+      "./ui/select": {
+        "types": "./dist/types/ui/free/select/select.d.ts",
+        "import": "./dist/esm/ui/free/select/select.js"
+      },
+      "./ui/separator": {
+        "types": "./dist/types/ui/free/separator/separator.d.ts",
+        "import": "./dist/esm/ui/free/separator/separator.js"
+      },
+      "./ui/sheet": {
+        "types": "./dist/types/ui/free/sheet/sheet.d.ts",
+        "import": "./dist/esm/ui/free/sheet/sheet.js"
+      },
+      "./ui/sidebar": {
+        "types": "./dist/types/ui/free/sidebar/sidebar.d.ts",
+        "import": "./dist/esm/ui/free/sidebar/sidebar.js"
+      },
+      "./ui/signature-pad": {
+        "types": "./dist/types/ui/free/signature-pad/signature-pad.d.ts",
+        "import": "./dist/esm/ui/free/signature-pad/signature-pad.js"
+      },
+      "./ui/skeleton": {
+        "types": "./dist/types/ui/free/skeleton/skeleton.d.ts",
+        "import": "./dist/esm/ui/free/skeleton/skeleton.js"
+      },
+      "./ui/slide-text-button": {
+        "types": "./dist/types/ui/free/slide-text-button/slide-text-button.d.ts",
+        "import": "./dist/esm/ui/free/slide-text-button/slide-text-button.js"
+      },
+      "./ui/slide-to-confirm": {
+        "types": "./dist/types/ui/free/slide-to-confirm/slide-to-confirm.d.ts",
+        "import": "./dist/esm/ui/free/slide-to-confirm/slide-to-confirm.js"
+      },
+      "./ui/slider": {
+        "types": "./dist/types/ui/free/slider/slider.d.ts",
+        "import": "./dist/esm/ui/free/slider/slider.js"
+      },
+      "./ui/slot-picker": {
+        "types": "./dist/types/ui/free/slot-picker/slot-picker.d.ts",
+        "import": "./dist/esm/ui/free/slot-picker/slot-picker.js"
+      },
+      "./ui/smooth-drawer": {
+        "types": "./dist/types/ui/free/smooth-drawer/smooth-drawer.d.ts",
+        "import": "./dist/esm/ui/free/smooth-drawer/smooth-drawer.js"
+      },
+      "./ui/sortable-list": {
+        "types": "./dist/types/ui/free/sortable-list/sortable-list.d.ts",
+        "import": "./dist/esm/ui/free/sortable-list/sortable-list.js"
+      },
+      "./ui/spend-alerts": {
+        "types": "./dist/types/ui/free/spend-alerts/spend-alerts.d.ts",
+        "import": "./dist/esm/ui/free/spend-alerts/spend-alerts.js"
+      },
+      "./ui/spending-ring": {
+        "types": "./dist/types/ui/free/spending-ring/spending-ring.d.ts",
+        "import": "./dist/esm/ui/free/spending-ring/spending-ring.js"
+      },
+      "./ui/spinner": {
+        "types": "./dist/types/ui/free/spinner/spinner.d.ts",
+        "import": "./dist/esm/ui/free/spinner/spinner.js"
+      },
+      "./ui/split-button": {
+        "types": "./dist/types/ui/free/split-button/split-button.d.ts",
+        "import": "./dist/esm/ui/free/split-button/split-button.js"
+      },
+      "./ui/split-flap-text": {
+        "types": "./dist/types/ui/free/split-flap-text/split-flap-text.d.ts",
+        "import": "./dist/esm/ui/free/split-flap-text/split-flap-text.js"
+      },
+      "./ui/stack-panel": {
+        "types": "./dist/types/ui/free/stack-panel/stack-panel.d.ts",
+        "import": "./dist/esm/ui/free/stack-panel/stack-panel.js"
+      },
+      "./ui/status-island": {
+        "types": "./dist/types/ui/free/status-island/status-island.d.ts",
+        "import": "./dist/esm/ui/free/status-island/status-island.js"
+      },
+      "./ui/stay-picker": {
+        "types": "./dist/types/ui/free/stay-picker/stay-picker.d.ts",
+        "import": "./dist/esm/ui/free/stay-picker/stay-picker.js"
+      },
+      "./ui/switch": {
+        "types": "./dist/types/ui/free/switch/switch.d.ts",
+        "import": "./dist/esm/ui/free/switch/switch.js"
+      },
+      "./ui/swoosh-text": {
+        "types": "./dist/types/ui/free/swoosh-text/swoosh-text.d.ts",
+        "import": "./dist/esm/ui/free/swoosh-text/swoosh-text.js"
+      },
+      "./ui/tab-bar": {
+        "types": "./dist/types/ui/free/tab-bar/tab-bar.d.ts",
+        "import": "./dist/esm/ui/free/tab-bar/tab-bar.js"
+      },
+      "./ui/table": {
+        "types": "./dist/types/ui/free/table/table.d.ts",
+        "import": "./dist/esm/ui/free/table/table.js"
+      },
+      "./ui/tabs": {
+        "types": "./dist/types/ui/free/tabs/tabs.d.ts",
+        "import": "./dist/esm/ui/free/tabs/tabs.js"
+      },
+      "./ui/tear-button": {
+        "types": "./dist/types/ui/free/tear-button/tear-button.d.ts",
+        "import": "./dist/esm/ui/free/tear-button/tear-button.js"
+      },
+      "./ui/text-shell": {
+        "types": "./dist/types/ui/free/text-shell/text-shell.d.ts",
+        "import": "./dist/esm/ui/free/text-shell/text-shell.js"
+      },
+      "./ui/textarea": {
+        "types": "./dist/types/ui/free/textarea/textarea.d.ts",
+        "import": "./dist/esm/ui/free/textarea/textarea.js"
+      },
+      "./ui/theme-switch": {
+        "types": "./dist/types/ui/free/theme-switch/theme-switch.d.ts",
+        "import": "./dist/esm/ui/free/theme-switch/theme-switch.js"
+      },
+      "./ui/theme-toggle": {
+        "types": "./dist/types/ui/free/theme-toggle/theme-toggle.d.ts",
+        "import": "./dist/esm/ui/free/theme-toggle/theme-toggle.js"
+      },
+      "./ui/time-field": {
+        "types": "./dist/types/ui/free/time-field/time-field.d.ts",
+        "import": "./dist/esm/ui/free/time-field/time-field.js"
+      },
+      "./ui/tip-selector": {
+        "types": "./dist/types/ui/free/tip-selector/tip-selector.d.ts",
+        "import": "./dist/esm/ui/free/tip-selector/tip-selector.js"
+      },
+      "./ui/toast": {
+        "types": "./dist/types/ui/free/toast/toast.d.ts",
+        "import": "./dist/esm/ui/free/toast/toast.js"
+      },
+      "./ui/toggle": {
+        "types": "./dist/types/ui/free/toggle/toggle.d.ts",
+        "import": "./dist/esm/ui/free/toggle/toggle.js"
+      },
+      "./ui/toggle-group": {
+        "types": "./dist/types/ui/free/toggle-group/toggle-group.d.ts",
+        "import": "./dist/esm/ui/free/toggle-group/toggle-group.js"
+      },
+      "./ui/toolbar": {
+        "types": "./dist/types/ui/free/toolbar/toolbar.d.ts",
+        "import": "./dist/esm/ui/free/toolbar/toolbar.js"
+      },
+      "./ui/tooltip": {
+        "types": "./dist/types/ui/free/tooltip/tooltip.d.ts",
+        "import": "./dist/esm/ui/free/tooltip/tooltip.js"
+      },
+      "./ui/tree": {
+        "types": "./dist/types/ui/free/tree/tree.d.ts",
+        "import": "./dist/esm/ui/free/tree/tree.js"
+      },
+      "./ui/tree-table": {
+        "types": "./dist/types/ui/free/tree-table/tree-table.d.ts",
+        "import": "./dist/esm/ui/free/tree-table/tree-table.js"
+      },
+      "./ui/tree-view": {
+        "types": "./dist/types/ui/free/tree-view/tree-view.d.ts",
+        "import": "./dist/esm/ui/free/tree-view/tree-view.js"
+      },
+      "./ui/type-writer": {
+        "types": "./dist/types/ui/free/type-writer/type-writer.d.ts",
+        "import": "./dist/esm/ui/free/type-writer/type-writer.js"
+      },
+      "./ui/undo-button": {
+        "types": "./dist/types/ui/free/undo-button/undo-button.d.ts",
+        "import": "./dist/esm/ui/free/undo-button/undo-button.js"
+      },
+      "./ui/uptime-card": {
+        "types": "./dist/types/ui/free/uptime-card/uptime-card.d.ts",
+        "import": "./dist/esm/ui/free/uptime-card/uptime-card.js"
+      },
+      "./ui/usage-meter": {
+        "types": "./dist/types/ui/free/usage-meter/usage-meter.d.ts",
+        "import": "./dist/esm/ui/free/usage-meter/usage-meter.js"
+      },
+      "./ui/voice-control": {
+        "types": "./dist/types/ui/free/voice-control/voice-control.d.ts",
+        "import": "./dist/esm/ui/free/voice-control/voice-control.js"
+      },
+      "./ui/vote-button": {
+        "types": "./dist/types/ui/free/vote-button/vote-button.d.ts",
+        "import": "./dist/esm/ui/free/vote-button/vote-button.js"
+      },
+      "./ui/webhooks": {
+        "types": "./dist/types/ui/free/webhooks/webhooks.d.ts",
+        "import": "./dist/esm/ui/free/webhooks/webhooks.js"
+      },
+      "./ui/wheel-picker": {
+        "types": "./dist/types/ui/free/wheel-picker/wheel-picker.d.ts",
+        "import": "./dist/esm/ui/free/wheel-picker/wheel-picker.js"
       }
     }
   },
   "scripts": {
-    "build": "tsup && node ../../scripts/build-icon-modules.mjs && tsc -p tsconfig.build.json",
-    "test": "vitest run",
+    "build": "tsup && node ../../scripts/build-icon-modules.mjs && node ../../scripts/build-ui-modules.mjs && tsc -p tsconfig.build.json && tsc -p tsconfig.ui.json",
+    "test": "vitest run && node ../../scripts/build-ui-modules.mjs --check",
     "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@number-flow/react": "0.6.2"
   },
   "peerDependencies": {
     "motion": ">=14",
