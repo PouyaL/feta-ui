@@ -2,6 +2,8 @@
 
 Animated icons and UI components for React, built with [Motion](https://motion.dev).
 
+[![npm](https://img.shields.io/npm/v/@fetaui/react?color=0a0a0a&label=npm)](https://www.npmjs.com/package/@fetaui/react) [![license](https://img.shields.io/npm/l/@fetaui/react?color=0a0a0a)](#license) [![MCP](https://img.shields.io/badge/MCP-fetaui.dev%2Fmcp-0a0a0a)](#use-it-from-your-agent)
+
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://cdn.jsdelivr.net/gh/PouyaL/feta-ui@main/media/hero-dark.svg">
   <img src="https://cdn.jsdelivr.net/gh/PouyaL/feta-ui@main/media/hero.svg" alt="fetaUI icons drawing themselves" width="768">
