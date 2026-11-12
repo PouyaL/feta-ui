@@ -20,6 +20,15 @@ export const duration = {
   "spread": ms(550),
   "undo": ms(5000),
   "chip": ms(500),
+  "fan": ms(500),
+  "thumb": ms(260),
+  "panel": ms(400),
+  "value": ms(240),
+  "chart-reveal": ms(1500),
+  "chart-grow": ms(400),
+  "chart-label": ms(400),
+  "chart-dots": ms(300),
+  "chart-race": ms(600),
   "fast": ms(150),
   "base": ms(200),
   "slow": ms(260),
@@ -31,6 +40,7 @@ export const duration = {
 export const delay = {
   "content": ms(60),
   "reset": ms(1600),
+  "stagger": ms(40),
 } as const
 
 export const ease = {
@@ -40,6 +50,9 @@ export const ease = {
   "sheen": [0.65, 0, 0.3, 1] as const,
   "chip": [0.2, 0.9, 0.25, 1] as const,
   "spread": [0.4, 0, 0.2, 1] as const,
+  "standard": [0.25, 0.1, 0.25, 1] as const,
+  "overshoot": [0.34, 1.56, 0.64, 1] as const,
+  "thumb": [0.34, 1.4, 0.64, 1] as const,
 } as const
 
 export const spring = {
@@ -67,3 +80,8 @@ export const spring = {
 } as const
 
 export const scalePress = 0.98
+
+/** Per frame ease factors at 60 fps, for loops that ease by hand (WebGL). Scale by frame time: `1 - (1 - k) ** (dt * 60)`. */
+export const lerp = {
+  "ring-bend": 0.15,
+} as const

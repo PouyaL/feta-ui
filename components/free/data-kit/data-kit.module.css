@@ -71,6 +71,7 @@
 .row { animation: rowIn 240ms cubic-bezier(0.25, 0.1, 0.25, 1) both; animation-delay: calc(var(--i, 0) * 40ms); }
 .enter { animation: panelIn 400ms cubic-bezier(0.25, 0.1, 0.25, 1) both; }
 [data-still] .row, .row[data-still], .enter[data-still] { animation: none; }
+@media (prefers-reduced-motion: reduce) { .panel, .row, .enter { animation: none; } }
 
 .mono { font: var(--feta-text-mono-tag); letter-spacing: var(--feta-text-mono-tag-tracking); }
 

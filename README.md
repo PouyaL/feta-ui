@@ -284,7 +284,7 @@ pnpm typecheck
 pnpm test
 ```
 
-You need Node from `.node-version` and pnpm 9. To try the package in your own app, run
+You need Node from `.node-version` and pnpm 10. To try the package in your own app, run
 `pnpm pack` in `packages/react` and install the tarball.
 
 ### Use the SVGs directly

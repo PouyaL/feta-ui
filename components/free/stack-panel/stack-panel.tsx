@@ -14,9 +14,14 @@ const PUSH_S = 0.34
 const POP_S = 0.3
 const CHECK_S = 0.16
 const IOS_EASE = [0.32, 0.72, 0, 1] as const
-const PARENT_SHIFT = '-18%'
+/** The parent waits this far left, in percent of the panel. */
+const PARENT_SHIFT = -18
+/** A swipe back past this share of the width commits on release. */
 const POP_AT = 0.4
+/** A flick faster than this, in px/s, decides on its own: rightward commits, leftward cancels. */
 const FLICK_SPEED = 500
+/** A committed swipe finishes the rest of the way in proportion, but never quicker than this. */
+const MIN_FINISH_S = 0.1
 /** Swipe back starts within this far of the left edge. */
 const EDGE_PX = 24
 
@@ -29,6 +34,9 @@ export type StackRow =
 
 export type StackSection = { title?: string; note?: string; rows: StackRow[] }
 export type StackPage = { title: string; sections: StackSection[] }
+
+/** Which way the stack moved, and for a swipe back, the share of the width the finger already covered. */
+type Travel = { to: 1 | -1; swiped: number }
 
 export type StackPanelProps = {
   /** Every page, by id. */
@@ -52,13 +60,13 @@ export function StackPanel({ pages, root, defaultPath = [], onPathChange, onChoi
   const moved = useRef(false)
   const controls = useDragControls()
   const [path, setPath] = useState(defaultPath)
-  const [direction, setDirection] = useState<1 | -1>(1)
+  const [travel, setTravel] = useState<Travel>({ to: 1, swiped: 0 })
   const [choices, setChoices] = useState<Record<string, string>>({})
   const [switches, setSwitches] = useState<Record<string, boolean>>({})
   const dragX = useMotionValue(0)
   const under = useTransform(dragX, (x) => {
     const width = viewport.current?.clientWidth ?? 1
-    return `${-18 * (1 - Math.min(1, x / width))}%`
+    return `${PARENT_SHIFT * (1 - Math.min(1, x / width))}%`
   })
   const pageId = path.at(-1) ?? root
   const parentId = path.length ? path.at(-2) ?? root : null
@@ -67,26 +75,27 @@ export function StackPanel({ pages, root, defaultPath = [], onPathChange, onChoi
 
   useEffect(() => {
     if (!moved.current) return
-    if (direction > 0) heading.current?.focus({ preventScroll: true })
+    if (travel.to > 0) heading.current?.focus({ preventScroll: true })
     else {
       const row = lastRow.current.pop()
       if (row) viewport.current?.querySelector<HTMLElement>(`[data-row="${CSS.escape(row)}"]`)?.focus({ preventScroll: true })
     }
-  }, [path, direction])
+  }, [path, travel])
 
   function push(row: string, to: string): void {
     moved.current = true
     lastRow.current.push(row)
-    setDirection(1)
+    setTravel({ to: 1, swiped: 0 })
     const next = [...path, to]
     setPath(next)
     onPathChange?.(next)
   }
 
-  function pop(): void {
+  /** `swiped` is the share of the width a released swipe covered, so the pages carry on from there instead of jumping back. */
+  function pop(swiped = 0): void {
     if (!path.length) return
     moved.current = true
-    setDirection(-1)
+    setTravel({ to: -1, swiped })
     const next = path.slice(0, -1)
     setPath(next)
     dragX.set(0)
@@ -98,9 +107,11 @@ export function StackPanel({ pages, root, defaultPath = [], onPathChange, onChoi
     if (path.length && e.pointerType !== 'mouse' && e.clientX - left < EDGE_PX) controls.start(e)
   }
 
+  // Commit on a rightward flick, or past POP_AT unless flicked back left. Otherwise the page eases home.
   function onDragEnd(_: unknown, info: PanInfo): void {
     const width = viewport.current?.clientWidth ?? 1
-    if (info.offset.x > width * POP_AT || info.velocity.x > FLICK_SPEED) pop()
+    const commit = info.velocity.x > FLICK_SPEED || (info.offset.x > width * POP_AT && info.velocity.x > -FLICK_SPEED)
+    if (commit) pop(Math.min(1, Math.max(0, dragX.get() / width)))
     else animate(dragX, 0, { duration: still ? 0 : POP_S, ease: ease.out })
   }
 
@@ -143,24 +154,30 @@ export function StackPanel({ pages, root, defaultPath = [], onPathChange, onChoi
     </section>
   ))
 
-  // A leaving page keeps the props of its last render, so the direction reaches it through `custom`.
+  // A leaving page keeps the props of its last render, so the travel reaches it through `custom`.
+  // After a swipe, both pages start where the finger left them and finish the remaining distance in proportion.
+  const settle = (t: Travel): number => (t.to > 0 ? PUSH_S : Math.max(MIN_FINISH_S, POP_S * (1 - t.swiped)))
   const pageMotion: Variants = {
-    enter: (to: 1 | -1) => (still ? { opacity: 1, x: 0 } : { opacity: 1, x: to > 0 ? '100%' : PARENT_SHIFT }),
-    rest: (to: 1 | -1) => ({ opacity: 1, x: 0, transition: { duration: still ? 0 : to > 0 ? PUSH_S : POP_S, ease: IOS_EASE } }),
-    leave: (to: 1 | -1) => (still ? { opacity: 0, transition: { duration: 0 } } : { x: to > 0 ? PARENT_SHIFT : '100%', zIndex: to > 0 ? 0 : 2, transition: { duration: to > 0 ? PUSH_S : POP_S, ease: IOS_EASE } }),
+    enter: (t: Travel) => (still ? { opacity: 1, x: 0 } : { opacity: 1, x: t.to > 0 ? '100%' : `${PARENT_SHIFT * (1 - t.swiped)}%` }),
+    rest: (t: Travel) => ({ opacity: 1, x: 0, transition: { duration: still ? 0 : settle(t), ease: IOS_EASE } }),
+    leave: (t: Travel) => (still ? { opacity: 0, transition: { duration: 0 } } : {
+      x: t.to > 0 ? `${PARENT_SHIFT}%` : t.swiped ? [`${t.swiped * 100}%`, '100%'] : '100%',
+      zIndex: t.to > 0 ? 0 : 2,
+      transition: { duration: settle(t), ease: IOS_EASE },
+    }),
   }
 
   return (
     <div className={cx(styles.panel, className)}>
       <div ref={viewport} className={styles.viewport} onPointerDown={onPointerDown} onKeyDown={(e) => { if (e.key === 'Escape' && path.length) { e.preventDefault(); pop() } }}>
-        {parent ? <motion.div className={styles.under} style={{ x: under }} aria-hidden="true" inert><div className={styles.nav} />{sections(parent)}</motion.div> : null}
-        <AnimatePresence initial={false} mode="popLayout" custom={direction}>
+        {parent ? <motion.div className={styles.under} style={{ x: still ? 0 : under }} aria-hidden="true" inert><div className={styles.nav} />{sections(parent)}</motion.div> : null}
+        <AnimatePresence initial={false} mode="popLayout" custom={travel}>
           <motion.div
             key={pageId}
             role="region"
             aria-labelledby={`${pageId}-title`}
             className={styles.page}
-            custom={direction}
+            custom={travel}
             variants={pageMotion}
             initial="enter"
             animate="rest"
@@ -179,7 +196,7 @@ export function StackPanel({ pages, root, defaultPath = [], onPathChange, onChoi
             >
               <div className={styles.sheet}>
                 <div className={styles.nav}>
-                  {parent ? <Button variant="ghost" size="sm" shape="pill" animated={animated} leadingIcon={<ChevronLeftIcon />} onClick={pop}>{parent.title}</Button> : null}
+                  {parent ? <Button variant="ghost" size="sm" shape="pill" animated={animated} leadingIcon={<ChevronLeftIcon />} onClick={() => pop()}>{parent.title}</Button> : null}
                   <h2 ref={heading} id={`${pageId}-title`} tabIndex={-1} className={styles.title}>{page?.title}</h2>
                 </div>
                 {page ? sections(page) : null}

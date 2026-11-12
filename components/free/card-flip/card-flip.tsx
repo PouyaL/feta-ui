@@ -1,10 +1,11 @@
 'use client'
 import { animate, motion, useMotionValue, useReducedMotion, useTransform } from 'motion/react'
-import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from 'react'
 import { FlipHorizontalIcon } from '@fetaui/react/rounded/flip-horizontal'
 import { Badge } from '../badge/badge'
 import { Button } from '../button/button'
 import { Card } from '../card/card'
+import { QrArt } from '../card-kit/card-kit'
 import { cx, useStill } from '../motion-kit/motion-kit'
 import { Separator } from '../separator/separator'
 import styles from './card-flip.module.css'
@@ -67,39 +68,11 @@ function TicketFront({ ticket, animated }: { ticket: Ticket; animated: boolean }
   )
 }
 
-/** A stand-in pattern seeded from the ticket number. Pass `back` for a real code. */
-function QrArt({ seed }: { seed: string }) {
-  const cells = useMemo(() => {
-    let hash = 7
-    for (const char of seed) hash = (hash * 31 + char.charCodeAt(0)) >>> 0
-    const list: [number, number][] = []
-    for (let y = 0; y < 21; y++) {
-      for (let x = 0; x < 21; x++) {
-        hash = (Math.imul(hash, 1664525) + 1013904223) >>> 0
-        const finder = (x < 8 && y < 8) || (x > 12 && y < 8) || (x < 8 && y > 12)
-        if (!finder && hash >>> 31) list.push([x, y])
-      }
-    }
-    return list
-  }, [seed])
-  return (
-    <svg viewBox="0 0 21 21" className={styles.qrArt} aria-hidden="true">
-      {cells.map(([x, y]) => <rect key={`${x}-${y}`} x={x} y={y} width="1" height="1" rx="0.2" />)}
-      {[[0, 0], [14, 0], [0, 14]].map(([x = 0, y = 0]) => (
-        <g key={`${x}-${y}`}>
-          <rect x={x + 0.5} y={y + 0.5} width="6" height="6" rx="1" fill="none" stroke="currentColor" />
-          <rect x={x + 2} y={y + 2} width="3" height="3" rx="0.5" />
-        </g>
-      ))}
-    </svg>
-  )
-}
-
 function TicketBack({ ticket }: { ticket: Ticket }) {
   return (
     <div className={styles.back}>
       <span className={styles.label}>Scan at entry</span>
-      <div className={styles.qr}><QrArt seed={ticket.number} /></div>
+      <div className={styles.qr}><QrArt seed={ticket.number} className={styles.qrArt} /></div>
       <span className={styles.number}>#{ticket.number}</span>
       <dl className={styles.seat}><Datum label="Gate" value={ticket.gate} /><Datum label="Section" value={ticket.section} /><Datum label="Row" value={ticket.row} /><Datum label="Seat" value={ticket.seat} /></dl>
       <p className={styles.terms}>{ticket.terms}</p>

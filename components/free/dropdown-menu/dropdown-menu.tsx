@@ -22,6 +22,17 @@ const EDGE_GAP = 8
 const COMPACT_WIDTH = 358
 const SIDE_WIDTH = 248
 
+/**
+ * Returns `#` for an empty href or one with a script or data scheme, else the href unchanged.
+ * Browsers ignore ASCII whitespace and control characters inside a scheme, so those are stripped before matching.
+ * React 19 blocks `javascript:` links too; this also covers `vbscript:` and `data:`, and React 18 copies of the registry source.
+ */
+export function safeHref(href?: string): string {
+  // eslint-disable-next-line no-control-regex
+  const bare = (href ?? '').replace(/[\u0000-\u0020\u007f]/g, '')
+  return !bare || /^(javascript|vbscript|data):/i.test(bare) ? '#' : href ?? '#'
+}
+
 type Shared = { id?: string; label: string; disabled?: boolean }
 /** A row that runs something, or opens a submenu when it has `items`. */
 export type MenuAction = Shared & {
@@ -29,7 +40,8 @@ export type MenuAction = Shared & {
   icon?: ReactNode
   shortcut?: string[]
   destructive?: boolean
-  onSelect?: () => void
+  /** Gets the row's click, so a row with `href` can call `preventDefault()` and route on the client. Enter and Space click the row too. */
+  onSelect?: (event: MouseEvent<HTMLElement>) => void
   items?: MenuEntry[]
   /** Trailing chevron for a row that opens something else. */
   chevron?: boolean
@@ -154,7 +166,7 @@ type RowProps = {
   target?: string | undefined
   rel?: string | undefined
   onHover: () => void
-  onActivate: () => void
+  onActivate: (event: MouseEvent<HTMLElement>) => void
   onFocused: () => void
 }
 
@@ -199,10 +211,10 @@ function Row({ menuId, rowKey, label, role, active, still, icon, lead, shortcut,
   )
   if (href) {
     const safeRel = target === '_blank' ? [...new Set([...(rel ?? '').split(/\s+/).filter(Boolean), 'noopener', 'noreferrer'])].join(' ') : rel
-    const link = disabled ? {} : { href, target, rel: safeRel }
-    return <a {...shared} {...link} onClick={(e) => { if (disabled) e.preventDefault(); else onActivate() }}>{body}</a>
+    const link = disabled ? {} : { href: safeHref(href), target, rel: safeRel }
+    return <a {...shared} {...link} onClick={(e) => { if (disabled) e.preventDefault(); else onActivate(e) }}>{body}</a>
   }
-  return <button type="button" {...shared} onClick={() => { if (!disabled) onActivate() }}>{body}</button>
+  return <button type="button" {...shared} onClick={(e) => { if (!disabled) onActivate(e) }}>{body}</button>
 }
 
 export type MenuProps = {
@@ -411,7 +423,7 @@ export function Menu({ entries, label, store, still, focusOn = 'none', skipDisab
         {...(items ? { expanded: side?.key === key } : {})}
         {...(items || entry.chevron ? { trail: <span className={styles.chevron}><ChevronRightIcon /></span> } : entry.trailingIcon ? { trail: <span className={styles.trailing}>{entry.trailingIcon}</span> } : {})}
         onHover={() => hover(key, Boolean(items) && !isCompact(own.current))}
-        onActivate={() => (items ? openSub(key, entry, true) : finish(key, entry.onSelect))}
+        onActivate={(e) => (items ? openSub(key, entry, true) : finish(key, () => entry.onSelect?.(e)))}
       />
     )
     if (!items) return row

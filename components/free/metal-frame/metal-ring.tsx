@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useRef, type CSSProperties, type MutableRefObject } from 'react'
 import { cx } from '../motion-kit/motion-kit'
+import { lerp } from '../../motion-tokens'
 import styles from './metal-ring.module.css'
 
 /*
@@ -24,8 +25,8 @@ const BEND_PX = 3
 const BEND_SPREAD = 38
 /** Seconds a ring keeps its GL context after leaving the screen, so scrolling past does not churn. */
 const RELEASE_AFTER = 2000
-/** Per frame ease at 60 fps for the bend, strength and speed. About 240 ms to settle. */
-const EASE = 0.15
+/** Per frame ease at 60 fps for the bend, strength and speed (`lerp['ring-bend']`, 0.15). About 240 ms to settle. */
+const EASE = lerp['ring-bend']
 /** At this many live GL contexts, rings waiting out RELEASE_AFTER offscreen let theirs go first. Browsers cap at 16. */
 const CONTEXT_CAP = 8
 

@@ -1,6 +1,6 @@
 'use client'
 import { AnimatePresence, motion } from 'motion/react'
-import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react'
 import { ArrowRightIcon } from '@fetaui/react/rounded/arrow-right'
 import { BookmarkIcon } from '@fetaui/react/rounded/bookmark'
 import { CheckIcon } from '@fetaui/react/rounded/check'
@@ -14,6 +14,7 @@ import { ease } from '../../motion-tokens'
 import { Badge } from '../badge/badge'
 import { Button } from '../button/button'
 import { Card, type CardProps } from '../card/card'
+import { QrArt } from '../card-kit/card-kit'
 import { Field } from '../field/field'
 import { IconButton } from '../icon-button/icon-button'
 import { Input } from '../input/input'
@@ -282,34 +283,6 @@ export function StepperCard({ steps = STEPPER, onDone, className, animated = tru
   )
 }
 
-/** A stand-in pattern seeded from the key. Pass `qr` for a real code. */
-function QrArt({ seed }: { seed: string }) {
-  const cells = useMemo(() => {
-    let hash = 7
-    for (const char of seed) hash = (hash * 31 + char.charCodeAt(0)) >>> 0
-    const list: [number, number][] = []
-    for (let y = 0; y < 21; y++) {
-      for (let x = 0; x < 21; x++) {
-        const finder = (x < 8 && y < 8) || (x > 12 && y < 8) || (x < 8 && y > 12)
-        hash = (Math.imul(hash, 1664525) + 1013904223) >>> 0
-        if (!finder && hash >>> 31) list.push([x, y])
-      }
-    }
-    return list
-  }, [seed])
-  return (
-    <svg viewBox="0 0 21 21" className={styles.qrArt} aria-hidden="true">
-      {cells.map(([x, y]) => <rect key={`${x}-${y}`} x={x} y={y} width="1" height="1" rx="0.2" />)}
-      {[[0, 0], [14, 0], [0, 14]].map(([x = 0, y = 0]) => (
-        <g key={`${x}-${y}`}>
-          <rect x={x + 0.5} y={y + 0.5} width="6" height="6" rx="1.2" fill="none" stroke="currentColor" />
-          <rect x={x + 2} y={y + 2} width="3" height="3" rx="0.6" />
-        </g>
-      ))}
-    </svg>
-  )
-}
-
 export type TwoFactorCardProps = Base & {
   /** The setup key, shown spaced. */
   secret: string
@@ -337,7 +310,7 @@ export function TwoFactorCard({ secret, stepLabel = 'Step 1 of 3', apps = ['Pass
     <Card className={cx(styles.pattern, className)} bodyClassName={styles.twoFactor} footer={<Button feedback={{ loading: 'Verifying', success: 'Verified' }} animated={animated} onClick={onContinue}>Continue</Button>} animated={animated}>
       <div className={styles.twoFactorHead}><h3 className={styles.title}>Two-factor authentication</h3><Badge size="sm" mark={false} animated={animated}>{stepLabel}</Badge></div>
       <div className={styles.scan}>
-        <div className={styles.qr}>{qr ?? <QrArt seed={secret} />}</div>
+        <div className={styles.qr}>{qr ?? <QrArt seed={secret} finderRadius={1.2} className={styles.qrArt} />}</div>
         <div className={styles.scanText}>
           <p className={styles.name}>Scan the QR code</p>
           <p className={styles.description22}>Open your authenticator app and scan this code to link your account.</p>

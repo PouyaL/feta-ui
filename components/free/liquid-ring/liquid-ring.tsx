@@ -24,8 +24,6 @@ const BOX_RADIUS = 24
 const SEND_RADIUS = 18
 /** The send ring is a touch dimmer than the box ring, as on the old composer. */
 const SEND_STRENGTH = 0.9
-/** Droplets leave the plus one after another, 40 ms apart, and fold back last out first. */
-const FAN_STAGGER_MS = 40
 /** The voice clock ticks once a second. */
 const TICK_MS = 1000
 
@@ -242,7 +240,8 @@ function ActionsFan({ actions, open, onOpenChange, onAction, still, animated, di
     if (open && !(e.relatedTarget instanceof Node && group.current?.contains(e.relatedTarget))) onOpenChange(false)
   }
 
-  const delay = (i: number): CSSProperties => ({ '--i': i, transitionDelay: still ? '0ms' : `${(open ? i : actions.length - 1 - i) * FAN_STAGGER_MS}ms` } as CSSProperties)
+  // Droplets leave the plus one after another, `--feta-motion-delay-stagger` (40 ms) apart, and fold back last out first.
+  const delay = (i: number): CSSProperties => ({ '--i': i, transitionDelay: still ? '0ms' : `calc(${open ? i : actions.length - 1 - i} * var(--feta-motion-delay-stagger))` } as CSSProperties)
 
   return (
     <div ref={group} role="group" aria-label="Add to prompt" className={styles.fan} data-open={open ? '' : undefined} onKeyDown={onKey} onBlur={onBlur}>

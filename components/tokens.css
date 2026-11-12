@@ -298,12 +298,25 @@
   --feta-motion-duration-spread: 550ms;
   --feta-motion-duration-undo: 5000ms;
   --feta-motion-duration-chip: 500ms;
+  --feta-motion-duration-fan: 500ms;
+  --feta-motion-duration-thumb: 260ms;
+  --feta-motion-duration-panel: 400ms;
+  --feta-motion-duration-value: 240ms;
+  --feta-motion-duration-chart-reveal: 1500ms;
+  --feta-motion-duration-chart-grow: 400ms;
+  --feta-motion-duration-chart-label: 400ms;
+  --feta-motion-duration-chart-dots: 300ms;
+  --feta-motion-duration-chart-race: 600ms;
   --feta-motion-ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
   --feta-motion-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --feta-motion-ease-slide-text: cubic-bezier(0.77, 0, 0.175, 1);
   --feta-motion-ease-sheen: cubic-bezier(0.65, 0, 0.3, 1);
   --feta-motion-ease-chip: cubic-bezier(0.2, 0.9, 0.25, 1);
   --feta-motion-ease-spread: cubic-bezier(0.4, 0, 0.2, 1);
+  --feta-motion-ease-standard: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --feta-motion-ease-overshoot: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --feta-motion-ease-thumb: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --feta-motion-delay-stagger: 40ms;
 
   /* Platform, Web. */
   --feta-size-row: 48px;

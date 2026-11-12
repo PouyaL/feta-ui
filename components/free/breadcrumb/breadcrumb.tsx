@@ -5,7 +5,7 @@ import { ChevronRightIcon } from '@fetaui/react/rounded/chevron-right'
 import { MoreHorizontalIcon } from '@fetaui/react/rounded/more-horizontal'
 import { duration, ease, scalePress, spring } from '../../motion-tokens'
 import { useLabelMotion } from '../button/label-motion'
-import { DropdownMenu, isCompact } from '../dropdown-menu/dropdown-menu'
+import { DropdownMenu, isCompact, safeHref } from '../dropdown-menu/dropdown-menu'
 import { IconButton } from '../icon-button/icon-button'
 import { cx, useStill } from '../motion-kit/motion-kit'
 import { Skeleton } from '../skeleton/skeleton'
@@ -15,12 +15,13 @@ const ENTER_X = 8
 const MAX_CRUMBS = 4
 const COMPACT_CRUMBS = 3
 
-/** React blocks `javascript:` on links, not on `location.assign`. Parsing covers relative hrefs and the spaces or tabs browsers strip from a scheme. */
-const canNavigate = (href: string): boolean => {
-  try { return ['http:', 'https:', 'mailto:'].includes(new URL(href, window.location.href).protocol) } catch { return false }
+export type BreadcrumbItem = {
+  label: string
+  href?: string
+  icon?: ReactNode
+  /** Fires on a click, or on Enter or Space, both as a crumb and from the folded menu, where each level is a real link too. Call `preventDefault()` to route on the client. */
+  onClick?: (e: MouseEvent<HTMLAnchorElement>) => void
 }
-
-export type BreadcrumbItem = { label: string; href?: string; icon?: ReactNode; onClick?: (e: MouseEvent<HTMLAnchorElement>) => void }
 
 export type BreadcrumbSeparatorProps = { type?: 'chevron' | 'slash' | 'dot'; size?: 'sm' | 'md' }
 
@@ -33,15 +34,21 @@ export function BreadcrumbSeparator({ type = 'chevron', size = 'md' }: Breadcrum
   )
 }
 
+/** Every folded level gets an `href` (`#` when it has none or a blocked scheme, which never navigates), so the menu renders it as an anchor and the click is an anchor click, as on a crumb. */
+function selectFolded(item: BreadcrumbItem, e: MouseEvent<HTMLElement>): void {
+  if (safeHref(item.href) === '#') e.preventDefault()
+  item.onClick?.(e as MouseEvent<HTMLAnchorElement>)
+}
+
 function Crumb({ item, still }: { item: BreadcrumbItem; still: boolean }) {
   const text = useLabelMotion(item.label, !still)
   return (
     <motion.a
-      href={item.href ?? '#'}
+      href={safeHref(item.href)}
       className={styles.link}
       data-icon-only={item.icon ? '' : undefined}
       aria-label={item.icon ? item.label : undefined}
-      onClick={(e) => { if (!item.href) e.preventDefault(); item.onClick?.(e) }}
+      onClick={(e) => { if (safeHref(item.href) === '#') e.preventDefault(); item.onClick?.(e) }}
       onPointerEnter={text.handlers.onPointerEnter}
       onPointerLeave={text.handlers.onPointerLeave}
       onPointerDown={text.handlers.onPointerDown}
@@ -124,7 +131,7 @@ export function Breadcrumb({ items, appearance = 'plain', size = 'md', separator
                   <DropdownMenu
                     label="Hidden levels"
                     animated={animated}
-                    entries={hidden.map((level) => ({ label: level.label, onSelect: () => { if (level.href && canNavigate(level.href)) window.location.assign(level.href) } }))}
+                    entries={hidden.map((level) => ({ label: level.label, href: safeHref(level.href), onSelect: (e) => selectFolded(level, e) }))}
                     trigger={(props) => <IconButton {...props} variant="ghost" size={size} label="Show hidden levels" icon={<MoreHorizontalIcon />} animated={animated} />}
                   />
                   {gap}

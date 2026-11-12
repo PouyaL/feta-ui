@@ -5,20 +5,20 @@ import { Avatar } from '../avatar/avatar'
 import { Badge } from '../badge/badge'
 import { cx, useStill } from '../motion-kit/motion-kit'
 import { Skeleton } from '../skeleton/skeleton'
-import { ease } from '../../motion-tokens'
+import { delay, duration, ease } from '../../motion-tokens'
 import styles from './data-kit.module.css'
 
 // Shared by the Data, Billing and Developer sets: the Soft shell and the small parts they repeat.
 export const kit = styles
 export { cx }
 
-/** The Motion frames: panel 400 ms, rows and values 240 ms with a 40 ms stagger, menus 160 ms. Not yet in motion-tokens. */
-export const PANEL_MS = 400
-export const VALUE_MS = 240
-export const ROW_STAGGER_MS = 40
+/** The Motion frames in milliseconds: panel 400 ms, rows and values 240 ms with a 40 ms stagger (from motion-tokens), menus 160 ms. */
+export const PANEL_MS = duration.panel * 1000
+export const VALUE_MS = duration.value * 1000
+export const ROW_STAGGER_MS = delay.stagger * 1000
 export const MENU_MS = 160
 /** `motion/ease-standard` in the Motion frames. */
-export const EASE_STANDARD = [0.25, 0.1, 0.25, 1] as const
+export const EASE_STANDARD = ease.standard
 
 export type Tone = 'neutral' | 'success' | 'warning' | 'danger' | 'info' | 'accent'
 

@@ -1,6 +1,6 @@
 {
   "name": "@fetaui/react",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Animated React icons in 10 styles and Free UI components with motion.",
   "license": "MIT",
   "type": "module",
@@ -959,7 +959,7 @@
     "@number-flow/react": "0.6.2"
   },
   "peerDependencies": {
-    "motion": ">=14",
+    "motion": "^14.9.1",
     "react": ">=19",
     "react-dom": ">=19"
   },
