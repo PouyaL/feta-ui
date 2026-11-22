@@ -126,11 +126,12 @@ export function Modal({ open, onDismiss, role = 'dialog', label, placement = 'ce
     if (!node.open) node.showModal()
     setMobile(isMobileAt(node))
     const release = lockScroll()
+    // Read at close time on purpose: the opener may have changed while the dialog was open.
+    const focusBack = (): void => { (returnFocus?.current ?? before)?.focus({ preventScroll: true }) }
     return () => {
       release()
       if (node.open) node.close()
-      const target = returnFocus?.current ?? before
-      target?.focus({ preventScroll: true })
+      focusBack()
     }
   }, [present, returnFocus])
 

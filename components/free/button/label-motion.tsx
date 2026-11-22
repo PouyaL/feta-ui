@@ -50,12 +50,17 @@ export function useLabelMotion(text: string | null, enabled: boolean, drawOnChan
 
   useEffect(() => { if (!active) setOverlay(null) }, [active])
 
+  // The swap below runs on a new label only; it reads these values as they are at that moment.
+  const latest = useRef({ active, drawOnChange, measure })
+  useLayoutEffect(() => { latest.current = { active, drawOnChange, measure } })
+
   // Measured positions belong to the old word, so a new label ends any motion in progress.
   useLayoutEffect(() => {
     if (previousText.current === text) return
     previousText.current = text
-    const control = drawOnChange && active ? textRef.current?.closest('button') : null
-    const measured = control ? measure() : null
+    const now = latest.current
+    const control = now.drawOnChange && now.active ? textRef.current?.closest('button') : null
+    const measured = control ? now.measure() : null
     setOverlay(measured ? { kind: 'draw', start: SWAP_DELAY_MS, swap: true, ...measured } : null)
   }, [text])
 

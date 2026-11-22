@@ -70,27 +70,31 @@ export type KbdGroupProps = Omit<HTMLAttributes<HTMLSpanElement>, 'ref'> & {
 /** Echoes real key presses: held caps for combos, the next expected cap for sequences. */
 function useEcho(keys: string[] | undefined, kind: KbdGroupProps['kind'], enabled: boolean): { held: Set<number>; step: number } {
   const [held, setHeld] = useState<Set<number>>(new Set())
+  // The listeners rebind when the caps change by value, not when a new array has the same caps.
+  const keyId = keys?.join(' ')
+  const keysRef = useRef(keys)
+  useEffect(() => { keysRef.current = keys })
   const [step, setStep] = useState(0)
   const stepRef = useRef(0)
   useEffect(() => {
-    if (!enabled || !keys) return undefined
+    if (!enabled || keyId === undefined) return undefined
     let timer: ReturnType<typeof setTimeout> | undefined
     const moveTo = (next: number): void => { stepRef.current = next; setStep(next) }
     function down(e: KeyboardEvent): void {
       if (kind === 'sequence') {
-        if (!matches(keys?.[stepRef.current] ?? '', e.key)) return
+        if (!matches(keysRef.current?.[stepRef.current] ?? '', e.key)) return
         clearTimeout(timer)
         moveTo(stepRef.current + 1)
         timer = setTimeout(() => moveTo(0), SEQUENCE_RESET_MS)
         return
       }
-      const i = keys?.findIndex((cap) => matches(cap, e.key)) ?? -1
+      const i = keysRef.current?.findIndex((cap) => matches(cap, e.key)) ?? -1
       if (i >= 0) setHeld((prev) => new Set(prev).add(i))
     }
     function up(e: KeyboardEvent): void {
       // macOS sends no keyup for other keys while Command is held.
       if (e.key === 'Meta') { clear(); return }
-      const i = keys?.findIndex((cap) => matches(cap, e.key)) ?? -1
+      const i = keysRef.current?.findIndex((cap) => matches(cap, e.key)) ?? -1
       if (i >= 0) setHeld((prev) => { const next = new Set(prev); next.delete(i); return next })
     }
     const clear = (): void => setHeld(new Set())
@@ -103,7 +107,7 @@ function useEcho(keys: string[] | undefined, kind: KbdGroupProps['kind'], enable
       window.removeEventListener('keyup', up)
       window.removeEventListener('blur', clear)
     }
-  }, [enabled, kind, keys?.join(' ')])
+  }, [enabled, kind, keyId])
   return { held, step }
 }
 

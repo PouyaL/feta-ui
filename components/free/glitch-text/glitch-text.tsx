@@ -36,10 +36,13 @@ export function GlitchText({ text, styleKind = 'soft', size = 'display', label, 
     timer.current = setTimeout(() => setOn(false), BURST_MS)
   }
 
+  // A new value tears the word once, with the latest `fire` (it reads `still`).
+  const fireRef = useRef(fire)
+  useEffect(() => { fireRef.current = fire })
   useEffect(() => {
     if (last.current === text) return
     last.current = text
-    fire()
+    fireRef.current()
   }, [text])
 
   const bursting = !still && (burst ?? on)

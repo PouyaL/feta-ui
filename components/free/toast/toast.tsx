@@ -208,10 +208,13 @@ function Item({ entry, index, heights, spread, top, animated, onHeight, onPause 
     const timer = setTimeout(() => setOpen(true), still ? 0 : EXPAND_DELAY_MS)
     return () => clearTimeout(timer)
   }, [still])
+  // The stack passes a new callback each render; the observer reads the latest one.
+  const onHeightRef = useRef(onHeight)
+  useEffect(() => { onHeightRef.current = onHeight })
   useEffect(() => {
     const el = node.current
     if (!el) return undefined
-    const observer = new ResizeObserver(() => onHeight(entry.id, el.offsetHeight))
+    const observer = new ResizeObserver(() => onHeightRef.current(entry.id, el.offsetHeight))
     observer.observe(el)
     return () => observer.disconnect()
   }, [entry.id])

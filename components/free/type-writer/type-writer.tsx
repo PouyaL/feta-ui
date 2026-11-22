@@ -35,6 +35,9 @@ export function TypeWriter({ steps, styleKind = 'soft', loop = true, animated = 
   const [phase, setPhase] = useState<'typing' | 'typo' | 'selecting' | 'idle'>('typing')
   const all = steps.map(normal).map((step) => step.text).join(', ')
   const key = steps.map(normal).map((step) => step.text).join('|')
+  // The run restarts when the steps change by text (`key`); it reads the latest array.
+  const stepsRef = useRef(steps)
+  useEffect(() => { stepsRef.current = steps })
   // Off screen the typing waits, so no timers run until it scrolls back.
   const onscreen = useRef(true)
   const wake = useRef<(() => void) | null>(null)
@@ -58,6 +61,7 @@ export function TypeWriter({ steps, styleKind = 'soft', loop = true, animated = 
       if (alive && !onscreen.current) await new Promise<void>((done) => { wake.current = done })
     }
     async function run(): Promise<void> {
+      const steps = stepsRef.current
       for (let index = 0; alive; index = loop ? (index + 1) % steps.length : index + 1) {
         const step = steps.length > index ? normal(steps[index]) : null
         if (!step) { setPhase('idle'); return }

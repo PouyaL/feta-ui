@@ -14,8 +14,8 @@
   "devDependencies": {
     "@types/node": "^24.19.2",
     "esbuild": "0.28.2",
-    "turbo": "^2.3.3",
+    "turbo": "^2.11.13",
     "typescript": "^7.0.2",
-    "vitest": "5.1.0"
+    "vitest": "5.1.1"
   }
 }

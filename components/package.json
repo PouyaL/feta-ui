@@ -63,7 +63,7 @@
   "dependencies": {
     "@fetaui/react": "workspace:^",
     "@number-flow/react": "0.6.2",
-    "motion": "14.9.1"
+    "motion": "14.14.0"
   },
   "peerDependencies": {
     "react": ">=19"

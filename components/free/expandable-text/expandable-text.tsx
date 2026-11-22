@@ -23,6 +23,9 @@ export type ExpandableTextProps = {
   className?: string
 }
 
+/** The clamped height: `lines` lines at the node's line height. */
+const clampHeight = (node: HTMLElement, lines: number): number => parseFloat(getComputedStyle(node).lineHeight) * lines
+
 /** Copy longer than three lines. It clamps on a line boundary and unrolls where you were reading. */
 export function ExpandableText({ children, lines = 3, defaultOpen = false, onOpenChange, moreLabel = 'Read more', lessLabel = 'Read less', moreAriaLabel = 'Show the full description', animated = true, className }: ExpandableTextProps) {
   const still = useStill(animated)
@@ -31,15 +34,13 @@ export function ExpandableText({ children, lines = 3, defaultOpen = false, onOpe
   const [closing, setClosing] = useState(false)
   const [fits, setFits] = useState(false)
 
-  const clampHeight = (node: HTMLElement): number => parseFloat(getComputedStyle(node).lineHeight) * lines
-
   useLayoutEffect(() => {
     const node = box.current
     if (!node) return
     const measure = (): void => {
       const first = node.firstElementChild
       const more = Children.count(children) > 1
-      setFits(!more && (first ? first.scrollHeight <= clampHeight(node) + 1 : true))
+      setFits(!more && (first ? first.scrollHeight <= clampHeight(node, lines) + 1 : true))
     }
     measure()
     const observer = new ResizeObserver(measure)
@@ -53,7 +54,7 @@ export function ExpandableText({ children, lines = 3, defaultOpen = false, onOpe
     const next = !open
     onOpenChange?.(next)
     if (still) { setOpen(next); return }
-    const height = clampHeight(node)
+    const height = clampHeight(node, lines)
     if (next) {
       setOpen(true)
       requestAnimationFrame(() => node.animate([{ height: `${height}px` }, { height: `${node.offsetHeight}px` }], { duration: UNROLL_MS, easing: EASE_OUT }))

@@ -130,8 +130,11 @@ export function RichTextEditor({ children, label = 'Editor', placeholder = 'Star
     onChange?.({ markdown: next.markdown, html: next.html })
   }
 
+  // The first sync reports the starting content; later ones come from edits.
+  const syncRef = useRef(sync)
+  useEffect(() => { syncRef.current = sync })
   useEffect(() => {
-    sync()
+    syncRef.current()
     const onSelection = (): void => {
       const selection = document.getSelection()
       const node = area.current
