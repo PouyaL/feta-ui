@@ -273,6 +273,7 @@ in `@fetaui/react` and `@fetaui/react-native` and the static SVGs, and it builds
 | `packages/react-native` | The same icons for React Native: one file per icon and style, plus the Reanimated runtime in `src/lib` |
 | `packages/core` | Style names, presets and motion specs the runtime needs |
 | `components/free` | Source of the Free UI components, each a `.tsx` file with its CSS module |
+| `components/native` | The same Free components for React Native (`free/`) and their shared `kit.ts`, one file per component |
 | `components/tokens.css` | The `--feta-*` design tokens: colors, type, radius, spacing and motion, light and dark |
 | `scripts/build-*-modules.mjs` | The package build: one ES module per icon and per component, CSS compiled per component |
 | `svg/<style>` | A static SVG for every Free icon, 24 × 24, `currentColor` |
