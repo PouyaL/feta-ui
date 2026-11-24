@@ -10,11 +10,12 @@ Animated icons and UI components for React, built with [Motion](https://motion.d
 </picture>
 
 - **744 icons in 10 styles.** Rounded, Outlined, Filled, Sharp, Two tone, Hand drawn, Riso, Pixel, Glass and Neon. Every icon draws itself on hover, with 10 more motion presets to choose from.
-- **194 UI components.** Buttons, forms, overlays, navigation, feedback, display, product flows and cards. Every one has motion built in.
+- **195 UI components.** Buttons, forms, overlays, navigation, feedback, display, product flows and cards. Every one has motion built in.
 - **No CSS setup.** Each component ships its own scoped CSS, so it works with or without Tailwind, and your app loads only what it uses.
 - **Accessible.** Every animation respects `prefers-reduced-motion`. Keyboard focus plays an icon's motion when the icon sits inside a button, a link or a focusable element.
 - **Built for agents.** The [fetaUI MCP server](#use-it-from-your-agent) lets Claude Code, Cursor or VS Code search, read and use every component.
 - **Typed and tree shakeable.** One module per icon and per component, with full TypeScript types.
+- **React Native too.** The same icons, styles and presets ship for React Native in [`@fetaui/react-native`](https://www.npmjs.com/package/@fetaui/react-native), animated with Reanimated.
 
 Docs, live previews and the full catalog: **[fetaui.dev](https://fetaui.dev)**
 
@@ -231,6 +232,7 @@ With Pro, send your key as the `X-API-Key` header and the same tools return Pro 
 
 - **Next.js App Router and Vite.** Also other bundlers that resolve package `exports`. Icons and components are client components, so they render on the server and animate after hydration.
 - **Pages Router, Remix and Astro.** Server rendering may need the package transpiled, because components import their own CSS. In Next.js, set `transpilePackages: ['@fetaui/react']`.
+- **React Native.** Use [`@fetaui/react-native`](https://www.npmjs.com/package/@fetaui/react-native): the same icons and props, drawn with react-native-svg and animated with Reanimated 4. This package is for the web.
 - **Module formats.** The UI paths (`@fetaui/react/ui/*`) are ES modules only. Icons and `@fetaui/react/lib` also ship CommonJS.
 - **Bundle size.** A single icon is typically 0.4 to 1.2 KB gzipped and at most about 2 KB (about 4 KB for Outlined), excluding Motion and the shared runtime, which loads once. Each component adds only its own code and CSS.
 
@@ -243,7 +245,7 @@ With Pro, send your key as the `X-API-Key` header and the same tools return Pro 
 
 ## Free and Pro
 
-This package is the Free tier, open source under MIT: the 744 Interface Essential icons in all 10 styles and 194 UI components.
+This package is the Free tier, open source under MIT: the 744 Interface Essential icons in all 10 styles and 195 UI components.
 
 [fetaUI Pro](https://fetaui.dev/pricing) adds all 5,987 icons in 34 categories, Charts, AI components, Blocks and Templates, for one payment. Pro + Figma adds the Figma library.
 

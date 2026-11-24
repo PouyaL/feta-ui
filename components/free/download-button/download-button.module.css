@@ -1,0 +1,141 @@
+/* Download Button: a white pill and an orange badge with a diagonal arrow, built from a screen recording. */
+.button {
+  --dl-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dl-roll: 320ms;
+  --dl-height: var(--feta-size-button-lg);
+  --dl-pill: var(--feta-white);
+  --dl-pill-press: var(--feta-zinc-100);
+  --dl-ink: var(--feta-zinc-950);
+  /* Orange 600, not 500: white icons need 3:1 on it, and 500 falls just short. */
+  --dl-badge: var(--feta-orange-600);
+  height: var(--dl-height);
+  padding: 0;
+  gap: 0;
+  background: none;
+  color: var(--dl-ink);
+  font: var(--feta-text-label-default);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  white-space: nowrap;
+}
+
+/* The pill keeps its white in Light and Dark; a hairline ring keeps it on a white page. */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  height: 100%;
+  padding-inline: var(--feta-space-6);
+  border-radius: var(--feta-radius-full);
+  background-color: var(--dl-pill);
+  box-shadow: inset 0 0 0 1px var(--feta-alpha-ink-base-8);
+  transition: background-color var(--dl-roll) var(--dl-ease);
+}
+
+.button:active:not(:disabled) .pill { background-color: var(--dl-pill-press); }
+
+/* The label window clips the rows as they roll. */
+.window {
+  position: relative;
+  display: inline-grid;
+  overflow: hidden;
+  height: 1.4em;
+  line-height: 1.4em;
+}
+
+.roll,
+.status { grid-area: 1 / 1; display: inline-grid; }
+
+.row {
+  grid-area: 1 / 1;
+  transition: transform var(--dl-roll) var(--dl-ease), opacity var(--dl-roll) var(--dl-ease);
+}
+
+.row:nth-child(2) { opacity: 0; transform: translateY(110%); }
+
+/* The badge sits just against the pill, a full circle the pill's height. */
+.badge {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: var(--dl-height);
+  height: var(--dl-height);
+  margin-left: -2px;
+  overflow: hidden;
+  border-radius: var(--feta-radius-full);
+  background-color: var(--dl-badge);
+  color: var(--feta-white);
+  transition: background-color var(--dl-roll) var(--dl-ease);
+}
+
+.arrows,
+.glyph { grid-area: 1 / 1; display: inline-grid; place-items: center; }
+
+.arrow {
+  grid-area: 1 / 1;
+  display: inline-flex;
+  transition: transform var(--dl-roll) var(--dl-ease), opacity var(--dl-roll) var(--dl-ease);
+}
+
+.arrow svg,
+.glyph svg { display: block; width: 18px; height: 18px; }
+
+/* The second arrow waits below and to the left, ready to fly in on the diagonal. */
+.arrow:nth-child(2) { opacity: 0; transform: translate(-150%, 150%); }
+
+/* Hover and focus, while idle: roll the label up and send the arrow out to the top right. */
+@media (hover: hover) {
+  .button[data-status='idle']:not(:disabled):not([data-still]):hover .row:nth-child(1) { opacity: 0; transform: translateY(-110%); }
+  .button[data-status='idle']:not(:disabled):not([data-still]):hover .row:nth-child(2) { opacity: 1; transform: none; }
+  .button[data-status='idle']:not(:disabled):not([data-still]):hover .arrow:nth-child(1) { opacity: 0; transform: translate(150%, -150%); }
+  .button[data-status='idle']:not(:disabled):not([data-still]):hover .arrow:nth-child(2) { opacity: 1; transform: none; }
+}
+
+.button[data-status='idle']:not(:disabled):not([data-still]):focus-visible .row:nth-child(1) { opacity: 0; transform: translateY(-110%); }
+.button[data-status='idle']:not(:disabled):not([data-still]):focus-visible .row:nth-child(2) { opacity: 1; transform: none; }
+.button[data-status='idle']:not(:disabled):not([data-still]):focus-visible .arrow:nth-child(1) { opacity: 0; transform: translate(150%, -150%); }
+.button[data-status='idle']:not(:disabled):not([data-still]):focus-visible .arrow:nth-child(2) { opacity: 1; transform: none; }
+
+/* Downloading: the arrow points down and bobs gently while the ring fills round the badge. */
+.button[data-status='downloading'] { cursor: progress; }
+.button[data-status='downloading'] .arrows { rotate: 135deg; }
+.button[data-status='downloading']:not([data-still]) .arrows { animation: dlBob 1.2s var(--dl-ease) infinite; }
+@keyframes dlBob { 50% { translate: 0 2px; } }
+
+.ring { position: absolute; inset: 3px; width: calc(100% - 6px); height: calc(100% - 6px); rotate: -90deg; overflow: visible; }
+.track,
+.fill { fill: none; stroke-width: 2.5; }
+.track { stroke: color-mix(in srgb, var(--feta-white) 28%, transparent); }
+.fill { stroke: var(--feta-white); stroke-linecap: round; transition: stroke-dashoffset 240ms var(--dl-ease); }
+/* Size unknown: a fixed arc turns instead of filling. */
+.ring:not([data-known]) { animation: dlTurn 900ms linear infinite; }
+@keyframes dlTurn { to { rotate: 270deg; } }
+
+/* Done keeps the button's own orange: the tick already says it. */
+.button[data-status='done'] .badge { background-color: var(--dl-badge); }
+.button[data-status='error'] .badge { background-color: var(--feta-status-danger-strong); }
+
+.button[data-status]:disabled { background: none; box-shadow: none; }
+.button:disabled .pill { background-color: var(--feta-alpha-ink-base-5); box-shadow: none; color: var(--feta-text-quaternary); }
+.button:disabled .badge { background-color: var(--feta-alpha-ink-base-8); color: var(--feta-text-quaternary); }
+
+.live {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Still: colour changes only. The ring fills without turning and the arrow holds. */
+.button[data-still] .row,
+.button[data-still] .arrow { transition-property: opacity; }
+.button[data-still] .ring:not([data-known]) { animation: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .row,
+  .arrow { transition-property: opacity; }
+  .ring:not([data-known]),
+  .button[data-status='downloading'] .arrows { animation: none; }
+}

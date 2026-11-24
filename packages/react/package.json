@@ -1,6 +1,6 @@
 {
   "name": "@fetaui/react",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Animated React icons in 10 styles and Free UI components with motion.",
   "license": "MIT",
   "type": "module",
@@ -392,6 +392,10 @@
         "types": "./dist/types/ui/free/dialog/dialog.d.ts",
         "import": "./dist/esm/ui/free/dialog/dialog.js"
       },
+      "./ui/download-button": {
+        "types": "./dist/types/ui/free/download-button/download-button.d.ts",
+        "import": "./dist/esm/ui/free/download-button/download-button.js"
+      },
       "./ui/drawer": {
         "types": "./dist/types/ui/free/drawer/drawer.d.ts",
         "import": "./dist/esm/ui/free/drawer/drawer.js"
@@ -467,10 +471,6 @@
       "./ui/goals-check-in": {
         "types": "./dist/types/ui/free/goals-check-in/goals-check-in.d.ts",
         "import": "./dist/esm/ui/free/goals-check-in/goals-check-in.js"
-      },
-      "./ui/gradient-button": {
-        "types": "./dist/types/ui/free/gradient-button/gradient-button.d.ts",
-        "import": "./dist/esm/ui/free/gradient-button/gradient-button.js"
       },
       "./ui/hold-to-confirm": {
         "types": "./dist/types/ui/free/hold-to-confirm/hold-to-confirm.d.ts",
@@ -739,6 +739,10 @@
       "./ui/rich-text-editor": {
         "types": "./dist/types/ui/free/rich-text-editor/rich-text-editor.d.ts",
         "import": "./dist/esm/ui/free/rich-text-editor/rich-text-editor.js"
+      },
+      "./ui/roll-arrow-button": {
+        "types": "./dist/types/ui/free/roll-arrow-button/roll-arrow-button.d.ts",
+        "import": "./dist/esm/ui/free/roll-arrow-button/roll-arrow-button.js"
       },
       "./ui/save-button": {
         "types": "./dist/types/ui/free/save-button/save-button.d.ts",

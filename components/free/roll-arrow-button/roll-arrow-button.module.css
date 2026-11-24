@@ -1,0 +1,171 @@
+/* Roll Arrow Button: a pill call to action with a round arrow badge, built from a screen recording. */
+.button {
+  /* Mercury: polished silver. A smooth fall from near white at the top to a soft grey low down, a gentle lift at
+     the very bottom for a reflection, and a broad radial glow across the top for the curve of the metal. */
+  --ra-bg: var(--feta-zinc-200);
+  --ra-fill:
+    radial-gradient(120% 90% at 50% -10%, color-mix(in srgb, var(--feta-white) 90%, transparent) 0%, color-mix(in srgb, var(--feta-white) 0%, transparent) 62%),
+    linear-gradient(180deg, var(--feta-zinc-50) 0%, var(--feta-zinc-100) 34%, var(--feta-zinc-200) 68%, var(--feta-zinc-300) 90%, var(--feta-zinc-200) 100%);
+  --ra-rim: inset 0 1px 0 color-mix(in srgb, var(--feta-white) 85%, transparent), inset 0 -1px 0 color-mix(in srgb, var(--feta-zinc-900) 18%, transparent), inset 0 0 0 1px color-mix(in srgb, var(--feta-zinc-900) 14%, transparent);
+  --ra-ink: var(--feta-zinc-900);
+  --ra-ink-hover: var(--feta-black);
+  --ra-badge: var(--feta-zinc-900);
+  --ra-badge-ink: var(--feta-white);
+  --ra-shadow: color-mix(in srgb, var(--feta-zinc-900) 28%, transparent);
+  --ra-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ra-roll: 360ms;
+  --ra-height: var(--feta-size-button-lg);
+  height: var(--ra-height);
+  padding: 0 4px 0 var(--feta-space-6);
+  gap: var(--feta-space-4);
+  border-radius: var(--feta-radius-full);
+  background-color: var(--ra-bg);
+  background-image: var(--ra-fill);
+  color: var(--ra-ink);
+  font: var(--feta-text-label-default);
+  font-weight: 500;
+  letter-spacing: -0.04em;
+  white-space: nowrap;
+  box-shadow: var(--ra-rim), 0 0 0 0 transparent, 0 0 0 0 transparent;
+  transition:
+    translate var(--ra-roll) var(--ra-ease),
+    box-shadow var(--ra-roll) var(--ra-ease),
+    color var(--ra-roll) var(--ra-ease),
+    background-color var(--ra-roll) var(--ra-ease);
+}
+
+.button[data-size='md'] { --ra-height: var(--feta-size-button-md); padding-left: var(--feta-space-4); gap: var(--feta-space-3); }
+
+/* Ink follows the theme: dark ink on Light, light ink on Dark. */
+.button[data-tone='ink'] {
+  --ra-fill: none;
+  --ra-rim: inset 0 0 0 0 transparent;
+  --ra-bg: var(--feta-bg-inverse);
+  --ra-ink: color-mix(in srgb, var(--feta-text-inverse) 72%, transparent);
+  --ra-ink-hover: var(--feta-text-inverse);
+  --ra-badge: var(--feta-bg-surface);
+  --ra-badge-ink: var(--feta-text-primary);
+  --ra-shadow: color-mix(in srgb, var(--feta-bg-inverse) 30%, transparent);
+}
+
+/* The label window clips the rows as they roll. */
+.window {
+  position: relative;
+  display: inline-grid;
+  overflow: hidden;
+  height: 1.4em;
+  line-height: 1.4em;
+}
+
+.roll,
+.status {
+  grid-area: 1 / 1;
+  display: inline-grid;
+  transform-origin: 0 50%;
+}
+
+.row {
+  grid-area: 1 / 1;
+  transform-origin: 0 50%;
+  transition:
+    transform var(--ra-roll) var(--ra-ease),
+    opacity var(--ra-roll) var(--ra-ease);
+}
+
+/* The second row waits below, a touch larger, so it settles as it arrives. */
+.row:nth-child(2) { opacity: 0; transform: translateY(110%) scale(1.08); }
+
+/* The badge: a circle inset by 4 px, holding two arrows that trade places. */
+.badge {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: calc(var(--ra-height) - 8px);
+  height: calc(var(--ra-height) - 8px);
+  overflow: hidden;
+  border-radius: var(--feta-radius-full);
+  background-color: var(--ra-badge);
+  color: var(--ra-badge-ink);
+  transition: background-color var(--ra-roll) var(--ra-ease), color var(--ra-roll) var(--ra-ease);
+}
+
+.arrows,
+.spinner,
+.glyph { grid-area: 1 / 1; display: inline-grid; place-items: center; }
+
+.arrow {
+  grid-area: 1 / 1;
+  display: inline-flex;
+  transition: transform var(--ra-roll) var(--ra-ease), opacity var(--ra-roll) var(--ra-ease);
+}
+
+.arrow svg,
+.glyph svg { display: block; width: 16px; height: 16px; }
+
+.arrow:nth-child(2) { opacity: 0; transform: translateX(-160%); }
+.long svg { rotate: 90deg; }
+
+/* Hover and focus, while idle: lift, brighten, roll the label up and trade the arrows. */
+.button[data-status='idle']:not(:disabled):focus-visible { color: var(--ra-ink-hover); }
+
+@media (hover: hover) {
+  .button[data-status='idle']:not(:disabled):hover { color: var(--ra-ink-hover); }
+  .button[data-status='idle']:not(:disabled):not([data-still]):hover {
+    translate: 0 -1px;
+    box-shadow: var(--ra-rim), 0 14px 28px -12px var(--ra-shadow), 0 4px 10px -6px var(--ra-shadow);
+  }
+  .button[data-status='idle']:not(:disabled):not([data-still]):hover .row:nth-child(1) { opacity: 0; transform: translateY(-110%) scale(0.92); }
+  .button[data-status='idle']:not(:disabled):not([data-still]):hover .row:nth-child(2) { opacity: 1; transform: none; }
+  .button[data-status='idle']:not(:disabled):not([data-still]):hover .arrow:nth-child(1) { opacity: 0; transform: translateX(160%); }
+  .button[data-status='idle']:not(:disabled):not([data-still]):hover .arrow:nth-child(2) { opacity: 1; transform: none; }
+}
+
+.button[data-status='idle']:not(:disabled):not([data-still]):focus-visible .row:nth-child(1) { opacity: 0; transform: translateY(-110%) scale(0.92); }
+.button[data-status='idle']:not(:disabled):not([data-still]):focus-visible .row:nth-child(2) { opacity: 1; transform: none; }
+.button[data-status='idle']:not(:disabled):not([data-still]):focus-visible .arrow:nth-child(1) { opacity: 0; transform: translateX(160%); }
+.button[data-status='idle']:not(:disabled):not([data-still]):focus-visible .arrow:nth-child(2) { opacity: 1; transform: none; }
+
+/* Statuses: the label reads at full strength, and the badge takes the status colour. */
+.button:not([data-status='idle']) { color: var(--ra-ink-hover); }
+.button[data-status='loading'] { cursor: progress; }
+.button[data-status='success'] .badge { background-color: var(--feta-status-success-strong); color: var(--feta-status-on-solid); }
+.button[data-status='error'] .badge { background-color: var(--feta-status-danger-strong); color: var(--feta-status-on-solid); }
+
+/* A spinner drawn in CSS: a quarter arc turning once every 700 ms. */
+.spinner {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid color-mix(in srgb, currentColor 22%, transparent);
+  border-top-color: currentColor;
+  animation: raSpin 700ms linear infinite;
+}
+
+@keyframes raSpin { to { transform: rotate(360deg); } }
+
+/* Disabled keeps the pill's shape but drops the colour, like every other button. */
+.button:disabled .badge { background-color: var(--feta-alpha-ink-base-8); color: var(--feta-text-quaternary); }
+
+.live {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Still: colour changes only. The spinner slows to a gentle pulse. */
+.button[data-still],
+.button[data-still] .row,
+.button[data-still] .arrow { transition-property: color, background-color, opacity; }
+.button[data-still] .spinner { animation: raPulse 1.4s ease-in-out infinite; border-top-color: color-mix(in srgb, currentColor 22%, transparent); background: color-mix(in srgb, currentColor 40%, transparent); }
+
+@keyframes raPulse { 50% { opacity: 0.4; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .button,
+  .row,
+  .arrow { transition-property: color, background-color, opacity; }
+}

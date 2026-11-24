@@ -64,7 +64,7 @@ export type CheckoutProps = {
   className?: string | undefined
 }
 
-const SAMPLE_BILLING: CheckoutBilling = { email: 'emma@northwind.studio', name: 'Emma Collins', country: '', city: 'Berlin', postalCode: '10119' }
+const SAMPLE_BILLING: CheckoutBilling = { email: 'emma@northwind.example', name: 'Emma Collins', country: '', city: 'Berlin', postalCode: '10119' }
 const cents = (value: number): number => Math.round(value * 100) / 100
 const usd = (value: number): string => `$${value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
 
