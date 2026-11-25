@@ -70,7 +70,7 @@ export function AvatarBadge({ type: kind, size = 'md', label, renderIcon, animat
 export function AvatarPhoto({ person, style }: { person: AvatarPerson; style?: StyleProp<ViewStyle> }) {
   const colors = useColors()
   return (
-    <Svg width="100%" height="100%" viewBox="0 0 64 64" style={style}>
+    <Svg aria-hidden width="100%" height="100%" viewBox="0 0 64 64" style={style}>
       <Rect width={64} height={64} fill={colors.muted} />
       <Path fillRule="evenodd" clipRule="evenodd" d={AVATAR_PHOTOS[person]} fill={colors.textSecondary} />
     </Svg>
@@ -92,7 +92,7 @@ function LiveRing({ box, moving }: { box: number; moving: boolean }) {
   const length = 2 * Math.PI * r
   return (
     <Animated.View accessibilityElementsHidden importantForAccessibility="no-hide-descendants" style={[styles.ringSlot, spin]}>
-      <Svg width={size} height={size} fill="none">
+      <Svg aria-hidden width={size} height={size} fill="none">
         <Circle cx={size / 2} cy={size / 2} r={r} stroke={colors.ink10} strokeWidth={2} />
         <Circle cx={size / 2} cy={size / 2} r={r} stroke={colors.textPrimary} strokeWidth={2} strokeLinecap="round" strokeDasharray={[length * 0.6, length * 0.4]} />
       </Svg>

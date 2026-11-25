@@ -63,7 +63,7 @@ function Arc({ index, turning }: { index: 0 | 1 | 2; turning: boolean }) {
   const spin = useAnimatedStyle(() => ({ transform: [{ rotate: `${TURN_DIR[index] * turn.value * 360}deg` }] }))
   return (
     <Animated.View style={[StyleSheet.absoluteFill, spin]}>
-      <Svg width="100%" height="100%" viewBox={`0 0 ${BOX} ${BOX}`} fill="none">
+      <Svg aria-hidden width="100%" height="100%" viewBox={`0 0 ${BOX} ${BOX}`} fill="none">
         <Circle cx={CENTER} cy={CENTER} r={r} stroke={index === 1 ? c.textPrimary : c.textSecondary} strokeWidth={WIDTHS[index]} strokeLinecap="round" strokeDasharray={[dash, length]} />
       </Svg>
     </Animated.View>
@@ -104,7 +104,7 @@ export function Loader({ state = 'spinning', title, description, value = 0, step
       <View style={s.card}>
         <View style={s.head}>
           <Animated.View style={[s.rings, shake]} aria-hidden>
-            <Svg width="100%" height="100%" viewBox={`0 0 ${BOX} ${BOX}`} fill="none">
+            <Svg aria-hidden width="100%" height="100%" viewBox={`0 0 ${BOX} ${BOX}`} fill="none">
               <Circle cx={CENTER} cy={CENTER} r={RINGS[0] + 3} stroke={failed ? c.danger : c.ink8} strokeWidth={failed ? 2 : 1} />
               <Circle cx={CENTER} cy={CENTER} r={RINGS[2] + 2} stroke={c.ink8} strokeWidth={1} />
             </Svg>

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type ComponentRef, type ReactNode } from 'react'
 import { Pressable, StyleSheet, Text, Vibration, View, type LayoutChangeEvent, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { Easing, FadeInLeft, FadeInRight, FadeInUp, FadeOutLeft, FadeOutRight, cancelAnimation, runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
-import { radius, space, useColors, type Colors } from '../kit'
+import { pressedState, radius, space, useColors, type Colors } from '../kit'
 import { Avatar, type AvatarBadgeType } from './avatar'
 import { type, useStill, useThemed } from './card'
 import { Menu, MenuTurn, useMenuStore, type MenuEntry } from './dropdown-menu'
@@ -224,7 +224,7 @@ export function ProfileDropdown({ account, accounts = [], plan = 'Pro', status, 
                 </View>
                 <View accessibilityLabel="Accounts" style={styles.accounts}>
                   {[account, ...accounts].map((person) => (
-                    <Pressable key={person.id} accessibilityRole="button" accessibilityLabel={person.name} aria-selected={person.id === account.id} onPress={() => { if (person.id !== account.id) onSwitchAccount?.(person); shut() }} style={styles.accountRow}>
+                    <Pressable key={person.id} accessibilityRole="button" accessibilityLabel={person.name} {...pressedState(person.id === account.id)} onPress={() => { if (person.id !== account.id) onSwitchAccount?.(person); shut() }} style={styles.accountRow}>
                       {avatar(person, 'sm')}
                       {who(person)}
                       {person.id === account.id ? <Mark name="tick" /> : null}

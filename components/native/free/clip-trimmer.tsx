@@ -109,6 +109,9 @@ export function ClipTrimmer({ src, alt, duration, defaultStart = 0, defaultEnd, 
         accessibilityRole="adjustable"
         accessibilityLabel={edge === 'start' ? 'Clip start' : 'Clip end'}
         aria-valuetext={clock(range[edge])}
+        aria-valuemin={0}
+        aria-valuemax={duration}
+        aria-valuenow={range[edge]}
         accessibilityActions={[{ name: 'increment' }, { name: 'decrement' }]}
         onAccessibilityAction={(e) => step(edge, e.nativeEvent.actionName === 'increment' ? STEP_S : -STEP_S)}
         style={[styles.hit, leftOf(at(range[edge]) - HANDLE_HIT / 2)]}

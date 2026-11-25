@@ -1,6 +1,6 @@
 'use client'
 import { AnimatePresence, motion } from 'motion/react'
-import { useEffect, useRef, useState, type ClipboardEvent, type DragEvent, type KeyboardEvent, type ReactNode } from 'react'
+import { useEffect, useId, useRef, useState, type ClipboardEvent, type DragEvent, type KeyboardEvent, type ReactNode } from 'react'
 import { HeadingIcon } from '@fetaui/react/rounded/heading'
 import { LeftToRightListBulletIcon } from '@fetaui/react/rounded/left-to-right-list-bullet'
 import { QuoteDownIcon } from '@fetaui/react/rounded/quote-down'
@@ -105,6 +105,7 @@ export type RichTextEditorProps = {
 /** Short structured writing that exports clean Markdown and HTML. */
 export function RichTextEditor({ children, label = 'Editor', placeholder = 'Start writing, or type / for blocks', source = true, onChange, animated = true, className }: RichTextEditorProps) {
   const still = useStill(animated)
+  const uid = useId()
   const area = useRef<HTMLDivElement>(null)
   const shell = useRef<HTMLDivElement>(null)
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
@@ -318,6 +319,8 @@ export function RichTextEditor({ children, label = 'Editor', placeholder = 'Star
             aria-multiline="true"
             aria-label={label}
             aria-placeholder={placeholder}
+            // Focus stays in the text while the block menu is open, so the active block is announced from here.
+            aria-activedescendant={slash && matches.length ? `${uid}-block-${slash.active}` : undefined}
             contentEditable
             suppressContentEditableWarning
             className={styles.area}
@@ -376,7 +379,7 @@ export function RichTextEditor({ children, label = 'Editor', placeholder = 'Star
         {slash && matches.length ? (
           <motion.ul role="listbox" aria-label="Blocks" className={styles.menu} style={{ left: slash.x, top: slash.y }} initial={still ? { opacity: 0 } : { opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: still ? 0 : MENU_S, ease: ease.out }} onPointerDown={(e) => e.preventDefault()}>
             {matches.map((block, i) => (
-              <li key={block.tag} role="option" aria-selected={i === slash.active} className={styles.option} onClick={() => insertBlock(block.tag)}>
+              <li key={block.tag} id={`${uid}-block-${i}`} role="option" aria-selected={i === slash.active} className={styles.option} onClick={() => insertBlock(block.tag)}>
                 <span className={styles.tile}>{block.name.slice(0, 1)}</span>
                 <span><span className={styles.optionName}>{block.name}</span><span className={styles.optionHint}>{block.hint}</span></span>
               </li>

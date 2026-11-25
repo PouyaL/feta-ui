@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { BackHandler, Image, Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native'
+import { BackHandler, Image, Platform, Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import Animated, { Easing, FadeIn, FadeOut, LayoutAnimationConfig, runOnJS, useAnimatedStyle, useSharedValue, withDelay, withSequence, withSpring, withTiming } from 'react-native-reanimated'
 import Svg, { Circle, Ellipse, Rect } from 'react-native-svg'
-import { font, radius, space, useColors, type Colors } from '../kit'
+import { font, pressedState, radius, space, useColors, type Colors } from '../kit'
 import { Card, type RenderIcon, type, useStill, useThemed } from './card'
 import { IconButton } from './icon-button'
 
@@ -64,7 +64,7 @@ export function LightboxArt({ art }: { art: number }) {
   const styles = useThemed(createStyles)
   return (
     <View style={styles.art} aria-hidden>
-      <Svg width="100%" height="100%" viewBox={`0 0 ${ART_SIZE} ${ART_SIZE}`} preserveAspectRatio="xMidYMid slice">
+      <Svg aria-hidden width="100%" height="100%" viewBox={`0 0 ${ART_SIZE} ${ART_SIZE}`} preserveAspectRatio="xMidYMid slice">
         {ART[art % ART.length]?.map((shape, index) => <ArtShape key={index} shape={shape} />)}
       </Svg>
     </View>
@@ -201,9 +201,9 @@ export function LightboxGrid({ title = 'Field trip', photos = PHOTOS, state, def
   dismissRef.current = dismiss
   const requestDismiss = useCallback(() => dismissRef.current(), [])
 
-  // The hardware back button closes the viewer on Android, in place of Escape.
+  // The hardware back button closes the viewer on Android, in place of Escape. There is no back button on the web.
   useEffect(() => {
-    if (view !== 'open') return undefined
+    if (view !== 'open' || Platform.OS === 'web') return undefined
     const listener = BackHandler.addEventListener('hardwareBackPress', () => { requestDismiss(); return true })
     return () => listener.remove()
   }, [requestDismiss, view])
@@ -261,7 +261,7 @@ export function LightboxGrid({ title = 'Field trip', photos = PHOTOS, state, def
             <Animated.View {...fade} style={styles.toolbar}>
               <Text style={styles.counter}>{current + 1} / {photos.length}</Text>
               <View style={styles.actions}>
-                <IconButton size="sm" variant="ghost" icon={renderIcon(zoomed ? 'zoom-out' : 'zoom-in', 16)} label={zoomed ? 'Zoom out' : 'Zoom in'} aria-selected={zoomed} animated={animated} onPress={() => setZoomed(!zoomed)} />
+                <IconButton size="sm" variant="ghost" icon={renderIcon(zoomed ? 'zoom-out' : 'zoom-in', 16)} label={zoomed ? 'Zoom out' : 'Zoom in'} {...pressedState(zoomed)} animated={animated} onPress={() => setZoomed(!zoomed)} />
                 <IconButton size="sm" variant="ghost" icon={renderIcon('x', 16)} label="Close" animated={animated} onPress={dismiss} />
               </View>
             </Animated.View>
@@ -288,7 +288,7 @@ export function LightboxGrid({ title = 'Field trip', photos = PHOTOS, state, def
             </Animated.View>
             <Animated.View {...fade} style={styles.thumbs}>
               {photos.map((item, at) => (
-                <Pressable key={item.caption} accessibilityRole="button" accessibilityLabel={item.alt} aria-selected={at === current} hitSlop={THUMB_SLOP} style={styles.thumb} onPress={() => go(at)}>
+                <Pressable key={item.caption} accessibilityRole="button" accessibilityLabel={item.alt} {...pressedState(at === current)} hitSlop={THUMB_SLOP} style={styles.thumb} onPress={() => go(at)}>
                   <View style={styles.thumbArt}><Picture photo={item} /></View>
                   {at === current ? <View style={styles.thumbRing} /> : null}
                 </Pressable>

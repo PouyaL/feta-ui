@@ -146,6 +146,8 @@ function useTip({ children, open: controlled, defaultOpen = false, onOpenChange,
     onPointerDown: (e: PointerEvent<HTMLElement>) => {
       child.onPointerDown?.(e)
       if (e.pointerType === 'mouse') { clear(); hide(); return }
+      // Motion's keyboard press sends a pointerdown with no pointer type: that is Enter, not a long press.
+      if (e.pointerType !== 'touch' && e.pointerType !== 'pen') return
       touching.current = true
       if (!still) press.current = e.currentTarget.animate([{ transform: 'scale(1)' }, { transform: 'scale(0.96)' }], { duration: LONG_PRESS, easing: 'linear', fill: 'forwards' })
       timer.current = setTimeout(show, LONG_PRESS)

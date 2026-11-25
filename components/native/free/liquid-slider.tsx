@@ -199,7 +199,7 @@ export function LiquidSlider({ value, defaultValue = 1250, onValueChange, min = 
               slosh(60)
             }}
           >
-            <Svg width={GLASS_WIDTH} height={GLASS_HEIGHT} viewBox={`0 0 ${VIEW_WIDTH} ${VIEW_HEIGHT}`}>
+            <Svg aria-hidden width={GLASS_WIDTH} height={GLASS_HEIGHT} viewBox={`0 0 ${VIEW_WIDTH} ${VIEW_HEIGHT}`}>
               <Defs><ClipPath id="glass"><Path d={`${GLASS_SHAPE}Z`} /></ClipPath></Defs>
               <G clipPath="url(#glass)"><AnimatedPath animatedProps={water} fill={colors.textTertiary} /></G>
               <Path d={GLASS_SHAPE} fill="none" stroke={colors.ink10} strokeWidth={1.5} />

@@ -58,7 +58,7 @@ export type CardStackProps = {
   style?: StyleProp<ViewStyle>
 }
 
-const Paper = ({ children }: { children: ReactNode }) => <Svg width="100%" height="100%" viewBox="0 0 216 216">{children}</Svg>
+const Paper = ({ children }: { children: ReactNode }) => <Svg aria-hidden width="100%" height="100%" viewBox="0 0 216 216">{children}</Svg>
 
 /** Line art in the avatar paper and ink. Replace it with images through `items`. */
 const createPrints = (c: Colors): PrintItem[] => {
@@ -307,7 +307,7 @@ export function CardStack({ items, index, defaultIndex = 0, onIndexChange, state
           </View>
         ) : (
           <GestureDetector gesture={pan}>
-            <View style={styles.scene} onLayout={(event) => { away.value = event.nativeEvent.layout.width * 0.9 }}>
+            <View style={styles.scene} onLayout={(event) => { const { width } = event.nativeEvent.layout; if (width > 0) away.value = width * 0.9 }}>
               {slots.map((slot) => {
                 const item = list[slot]
                 return item ? <Print key={slot} item={item} slot={slot} count={count} isTop={slot === current} held={posed} head={head} x={x} lift={lift} away={away} onPress={openDetails} /> : null

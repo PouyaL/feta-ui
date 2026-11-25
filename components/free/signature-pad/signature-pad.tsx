@@ -41,6 +41,7 @@ export function SignaturePad({ title = 'Sign to accept', onChange, onConfirm, re
   const tip = useRef({ x: 0, y: 0, width: WIDE })
   const puck = useRef<HTMLSpanElement>(null)
   const shake = useAnimationControls()
+  const clearTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
   const [count, setCount] = useState(0)
   const [signing, setSigning] = useState(false)
   const [clearing, setClearing] = useState(false)
@@ -95,6 +96,8 @@ export function SignaturePad({ title = 'Sign to accept', onChange, onConfirm, re
     theme.observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'data-theme'] })
     return () => { observer.disconnect(); theme.disconnect() }
   }, [paint])
+
+  useEffect(() => () => clearTimeout(clearTimer.current), [])
 
   function emit(): void {
     setCount(strokes.current.length)
@@ -167,7 +170,8 @@ export function SignaturePad({ title = 'Sign to accept', onChange, onConfirm, re
   function clear(): void {
     if (still) { strokes.current = []; paint(); emit(); return }
     setClearing(true)
-    setTimeout(() => { strokes.current = []; paint(); emit(); setClearing(false) }, CLEAR_MS)
+    clearTimeout(clearTimer.current)
+    clearTimer.current = setTimeout(() => { strokes.current = []; paint(); emit(); setClearing(false) }, CLEAR_MS)
   }
 
   function confirm(): void {

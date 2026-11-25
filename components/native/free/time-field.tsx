@@ -1,7 +1,7 @@
 import { useRef, useState, type ReactNode } from 'react'
 import { Pressable, StyleSheet, Text, TextInput, View, type AccessibilityActionEvent, type StyleProp, type TextInputInstance, type TextInputKeyPressEvent, type ViewStyle } from 'react-native'
 import Animated, { Easing, FadeInUp, FadeOut } from 'react-native-reanimated'
-import { radius, space, useColors, type Colors } from '../kit'
+import { currentState, radius, space, useColors, type Colors } from '../kit'
 import { type, useStill, useThemed, type RenderIcon } from './card'
 import { useFieldControl } from './field'
 import { useFocusRing } from './input'
@@ -114,15 +114,18 @@ export function TimeField({ value, defaultValue = null, onValueChange, min, max,
   const segment = (name: Segment, shown: string, title: string, low: number, high: number): ReactNode => {
     const on = focus === name
     const empty = parts[name] === null
+    const part = parts[name]
+    const now = part === null ? low : typeof part === 'number' ? part : part === 'PM' ? 1 : 0
     return (
       <Pressable
         accessibilityActions={[{ name: 'increment' }, { name: 'decrement' }]}
         accessibilityLabel={`${accessibilityLabel} ${title}`}
         accessibilityRole="adjustable"
         aria-disabled={field.disabled}
-        aria-selected={on}
+        {...currentState(on, 'true')}
         aria-valuemax={high}
         aria-valuemin={low}
+        aria-valuenow={now}
         aria-valuetext={shown}
         disabled={field.disabled}
         hitSlop={9}
@@ -149,6 +152,7 @@ export function TimeField({ value, defaultValue = null, onValueChange, min, max,
           ref={keys}
           accessibilityElementsHidden
           importantForAccessibility="no"
+          aria-label={`${accessibilityLabel} digits`}
           caretHidden
           keyboardType="number-pad"
           style={styles.keys}

@@ -116,7 +116,7 @@ function Barcode({ seed }: { seed: string }) {
   const bars = useMemo(() => barsFor(seed), [seed])
   return (
     <View style={styles.barcode} accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
-      <Svg width="100%" height={36} viewBox={`0 0 ${CODE_WIDTH} 36`} preserveAspectRatio="none">
+      <Svg aria-hidden width="100%" height={36} viewBox={`0 0 ${CODE_WIDTH} 36`} preserveAspectRatio="none">
         {bars.map(([x, width]) => <Rect key={x} x={x} width={width} height={36} fill={colors.textPrimary} />)}
       </Svg>
     </View>
@@ -179,7 +179,7 @@ export function BoardingPass({ status = 'on-time', flight = FLIGHT, patches, mar
       style={[styles.pass, style]}
     >
       {size.width > 0 ? (
-        <Svg width={size.width} height={size.height} style={StyleSheet.absoluteFill}>
+        <Svg aria-hidden width={size.width} height={size.height} style={StyleSheet.absoluteFill}>
           <Path d={trayPath(size.width, size.height)} fill={colors.ink4} />
         </Svg>
       ) : null}
@@ -191,7 +191,7 @@ export function BoardingPass({ status = 'on-time', flight = FLIGHT, patches, mar
         footer={
           <>
             <View style={styles.tear}>
-              <Svg width="100%" height={2}>
+              <Svg aria-hidden width="100%" height={2}>
                 <Line x1={0} y1={1} x2="100%" y2={1} stroke={colors.ink10} strokeWidth={2} strokeDasharray={[6, 6]} />
               </Svg>
             </View>

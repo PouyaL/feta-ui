@@ -34,7 +34,7 @@ function Rule({ kind, vertical, styles, ink, moves, drawn }: { kind: 'line' | 'f
   if (kind === 'line') return <Animated.View style={look} />
   return (
     <Animated.View style={look}>
-      <Svg width="100%" height="100%">
+      <Svg aria-hidden width="100%" height="100%">
         {kind === 'fade' ? (
           <>
             <Defs>
@@ -88,7 +88,7 @@ export function Separator({ orientation = 'horizontal', kind = 'line', label, ic
       {kind === 'icon' ? (
         <Animated.View style={[styles.knot, knotMotion]}>
           {icon ?? (
-            <Svg width={12} height={12} viewBox="0 0 24 24" fill="none">
+            <Svg aria-hidden width={12} height={12} viewBox="0 0 24 24" fill="none">
               <Line x1={12} y1={5} x2={12} y2={19} stroke={colors.textSecondary} strokeWidth={2} strokeLinecap="round" />
               <Line x1={5} y1={12} x2={19} y2={12} stroke={colors.textSecondary} strokeWidth={2} strokeLinecap="round" />
             </Svg>

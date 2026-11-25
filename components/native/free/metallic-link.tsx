@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react'
+import { useId, type ReactNode } from 'react'
 import { StyleSheet, Text, View, type GestureResponderEvent, type LayoutChangeEvent } from 'react-native'
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
 import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg'
@@ -41,6 +41,8 @@ export function MetallicLink({ kind = 'default', href, icon, children, animated 
     const side = Math.hypot(width.value, height.value)
     return { height: side, left: (width.value - side) / 2, top: (height.value - side) / 2, transform: [{ rotate: `${angle.value}deg` }], width: side }
   })
+  // Gradient ids per link, so two links on a screen never share defs.
+  const uid = useId().replace(/[^a-zA-Z0-9]/g, '')
   const sheenStyle = useAnimatedStyle(() => ({ opacity: sweep.value > 0 && sweep.value < 1 ? 1 : 0, transform: [{ translateX: (-1.2 + sweep.value * 3.4) * width.value }] }))
 
   function handleIn(event: GestureResponderEvent): void {
@@ -83,9 +85,9 @@ export function MetallicLink({ kind = 'default', href, icon, children, animated 
       {...rest}
     >
       <Animated.View pointerEvents="none" style={[styles.chrome, rimStyle]}>
-        <Svg width="100%" height="100%">
+        <Svg aria-hidden width="100%" height="100%">
           <Defs>
-            <LinearGradient id="chrome" x1="0" y1="0" x2="1" y2="1">
+            <LinearGradient id={`chrome${uid}`} x1="0" y1="0" x2="1" y2="1">
               <Stop offset="0" stopColor={colors.muted} />
               <Stop offset="0.17" stopColor={colors.textQuaternary} />
               <Stop offset="0.33" stopColor={colors.textTertiary} />
@@ -95,21 +97,21 @@ export function MetallicLink({ kind = 'default', href, icon, children, animated 
               <Stop offset="1" stopColor={colors.muted} />
             </LinearGradient>
           </Defs>
-          <Rect width="100%" height="100%" fill="url(#chrome)" />
+          <Rect width="100%" height="100%" fill={`url(#chrome${uid})`} />
         </Svg>
       </Animated.View>
       <View style={[styles.face, inverted && styles.faceInverted]}>
         {inverted ? null : <View style={styles.tint} />}
         <Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill, sheenStyle]}>
-          <Svg width="100%" height="100%">
+          <Svg aria-hidden width="100%" height="100%">
             <Defs>
-              <LinearGradient id="sheen" x1="0" y1="0" x2="1" y2="0.27">
+              <LinearGradient id={`sheen${uid}`} x1="0" y1="0" x2="1" y2="0.27">
                 <Stop offset="0.35" stopColor={accent.onSolid} stopOpacity={0} />
                 <Stop offset="0.5" stopColor={accent.onSolid} stopOpacity={0.28} />
                 <Stop offset="0.65" stopColor={accent.onSolid} stopOpacity={0} />
               </LinearGradient>
             </Defs>
-            <Rect width="100%" height="100%" fill="url(#sheen)" />
+            <Rect width="100%" height="100%" fill={`url(#sheen${uid})`} />
           </Svg>
         </Animated.View>
         <Text numberOfLines={1} style={[styles.label, inverted && styles.labelInverted]}>{children}</Text>

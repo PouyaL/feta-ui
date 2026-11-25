@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react'
 import { View, Text, Pressable, StyleSheet, type StyleProp, type TextStyle, type ViewStyle } from 'react-native'
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, withRepeat, withSequence, withSpring, cancelAnimation, Easing } from 'react-native-reanimated'
-import { font, press, radius, space, useColors, useReduceMotion, type Colors } from '../kit'
+import { font, press, pressedState, radius, space, useColors, useReduceMotion, type Colors } from '../kit'
 
 export type CalendarEventTone = 'neutral' | 'accent' | 'success' | 'warning'
 
@@ -50,7 +50,7 @@ export function CalendarEvent({ title, time, tone = 'neutral', state = 'default'
       <View style={styles.text}>
         <Text numberOfLines={dense ? 1 : 2} style={styles.title}>{title}</Text>
         {time ? <Text numberOfLines={1} style={styles.time}>{time}</Text> : null}
-        {people ? <View accessible accessibilityLabel={`${people} people`} style={styles.people}>{Array.from({ length: Math.min(people, 3) }, (_, i) => <View key={i} style={styles.person} />)}</View> : null}
+        {people ? <View accessible accessibilityRole="image" accessibilityLabel={`${people} people`} style={styles.people}>{Array.from({ length: Math.min(people, 3) }, (_, i) => <View key={i} style={styles.person} />)}</View> : null}
       </View>
     </>
   )
@@ -59,7 +59,7 @@ export function CalendarEvent({ title, time, tone = 'neutral', state = 'default'
   // A button presses in to 0.97 and pops when it becomes selected.
   return (
     <Animated.View style={pop}>
-      <Pressable accessibilityRole="button" accessibilityLabel={time ? `${title}, ${time}` : title} aria-selected={state === 'selected'} hitSlop={space[1]} onPressIn={() => { if (animated && !reduce) scale.value = withSpring(0.97, press.spring) }} onPressOut={() => { if (animated && !reduce) scale.value = withSpring(1, press.spring) }} onPress={onSelect} style={box}>{content}</Pressable>
+      <Pressable accessibilityRole="button" accessibilityLabel={time ? `${title}, ${time}` : title} {...pressedState(state === 'selected')} hitSlop={space[1]} onPressIn={() => { if (animated && !reduce) scale.value = withSpring(0.97, press.spring) }} onPressOut={() => { if (animated && !reduce) scale.value = withSpring(1, press.spring) }} onPress={onSelect} style={box}>{content}</Pressable>
     </Animated.View>
   )
 }

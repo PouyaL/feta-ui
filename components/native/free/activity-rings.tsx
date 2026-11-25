@@ -2,7 +2,7 @@ import { useEffect, useState, type ReactNode } from 'react'
 import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { Easing, FadeOut, ZoomIn, useAnimatedProps, useSharedValue, withDelay, withTiming } from 'react-native-reanimated'
 import Svg, { Circle, G } from 'react-native-svg'
-import { radius, space, useColors, type Colors } from '../kit'
+import { pressedState, radius, space, useColors, type Colors } from '../kit'
 import { Badge } from './badge'
 import { Card, type RenderIcon, type, useStill, useThemed } from './card'
 import { Tween } from './usage-meter'
@@ -72,7 +72,7 @@ function Arc({ ring, share, delay, still, dim, color, track }: { ring: number; s
   return (
     <>
       <Circle {...shape} stroke={track} />
-      <G rotation={-90} origin={`${CENTER}, ${CENTER}`} opacity={dim ? 0.25 : 1}>
+      <G transform={`rotate(-90 ${CENTER} ${CENTER})`} opacity={dim ? 0.25 : 1}>
         <AnimatedCircle {...shape} animatedProps={firstProps} stroke={color} strokeDasharray={[length, length]} />
         {overflow > 0 && !still ? <AnimatedCircle {...shape} animatedProps={lapProps} stroke={color} strokeDasharray={[length, length]} /> : null}
       </G>
@@ -119,7 +119,7 @@ export function ActivityRings({ rings, title = 'Activity', date = 'Thursday, Oct
           {list.map((ring, index) => {
             const on = focus === index
             return (
-              <Pressable key={ring.label} accessibilityRole="button" accessibilityLabel={`${ring.label}, ${ring.value} of ${ring.goal} ${ring.unitName ?? ring.unit}`} aria-selected={on} onPress={() => pin(index)} style={[styles.item, focus !== null && !on && styles.off]}>
+              <Pressable key={ring.label} accessibilityRole="button" accessibilityLabel={`${ring.label}, ${ring.value} of ${ring.goal} ${ring.unitName ?? ring.unit}`} {...pressedState(on)} onPress={() => pin(index)} style={[styles.item, focus !== null && !on && styles.off]}>
                 <View style={styles.dot}>{ring.icon}</View>
                 <View style={styles.text}>
                   <Text style={styles.small}>{ring.label}</Text>

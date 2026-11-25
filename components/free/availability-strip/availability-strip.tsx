@@ -29,13 +29,15 @@ const EASE = [0.23, 1, 0.32, 1] as const
 /** Six months of availability beside a label. The months rise in one after another; pointing at one dims the rest. Two columns of three on Mobile. */
 export function AvailabilityStrip({ label = 'Availability', note = 'Updated every Monday', months, onSelect, selected, animated = true, className }: AvailabilityStripProps) {
   const still = useStill(animated)
-  const enter = still ? {} : { initial: 'hidden' as const, whileInView: 'shown' as const, viewport: { once: true, amount: 0.4 } }
+  // Still goes to 'still', not to no target: the first render (before useStill knows the setting) sets 'hidden',
+  // and without a target the strip stayed nearly transparent under reduced motion.
+  const enter = still ? { initial: false as const, animate: 'still' as const } : { initial: 'hidden' as const, whileInView: 'shown' as const, viewport: { once: true, amount: 0.4 } }
   return (
-    <motion.div className={cx(styles.strip, className)} data-still={still ? '' : undefined} {...enter} variants={{ hidden: { opacity: 0 }, shown: { opacity: 1, transition: { duration: CELL_S, ease: EASE, staggerChildren: STAGGER_S, delayChildren: 0.08 } } }}>
+    <motion.div className={cx(styles.strip, className)} data-still={still ? '' : undefined} {...enter} variants={{ hidden: { opacity: 0 }, shown: { opacity: 1, transition: { duration: CELL_S, ease: EASE, staggerChildren: STAGGER_S, delayChildren: 0.08 } }, still: { opacity: 1, transition: { duration: 0 } } }}>
       <div className={styles.label}><p className={styles.name}>{label}</p><p className={styles.note}>{note}</p></div>
       <ul className={styles.months}>
         {months.map((item) => (
-          <motion.li key={item.month} variants={{ hidden: { opacity: 0, y: RISE_Y }, shown: { opacity: 1, y: 0, transition: { duration: CELL_S, ease: EASE } } }}>
+          <motion.li key={item.month} variants={{ hidden: { opacity: 0, y: RISE_Y }, shown: { opacity: 1, y: 0, transition: { duration: CELL_S, ease: EASE } }, still: { opacity: 1, y: 0, transition: { duration: 0 } } }}>
             <AvailabilityCell {...item} animated={animated} {...(onSelect ? { onSelect: () => onSelect(item.month), selected: selected === item.month } : {})} />
           </motion.li>
         ))}

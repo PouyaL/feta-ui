@@ -104,7 +104,7 @@ export function Spinner({ kind = 'arc', size = 'm', label = 'Loading', delay = 0
       accessible={label !== null}
       aria-hidden={label === null}
       importantForAccessibility={label === null ? 'no-hide-descendants' : 'auto'}
-      {...(label === null ? {} : { accessibilityRole: 'progressbar' as const, accessibilityLabel: label })}
+      {...(label === null ? {} : { accessibilityRole: 'progressbar' as const, accessibilityLabel: label, 'aria-valuemin': 0, 'aria-valuemax': 100 })}
     >
       <Animated.View style={[box, rotor]}>
         {kind === 'dots' ? (
@@ -112,7 +112,7 @@ export function Spinner({ kind = 'arc', size = 'm', label = 'Loading', delay = 0
             {DOTS.map((i) => <Dot key={i} index={i} size={px} color={ink} moving={animated && !reduce} />)}
           </View>
         ) : (
-          <Svg width={px} height={px} viewBox={`0 0 ${px} ${px}`} fill="none">
+          <Svg aria-hidden width={px} height={px} viewBox={`0 0 ${px} ${px}`} fill="none">
             {kind === 'arc' ? (
               <>
                 <Circle cx={c} cy={c} r={r} stroke={ink} strokeOpacity={0.1} strokeWidth={stroke} />

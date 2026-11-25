@@ -270,7 +270,7 @@ export function DownloadButton({
         <Animated.View pointerEvents="none" style={[styles.badge, badgeStyle]}>
           {busy ? (
             <Animated.View style={[styles.ring, ringStyle]}>
-              <Svg width="100%" height="100%" viewBox={`0 0 ${RING_BOX} ${RING_BOX}`} fill="none">
+              <Svg aria-hidden width="100%" height="100%" viewBox={`0 0 ${RING_BOX} ${RING_BOX}`} fill="none">
                 <Circle cx={RING_BOX / 2} cy={RING_BOX / 2} r={RING_R} stroke={FIXED.track} strokeWidth={2.5} />
                 <AnimatedCircle cx={RING_BOX / 2} cy={RING_BOX / 2} r={RING_R} stroke={glyphInk} strokeWidth={2.5} strokeLinecap="round" strokeDasharray={[RING, RING]} animatedProps={fillProps} />
               </Svg>

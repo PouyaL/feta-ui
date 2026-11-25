@@ -44,6 +44,7 @@ export function Textarea({ invalid, disabled, required, rows, limit, value, defa
         {...(defaultValue === undefined ? {} : { defaultValue })}
         {...(rows === undefined ? {} : { numberOfLines: rows })}
         multiline
+        accessibilityLabel={rest.accessibilityLabel ?? rest['aria-label'] ?? field.label ?? rest.placeholder}
         accessibilityHint={rest.accessibilityHint ?? field.hint}
         aria-disabled={field.disabled}
         editable={!field.disabled}

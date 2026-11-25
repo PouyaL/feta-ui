@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { StyleSheet, Text, TextInput, View, type StyleProp, type TextInputProps, type TextStyle, type ViewStyle } from 'react-native'
 import Animated, { Easing, cancelAnimation, useAnimatedProps, useAnimatedStyle, useDerivedValue, useSharedValue, withRepeat, withSequence, withTiming } from 'react-native-reanimated'
 import Svg, { Defs, LinearGradient, Path, Pattern, Rect, Stop } from 'react-native-svg'
-import { radius, space, useColors, type Colors } from '../kit'
+import { currentState, radius, space, useColors, type Colors } from '../kit'
 import { type RenderIcon, type, useStill, useThemed } from './card'
 import { IconButton } from './icon-button'
 import { Spinner } from './spinner'
@@ -32,7 +32,8 @@ export function ProgressValue({ value, animated = true, style }: { value: number
     count.value = still ? value : withTiming(value, { duration: FILL_MS, easing: OUT })
   }, [value, still, count])
   const text = useAnimatedProps(() => ({ text: String(Math.round(count.value)), defaultValue: String(Math.round(count.value)) } as TextInputProps))
-  return <AnimatedInput editable={false} pointerEvents="none" animatedProps={text} style={style} />
+  // Named with the value it counts to, so a screen reader reads the number and not an empty field.
+  return <AnimatedInput editable={false} pointerEvents="none" aria-label={String(Math.round(value))} animatedProps={text} style={style} />
 }
 
 export type ProgressProps = {
@@ -112,13 +113,13 @@ export function Progress({ value, max = 100, size = 'md', state, label, fillColo
       accessible
       accessibilityRole="progressbar"
       accessibilityLabel={label}
-      {...(unknown ? {} : { 'aria-valuemin': 0, 'aria-valuemax': max, 'aria-valuenow': value ?? 0 })}
+      {...(unknown ? { 'aria-valuemin': 0, 'aria-valuemax': max } : { 'aria-valuemin': 0, 'aria-valuemax': max, 'aria-valuenow': value ?? 0 })}
       onLayout={(e) => setWide(e.nativeEvent.layout.width)}
       style={[styles.track, styles[size], trackMotion, style]}
     >
       {indeterminate ? (
         <Animated.View style={[styles.comet, cometMotion]}>
-          <Svg width={span} height="100%">
+          <Svg aria-hidden width={span} height="100%">
             <Defs>
               <LinearGradient id="comet" x1="0" y1="0" x2="1" y2="0">
                 <Stop offset="0" stopColor={colors.textPrimary} stopOpacity={0} />
@@ -131,7 +132,7 @@ export function Progress({ value, max = 100, size = 'md', state, label, fillColo
       ) : (
         <Animated.View style={[styles.fill, fillMotion]}>
           {shown === 'paused' ? (
-            <Svg width="100%" height="100%">
+            <Svg aria-hidden width="100%" height="100%">
               <Defs>
                 <Pattern id="stripes" width={8} height={8} patternUnits="userSpaceOnUse" patternTransform="rotate(25)">
                   <Rect width={2} height={8} fill={colors.surface} />
@@ -230,7 +231,7 @@ export function ProgressSteps({ steps, current, renderIcon }: { steps: string[];
         {steps.map((step, i) => {
           const status = i < current ? 'done' : i === current ? 'current' : 'next'
           return (
-            <View key={step} style={styles.step} accessible accessibilityLabel={step} aria-selected={i === current}>
+            <View key={step} style={styles.step} accessible accessibilityLabel={step} {...currentState(i === current, 'step')}>
               {i > 0 ? <View style={[styles.stepLine, status === 'next' ? styles.stepLineNext : null]} /> : null}
               <View style={[styles.stepMark, status === 'current' ? styles.stepCurrent : null, status === 'next' ? styles.stepNext : null]}>
                 {status === 'done' ? renderIcon('check', 12) : null}
@@ -415,7 +416,7 @@ export function ProgressFlight({ value, from, to, status, flight, left, renderIc
       <View style={styles.route}>
         <View><Text style={styles.code}>{from.code}</Text><Text style={styles.small}>{from.city}</Text></View>
         <View style={styles.arc} onLayout={(e) => setWide(e.nativeEvent.layout.width)}>
-          <Svg width="100%" height="100%" viewBox={`0 0 ${ARC_WIDTH} ${ARC_HEIGHT}`} fill="none">
+          <Svg aria-hidden width="100%" height="100%" viewBox={`0 0 ${ARC_WIDTH} ${ARC_HEIGHT}`} fill="none">
             <Path d={ARC} stroke={colors.textPrimary} strokeOpacity={0.2} strokeDasharray={[2, 4]} />
             <AnimatedPath animatedProps={trail} d={ARC} stroke={colors.textPrimary} strokeWidth={1.5} strokeDasharray={[ARC_LENGTH, ARC_LENGTH]} />
           </Svg>

@@ -1,6 +1,6 @@
 'use client'
 import { AnimatePresence, motion, type HTMLMotionProps } from 'motion/react'
-import { useRef, useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { Avatar as FreeAvatar, AvatarGroup, type AvatarPerson } from '../avatar/avatar'
 import { Badge, type BadgeTone } from '../badge/badge'
 import { useLabelMotion } from '../button/label-motion'
@@ -87,6 +87,7 @@ export function Fade({ swapKey, still, children, className }: { swapKey: string;
 export function useCopied(hold = 1400): [boolean, (text: string) => void] {
   const [copied, setCopied] = useState(false)
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+  useEffect(() => () => clearTimeout(timer.current), [])
   return [copied, (text) => {
     void navigator.clipboard?.writeText(text).then(() => {
       setCopied(true)

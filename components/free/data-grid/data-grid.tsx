@@ -1,6 +1,6 @@
 'use client'
 import { AnimatePresence, motion } from 'motion/react'
-import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent, type ReactNode, type UIEvent } from 'react'
+import { useCallback, useEffect, useId, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent, type ReactNode, type UIEvent } from 'react'
 import { ArrowDownIcon } from '@fetaui/react/rounded/arrow-down'
 import { ArrowUpIcon } from '@fetaui/react/rounded/arrow-up'
 import { CopyIcon } from '@fetaui/react/rounded/copy'
@@ -73,6 +73,8 @@ const plain = (value: number): string => Math.round(value).toLocaleString('en-US
 /** A spreadsheet grid for large data. Only rows near the viewport render, so 10,000 rows scroll like ten. */
 export function DataGrid({ title, columns: start, rows, loading = false, defaultRange, defaultSelected = [], onCellChange, onDelete, onCopy, onExport, animated = true, className }: DataGridProps) {
   const still = useStill(animated)
+  // Cell ids are per grid, so two grids on a page never point at each other's cells.
+  const uid = useId()
   const [query, setQuery] = useState('')
   const [filters, setFilters] = useState<Record<string, string[]>>({})
   const [hidden, setHidden] = useState<string[]>([])
@@ -268,7 +270,9 @@ export function DataGrid({ title, columns: start, rows, loading = false, default
   const rowTop = (index: number): number => index * ROW
   const inRange = (r: number, c: number): boolean => r >= range.top && r <= range.bottom && c >= range.left && c <= range.right
   const edges = (r: number, c: number): string => [r === range.top && 't', r === range.bottom && 'b', c === range.left && 'l', c === range.right && 'r'].filter(Boolean).join(' ')
-  const activeId = `grid-cell-${active.row}-${active.col}`
+  const cellId = (r: number, c: number): string => `${uid}-cell-${r}-${c}`
+  // Only a rendered cell can be the active descendant: none while loading, filtered to nothing or scrolled out of the window.
+  const activeId = !loading && active.row < view.length && active.row >= first && active.row < last && active.col < columns.length ? cellId(active.row, active.col) : undefined
   const allOn = view.length > 0 && selectedCount === view.length
   const swap = { initial: still ? { opacity: 0 } : { opacity: 0, y: 4 }, animate: { opacity: 1, y: 0 }, exit: still ? { opacity: 0 } : { opacity: 0, y: -4 }, transition: { duration: still ? 0 : BULK_S, ease: ease.out } }
   const pinLeft = LEAD
@@ -383,7 +387,7 @@ export function DataGrid({ title, columns: start, rows, loading = false, default
                     return (
                       <span
                         key={column.key}
-                        id={`grid-cell-${r}-${c}`}
+                        id={cellId(r, c)}
                         role="gridcell"
                         aria-colindex={c + 2}
                         aria-selected={shown}

@@ -76,12 +76,15 @@ export function TypeWriter({ steps, styleKind = 'soft', loop = true, animated = 
           setText(step.text.slice(0, i))
           await wait(TYPE_MS)
         }
+        // A cancelled run stops here, so it never sets state or queues a timer after cleanup.
+        if (!alive) return
         setPhase('idle')
         await wait(HOLD_MS)
-        if (!loop && index === steps.length - 1) return
+        if (!alive || (!loop && index === steps.length - 1)) return
         if (step.leave === 'select') {
           setPhase('selecting')
           await wait(SELECT_MS)
+          if (!alive) return
           setText('')
         } else {
           for (let i = step.text.length; i >= 0 && alive; i -= 1) {

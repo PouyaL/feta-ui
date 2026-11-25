@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { Easing, FadeInDown, FadeInUp, FadeOut, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
-import { font, radius, space, useColors, type Colors } from '../kit'
+import { currentState, font, pressedState, radius, space, useColors, type Colors } from '../kit'
 import { type, useStill, useThemed } from './card'
 import { Checkbox } from './checkbox'
 import { Copy, Mark } from './popover'
@@ -66,7 +66,7 @@ export function TreeItem({ label, icon, count, mark, level = 0, branch = false, 
       accessibilityRole={checked === undefined ? 'button' : 'checkbox'}
       accessibilityLabel={label}
       aria-valuetext={`Level ${level + 1}`}
-      aria-selected={selected}
+      {...(checked === undefined ? pressedState(selected) : currentState(selected, 'true'))}
       aria-disabled={disabled}
       {...(branch ? { 'aria-expanded': expanded } : {})}
       {...(checked === undefined ? {} : { 'aria-checked': checked })}
@@ -159,7 +159,7 @@ export function Tree({ nodes, label, kind = 'files', expanded, defaultExpanded =
   const fade = still ? {} : { entering: ROW_IN, exiting: ROW_OUT }
 
   return (
-    <View accessibilityLabel={label} style={style}>
+    <View role="group" accessibilityLabel={label} style={style}>
       {rows.map(({ node, level }) => {
         const leaves = kind === 'checkbox' ? leavesOf(node) : []
         const on = leaves.filter((id) => ticks.includes(id)).length

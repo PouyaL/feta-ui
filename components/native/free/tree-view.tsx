@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Pressable, StyleSheet, Text, TextInput, View, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
-import { radius, space, type Colors } from '../kit'
+import { pressedState, radius, space, type Colors } from '../kit'
 import { type RenderIcon, type, useStill, useThemed } from './card'
 import { IconButton } from './icon-button'
 
@@ -101,7 +101,7 @@ export function TreeView({ label, nodes, heading, defaultExpanded, defaultSelect
               key={node.id}
               accessibilityRole="button"
               accessibilityLabel={node.name}
-              aria-selected={on}
+              {...pressedState(on)}
               {...(folder ? { 'aria-expanded': open.includes(node.id) } : {})}
               {...(onRename ? { accessibilityHint: 'Long press to rename', onLongPress: () => setRenaming(node.id) } : {})}
               onPress={() => choose(item)}

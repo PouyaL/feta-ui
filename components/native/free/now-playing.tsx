@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react
 import { StyleSheet, Text, View, type AccessibilityActionEvent, type StyleProp, type ViewStyle } from 'react-native'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import Animated, { Easing, Keyframe, LayoutAnimationConfig, runOnJS, useAnimatedStyle, useSharedValue, withTiming, type SharedValue } from 'react-native-reanimated'
-import { font, radius, space, useColors, type Colors } from '../kit'
+import { font, pressedState, radius, space, useColors, type Colors } from '../kit'
 import { useLoop, withInk } from './button'
 import { Card, type RenderIcon, type, useStill, useThemed } from './card'
 import { IconButton } from './icon-button'
@@ -239,13 +239,13 @@ export function NowPlaying({ track, playing, defaultPlaying = true, onPlayingCha
           <View style={styles.times}><Text style={styles.timeNow}>{clock(time)}</Text><Text style={styles.timeEnd}>{clock(track.length)}</Text></View>
         </View>
         <View style={styles.controls}>
-          <IconButton size="sm" variant="ghost" contentStyle={shuffle ? styles.toggleOn : undefined} icon={withInk(renderIcon('shuffle', 16), shuffle ? colors.textPrimary : colors.textSecondary)} label="Shuffle" aria-selected={shuffle} animated={animated} onPress={() => setShuffle(!shuffle)} />
+          <IconButton size="sm" variant="ghost" contentStyle={shuffle ? styles.toggleOn : undefined} icon={withInk(renderIcon('shuffle', 16), shuffle ? colors.textPrimary : colors.textSecondary)} label="Shuffle" {...pressedState(shuffle)} animated={animated} onPress={() => setShuffle(!shuffle)} />
           <View style={styles.main}>
             <IconButton variant="ghost" icon={renderIcon('skip-back', 20)} label="Previous" animated={animated} onPress={onPrevious} />
             {toggle}
             <IconButton variant="ghost" icon={renderIcon('skip-forward', 20)} label="Next" animated={animated} onPress={onNext} />
           </View>
-          <IconButton size="sm" variant="ghost" contentStyle={repeat ? styles.toggleOn : undefined} icon={withInk(renderIcon('repeat', 16), repeat ? colors.textPrimary : colors.textSecondary)} label="Repeat" aria-selected={repeat} animated={animated} onPress={() => setRepeat(!repeat)} />
+          <IconButton size="sm" variant="ghost" contentStyle={repeat ? styles.toggleOn : undefined} icon={withInk(renderIcon('repeat', 16), repeat ? colors.textPrimary : colors.textSecondary)} label="Repeat" {...pressedState(repeat)} animated={animated} onPress={() => setRepeat(!repeat)} />
         </View>
       </View>
     </Card>

@@ -48,9 +48,11 @@ export function SplitFlapText({ text, cells = 12, styleKind = 'soft', animated =
   const board = useRef(target)
 
   useEffect(() => {
-    if (still) {
+    // A board that already reads the target (the first render, or a text set back) has nothing to flip.
+    if (still || board.current === target) {
       board.current = target
       setShown(target)
+      setFlipping(false)
       return undefined
     }
     let tick = 0

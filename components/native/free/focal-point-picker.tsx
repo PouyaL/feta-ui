@@ -127,6 +127,9 @@ export function FocalPointPicker({ src, alt, defaultPoint = { x: 68, y: 38 }, on
               accessibilityRole="adjustable"
               accessibilityLabel="Focal point"
               aria-valuetext={`${point.x}% across, ${point.y}% down`}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={point.x}
               accessibilityActions={[{ name: 'increment' }, { name: 'decrement' }]}
               onAccessibilityAction={(e) => nudge(e.nativeEvent.actionName === 'increment' ? KEY_STEP : -KEY_STEP, 0)}
               style={[styles.point, marks.dot]}

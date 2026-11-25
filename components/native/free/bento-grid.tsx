@@ -273,7 +273,7 @@ export function BentoGrid({ tiles = BENTO_TILES, order, defaultOrder, onOrderCha
   const gridStyle = useAnimatedStyle(() => ({ height }), [height])
 
   return (
-    <View accessibilityLabel={label} style={[styles.tray, style]}>
+    <View role="group" accessibilityLabel={label} style={[styles.tray, style]}>
       <Animated.View onLayout={(event) => setWidth(event.nativeEvent.layout.width)} style={gridStyle}>
         {liftBox ? <Slot box={liftBox} /> : null}
         {width > 0 ? shownOrder.map((id, index) => {

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { Easing, FadeInDown, FadeOut, LinearTransition, useAnimatedStyle, useSharedValue, withSequence, withSpring, withTiming } from 'react-native-reanimated'
-import { radius, space, useColors, type Colors } from '../kit'
+import { pressedState, radius, space, useColors, type Colors } from '../kit'
 import { Button } from './button'
 import { type, useStill, useThemed, type RenderIcon } from './card'
 import { iconFor } from './label'
@@ -153,7 +153,7 @@ export function AmountPad({ to = 'Noa Lindqvist', initials = 'NL', currency = '$
               accessibilityLabel={`${currency}${preset}`}
               accessibilityRole="button"
               aria-disabled={locked}
-              aria-selected={amount === preset}
+              {...pressedState(amount === preset)}
               disabled={locked}
               hitSlop={6}
               style={[styles.chip, amount === preset && styles.chipOn]}

@@ -40,7 +40,7 @@ export function ReviewCard({ name, date, rating, headline, children, avatar, ren
       <View style={styles.rating}>
         <View accessible accessibilityRole="image" accessibilityLabel={`${rating} out of ${MAX_STARS} stars`} style={styles.stars}>
           {Array.from({ length: MAX_STARS }, (_, i) => (
-            <Svg key={i} width={14} height={14} viewBox="0 0 24 24"><Polygon points={STAR_POINTS} fill={i < rating ? colors.textPrimary : colors.ink10} /></Svg>
+            <Svg aria-hidden key={i} width={14} height={14} viewBox="0 0 24 24"><Polygon points={STAR_POINTS} fill={i < rating ? colors.textPrimary : colors.ink10} /></Svg>
           ))}
         </View>
         <Text accessibilityRole="header" style={styles.headline}>{headline}</Text>

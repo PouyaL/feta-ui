@@ -136,9 +136,11 @@ export function NotificationStack({ items, title = 'Notifications', expanded, de
   const [tall, setTall] = useState(open)
   useEffect(() => {
     if (open || still) { setTall(open); return }
+    // Nothing to fold back when the list is already short, as on a collapsed mount.
+    if (!tall) return
     const timer = setTimeout(() => setTall(false), FAN_MS)
     return () => clearTimeout(timer)
-  }, [open, still])
+  }, [open, still, tall])
 
   const shown = items.filter(({ id }) => !gone.includes(id))
   const empty = shown.length === 0

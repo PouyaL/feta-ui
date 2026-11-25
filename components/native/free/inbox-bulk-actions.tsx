@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { FlatList, StyleSheet, Text, View, type ListRenderItem, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { Easing, FadeInDown, FadeInUp, FadeOutUp } from 'react-native-reanimated'
-import { radius, space, type Colors } from '../kit'
+import { pressedState, radius, space, type Colors } from '../kit'
 import { Avatar } from './avatar'
 import { Badge, type BadgeTone } from './badge'
 import { Button } from './button'
@@ -89,7 +89,7 @@ export function InboxBulkActions({ messages, title = 'Inbox', defaultSelected = 
               <Text style={styles.count}>{list.length.toLocaleString('en-US')} conversations</Text>
             </View>
             <View style={styles.actions}>
-              <IconButton variant="ghost" size="sm" label="Show unread only" aria-selected={unreadOnly} icon={renderIcon('filter', 16)} onPress={() => setUnreadOnly(!unreadOnly)} animated={animated} />
+              <IconButton variant="ghost" size="sm" label="Show unread only" {...pressedState(unreadOnly)} icon={renderIcon('filter', 16)} onPress={() => setUnreadOnly(!unreadOnly)} animated={animated} />
               <IconButton variant="ghost" size="sm" label="Mark all read" icon={renderIcon('check-check', 16)} onPress={() => { const ids = list.map((message) => message.id); onMarkRead?.(ids); setRead((was) => [...was, ...ids]) }} animated={animated} />
             </View>
           </Animated.View>

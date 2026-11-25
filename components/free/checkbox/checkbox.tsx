@@ -95,12 +95,14 @@ export function CheckboxField({ label, description, error, invalid, className, a
   const help = `${id}-help`
   const fail = `${id}-error`
   const linked = [describedBy, description ? help : null, error ? fail : null].filter(Boolean).join(' ')
+  // The title names the box and the description describes it, so a screen reader does not read the description twice.
+  const named = rest['aria-label'] || rest['aria-labelledby'] ? {} : { 'aria-labelledby': `${id}-title` }
   return (
     <div className={cx(styles.field, className)} data-disabled={rest.disabled ? '' : undefined}>
       <label className={styles.row}>
-        <Checkbox {...rest} animated={animated} invalid={invalid ?? Boolean(error)} {...(linked ? { 'aria-describedby': linked } : {})} />
+        <Checkbox {...rest} {...named} animated={animated} invalid={invalid ?? Boolean(error)} {...(linked ? { 'aria-describedby': linked } : {})} />
         <span className={styles.text}>
-          <span className={styles.title}>{label}</span>
+          <span id={`${id}-title`} className={styles.title}>{label}</span>
           {description ? <span id={help} className={styles.description}>{description}</span> : null}
         </span>
       </label>
@@ -118,18 +120,21 @@ export function CheckboxField({ label, description, error, invalid, className, a
 export type CheckboxCardProps = Omit<CheckboxProps, 'title'> & { title: ReactNode; description?: ReactNode; icon?: ReactNode }
 
 /** A whole card that toggles. */
-export function CheckboxCard({ title, description, icon, className, checked, defaultChecked = false, onCheckedChange, animated = true, disabled, ...rest }: CheckboxCardProps) {
+export function CheckboxCard({ title, description, icon, className, checked, defaultChecked = false, onCheckedChange, animated = true, disabled, 'aria-describedby': describedBy, ...rest }: CheckboxCardProps) {
   const still = useStill(animated)
+  const uid = useId()
   const [held, setHeld] = useState(defaultChecked)
   const on = checked ?? held
+  const named = rest['aria-label'] || rest['aria-labelledby'] ? {} : { 'aria-labelledby': `${uid}-title` }
+  const linked = [describedBy, description ? `${uid}-help` : null].filter(Boolean).join(' ')
   return (
     <label className={cx(styles.card, className)} data-on={on ? '' : undefined} data-disabled={disabled ? '' : undefined} data-still={still ? '' : undefined}>
       {icon ? <span className={styles.tile}>{icon}</span> : null}
       <span className={styles.text}>
-        <span className={styles.title}>{title}</span>
-        {description ? <span className={styles.description}>{description}</span> : null}
+        <span id={`${uid}-title`} className={styles.title}>{title}</span>
+        {description ? <span id={`${uid}-help`} className={styles.description}>{description}</span> : null}
       </span>
-      <Checkbox {...rest} animated={animated} disabled={disabled ?? false} checked={on} onCheckedChange={(next) => { setHeld(next); onCheckedChange?.(next) }} />
+      <Checkbox {...rest} {...named} {...(linked ? { 'aria-describedby': linked } : {})} animated={animated} disabled={disabled ?? false} checked={on} onCheckedChange={(next) => { setHeld(next); onCheckedChange?.(next) }} />
     </label>
   )
 }

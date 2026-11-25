@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useRef, useState, type ReactNode } from 'react'
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View, type NativeScrollEvent, type NativeSyntheticEvent, type StyleProp, type TextInputKeyPressEvent, type TextStyle, type ViewStyle } from 'react-native'
 import Animated, { FadeInDown, FadeOutUp, LayoutAnimationConfig } from 'react-native-reanimated'
-import { font, radius, space, useColors, type Colors } from '../kit'
+import { font, gridCellRole, radius, space, useColors, type Colors } from '../kit'
 import { Button, EASE_OUT, withInk } from './button'
 import { type, useStill, useThemed, type RenderIcon } from './card'
 import { DropdownMenu, type MenuEntry } from './dropdown-menu'
@@ -287,15 +287,18 @@ export function DataGrid({ title, columns: start, rows, loading = false, default
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={s.minWide}>
           <View style={{ width }}>
             <View role="row" style={s.head}>
-              <Pressable
-                role="checkbox"
-                aria-label="Select all rows"
-                aria-checked={allOn ? true : selectedCount > 0 ? 'mixed' : false}
-                style={[s.corner, s.lead]}
-                onPress={() => setPicked(allOn ? new Set() : new Set(view.map((row) => row.id)))}
-              >
-                <Box on={allOn} mixed={selectedCount > 0 && !allOn} renderIcon={renderIcon} />
-              </Pressable>
+              {/* A row holds only cells, so each checkbox sits in one. */}
+              <View role="columnheader" style={s.leadCell}>
+                <Pressable
+                  role="checkbox"
+                  aria-label="Select all rows"
+                  aria-checked={allOn ? true : selectedCount > 0 ? 'mixed' : false}
+                  style={[s.corner, s.lead]}
+                  onPress={() => setPicked(allOn ? new Set() : new Set(view.map((row) => row.id)))}
+                >
+                  <Box on={allOn} mixed={selectedCount > 0 && !allOn} renderIcon={renderIcon} />
+                </Pressable>
+              </View>
               {columns.map((column, col) => {
                 const sorted = sort?.key === column.key ? sort.dir : 0
                 return (
@@ -334,17 +337,19 @@ export function DataGrid({ title, columns: start, rows, loading = false, default
               <View style={[s.rows, { height: (loading ? 8 : view.length) * ROW }]}>
                 {loading ? Array.from({ length: 8 }, (_, r) => (
                   <View key={r} role="row" style={[s.row, { top: r * ROW }]}>
-                    <View style={[s.lead, s.number]}><Text style={s.numberText}>{r + 1}</Text></View>
-                    {columns.map((column) => <View key={column.key} style={[s.cell, { width: column.width }]}><Skeleton width="70%" height={12} animated={animated} /></View>)}
+                    <View accessibilityRole={gridCellRole} style={[s.lead, s.number]}><Text style={s.numberText}>{r + 1}</Text></View>
+                    {columns.map((column) => <View key={column.key} accessibilityRole={gridCellRole} style={[s.cell, { width: column.width }]}><Skeleton width="70%" height={12} animated={animated} /></View>)}
                   </View>
                 )) : view.slice(first, last).map((row, i) => {
                   const r = first + i
                   const on = picked.has(row.id)
                   return (
                     <View key={row.id} role="row" aria-selected={on} style={[s.row, { top: r * ROW }]}>
-                      <Pressable role="checkbox" aria-label={`Select row ${r + 1}`} aria-checked={on} style={[s.lead, s.number, on && s.picked]} onPress={() => togglePick(row.id)}>
-                        {on ? <Box on mixed={false} renderIcon={renderIcon} /> : <Text style={s.numberText}>{r + 1}</Text>}
-                      </Pressable>
+                      <View accessibilityRole={gridCellRole} style={s.leadCell}>
+                        <Pressable role="checkbox" aria-label={`Select row ${r + 1}`} aria-checked={on} style={[s.lead, s.number, on && s.picked]} onPress={() => togglePick(row.id)}>
+                          {on ? <Box on mixed={false} renderIcon={renderIcon} /> : <Text style={s.numberText}>{r + 1}</Text>}
+                        </Pressable>
+                      </View>
                       {columns.map((column, col) => {
                         const value = read(row, column.key)
                         const isActive = r === active.row && col === active.col
@@ -353,7 +358,7 @@ export function DataGrid({ title, columns: start, rows, loading = false, default
                         return (
                           <Pressable
                             key={column.key}
-                            role="cell"
+                            accessibilityRole={gridCellRole}
                             aria-label={`${column.label} ${text}`}
                             aria-selected={shown}
                             delayLongPress={300}
@@ -387,11 +392,11 @@ export function DataGrid({ title, columns: start, rows, loading = false, default
             </ScrollView>
 
             <View role="row" style={s.foot}>
-              <View style={[s.lead, s.corner]} />
+              <View accessibilityRole={gridCellRole} style={[s.lead, s.corner]} />
               {columns.map((column, col) => {
                 const value = footer[column.key]
                 return (
-                  <View key={column.key} style={[s.footCell, { width: column.width }, column.numeric && s.cellEnd]}>
+                  <View key={column.key} accessibilityRole={gridCellRole} style={[s.footCell, { width: column.width }, column.numeric && s.cellEnd]}>
                     {col === 0
                       ? <Text numberOfLines={1} style={s.footMuted}>{view.length.toLocaleString('en-US')} rows</Text>
                       : value === undefined ? null : <Text numberOfLines={1} style={s.footText}><Text style={s.footMuted}>{column.aggregate === 'avg' ? 'Avg' : column.aggregate === 'count' ? 'Count' : 'Sum'}</Text> {(column.format ?? plain)(value)}</Text>}
@@ -456,6 +461,7 @@ const createStyles = (c: Colors) => {
     minWide: { flexGrow: 1 },
     head: { flexDirection: 'row', height: ROW },
     lead: { alignItems: 'center', justifyContent: 'center', width: LEAD, ...line },
+    leadCell: { flexDirection: 'row' },
     corner: { backgroundColor: c.subtle },
     headCell: { alignItems: 'center', backgroundColor: c.ink4, flexDirection: 'row', gap: space[1.5], justifyContent: 'space-between', paddingLeft: space[3], paddingRight: space[1], ...line },
     pinnedHead: { backgroundColor: c.subtle },

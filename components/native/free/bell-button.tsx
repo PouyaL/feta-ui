@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Pressable, StyleSheet, Text, type GestureResponderEvent, type PressableProps, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { LinearTransition, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated'
-import { radius, space, useColors, type Colors } from '../kit'
+import { radius, space, toggleState, useColors, type Colors } from '../kit'
 import { EASE_OUT, HEIGHT, ICON_SIZE, LabelSwap, TARGET, usePressScale, withInk, type Spring } from './button'
 import { type, useStill, useThemed, type RenderIcon } from './card'
 
@@ -69,9 +69,8 @@ export function BellButton({ variant = 'default', pressed, defaultPressed = fals
     <Animated.View style={[styles.box, pressing.style, style]}>
       <Animated.View {...(still ? {} : { layout: RESIZE })} style={[styles.shell, styles[variant], on ? styles.shellOn : styles.shellRest, off && styles.shellOff]}>
         <Pressable
-          accessibilityRole="togglebutton"
+          {...toggleState(on)}
           accessibilityLabel={text}
-          aria-checked={on}
           aria-disabled={off}
           disabled={disabled}
           hitSlop={variant === 'compact' ? (TARGET - HEIGHT.sm) / 2 : undefined}

@@ -88,7 +88,9 @@ export function ConsentCard({
   }, [asking, closed, hideAfter])
 
   const open = still
-    ? (reduced ? { initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 0 }, transition: { duration: FADE_DURATION } } : { initial: false as const })
+    // y: 0 in both still forms: the first render (before useStill knows the setting) starts the 12 px rise, and
+    // without a y target that rise stopped wherever it was, leaving the card a few px low.
+    ? (reduced ? { initial: { opacity: 0 }, animate: { opacity: 1, y: 0 }, exit: { opacity: 0 }, transition: { duration: FADE_DURATION, y: { duration: 0 } } } : { initial: false as const, animate: { y: 0 }, transition: { duration: 0 } })
     : { initial: { y: ENTER_SHIFT, opacity: 0 }, animate: { y: 0, opacity: 1 }, exit: { y: ENTER_SHIFT, opacity: 0 }, transition: { duration: ENTER_DURATION, ease: ease.out } }
 
   const fold = still

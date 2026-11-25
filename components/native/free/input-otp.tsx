@@ -68,7 +68,7 @@ export function InputOTP({ pattern = 'six-digits', value, defaultValue = '', onV
   }
 
   return (
-    <Pressable accessible={false} disabled={field.disabled} style={[styles.otp, field.disabled && styles.disabled, style]} onPress={() => input.current?.focus()}>
+    <Pressable accessible={false} tabIndex={-1} disabled={field.disabled} style={[styles.otp, field.disabled && styles.disabled, style]} onPress={() => input.current?.focus()}>
       {Array.from({ length: spec.length }, (_, i) => {
         const char = code[i]
         const active = focused && i === Math.min(code.length, spec.length - 1)
@@ -92,7 +92,7 @@ export function InputOTP({ pattern = 'six-digits', value, defaultValue = '', onV
         accessibilityHint={field.hint}
         accessibilityLabel={accessibilityLabel}
         aria-disabled={field.disabled}
-        autoComplete={spec.keyboard === 'number-pad' ? 'sms-otp' : 'off'}
+        autoComplete={spec.keyboard === 'number-pad' ? 'one-time-code' : 'off'}
         caretHidden
         editable={!field.disabled}
         keyboardType={spec.keyboard}

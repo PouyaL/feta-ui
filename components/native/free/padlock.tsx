@@ -51,7 +51,7 @@ export function Padlock({ status = 'locked', width = VIEW_WIDTH, accessibilityLa
       style={[{ height, width }, shake, style]}
     >
       <Animated.View style={[StyleSheet.absoluteFill, shackle]}>
-        <Svg width={width} height={height} viewBox={`0 0 ${VIEW_WIDTH} ${VIEW_HEIGHT}`}>
+        <Svg aria-hidden width={width} height={height} viewBox={`0 0 ${VIEW_WIDTH} ${VIEW_HEIGHT}`}>
           <Defs>
             <LinearGradient id="steel" x1="0" y1="0" x2="1" y2="0">
               <Stop offset="0" stopColor={colors.textTertiary} />
@@ -64,7 +64,7 @@ export function Padlock({ status = 'locked', width = VIEW_WIDTH, accessibilityLa
         </Svg>
       </Animated.View>
       <View style={StyleSheet.absoluteFill}>
-        <Svg width={width} height={height} viewBox={`0 0 ${VIEW_WIDTH} ${VIEW_HEIGHT}`}>
+        <Svg aria-hidden width={width} height={height} viewBox={`0 0 ${VIEW_WIDTH} ${VIEW_HEIGHT}`}>
           <Defs>
             <LinearGradient id="body" x1="0" y1="0" x2="0" y2="1">
               <Stop offset="0" stopColor={colors.textSecondary} />

@@ -61,7 +61,7 @@ function Ring({ done, total, complete, still, renderIcon }: { done: number; tota
   }
   return (
     <Animated.View {...(still ? {} : { exiting: FadeOut.duration(120) })} style={styles.ring}>
-      <Svg width={RING_SIZE} height={RING_SIZE} fill="none">
+      <Svg aria-hidden width={RING_SIZE} height={RING_SIZE} fill="none">
         <Circle cx={RING_SIZE / 2} cy={RING_SIZE / 2} r={RING_RADIUS} stroke={colors.ink8} strokeWidth={RING_STROKE} />
         <AnimatedCircle animatedProps={arc} cx={RING_SIZE / 2} cy={RING_SIZE / 2} r={RING_RADIUS} stroke={colors.inverse} strokeWidth={RING_STROKE} strokeLinecap="round" strokeDasharray={[RING_LENGTH, RING_LENGTH]} />
       </Svg>

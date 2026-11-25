@@ -138,7 +138,7 @@ function Wedge({ sector, step, disc, still }: { sector: number; step: number; di
   const turned = useAnimatedStyle(() => ({ transform: [{ rotate: `${turn.value}deg` }] }))
   return (
     <Animated.View pointerEvents="none" style={[styles.fill, turned]}>
-      <Svg width={disc} height={disc} viewBox="-112 -112 224 224"><Path d={wedgePath(step)} fill={colors.ink5} /></Svg>
+      <Svg aria-hidden width={disc} height={disc} viewBox="-112 -112 224 224"><Path d={wedgePath(step)} fill={colors.ink5} /></Svg>
     </Animated.View>
   )
 }
@@ -151,7 +151,7 @@ function Trail({ from, to, onDone }: { from: Point; to: Point; onDone: () => voi
   useEffect(() => { share.value = animateTo(1, { duration: TRAIL_MS, easing: EASE_OUT }, onDone) }, [onDone, share])
   const animatedProps = useAnimatedProps(() => ({ strokeDashoffset: length * (1 - share.value), strokeOpacity: 0.7 * (1 - share.value) }))
   return (
-    <Svg pointerEvents="none" style={styles.fill}>
+    <Svg aria-hidden pointerEvents="none" style={styles.fill}>
       <AnimatedLine x1={from.x} y1={from.y} x2={to.x} y2={to.y} stroke={colors.textSecondary} strokeWidth={2} strokeLinecap="round" strokeDasharray={length} animatedProps={animatedProps} />
     </Svg>
   )

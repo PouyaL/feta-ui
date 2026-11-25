@@ -3,7 +3,7 @@ import { Pressable, StyleSheet, Text, View, type LayoutChangeEvent, type StylePr
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import Animated, { Easing, runOnJS, useAnimatedProps, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
 import Svg, { Circle, Line, Path } from 'react-native-svg'
-import { radius, space, useColors, type Colors } from '../kit'
+import { pressedState, radius, space, useColors, type Colors } from '../kit'
 import { Badge } from './badge'
 import { Card, type RenderIcon, type, useStill, useThemed } from './card'
 import { RollingText } from './label'
@@ -187,6 +187,9 @@ export function MetricCard({ title = 'Revenue', periods, period, defaultPeriod, 
           accessibilityRole="adjustable"
           accessibilityLabel={`${typeof title === 'string' ? title : 'Value'} by day`}
           aria-valuetext={`${active.labels[day ?? count - 1] ?? ''}: ${format(dayValue ?? active.current[count - 1] ?? 0)}`}
+          aria-valuemin={0}
+          aria-valuemax={Math.max(0, count - 1)}
+          aria-valuenow={day ?? count - 1}
           accessibilityActions={[{ name: 'increment' }, { name: 'decrement' }]}
           onAccessibilityAction={({ nativeEvent }) => setDay(Math.min(count - 1, Math.max(0, (day ?? count - 1) + (nativeEvent.actionName === 'increment' ? 1 : -1))))}
           onLayout={(event: LayoutChangeEvent) => setWidth(event.nativeEvent.layout.width)}
@@ -194,7 +197,7 @@ export function MetricCard({ title = 'Revenue', periods, period, defaultPeriod, 
         >
           <Animated.View style={[styles.clip, clip]}>
             {width > 0 ? (
-              <Svg width={width} height={CHART_HEIGHT} viewBox={`0 0 ${width} ${CHART_HEIGHT}`}>
+              <Svg aria-hidden width={width} height={CHART_HEIGHT} viewBox={`0 0 ${width} ${CHART_HEIGHT}`}>
                 <AnimatedPath animatedProps={areaProps} fill={c.textPrimary} fillOpacity={0.05} />
                 <AnimatedPath animatedProps={prevProps} fill="none" stroke={c.textTertiary} strokeDasharray="4 4" />
                 {active.events?.map((item) => <Line key={item.label} x1={x(item.index)} x2={x(item.index)} y1={0} y2={CHART_HEIGHT} stroke={c.textTertiary} strokeDasharray="2 3" />)}
@@ -213,7 +216,7 @@ export function MetricCard({ title = 'Revenue', periods, period, defaultPeriod, 
       {active.segments.map((item, i) => {
         const on = item.name === segment
         return (
-          <Pressable key={item.name} accessibilityRole="button" accessibilityLabel={`${item.name}, ${format(item.value)}, ${Math.round((item.value / sum) * 100)}%`} aria-selected={on} onPress={() => setSegment(on ? null : item.name)} style={[styles.row, on && styles.rowOn]}>
+          <Pressable key={item.name} accessibilityRole="button" accessibilityLabel={`${item.name}, ${format(item.value)}, ${Math.round((item.value / sum) * 100)}%`} {...pressedState(on)} onPress={() => setSegment(on ? null : item.name)} style={[styles.row, on && styles.rowOn]}>
             <View style={[styles.dot, i === 0 ? styles.solid : i === 1 ? styles.mid : styles.soft]} />
             <Text style={styles.rowName}>{item.name}</Text>
             <RollingText value={format(item.value)} still={still} style={styles.rowValue} />

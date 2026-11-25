@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Pressable, StyleSheet, Text, View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native'
+import { Platform, Pressable, StyleSheet, Text, View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native'
 import Animated, { Easing, cancelAnimation, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated'
 import { font, space, useColors, type Colors } from '../kit'
 import { type, useStill, useThemed } from './card'
@@ -38,7 +38,7 @@ function Slice({ text, textStyle, color, top, shift, duration, on }: { text: str
   const ink = useMemo(() => ({ color }), [color])
   if (!on) return null
   return (
-    <Animated.View pointerEvents="none" style={[top ? styles.sliceTop : styles.sliceBottom, offset]}>
+    <Animated.View aria-hidden pointerEvents="none" style={[top ? styles.sliceTop : styles.sliceBottom, offset]}>
       <Text style={[textStyle, ink]}>{text}</Text>
     </Animated.View>
   )
@@ -72,7 +72,8 @@ export function GlitchText({ text, styleKind = 'soft', size = 'display', label, 
   const word = (
     <View style={styles.line}>
       {label ? <Text style={styles.label}>{label}</Text> : null}
-      <Pressable accessibilityRole="text" accessibilityLabel={text} disabled={still} {...(size === 'status' ? { accessibilityLiveRegion: 'polite' as const } : {})} onPress={fire}>
+      {/* Tap to glitch is a flourish for the pointer, not a keyboard stop. The web reads the visible word (aria-label is not allowed on plain text there); iOS and Android read the label. */}
+      <Pressable accessibilityRole="text" {...(Platform.OS === 'web' ? {} : { accessibilityLabel: text })} tabIndex={-1} disabled={still} {...(size === 'status' ? { accessibilityLiveRegion: 'polite' as const } : {})} onPress={fire}>
         <Text style={textStyle}>{text}</Text>
         <Slice text={text} textStyle={textStyle} color={colors.danger} top shift={SHIFT[strength]} duration={SLICE_A_MS} on={bursting} />
         <Slice text={text} textStyle={textStyle} color={colors.textTertiary} top={false} shift={SHIFT[strength]} duration={SLICE_B_MS} on={bursting} />

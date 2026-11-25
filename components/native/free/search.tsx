@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View, type StyleProp, type TextInputInstance, type ViewStyle } from 'react-native'
 import Animated, { Easing, FadeIn, FadeInRight, FadeInUp, FadeOut, LinearTransition } from 'react-native-reanimated'
-import { font, radius, space, useColors, type Colors, hscroll } from '../kit'
+import { currentState, font, hscroll, pressedState, radius, space, useColors, type Colors } from '../kit'
 import { type, useStill, useThemed, type RenderIcon } from './card'
 import { IconButton } from './icon-button'
 import { useFocusRing } from './input'
@@ -168,7 +168,7 @@ export function CommandPalette({ groups, placeholder = 'Search or run a command'
           onSubmitEditing={() => void runItem(current)}
         />
       </View>
-      <Animated.View key={pages.length} {...(still || pages.length === 0 ? {} : { entering: pageIn })} accessibilityLabel="Results" style={styles.body}>
+      <Animated.View key={pages.length} {...(still || pages.length === 0 ? {} : { entering: pageIn })} role="group" accessibilityLabel="Results" style={styles.body}>
         <ScrollView keyboardShouldPersistTaps="handled">
           {flat.length ? shown.map((group) => (
             <Animated.View key={group.label} {...(still ? {} : { entering: FadeIn.duration(FAST_MS), exiting: FadeOut.duration(FAST_MS) })}>
@@ -184,7 +184,7 @@ export function CommandPalette({ groups, placeholder = 'Search or run a command'
                     accessibilityRole="menuitem"
                     aria-busy={status === 'running'}
                     aria-disabled={Boolean(item.disabled)}
-                    aria-selected={on}
+                    {...currentState(on)}
                     disabled={item.disabled ?? false}
                     style={[styles.item, on && styles.itemOn, item.disabled && styles.itemOff]}
                     onPress={() => void runItem(item)}
@@ -274,7 +274,7 @@ export function MotionSearch({ items, onSelect, placeholder = 'Search', renderIc
                 accessibilityHint={item.description}
                 accessibilityLabel={item.title}
                 accessibilityRole="menuitem"
-                aria-selected={item === current}
+                {...currentState(item === current)}
                 style={[styles.item, item === current && styles.itemOn]}
                 onPress={() => choose(item)}
                 onPressIn={() => setActive(shown.indexOf(item))}
@@ -344,7 +344,7 @@ export function SearchResults({ query, results, facets, took, renderIcon, animat
         {facets.flatMap((facet) => facet.options).map((option) => {
           const pressed = on.includes(option.value)
           return (
-            <Pressable key={option.value} accessibilityLabel={option.label} accessibilityRole="button" aria-selected={pressed} hitSlop={6} style={[styles.chip, pressed && styles.chipOn]} onPress={() => toggle(option.value)}>
+            <Pressable key={option.value} accessibilityLabel={option.label} accessibilityRole="button" {...pressedState(pressed)} hitSlop={6} style={[styles.chip, pressed && styles.chipOn]} onPress={() => toggle(option.value)}>
               <Text style={styles.chipText}>{option.label}</Text>
             </Pressable>
           )
@@ -355,7 +355,7 @@ export function SearchResults({ query, results, facets, took, renderIcon, animat
           <Text accessibilityLiveRegion="polite" style={styles.resultsCount}><Text style={styles.resultsNumber}>{shown.length}</Text> results{took ? ` in ${took} s` : ''}</Text>
           <View accessibilityLabel="Sort" style={styles.sorts}>
             {SORTS.map((option) => (
-              <Pressable key={option.value} accessibilityLabel={option.label} accessibilityRole="button" aria-selected={sort === option.value} hitSlop={9} style={[styles.sort, sort === option.value && styles.sortOn]} onPress={() => setSort(option.value)}>
+              <Pressable key={option.value} accessibilityLabel={option.label} accessibilityRole="button" {...pressedState(sort === option.value)} hitSlop={9} style={[styles.sort, sort === option.value && styles.sortOn]} onPress={() => setSort(option.value)}>
                 <Text style={[styles.sortText, sort === option.value && styles.sortTextOn]}>{option.label}</Text>
               </Pressable>
             ))}

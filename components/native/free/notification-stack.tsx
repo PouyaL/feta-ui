@@ -120,7 +120,7 @@ function Notice({ item, index, open, count, still, arrives, swipePreview, render
       }
     }), [item.id, onDismiss, reachable, still, width, x])
 
-  const itemStyle = useAnimatedStyle(() => ({ opacity: opacity.value, zIndex: count - index, transform: [{ translateY: y.value }, { scaleX: scaleX.value }] }))
+  const itemStyle = useAnimatedStyle(() => ({ opacity: opacity.value, transform: [{ translateY: y.value }, { scaleX: scaleX.value }] }))
   const noticeStyle = useAnimatedStyle(() => ({ opacity: interpolate(x.value, [0, SWIPE_FRAME], [1, SWIPE_OPACITY], 'clamp'), transform: [{ translateX: x.value }] }))
   const stripStyle = useAnimatedStyle(() => ({ opacity: interpolate(x.value, [0, STRIP_FULL], [0, 1], 'clamp') }))
   const contentStyle = useAnimatedStyle(() => ({ opacity: blank.value }))
@@ -135,37 +135,40 @@ function Notice({ item, index, open, count, still, arrives, swipePreview, render
       {...(still ? {} : { exiting: leave })}
       pointerEvents={reachable ? 'auto' : 'none'}
       onLayout={(event) => { width.value = event.nativeEvent.layout.width }}
-      style={[styles.item, itemStyle]}
+      style={[styles.item, { zIndex: count - index }]}
     >
-      <Animated.View style={[styles.strip, stripStyle]} aria-hidden>
-        <View style={styles.stripTint} />
-        {withInk(renderIcon('trash', 16), colors.danger)}
-        <Text style={styles.stripText}>Dismiss</Text>
-      </Animated.View>
-      <GestureDetector gesture={pan}>
-        <Animated.View style={[styles.notice, reachable && styles.noticeRaised, noticeStyle]}>
-          <Animated.View
-            accessible
-            accessibilityActions={[{ name: 'dismiss', label: `Dismiss ${item.title}` }]}
-            onAccessibilityAction={handleAction}
-            style={[styles.content, contentStyle]}
-          >
-            <View style={[styles.tile, styles[tone]]}>{withInk(item.icon, tone === 'inverse' ? colors.textInverse : colors.onSolid)}</View>
-            <View style={styles.text}>
-              <View style={styles.top}>
-                <Text style={styles.title} numberOfLines={1}>{item.title}</Text>
-                <Text style={styles.time}>{item.time}</Text>
-              </View>
-              <Text style={styles.body} numberOfLines={1}>{item.body}</Text>
-            </View>
-          </Animated.View>
-          {open ? (
-            <Animated.View {...(still ? {} : { entering: chipIn, exiting: chipOut })} style={styles.chip}>
-              <IconButton contentStyle={styles.chipFace} variant="secondary" size="sm" hitSlop={CHIP_SLOP} icon={renderIcon('x', 12)} label={`Dismiss ${item.title}`} animated={!still} onPress={() => onDismiss(item.id)} />
-            </Animated.View>
-          ) : null}
+      {/* The stack motion has its own layer: the exit animation would overwrite opacity on the same view. */}
+      <Animated.View style={[styles.layer, itemStyle]}>
+        <Animated.View style={[styles.strip, stripStyle]} aria-hidden>
+          <View style={styles.stripTint} />
+          {withInk(renderIcon('trash', 16), colors.danger)}
+          <Text style={styles.stripText}>Dismiss</Text>
         </Animated.View>
-      </GestureDetector>
+        <GestureDetector gesture={pan}>
+          <Animated.View style={[styles.notice, reachable && styles.noticeRaised, noticeStyle]}>
+            <Animated.View
+              accessible
+              accessibilityActions={[{ name: 'dismiss', label: `Dismiss ${item.title}` }]}
+              onAccessibilityAction={handleAction}
+              style={[styles.content, contentStyle]}
+            >
+              <View style={[styles.tile, styles[tone]]}>{withInk(item.icon, tone === 'inverse' ? colors.textInverse : colors.onSolid)}</View>
+              <View style={styles.text}>
+                <View style={styles.top}>
+                  <Text style={styles.title} numberOfLines={1}>{item.title}</Text>
+                  <Text style={styles.time}>{item.time}</Text>
+                </View>
+                <Text style={styles.body} numberOfLines={1}>{item.body}</Text>
+              </View>
+            </Animated.View>
+            {open ? (
+              <Animated.View {...(still ? {} : { entering: chipIn, exiting: chipOut })} style={styles.chip}>
+                <IconButton contentStyle={styles.chipFace} variant="secondary" size="sm" hitSlop={CHIP_SLOP} icon={renderIcon('x', 12)} label={`Dismiss ${item.title}`} animated={!still} onPress={() => onDismiss(item.id)} />
+              </Animated.View>
+            ) : null}
+          </Animated.View>
+        </GestureDetector>
+      </Animated.View>
     </Animated.View>
   )
 }
@@ -242,7 +245,8 @@ const createStyles = (c: Colors) => StyleSheet.create({
   count: { ...type(14, c.textTertiary, '500'), fontVariant: ['tabular-nums'] },
   empty: { alignItems: 'center', height: 72, justifyContent: 'center' },
   emptyText: type(14, c.textSecondary),
-  item: { height: CARD, left: 0, position: 'absolute', right: 0, top: 0, transformOrigin: 'top' },
+  item: { height: CARD, left: 0, position: 'absolute', right: 0, top: 0 },
+  layer: { height: CARD, transformOrigin: 'top' },
   notice: { backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.card, borderWidth: StyleSheet.hairlineWidth, height: CARD },
   noticeRaised: soft(c),
   content: { flexDirection: 'row', gap: space[3], height: '100%', paddingLeft: space[3], paddingRight: space[3.5], paddingVertical: space[3] },

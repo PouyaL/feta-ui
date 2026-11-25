@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
-import { Pressable, StyleSheet, Text, type LayoutChangeEvent, type StyleProp, type ViewStyle } from 'react-native'
+import { Platform, Pressable, StyleSheet, Text, type LayoutChangeEvent, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { Easing, cancelAnimation, runOnJS, useAnimatedReaction, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated'
 import { radius, space, type Colors } from '../kit'
 import { LabelSwap, withInk } from './button'
@@ -36,6 +36,10 @@ const SETTLE_SPRING = { stiffness: 420, damping: 42, mass: 1 }
 const PROGRESS_STEP = 10
 /** The outline sweep: the danger red at 12%, which reads in Light and Dark. Kit has no subtle danger yet. */
 const DANGER_TINT = 'rgba(239,68,68,0.12)'
+
+/** How far the hold has filled: a value on iOS and Android; the web allows no value on a button, so the label carries the phase. */
+const holdValue = (step: number): { 'aria-valuemin'?: number; 'aria-valuemax'?: number; 'aria-valuenow'?: number } =>
+  (Platform.OS === 'web' ? {} : { 'aria-valuemin': 0, 'aria-valuemax': 100, 'aria-valuenow': step })
 
 export function HoldToConfirm({ kind = 'outline', label = 'Hold to delete', progressLabel = 'Release to cancel', doneLabel = 'Deleted', icon, renderIcon, onComplete, disabled, animated = true, style }: HoldToConfirmProps) {
   const styles = useThemed(createStyles)
@@ -107,7 +111,7 @@ export function HoldToConfirm({ kind = 'outline', label = 'Hold to delete', prog
         accessibilityLabel={label}
         accessibilityHint="Press and hold"
         aria-disabled={Boolean(disabled)}
-        aria-valuemin={0} aria-valuemax={100} aria-valuenow={step}
+        {...holdValue(step)}
         onLayout={(event: LayoutChangeEvent) => { width.value = event.nativeEvent.layout.width }}
         style={[styles.button, solid ? styles.solid : styles.outline, phase === 'complete' && (solid ? styles.solidDone : styles.outlineDone), disabled && styles.disabled]}
       >

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Pressable, ScrollView, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { FadeInDown, FadeOut } from 'react-native-reanimated'
-import { radius, space, type Colors } from '../kit'
+import { pressedState, radius, space, type Colors } from '../kit'
 import { Badge } from './badge'
 import { Button } from './button'
 import { EASE_STANDARD, Panel, PanelBody, ROW_MS, rowEnter, type RenderIcon, type, useStill, useThemed } from './card'
@@ -47,7 +47,7 @@ export function Webhooks({ endpoints, detail, deliveries, defaultOpen, renderIco
       <PanelBody flush>
         {endpoints.map((item, i) => (
           <Animated.View key={item.id} {...(still ? {} : { entering: rowEnter(i) })}>
-            <Pressable accessibilityRole="button" accessibilityLabel={`${item.name}, ${item.url}, ${item.rate} delivered`} aria-selected={item.id === active} onPress={() => setActive(item.id)} style={[styles.endpoint, item.id === active && styles.on]}>
+            <Pressable accessibilityRole="button" accessibilityLabel={`${item.name}, ${item.url}, ${item.rate} delivered`} {...pressedState(item.id === active)} onPress={() => setActive(item.id)} style={[styles.endpoint, item.id === active && styles.on]}>
               <Text style={styles.name} numberOfLines={1}>{item.name}</Text>
               <Text style={styles.mono} numberOfLines={1}>{item.url}</Text>
               <View style={styles.tags}>

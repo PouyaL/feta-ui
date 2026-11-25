@@ -70,14 +70,17 @@ export type RadioProps = {
   disabled?: boolean
   onChange?: () => void
   accessibilityLabel?: string
+  /** Draws the mark only, for a row that is itself the control: no press, no tab stop, hidden from screen readers. */
+  decorative?: boolean
   animated?: boolean
   style?: StyleProp<ViewStyle>
 }
 
 /** A radio that feels alive: press squeezes and sends a ripple. */
-export function Radio({ checked = false, invalid = false, disabled = false, onChange, accessibilityLabel, animated = true, style }: RadioProps) {
+export function Radio({ checked = false, invalid = false, disabled = false, onChange, accessibilityLabel, decorative = false, animated = true, style }: RadioProps) {
   const still = useStill(animated)
   const { pressed, pulse, onPressIn, onPressOut } = usePressMotion(disabled)
+  if (decorative) return <View aria-hidden pointerEvents="none" style={style}><RadioMark checked={checked} invalid={invalid} disabled={disabled} pressed={false} pulse={0} still={still} /></View>
   return (
     <Pressable
       accessibilityLabel={accessibilityLabel}

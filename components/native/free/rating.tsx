@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native'
+import { Platform, Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated'
 import Svg, { Polygon } from 'react-native-svg'
 import { space, useColors, type Colors } from '../kit'
@@ -21,7 +21,7 @@ function Star({ size, filled }: { size: number; filled: boolean }) {
   const colors = useColors()
   const ink = filled ? colors.textPrimary : colors.textQuaternary
   return (
-    <Svg width={size} height={size} viewBox="0 0 24 24">
+    <Svg aria-hidden width={size} height={size} viewBox="0 0 24 24">
       <Polygon points={STAR_POINTS} fill={filled ? ink : 'none'} stroke={ink} strokeWidth={1.5} strokeLinejoin="round" />
     </Svg>
   )
@@ -93,9 +93,7 @@ export function Rating({ label, value, defaultValue = 0, onValueChange, readOnly
       accessible={false}
       accessibilityRole="radiogroup"
       accessibilityLabel={label}
-      aria-valuemin={0}
-      aria-valuemax={5}
-      aria-valuenow={chosen}
+      {...(Platform.OS === 'web' ? {} : { 'aria-valuemin': 0, 'aria-valuemax': 5, 'aria-valuenow': chosen })}
       accessibilityActions={[{ name: 'increment' }, { name: 'decrement' }]}
       onAccessibilityAction={(e) => {
         if (disabled) return

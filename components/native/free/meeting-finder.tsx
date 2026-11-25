@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Pressable, StyleSheet, Text, TextInput, View, type LayoutChangeEvent, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { Easing, FadeInDown, FadeOut, LinearTransition, ZoomIn, cancelAnimation, useAnimatedStyle, useSharedValue, withRepeat, withSpring, withTiming, type SharedValue } from 'react-native-reanimated'
-import { font, radius, space, useColors, type Colors } from '../kit'
+import { font, pressedState, radius, space, useColors, type Colors } from '../kit'
 import { Button } from './button'
 import { type, useStill, useThemed, type RenderIcon } from './card'
 import { iconFor } from './label'
@@ -124,7 +124,7 @@ export function MeetingFinder({ people, defaultPrompt = '', defaultConstraints =
         <Button size="sm" animated={animated} status={status === 'searching' ? 'loading' : 'idle'} onPress={() => void find()}>Find times</Button>
       </View>
       {constraints.length ? (
-        <View accessibilityLabel="Constraints" style={styles.chips}>
+        <View role="group" accessibilityLabel="Constraints" style={styles.chips}>
           {constraints.map((one) => (
             <Animated.View key={one.label} {...(still ? {} : { entering: chipIn, exiting: FadeOut.duration(FAST_MS), layout: chipMove })} style={styles.chip}>
               <Text style={styles.chipLabel}>{one.label}</Text>
@@ -171,7 +171,7 @@ export function MeetingFinder({ people, defaultPrompt = '', defaultConstraints =
                 <Pressable
                   accessibilityLabel={`${one.label}, ${one.note}`}
                   accessibilityRole="button"
-                  aria-selected={picked === one.id}
+                  {...pressedState(picked === one.id)}
                   style={[styles.suggestion, picked === one.id && styles.suggestionOn]}
                   onPress={() => { setPicked(one.id); onPick?.(one) }}
                 >

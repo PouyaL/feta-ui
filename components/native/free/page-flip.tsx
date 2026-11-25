@@ -48,7 +48,7 @@ function Shadow({ id, x2, y2 }: { id: string; x2: number; y2: number }) {
   const colors = useColors()
   const ink = useColorScheme() === 'dark' ? colors.canvas : colors.inverse
   return (
-    <Svg width="100%" height="100%">
+    <Svg aria-hidden width="100%" height="100%">
       <Defs>
         <LinearGradient id={id} x1="0" y1="0" x2={String(x2)} y2={String(y2)}>
           <Stop offset="0" stopColor={ink} stopOpacity={1} />
@@ -90,7 +90,7 @@ function Corner({ peek, still, onPress }: { peek: boolean; still: boolean; onPre
   return (
     <Pressable accessibilityRole="button" accessibilityLabel="Turn the page" style={styles.corner} onPress={onPress} onPressIn={() => to(1)} onPressOut={() => to(peek ? 1 : 0)}>
       <Animated.View style={[styles.fold, foldStyle]}>
-        <Svg width={FOLD_SIZE} height={FOLD_SIZE}><Polygon points={`${FOLD_SIZE},0 0,${FOLD_SIZE} ${FOLD_SIZE * 0.08},${FOLD_SIZE * 0.08}`} fill={colors.muted} /></Svg>
+        <Svg aria-hidden width={FOLD_SIZE} height={FOLD_SIZE}><Polygon points={`${FOLD_SIZE},0 0,${FOLD_SIZE} ${FOLD_SIZE * 0.08},${FOLD_SIZE * 0.08}`} fill={colors.muted} /></Svg>
       </Animated.View>
     </Pressable>
   )

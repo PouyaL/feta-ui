@@ -110,8 +110,9 @@ export function CardStack({ items = PRINTS, index, defaultIndex = 0, onIndexChan
   const arrival = useRef<'skip' | 'back' | null>(null)
   const x = useMotionValue(0)
   const rotate = useTransform(x, (value) => value / TILT)
-  const width = (): number => topCard.current?.offsetWidth ?? 232
-  const away = (): number => (stage.current?.offsetWidth ?? 440) * 0.9
+  // `||`, not `??`: an unlaid or hidden stage measures 0, which would divide the fade and the lift by zero.
+  const width = (): number => topCard.current?.offsetWidth || 232
+  const away = (): number => (stage.current?.offsetWidth || 440) * 0.9
   const opacity = useTransform(x, (value) => 1 - Math.max(0, (Math.abs(value) - away() * 0.6) / (away() * 0.4)))
 
   // Written straight to the stage, so a drag never re-renders per frame.

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
-import { radius, space, type Colors } from '../kit'
+import { pressedState, radius, space, type Colors } from '../kit'
 import { type RenderIcon, type, useStill, useThemed } from './card'
 import { IconButton } from './icon-button'
 import { Input } from './input'
@@ -148,9 +148,9 @@ export function JsonView({ data, rootName = 'order', request, defaultOpen, hint,
             return (
               <Pressable
                 key={row.path}
-                accessibilityRole={row.branch ? 'button' : 'text'}
+                accessibilityRole="button"
                 accessibilityLabel={row.branch ? `${row.key}, ${countLabel(row.value as JsonBranch)}` : `${row.key}, ${String(row.value)}`}
-                aria-selected={on}
+                {...pressedState(on)}
                 {...(row.branch ? { 'aria-expanded': row.open } : {})}
                 onPress={() => { setSelected(row.path); if (row.branch) toggle(row.path) }}
                 style={[styles.row, styles[`depth_${Math.min(row.depth, 5)}` as 'depth_0'], on ? styles.rowOn : null]}

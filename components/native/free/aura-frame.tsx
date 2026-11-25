@@ -2,7 +2,7 @@ import { useEffect, useId, useMemo, useState, type ReactNode } from 'react'
 import { StyleSheet, TextInput, View, useColorScheme, type LayoutChangeEvent, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { Easing, useAnimatedProps, useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming, type SharedValue } from 'react-native-reanimated'
 import Svg, { Defs, Ellipse, G, LinearGradient, Mask, RadialGradient, Rect, Stop, Text as SvgText } from 'react-native-svg'
-import { accent, font, radius, space, useColors, type Colors } from '../kit'
+import { accent, font, radius, space, toggleState, useColors, type Colors } from '../kit'
 import { Button, EASE_OUT, withInk } from './button'
 import { type, useStill, type RenderIcon } from './card'
 import { IconButton } from './icon-button'
@@ -89,7 +89,7 @@ function Glow({ id, color, width, height, opacity, scale, place }: GlowProps) {
   const style = useAnimatedStyle(() => ({ opacity: opacity.value, transform: [{ scale: scale ? scale.value : 1 }] }))
   return (
     <Animated.View aria-hidden pointerEvents="none" style={[styles.layer, place, style]}>
-      <Svg width={w} height={h}>
+      <Svg aria-hidden width={w} height={h}>
         <Defs>
           <RadialGradient id={id} cx="50%" cy="50%" r="50%">
             <Stop offset="0" stopColor={color} stopOpacity={1} />
@@ -121,7 +121,7 @@ function Glyphs({ id, frames, clock, color, width, height, opacity, place }: Gly
   const style = useAnimatedStyle(() => ({ opacity: opacity.value }))
   return (
     <Animated.View aria-hidden pointerEvents="none" style={[styles.layer, place, style]}>
-      <Svg width={width} height={height}>
+      <Svg aria-hidden width={width} height={height}>
         <Defs>
           <RadialGradient id={`${id}-fade`} cx="50%" cy="50%" r="50%">
             <Stop offset="0" stopColor={accent.onSolid} stopOpacity={1} />
@@ -217,7 +217,7 @@ export function AuraFrame({ label, placeholder = 'Ask anything…', state = 'res
       <Glyphs id={`${ids}-wg`} frames={WARM_FRAMES} clock={clock} color={colors.warning} width={glyphs.width} height={glyphs.height} opacity={warmGlyphs} place={styles.warmGlyphs} />
       <Glyphs id={`${ids}-cg`} frames={COOL_FRAMES} clock={clock} color={accent.sky.from} width={glyphs.width} height={glyphs.height} opacity={coolGlyphs} place={styles.coolGlyphs} />
       <View style={themed.shell}>
-        <Svg style={StyleSheet.absoluteFill} width="100%" height="100%">
+        <Svg aria-hidden style={StyleSheet.absoluteFill} width="100%" height="100%">
           <Defs>
             <LinearGradient id={`${ids}-line`} x1="0" y1="0" x2="1" y2="0">
               <Stop offset="0" stopColor={accent.orange.from} stopOpacity={level.line} />
@@ -251,7 +251,7 @@ export function AuraFrame({ label, placeholder = 'Ask anything…', state = 'res
             <IconButton variant="secondary" size="sm" icon={icon('plus')} label="Add" animated={animated} onPress={onAttach} />
             <Button variant="secondary" shape="pill" size="sm" animated={animated} leadingIcon={icon('sparkles')} trailingIcon={chevron} onPress={onMode}>{mode}</Button>
             {wide ? (
-              <Button variant={deep ? 'primary' : 'secondary'} shape="pill" size="sm" animated={animated} accessibilityRole="togglebutton" aria-checked={deep} leadingIcon={icon('bulb')} onPress={() => setDeep(!deep)}>DeepThink</Button>
+              <Button variant={deep ? 'primary' : 'secondary'} shape="pill" size="sm" animated={animated} {...toggleState(deep)} leadingIcon={icon('bulb')} onPress={() => setDeep(!deep)}>DeepThink</Button>
             ) : null}
             <View style={themed.spacer} />
             {wide ? (

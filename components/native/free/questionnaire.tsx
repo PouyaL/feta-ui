@@ -30,7 +30,7 @@ export function QuestionnaireChoice({ mode = 'single', label, description, check
   const name = typeof label === 'string' ? label : undefined
   return (
     <Pressable accessibilityRole={mode === 'single' ? 'radio' : 'checkbox'} accessibilityLabel={name} aria-checked={checked} aria-disabled={disabled} disabled={disabled} onPress={() => onCheckedChange?.(mode === 'single' ? true : !checked)} style={[styles.choice, checked && styles.choiceOn, disabled && styles.disabled, style]}>
-      {mode === 'single' ? <Radio checked={checked} disabled={disabled} animated={animated} onChange={() => onCheckedChange?.(true)} /> : <Checkbox checked={checked} disabled={disabled} animated={animated} onCheckedChange={(next) => onCheckedChange?.(next)} />}
+      {mode === 'single' ? <Radio decorative checked={checked} disabled={disabled} animated={animated} /> : <Checkbox decorative checked={checked} disabled={disabled} animated={animated} />}
       <View style={styles.choiceText}><Text style={styles.choiceLabel}>{label}</Text>{description ? <Text style={styles.small}>{description}</Text> : null}</View>
     </Pressable>
   )

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { ActionSheetIOS, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions, type StyleProp, type ViewInstance, type ViewStyle } from 'react-native'
 import Animated, { Easing, FadeOut, LinearTransition, ZoomIn, runOnJS, useAnimatedStyle, useSharedValue, withSpring, withTiming, type SharedValue } from 'react-native-reanimated'
-import { radius, space, useColors, type Colors } from '../kit'
+import { currentState, radius, space, useColors, type Colors } from '../kit'
 import { type, useStill, useThemed, type RenderIcon } from './card'
 import { useFieldControl } from './field'
 import { useFocusRing } from './input'
@@ -72,6 +72,15 @@ const chipIn = ZoomIn.springify().stiffness(POP.stiffness).damping(POP.damping).
 const chipMove = LinearTransition.springify().stiffness(POP.stiffness).damping(POP.damping).mass(POP.mass)
 
 type Anchor = { x: number; y: number; width: number; height: number }
+
+/**
+ * The trigger's name and value. iOS and Android read the picked option as the combobox's value; the web has no value
+ * text for a combobox (aria-valuetext is for ranges), so there the option joins the name.
+ */
+const comboboxName = (name: string | undefined, value: string | undefined): { accessibilityLabel?: string; 'aria-valuetext'?: string } => {
+  if (Platform.OS === 'web') return name === undefined ? {} : { accessibilityLabel: value !== undefined && value !== name ? `${name}, ${value}` : name }
+  return { ...(name === undefined ? {} : { accessibilityLabel: name }), ...(value === undefined ? {} : { 'aria-valuetext': value }) }
+}
 
 /** Choose one value from a list. The list grows out of the trigger and the highlight glides. */
 export function Select({ options, value, defaultValue, onValueChange, multiple = false, values, defaultValues = [], onValuesChange, placeholder = 'Select', kind = 'field', align = 'below', defaultOpen = false, listHeight = LIST_HEIGHT, footer, icon, invalid, disabled, accessibilityLabel, renderIcon, animated = true, style }: SelectProps) {
@@ -162,7 +171,7 @@ export function Select({ options, value, defaultValue, onValueChange, multiple =
         key={option.value}
         accessibilityLabel={option.label}
         accessibilityRole="menuitem"
-        aria-selected={on}
+        {...currentState(on)}
         aria-disabled={Boolean(option.disabled)}
         disabled={option.disabled ?? false}
         style={[styles.item, option.disabled && styles.itemOff]}
@@ -193,11 +202,10 @@ export function Select({ options, value, defaultValue, onValueChange, multiple =
         ref={trigger}
         collapsable={false}
         accessibilityHint={field.hint}
-        accessibilityLabel={accessibilityLabel ?? selected?.label ?? placeholder}
+        {...comboboxName(accessibilityLabel ?? selected?.label ?? placeholder, selected?.label)}
         accessibilityRole="combobox"
         aria-disabled={field.disabled}
         aria-expanded={open}
-        {...(selected ? { 'aria-valuetext': selected.label } : {})}
         disabled={field.disabled}
         hitSlop={kind === 'pill' ? 6 : 0}
         onPress={() => { if (open) setOpen(false); else if (kind === 'native') openNative(); else show() }}

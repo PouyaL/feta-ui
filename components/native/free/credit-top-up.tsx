@@ -68,7 +68,7 @@ export function CreditTopUp({ balance, dailyUse, trend, packs, defaultPack = 1, 
             const on = pack === i
             return (
               <Pressable key={item.credits} accessibilityRole="radio" accessibilityLabel={`${count(item.credits)} credits, $${item.price}. ${item.bonus}`} aria-checked={on} onPress={() => setPack(i)} style={[styles.pack, on && styles.on]}>
-                <View style={styles.line}><Text style={styles.name}>{count(item.credits)}</Text><Radio checked={on} onChange={() => setPack(i)} animated={animated} /></View>
+                <View style={styles.line}><Text style={styles.name}>{count(item.credits)}</Text><Radio decorative checked={on} animated={animated} /></View>
                 <Text style={styles.name}>${item.price}</Text>
                 <Text style={styles.small}>{item.rate} / credit</Text>
                 <Text style={styles.small}>{item.bonus}</Text>

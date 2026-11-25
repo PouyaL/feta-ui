@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { Pressable, StyleSheet, Text, TextInput, View, type StyleProp, type TextInputInstance, type TextInputKeyPressEvent, type TextStyle, type ViewStyle } from 'react-native'
 import Animated, { FadeIn, FadeInUp, FadeOut } from 'react-native-reanimated'
-import { font, radius, space, useColors, type Colors } from '../kit'
+import { currentState, font, pressedState, radius, space, useColors, type Colors } from '../kit'
 import { EASE_OUT, LabelSwap, withInk } from './button'
 import { useStill, useThemed, type RenderIcon } from './card'
 import { IconButton } from './icon-button'
@@ -257,7 +257,7 @@ export function RichTextEditor({ defaultValue, label = 'Editor', placeholder = '
         {matches.length ? (
           <Animated.View {...(still ? {} : { entering: FadeInUp.duration(MENU_MS).easing(EASE_OUT), exiting: FadeOut.duration(MENU_MS) })} role="menu" aria-label="Blocks" style={s.menu}>
             {matches.map((block, n) => (
-              <Pressable key={block.kind} role="menuitem" aria-selected={n === slashActive} style={({ pressed }) => [s.option, (pressed || n === slashActive) && s.optionOn]} onPress={() => insertBlock(block.kind)}>
+              <Pressable key={block.kind} role="menuitem" {...currentState(n === slashActive)} style={({ pressed }) => [s.option, (pressed || n === slashActive) && s.optionOn]} onPress={() => insertBlock(block.kind)}>
                 <View style={s.tile}><Text style={s.tileText}>{block.name.slice(0, 1)}</Text></View>
                 <View><Text style={s.optionName}>{block.name}</Text><Text style={s.optionHint}>{block.hint}</Text></View>
               </Pressable>
@@ -287,7 +287,7 @@ export function RichTextEditor({ defaultValue, label = 'Editor', placeholder = '
       <View role="toolbar" aria-label="Format blocks" style={s.row}>
         {FORMATS.map(({ kind, label: name, icon: glyph }) => {
           const on = (kind === 'heading' && current?.kind === 'h2') || (kind === 'quote' && current?.kind === 'quote') || (kind === 'list' && current?.kind === 'li')
-          return <IconButton key={kind} variant="ghost" size="md" icon={icon(glyph)} label={name} aria-selected={on} animated={animated} onPress={() => format(kind)} />
+          return <IconButton key={kind} variant="ghost" size="md" icon={icon(glyph)} label={name} {...pressedState(on)} animated={animated} onPress={() => format(kind)} />
         })}
         <IconButton variant="ghost" size="md" icon={icon('link')} label="Link" animated={animated} onPress={startLink} />
       </View>

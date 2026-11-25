@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { Easing, useAnimatedProps, useSharedValue, withTiming } from 'react-native-reanimated'
 import Svg, { Circle } from 'react-native-svg'
-import { radius, space, useColors, type Colors } from '../kit'
+import { pressedState, radius, space, useColors, type Colors } from '../kit'
 import { AVATAR_PEOPLE, Avatar, type AvatarPerson } from './avatar'
 import { Button } from './button'
 import { type RenderIcon, type, useStill, useThemed } from './card'
@@ -49,7 +49,7 @@ function ProgressRing({ percent, still }: { percent: number; still: boolean }) {
   const arc = useAnimatedProps(() => ({ strokeDashoffset: RING_LENGTH * (1 - shown.value / 100) }))
   return (
     <View style={styles.arc}>
-      <Svg width={RING_SIZE} height={RING_SIZE} fill="none">
+      <Svg aria-hidden width={RING_SIZE} height={RING_SIZE} fill="none">
         <AnimatedCircle animatedProps={arc} cx={RING_SIZE / 2} cy={RING_SIZE / 2} r={RING_RADIUS} stroke={colors.textInverse} strokeWidth={3} strokeDasharray={[RING_LENGTH, RING_LENGTH]} />
       </Svg>
     </View>
@@ -131,7 +131,7 @@ export function AvatarUpload({ maxMb = 5, pick, upload, onChange, samples = AVAT
         <Text style={styles.samplesLabel}>Or pick a sample</Text>
         <View style={styles.sampleRow}>
           {samples.map((person) => (
-            <Pressable key={person} accessibilityRole="button" accessibilityLabel={`Use the ${person} sample`} aria-selected={uploaded?.person === person} hitSlop={8} onPress={() => { setValue({ state: 'uploaded', name: `${person}.png`, size: 'sample', person }); onChange?.({ person }) }} style={styles.sample}>
+            <Pressable key={person} accessibilityRole="button" accessibilityLabel={`Use the ${person} sample`} {...pressedState(uploaded?.person === person)} hitSlop={8} onPress={() => { setValue({ state: 'uploaded', name: `${person}.png`, size: 'sample', person }); onChange?.({ person }) }} style={styles.sample}>
               <Avatar person={person} size="sm" animated={animated} />
             </Pressable>
           ))}

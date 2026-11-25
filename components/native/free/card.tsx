@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { Pressable, StyleSheet, Text, View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native'
 import Animated, { Easing, FadeIn, FadeInDown, ZoomIn, ZoomOut, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated'
 import Svg, { G, Rect } from 'react-native-svg'
-import { font, press, radius, space, useColors, useReduceMotion, type Colors } from '../kit'
+import { font, press, pressedState, radius, space, useColors, useReduceMotion, type Colors } from '../kit'
 
 /** Draws a fetaUI icon by name, for example `check` or `chevron-right`. The app owns the icon set. */
 export type RenderIcon = (name: string, size: number) => ReactNode
@@ -126,7 +126,7 @@ export function Card({ variant = 'tray', title, description, meta, media, header
         <AnimatedPressable
           accessibilityRole="button"
           accessibilityLabel={label}
-          aria-selected={selected}
+          {...pressedState(selected)}
           aria-disabled={!clickable}
           disabled={!clickable}
           onPress={onPress}
@@ -281,7 +281,7 @@ export function QrArt({ seed, size, finderRadius = 1 }: QrArtProps) {
     return list
   }, [seed])
   return (
-    <Svg width={size} height={size} viewBox="0 0 21 21" fill={colors.textPrimary} accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+    <Svg aria-hidden width={size} height={size} viewBox="0 0 21 21" fill={colors.textPrimary}>
       {cells.map(([x, y]) => <Rect key={`${x}-${y}`} x={x} y={y} width={1} height={1} rx={0.2} />)}
       {FINDERS.map(([x, y]) => (
         <G key={`${x}-${y}`}>

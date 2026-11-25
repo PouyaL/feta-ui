@@ -189,7 +189,7 @@ export function DetentDial({ value, defaultValue = 21, onValueChange, min = 16, 
             style={styles.dial}
             onAccessibilityAction={(e: AccessibilityActionEvent) => { if (!disabled) settle(snap(current + (e.nativeEvent.actionName === 'increment' ? step : -step))) }}
           >
-            <Svg width={SIZE} height={SIZE} style={StyleSheet.absoluteFill}>
+            <Svg aria-hidden width={SIZE} height={SIZE} style={StyleSheet.absoluteFill}>
               {Array.from({ length: count }, (_, i) => <Tick key={i} index={i} count={count} angle={angle} color={ink} />)}
             </Svg>
             <View style={styles.knob}>

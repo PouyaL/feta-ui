@@ -177,14 +177,14 @@ export function SignaturePad({ title = 'Sign to accept', onChange, onConfirm, re
           onLayout={(e: LayoutChangeEvent) => setFrame({ width: e.nativeEvent.layout.width, height: e.nativeEvent.layout.height })}
         >
           <View style={styles.baseline}>
-            <Svg width={Math.max(0, frame.width - space[5] * 2)} height={1}>
+            <Svg aria-hidden width={Math.max(0, frame.width - space[5] * 2)} height={1}>
               <Line x1={0} x2={Math.max(0, frame.width - space[5] * 2)} y1={0.5} y2={0.5} stroke={colors.ink10} strokeWidth={1} strokeDasharray={[1, 2]} />
             </Svg>
             <Text style={styles.cross}>×</Text>
           </View>
           {hintGone ? null : <Animated.Text {...(still ? {} : { entering: FadeIn.duration(FADE_MS), exiting: FadeOut.duration(FADE_MS) })} style={styles.hint}>Sign here</Animated.Text>}
           <Animated.View style={[StyleSheet.absoluteFill, fade]}>
-            <Svg ref={canvas} width={frame.width} height={frame.height}>
+            <Svg aria-hidden ref={canvas} width={frame.width} height={frame.height}>
               {strokes.map((d, i) => <Path key={i} d={d} fill={colors.textPrimary} />)}
               <AnimatedPath animatedProps={liveProps} fill={colors.textPrimary} />
             </Svg>

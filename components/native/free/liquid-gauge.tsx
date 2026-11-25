@@ -165,10 +165,10 @@ export function LiquidGauge({ used, total, unit = 'GB', label = 'Storage', icon,
         <View style={styles.readout}><Readout value={shownPercent} free={free} /></View>
         <Animated.View style={[styles.level, levelStyle]}>
           <Animated.View style={[styles.wave, styles.waveBack, waveStyle]}>
-            <Svg width={504} height={160} viewBox="0 0 504 160"><Path d={WAVE} fill={colors.textPrimary} opacity={BACK_WAVE_OPACITY} /></Svg>
+            <Svg aria-hidden width={504} height={160} viewBox="0 0 504 160"><Path d={WAVE} fill={colors.textPrimary} opacity={BACK_WAVE_OPACITY} /></Svg>
           </Animated.View>
           <Animated.View style={[styles.wave, waveStyle]}>
-            <Svg width={504} height={160} viewBox="0 0 504 160"><Path d={WAVE} fill={liquid} /></Svg>
+            <Svg aria-hidden width={504} height={160} viewBox="0 0 504 160"><Path d={WAVE} fill={liquid} /></Svg>
           </Animated.View>
           <View style={styles.clip}>
             <View style={[styles.fill, full && styles.fillFull]} />

@@ -51,7 +51,7 @@ function Mark({ text, mark, delay, still, textStyle }: { text: string; mark: Mar
       <Text style={textStyle}>{text}</Text>
       {mark !== 'highlight' && box.width > 0 ? (
         <View pointerEvents="none" style={styles.draw}>
-          <Svg width={w} height={h}>
+          <Svg aria-hidden width={w} height={h}>
             {mark === 'underline' ? <AnimatedLine x1={0} y1={h - 3} x2={w} y2={h - 3} {...line} /> : null}
             {mark === 'strike' ? <AnimatedLine x1={0} y1={h / 2} x2={w} y2={h / 2} {...line} /> : null}
             {mark === 'box' ? <AnimatedRect x={2} y={2} width={w - 4} height={h - 4} {...line} /> : null}

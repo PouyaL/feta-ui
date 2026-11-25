@@ -1,7 +1,7 @@
 import { Children, Fragment, useMemo, type ReactNode } from 'react'
 import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated'
-import { openLink, press, radius, space, type Colors } from '../kit'
+import { currentState, openLink, press, pressedState, radius, space, type Colors } from '../kit'
 import { type RenderIcon, type, useStill, useThemed } from './card'
 import { Separator } from './separator'
 
@@ -72,7 +72,7 @@ export function Item({ variant = 'default', size = 'md', media, title, descripti
       accessibilityRole={href ? 'link' : 'button'}
       accessibilityLabel={accessibilityLabel ?? (typeof title === 'string' ? title : undefined)}
       aria-disabled={disabled}
-      aria-selected={active}
+      {...(href ? currentState(active) : pressedState(active))}
       disabled={disabled}
       onPress={activate}
       onPressIn={() => { if (!still) scale.value = withSpring(ROW_SCALE, press.spring) }}

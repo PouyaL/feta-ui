@@ -58,6 +58,13 @@ export type ToastProps = ToastData & {
   onDismiss?: () => void
   /** Holds the undo ring. */
   paused?: boolean
+  /**
+   * Set by Toaster: the title becomes the button that pins the toast open or fans the stack out. It sits beside
+   * Dismiss and the actions instead of wrapping them, so screen readers reach every control.
+   */
+  onTitlePress?: () => void
+  /** Set by Toaster with onTitlePress: whether the toast is pinned open. */
+  titleExpanded?: boolean
   /** Icons for the Undo and Retry buttons. */
   renderIcon?: RenderIcon
   animated?: boolean
@@ -85,7 +92,7 @@ function UndoRing({ paused, animated, still, styles, ink }: { paused: boolean; a
   return (
     <View style={styles.undo}>
       {still ? null : (
-        <Svg width={16} height={16} viewBox="0 0 16 16" fill="none" style={styles.ring}>
+        <Svg aria-hidden width={16} height={16} viewBox="0 0 16 16" fill="none" style={styles.ring}>
           <AnimatedCircle animatedProps={ring} cx={8} cy={8} r={RING_R} stroke={ink} strokeWidth={1.5} strokeDasharray={[RING_LENGTH, RING_LENGTH]} />
         </Svg>
       )}
@@ -95,7 +102,7 @@ function UndoRing({ paused, animated, still, styles, ink }: { paused: boolean; a
 }
 
 /** The pill that melts into a card. Use `toast()` to show one; render this alone for previews. */
-export function Toast({ kind, title, description, action, cancel, progress, meta, shape = 'expanded', onDismiss, paused = false, renderIcon, animated = true, style }: ToastProps) {
+export function Toast({ kind, title, description, action, cancel, progress, meta, shape = 'expanded', onDismiss, paused = false, onTitlePress, titleExpanded = false, renderIcon, animated = true, style }: ToastProps) {
   const styles = useThemed(makeStyles)
   const colors = useColors()
   const still = useStill(animated)
@@ -123,7 +130,11 @@ export function Toast({ kind, title, description, action, cancel, progress, meta
       <View style={styles.head}>
         <View style={[styles.tab, collapsed ? styles.tabCollapsed : null]}>
           <BadgeState state={BADGE[kind]} label={null} animated={animated} />
-          <Text style={styles.title} numberOfLines={1}>{title}</Text>
+          {onTitlePress ? (
+            <Pressable accessibilityRole="button" accessibilityLabel={title} aria-expanded={titleExpanded} accessibilityHint="Shows the full notification" onPress={onTitlePress} style={styles.titlePress}>
+              <Text style={styles.title} numberOfLines={1}>{title}</Text>
+            </Pressable>
+          ) : <Text style={styles.title} numberOfLines={1}>{title}</Text>}
           {collapsed && hasBar ? <Text style={styles.mono}>{Math.round(progress)}%</Text> : null}
           {collapsed && undo && action ? (
             <Pressable accessibilityRole="button" accessibilityLabel={action.label} hitSlop={12} onPress={action.onPress} style={styles.inlineAction}>
@@ -131,7 +142,7 @@ export function Toast({ kind, title, description, action, cancel, progress, meta
             </Pressable>
           ) : null}
           {collapsed ? null : (
-            <Svg width={FILLET} height={FILLET} style={styles.fillet}>
+            <Svg aria-hidden width={FILLET} height={FILLET} style={styles.fillet}>
               <Path d={`M0 0 A${FILLET} ${FILLET} 0 0 0 ${FILLET} ${FILLET} L0 ${FILLET} Z`} fill={colors.muted} />
             </Svg>
           )}
@@ -283,11 +294,15 @@ function Item({ entry, index, heights, spread, top, animated, renderIcon, onHeig
           wide.value = e.nativeEvent.layout.width
           onHeight(entry.id, e.nativeEvent.layout.height)
         }}
-        style={[styles.item, top ? styles.itemTop : styles.itemBottom, top ? styles.originTop : styles.originBottom, stacked]}
+        style={[styles.item, top ? styles.itemTop : styles.itemBottom]}
       >
-        <Pressable accessibilityRole="button" accessibilityLabel={entry.title} aria-expanded={expanded} accessibilityHint="Shows the full notification" onPress={tap}>
-          <Toast {...entry} shape={shape} paused={paused} animated={animated} onDismiss={dismiss} {...(renderIcon ? { renderIcon } : {})} />
-        </Pressable>
+        {/* The stack motion sits on its own layer: a layout animation would overwrite opacity on the same view. */}
+        <Animated.View style={[styles.stackLayer, top ? styles.originTop : styles.originBottom, stacked]}>
+          {/* A tap anywhere on the toast works by touch; the title is the button screen readers use (see Toast). */}
+          <Pressable accessible={false} tabIndex={-1} onPress={tap}>
+            <Toast {...entry} shape={shape} paused={paused} onTitlePress={tap} titleExpanded={expanded} animated={animated} onDismiss={dismiss} {...(renderIcon ? { renderIcon } : {})} />
+          </Pressable>
+        </Animated.View>
       </Animated.View>
     </GestureDetector>
   )
@@ -303,7 +318,7 @@ export function Toaster({ position = 'bottom', inset = 8, renderIcon, animated =
   const measured = list.map(({ id }) => heights[id] ?? 40)
   const place = useMemo(() => (top ? { top: inset } : { bottom: inset }), [top, inset])
   return (
-    <View pointerEvents="box-none" accessibilityLabel="Notifications" accessibilityLiveRegion="polite" style={[styles.region, place]}>
+    <View pointerEvents="box-none" role="region" accessibilityLabel="Notifications" accessibilityLiveRegion="polite" style={[styles.region, place]}>
       {list.map((entry, index) => (
         <Item
           key={entry.id}
@@ -330,6 +345,7 @@ const makeStyles = (c: Colors) => StyleSheet.create({
   tabCollapsed: { borderRadius: radius.full },
   fillet: { position: 'absolute', left: '100%', bottom: 0 },
   title: { ...type(14, c.textPrimary, '500'), flexShrink: 1, lineHeight: 16 },
+  titlePress: { flexShrink: 1, minWidth: 0 },
   tray: { padding: space[1], borderTopRightRadius: radius.tray, borderBottomLeftRadius: radius.tray, borderBottomRightRadius: radius.tray, backgroundColor: c.muted, transformOrigin: 'top' },
   card: { gap: space[3], paddingVertical: space[3.5], paddingHorizontal: space[4], borderRadius: radius.card, borderWidth: 1, borderColor: c.ink8, backgroundColor: c.surface },
   description: { ...type(14, c.textSecondary), lineHeight: 20 },
@@ -344,6 +360,7 @@ const makeStyles = (c: Colors) => StyleSheet.create({
   ring: { transform: [{ rotate: '-90deg' }] },
   region: { position: 'absolute', left: space[4], right: space[4] },
   item: { position: 'absolute', left: 0, right: 0, alignItems: 'center' },
+  stackLayer: { alignSelf: 'stretch', alignItems: 'center' },
   itemTop: { top: 0 },
   itemBottom: { bottom: 0 },
   originTop: { transformOrigin: 'top' },

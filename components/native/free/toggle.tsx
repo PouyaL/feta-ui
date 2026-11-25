@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { StyleSheet, type GestureResponderEvent } from 'react-native'
 import Animated, { interpolateColor, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
-import { radius, space, useColors, type Colors } from '../kit'
+import { radius, space, toggleState, useColors, type Colors } from '../kit'
 import { EASE_OUT, HEIGHT, PressScale, TARGET, withInk, type PressScaleProps, type Spring } from './button'
 import { type, useStill, useThemed } from './card'
 
@@ -64,9 +64,8 @@ export function Toggle({ pressed, defaultPressed = false, onPressedChange, appea
 
   return (
     <PressScale
-      accessibilityRole={accessibilityRole}
+      {...(accessibilityRole === 'togglebutton' ? toggleState(on) : { accessibilityRole, 'aria-checked': on })}
       accessibilityLabel={accessibilityLabel ?? children}
-      aria-checked={on}
       aria-disabled={Boolean(disabled)}
       {...(accessibilityState ? { accessibilityState } : {})}
       still={still}

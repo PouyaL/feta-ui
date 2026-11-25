@@ -57,10 +57,10 @@ function Swatch({ option, on, off, still, onChoose }: { option: ColorOption; on:
       onPress={onChoose}
     >
       <Animated.View style={[StyleSheet.absoluteFill, ringStyle]}>
-        <Svg width={SWATCH} height={SWATCH}><Circle cx={SWATCH / 2} cy={SWATCH / 2} r={SWATCH / 2 - 1} stroke={option.color} strokeWidth={2} fill="none" /></Svg>
+        <Svg aria-hidden width={SWATCH} height={SWATCH}><Circle cx={SWATCH / 2} cy={SWATCH / 2} r={SWATCH / 2 - 1} stroke={option.color} strokeWidth={2} fill="none" /></Svg>
       </Animated.View>
       <View style={[styles.well, off && styles.wellOff]}>
-        <Svg width={36} height={36}>
+        <Svg aria-hidden width={36} height={36}>
           <Circle cx={18} cy={18} r={17.5} fill={colors.ink4} stroke={colors.ink10} strokeWidth={1} />
           <Circle cx={18} cy={18} r={10} fill={option.color} />
         </Svg>

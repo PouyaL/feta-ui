@@ -2,7 +2,7 @@ import { useMemo, useState, type ReactNode } from 'react'
 import { Pressable, StyleSheet, Text, View, useWindowDimensions, type NativeScrollEvent, type NativeSyntheticEvent, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { interpolate, useAnimatedRef, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue, type SharedValue } from 'react-native-reanimated'
 import Svg, { Path } from 'react-native-svg'
-import { radius, space, useColors, type Colors, hscroll } from '../kit'
+import { hscroll, pressedState, radius, space, useColors, type Colors } from '../kit'
 import { type RenderIcon, type, useStill, useThemed } from './card'
 import { IconButton } from './icon-button'
 
@@ -56,8 +56,8 @@ function Slide({ card, index, total, scroll, still, saved, onSave }: SlideProps)
       <View style={styles.scene}>
         {card.scene}
         {card.tag ? <View style={styles.tag}><Text style={styles.tagText}>{card.tag}</Text></View> : null}
-        <Pressable accessibilityRole="button" accessibilityLabel={`Save ${card.title}`} aria-selected={saved} hitSlop={6} onPress={onSave} style={styles.save}>
-          <Svg width={16} height={16} viewBox="0 0 24 24"><Path d={HEART} fill={saved ? colors.danger : 'none'} stroke={saved ? colors.danger : colors.textPrimary} strokeWidth={2} /></Svg>
+        <Pressable accessibilityRole="button" accessibilityLabel={`Save ${card.title}`} {...pressedState(saved)} hitSlop={6} onPress={onSave} style={styles.save}>
+          <Svg aria-hidden width={16} height={16} viewBox="0 0 24 24"><Path d={HEART} fill={saved ? colors.danger : 'none'} stroke={saved ? colors.danger : colors.textPrimary} strokeWidth={2} /></Svg>
         </Pressable>
       </View>
       <Animated.View style={[styles.details, details]}>

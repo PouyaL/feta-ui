@@ -121,7 +121,7 @@ export function TearButton({ title = 'Redeem ticket', meta = 'Tear the stub to c
           pointerEvents={torn ? 'none' : 'auto'}
           style={[styles.stub, torn && styles.stubFallen, stubStyle]}
         >
-          <Svg style={styles.perforation} width={2} height={HEIGHT}>
+          <Svg aria-hidden style={styles.perforation} width={2} height={HEIGHT}>
             <Line x1={1} y1={0} x2={1} y2={HEIGHT} stroke={colors.ink10} strokeWidth={2} strokeDasharray="2 4" strokeLinecap="round" />
           </Svg>
           {withInk(renderIcon('arrow-right', ICON_SIZE), colors.textPrimary)}

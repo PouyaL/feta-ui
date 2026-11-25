@@ -169,7 +169,9 @@ export function Combobox(props: ComboboxProps) {
           ref={input}
           id={field.id}
           role="combobox"
-          aria-expanded={open}
+          // Expanded only while the listbox is there: with no results the popup holds a plain message, and an
+          // expanded combobox must name what it controls.
+          aria-expanded={open && shown.length > 0}
           aria-controls={open && shown.length ? listId : undefined}
           aria-autocomplete="list"
           aria-activedescendant={open && shown[active] ? optionId(active) : undefined}

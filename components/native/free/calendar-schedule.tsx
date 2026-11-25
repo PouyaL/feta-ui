@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { Easing, FadeInDown } from 'react-native-reanimated'
-import { radius, space, useColors, type Colors } from '../kit'
+import { pressedState, radius, space, useColors, type Colors } from '../kit'
 import { type, useStill, useThemed, type RenderIcon } from './card'
 import { IconButton } from './icon-button'
 import { iconFor } from './label'
@@ -82,7 +82,7 @@ export function CalendarSchedule({ month: firstMonth, events, today, defaultSele
                     key={key(day)}
                     accessibilityLabel={`${long.format(day)}, ${list.length} ${list.length === 1 ? 'event' : 'events'}`}
                     accessibilityRole="button"
-                    aria-selected={on}
+                    {...pressedState(on)}
                     style={[styles.day, on && styles.dayOn]}
                     onPress={() => setSelected(day)}
                   >
@@ -98,26 +98,29 @@ export function CalendarSchedule({ month: firstMonth, events, today, defaultSele
             </View>
           ))}
         </View>
-        <Animated.View key={key(selected)} {...(still ? {} : { entering: riseIn(0) })} accessibilityLabel="Agenda" accessibilityLiveRegion="polite" style={styles.agenda}>
-          <View style={styles.agendaHead}>
-            <View style={styles.agendaTitle}>
-              <Text style={styles.agendaDay}>{long.format(selected)}</Text>
-              {today && key(today) === key(selected) ? <Text style={styles.today}>Today</Text> : null}
+        {/* The live region stays mounted, so a new day is read as a change; only the content inside remounts and rises. */}
+        <View role="group" accessibilityLabel="Agenda" accessibilityLiveRegion="polite" style={styles.agenda}>
+          <Animated.View key={key(selected)} {...(still ? {} : { entering: riseIn(0) })} style={styles.agendaBody}>
+            <View style={styles.agendaHead}>
+              <View style={styles.agendaTitle}>
+                <Text style={styles.agendaDay}>{long.format(selected)}</Text>
+                {today && key(today) === key(selected) ? <Text style={styles.today}>Today</Text> : null}
+              </View>
+              {onAdd ? <IconButton variant="outline" size="sm" animated={animated} label="Add event" icon={iconFor(renderIcon, 'plus', 16, colors.textPrimary)} onPress={() => onAdd(selected)} /> : null}
             </View>
-            {onAdd ? <IconButton variant="outline" size="sm" animated={animated} label="Add event" icon={iconFor(renderIcon, 'plus', 16, colors.textPrimary)} onPress={() => onAdd(selected)} /> : null}
-          </View>
-          {agenda.length ? (
-            <View style={styles.rows}>
-              {agenda.map((event, i) => (
-                <Animated.View key={event.id} {...(still ? {} : { entering: riseIn(i * STAGGER_MS) })} style={styles.row}>
-                  <Text style={[styles.rowTitle, event.tone && event.tone !== 'ink' ? styles.rowTone : null]}>{event.title}</Text>
-                  <Text style={styles.caption}>{event.time}</Text>
-                  {event.place ? <Text style={styles.caption}>{event.place}</Text> : null}
-                </Animated.View>
-              ))}
-            </View>
-          ) : <Text style={styles.empty}>Nothing planned</Text>}
-        </Animated.View>
+            {agenda.length ? (
+              <View style={styles.rows}>
+                {agenda.map((event, i) => (
+                  <Animated.View key={event.id} {...(still ? {} : { entering: riseIn(i * STAGGER_MS) })} style={styles.row}>
+                    <Text style={[styles.rowTitle, event.tone && event.tone !== 'ink' ? styles.rowTone : null]}>{event.title}</Text>
+                    <Text style={styles.caption}>{event.time}</Text>
+                    {event.place ? <Text style={styles.caption}>{event.place}</Text> : null}
+                  </Animated.View>
+                ))}
+              </View>
+            ) : <Text style={styles.empty}>Nothing planned</Text>}
+          </Animated.View>
+        </View>
       </View>
     </View>
   )
@@ -145,7 +148,8 @@ const createStyles = (c: Colors) => StyleSheet.create({
   toneSuccess: { backgroundColor: c.success },
   toneWarning: { backgroundColor: c.textSecondary },
   toneDanger: { backgroundColor: c.danger },
-  agenda: { borderTopColor: c.ink8, borderTopWidth: 1, gap: space[2], padding: space[4] },
+  agenda: { borderTopColor: c.ink8, borderTopWidth: 1, padding: space[4] },
+  agendaBody: { gap: space[2] },
   agendaHead: { alignItems: 'center', flexDirection: 'row', gap: space[2], justifyContent: 'space-between', minHeight: 36 },
   agendaTitle: { alignItems: 'baseline', flexDirection: 'row', flexShrink: 1, gap: space[1.5] },
   agendaDay: { ...type(15, c.textPrimary, '500'), flexShrink: 1 },

@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { Easing, FadeInUp, FadeOut } from 'react-native-reanimated'
-import { radius, space, useColors, type Colors } from '../kit'
+import { pressedState, radius, space, useColors, type Colors } from '../kit'
 import { Button } from './button'
 import { type, useStill, useThemed, type RenderIcon } from './card'
 import { IconButton } from './icon-button'
@@ -103,7 +103,7 @@ export function StayPicker({ month: firstMonth, priceFor, currency = '$', curren
                   accessibilityLabel={`${long.format(day)}, ${booked ? 'full' : `${currency}${price}`}`}
                   accessibilityRole="button"
                   aria-disabled={booked}
-                  aria-selected={start || end || inside}
+                  {...pressedState(start || end || inside)}
                   style={[styles.night, inside && styles.nightInside, (start || end) && styles.nightEnd, same(day, refused) && styles.nightRefused]}
                   onPress={() => { if (booked) { setReserved(false); setRefused(day) } else choose(day) }}
                 >

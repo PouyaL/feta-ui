@@ -132,7 +132,7 @@ export function WheelPicker({ value, defaultValue = '08:41', onValueChange, onCa
         <Wheel label="Hour" options={HOURS} index={hour} onIndex={setHour} onMoving={mark(0)} still={still} />
         <Wheel label="Minute" options={minutes} index={minute} onIndex={setMinute} onMoving={mark(1)} still={still} />
         <Wheel label="AM or PM" options={PERIODS} index={period} onIndex={setPeriod} onMoving={mark(2)} still={still} />
-        <Svg pointerEvents="none" width="100%" height={ROW * VISIBLE} style={StyleSheet.absoluteFill}>
+        <Svg aria-hidden pointerEvents="none" width="100%" height={ROW * VISIBLE} style={StyleSheet.absoluteFill}>
           <Defs>
             <LinearGradient id="mask" x1="0" y1="0" x2="0" y2="1">
               <Stop offset="0" stopColor={colors.surface} stopOpacity={1} />

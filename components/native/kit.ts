@@ -2,7 +2,7 @@
 // Needs React 19, so React Native 0.78 or newer: components take `ref` as a normal prop.
 // Ported from the web source, behaviour tested (tools/native) and run on the iOS Simulator (tools/native-app).
 // Skia is not a dependency: every component draws with react-native-svg and Reanimated.
-import { AccessibilityInfo, Linking, useColorScheme } from 'react-native'
+import { AccessibilityInfo, Linking, Platform, useColorScheme } from 'react-native'
 import { useEffect, useRef, useState } from 'react'
 
 export const space = { 0: 0, 0.5: 2, 1: 4, 1.5: 6, 2: 8, 2.5: 10, 3: 12, 3.5: 14, 4: 16, 4.5: 18, 5: 20, 6: 24, 7: 28, 8: 32, 10: 40, 12: 48, 14: 56 } as const
@@ -47,6 +47,29 @@ export const hscroll = { flexGrow: 0 } as const
 export const press = { scale: 0.98, spring: { stiffness: 600, damping: 32, mass: 1 } } as const
 
 export const font = { sans: 'TikTokSans', mono: 'IBMPlexMono', tracking: (size: number): number => size * -0.04 } as const
+
+/*
+ * States iOS and Android name differently from the web. React Native gives any element a `selected` state, which
+ * VoiceOver and TalkBack read out; the web (React Native Web) allows aria-selected only on tabs, options, rows and
+ * cells, and says the same thing with aria-pressed on a button and aria-current on a link or menu item. Spread one on
+ * the element, `{...pressedState(on)}`, and each platform hears its own word. React Native has no aria-pressed or
+ * aria-current, and the web has no togglebutton role, hence the split.
+ */
+const WEB = Platform.OS === 'web'
+
+/** A button that is on or picked: selected on iOS and Android, aria-pressed on the web. */
+export const pressedState = (on: boolean): { 'aria-selected'?: boolean; 'aria-pressed'?: boolean } => (WEB ? { 'aria-pressed': on } : { 'aria-selected': on })
+
+/** The current link, page, step or item: selected on iOS and Android, aria-current on the web. */
+export const currentState = (on: boolean, kind: 'page' | 'step' | 'true' = 'page'): { 'aria-selected'?: boolean; 'aria-current'?: 'page' | 'step' | 'true' } =>
+  (WEB ? (on ? { 'aria-current': kind } : {}) : { 'aria-selected': on })
+
+/** A data grid cell: the cell role on iOS and Android, gridcell on the web, where only a gridcell can be selected. */
+export const gridCellRole = WEB ? 'gridcell' : 'cell'
+
+/** A toggle button: the togglebutton role with checked on iOS and Android, a button with aria-pressed on the web. */
+export const toggleState = (on: boolean): { accessibilityRole: 'togglebutton' | 'button'; 'aria-checked'?: boolean; 'aria-pressed'?: boolean } =>
+  (WEB ? { accessibilityRole: 'button', 'aria-pressed': on } : { accessibilityRole: 'togglebutton', 'aria-checked': on })
 
 /** True when the person asked for less motion. */
 export function useReduceMotion(): boolean {

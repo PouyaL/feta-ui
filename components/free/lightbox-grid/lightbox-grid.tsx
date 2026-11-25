@@ -199,7 +199,9 @@ export function LightboxGrid({ title = 'Field trip', photos = PHOTOS, state, def
     if (info.offset.y > SWIPE_CLOSE) void dismiss()
   }
 
-  const fade = still ? {} : { initial: { opacity: 0 }, animate: { opacity: 1 }, transition: { duration: duration.fast } }
+  // Still keeps an opacity 1 target: the first render (before useStill knows the setting) starts the fade, and
+  // without a target it stopped near 0, so the grid stayed almost invisible under reduced motion.
+  const fade = still ? { animate: { opacity: 1 }, transition: { duration: 0 } } : { initial: { opacity: 0 }, animate: { opacity: 1 }, transition: { duration: duration.fast } }
   const held = view === 'dismissing'
 
   return (

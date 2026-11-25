@@ -163,7 +163,7 @@ export function MetalRing({ borderRadius = radius.card, ringCssPx = 1.5, strengt
   return (
     <Animated.View aria-hidden pointerEvents="none" onLayout={measure} style={[StyleSheet.absoluteFill, alphaStyle, style]}>
       {ready ? (
-        <Svg width={box.w} height={box.h}>
+        <Svg aria-hidden width={box.w} height={box.h}>
           <Rect x={band.x} y={band.y} width={band.width} height={band.height} rx={band.rx} ry={band.rx} fill="none" stroke={ink.lo} strokeWidth={ringCssPx} />
           {BAND_DASHES.map((dash) => (
             <RingDash key={dash.share} shape={band} turn={turn} period={band.length / BANDS} share={dash.share} pace={1} color={ink.hi} opacity={dash.opacity} strokeWidth={ringCssPx} />

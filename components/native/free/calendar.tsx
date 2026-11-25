@@ -1,7 +1,7 @@
 import { useMemo, useState, type ReactNode } from 'react'
 import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { Easing, FadeIn, FadeInLeft, FadeInRight, FadeOut, FadeOutLeft, FadeOutRight, ZoomIn } from 'react-native-reanimated'
-import { radius, space, useColors, type Colors } from '../kit'
+import { pressedState, radius, space, useColors, type Colors } from '../kit'
 import { Button } from './button'
 import { type, useStill, useThemed, type RenderIcon } from './card'
 import { IconButton } from './icon-button'
@@ -73,7 +73,7 @@ function Day({ day, label, outside, today, booked, off, band, start, end, chosen
       accessibilityLabel={label}
       accessibilityRole="button"
       aria-disabled={off || booked}
-      aria-selected={chosen}
+      {...pressedState(chosen)}
       disabled={off || booked}
       style={({ pressed }) => [styles.day, today && styles.today, outside && styles.outside, off && styles.off, band && styles.band, start && styles.bandStart, end && styles.bandEnd, pressed && !chosen && styles.pressed]}
       onPress={onPick}
@@ -216,7 +216,7 @@ export function Calendar(props: CalendarProps) {
       {timed ? (
         <View accessibilityLabel="Time" style={styles.slots}>
           {timed.slots.map((time) => (
-            <Button key={time} size="sm" shape="pill" variant={slot === time ? 'primary' : 'secondary'} animated={animated} aria-selected={slot === time} onPress={() => { setHeldSlot(time); timed.onSlotChange?.(time) }}>{time}</Button>
+            <Button key={time} size="sm" shape="pill" variant={slot === time ? 'primary' : 'secondary'} animated={animated} {...pressedState(slot === time)} onPress={() => { setHeldSlot(time); timed.onSlotChange?.(time) }}>{time}</Button>
           ))}
         </View>
       ) : null}

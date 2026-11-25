@@ -8,7 +8,7 @@ import { Label, iconFor, type LabelProps } from './label'
 const MESSAGE_MS = 180
 const OUT = Easing.bezierFn(0.23, 1, 0.32, 1)
 
-export type FieldLink = { hint: string | undefined; invalid: boolean; disabled: boolean; required: boolean; onFocus: () => void; onBlur: () => void }
+export type FieldLink = { label: string | undefined; hint: string | undefined; invalid: boolean; disabled: boolean; required: boolean; onFocus: () => void; onBlur: () => void }
 
 const FieldContext = createContext<FieldLink | null>(null)
 
@@ -20,6 +20,8 @@ export function useFieldControl({ invalid, disabled, required }: { invalid?: boo
     disabled: disabled ?? field?.disabled ?? false,
     required: required ?? field?.required ?? false,
     hint: field?.hint,
+    /** The field's label when it is plain text, so the control inside can be named by it. */
+    label: field?.label,
     onFocus: field?.onFocus,
     onBlur: field?.onBlur,
   }
@@ -55,13 +57,14 @@ export function Field({ label, description, error, valid, required = false, disa
   const invalid = Boolean(error)
   const help = invalid ? error : description
   const link = useMemo<FieldLink>(() => ({
+    label: typeof label === 'string' ? label : undefined,
     hint: typeof help === 'string' ? help : undefined,
     invalid,
     disabled,
     required,
     onFocus: () => setFocused(true),
     onBlur: () => setFocused(false),
-  }), [help, invalid, disabled, required])
+  }), [label, help, invalid, disabled, required])
 
   return (
     <View style={[styles.field, style]}>

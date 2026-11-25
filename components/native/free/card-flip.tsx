@@ -133,7 +133,7 @@ function HeldShade() {
   const dark = useColorScheme() === 'dark'
   const ink = dark ? colors.canvas : colors.inverse
   return (
-    <Svg width="100%" height="100%" style={StyleSheet.absoluteFill} pointerEvents="none">
+    <Svg aria-hidden width="100%" height="100%" style={StyleSheet.absoluteFill} pointerEvents="none">
       <Defs>
         <LinearGradient id="held-shade" x1="0" y1="0.1" x2="1" y2="0.9">
           <Stop offset="0" stopColor={ink} stopOpacity={0} />
@@ -203,7 +203,7 @@ export function CardFlip({ side, defaultSide = 'front', onSideChange, ticket = T
             <View style={[styles.layer, styles.heldFront]}>{faceFront}<HeldShade /></View>
           </>
         ) : (
-          <Pressable accessible={false} importantForAccessibility="no" style={StyleSheet.absoluteFill} onPress={flip}>
+          <Pressable accessible={false} tabIndex={-1} importantForAccessibility="no" style={StyleSheet.absoluteFill} onPress={flip}>
             {still ? (
               <>
                 <FadeFace on={current === 'front'} fades={reduce && animated}>{faceFront}</FadeFace>

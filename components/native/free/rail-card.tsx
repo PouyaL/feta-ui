@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import { Image, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native'
+import { Image, Platform, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { useAnimatedStyle, useSharedValue, withSequence, withTiming } from 'react-native-reanimated'
 import Svg, { Circle, Path, Rect } from 'react-native-svg'
 import { RAIL_SCENES, RAIL_TRIPS, type RailTrip, type SceneTone } from '../../free/rail-card/rail-scenes'
-import { accent, radius, space, type Colors } from '../kit'
+import { accent, pressedState, radius, space, type Colors } from '../kit'
 import { Badge } from './badge'
 import { Card, type RenderIcon, type, useStill, useThemed } from './card'
 import { IconButton } from './icon-button'
@@ -30,13 +30,15 @@ export type RailCardSceneProps = {
 /** A paper scene that keeps its tone in Light and Dark. Swap `trip`, or put an image in its place. */
 export function RailCardScene({ trip = 'Weekend in Lisbon', alt, style }: RailCardSceneProps) {
   return (
+    // `accessible` makes the drawing one element for VoiceOver and TalkBack; the web build of react-native-svg would
+    // write it to the DOM as an attribute, and role plus label already do the job there.
     <Svg
       width="100%"
       height="100%"
       viewBox="0 0 256 320"
       preserveAspectRatio="xMidYMid slice"
       style={style}
-      {...(alt ? { accessible: true, accessibilityRole: 'image' as const, accessibilityLabel: alt } : { 'aria-hidden': true })}
+      {...(alt ? { ...(Platform.OS === 'web' ? {} : { accessible: true }), accessibilityRole: 'image' as const, accessibilityLabel: alt } : { 'aria-hidden': true })}
     >
       <Rect width={256} height={320} fill={TONES.sky} />
       {RAIL_SCENES[trip].map((shape, index) => {
@@ -93,7 +95,7 @@ export function RailCard({ trip = 'Weekend in Lisbon', title = trip, location, d
 
   if (loading) {
     return (
-      <View accessibilityLabel="Loading trip" aria-busy style={[styles.rail, styles.skeleton, style]}>
+      <View role="group" accessibilityLabel="Loading trip" aria-busy style={[styles.rail, styles.skeleton, style]}>
         <Skeleton shape="block" height={IMAGE_HEIGHT} animated={!still} style={styles.boneImage} />
         <View style={styles.boneLines}>
           <Skeleton width="70%" height={12} animated={!still} />
@@ -117,7 +119,7 @@ export function RailCard({ trip = 'Weekend in Lisbon', title = trip, location, d
           {image ? <Image source={{ uri: image }} resizeMode="cover" style={styles.photo} /> : <RailCardScene trip={trip} />}
           <View style={styles.nights}><Badge variant="inverse" size="sm" mark={false} animated={animated}>{nights}</Badge></View>
           <Animated.View style={[styles.save, heartStyle]}>
-            <IconButton size="sm" variant={on ? 'primary' : 'secondary'} icon={renderIcon('heart', 16)} label={`Save ${title}`} aria-selected={on} animated={animated} onPress={toggle} />
+            <IconButton size="sm" variant={on ? 'primary' : 'secondary'} icon={renderIcon('heart', 16)} label={`Save ${title}`} {...pressedState(on)} animated={animated} onPress={toggle} />
           </Animated.View>
         </View>
         <View style={styles.text}>

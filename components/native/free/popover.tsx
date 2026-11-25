@@ -84,7 +84,7 @@ export type MarkName = keyof typeof STROKES
 export function Mark({ name, size = 16, color }: { name: MarkName; size?: number; color?: string }) {
   const colors = useColors()
   return (
-    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <Svg aria-hidden width={size} height={size} viewBox="0 0 24 24" fill="none">
       {name === 'search' ? <Circle cx={11} cy={11} r={6.5} stroke={color ?? colors.textPrimary} strokeWidth={1.5} /> : null}
       {STROKES[name].map((points) => <Polyline key={points} points={points} stroke={color ?? colors.textPrimary} strokeWidth={name === 'more' ? 2.5 : 1.5} strokeLinecap="round" strokeLinejoin="round" />)}
     </Svg>
@@ -300,7 +300,7 @@ export function Nub({ placed, fill, wash }: { placed: Placed; fill: string; wash
   }, [side, nub, turn])
   return (
     <Animated.View pointerEvents="none" style={[layer.nub, spot]}>
-      <Svg width={16} height={8} viewBox="0 0 16 8">
+      <Svg aria-hidden width={16} height={8} viewBox="0 0 16 8">
         <Path d={NUB_PATH} fill={fill} />
         {wash ? <Path d={NUB_PATH} fill={wash} /> : null}
       </Svg>

@@ -19,7 +19,7 @@ function Fade({ edge, shown }: { edge: Edge; shown: SharedValue<number> }) {
   const coords = edge === 'top' ? { x1: '0', y1: '0', x2: '0', y2: '1' } : edge === 'bottom' ? { x1: '0', y1: '1', x2: '0', y2: '0' } : { x1: '1', y1: '0', x2: '0', y2: '0' }
   return (
     <Animated.View pointerEvents="none" style={[styles[`fade_${edge}` as const], motion]}>
-      <Svg width="100%" height="100%">
+      <Svg aria-hidden width="100%" height="100%">
         <Defs>
           <LinearGradient id={`fade-${edge}`} {...coords}>
             <Stop offset="0" stopColor={colors.surface} />

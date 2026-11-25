@@ -30,7 +30,7 @@ export function ToneGlyph({ tone, size, color }: { tone: BadgeTone; size: number
   const name = TONE_GLYPH[tone]
   const line = { stroke: color, strokeWidth: 2.5, strokeLinecap: 'round', strokeLinejoin: 'round' } as const
   return (
-    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <Svg aria-hidden width={size} height={size} viewBox="0 0 24 24" fill="none">
       {name === 'check' ? <Polyline points="5 13 10 18 19 7" {...line} /> : null}
       {name === 'x' ? <><Line x1={6} y1={6} x2={18} y2={18} {...line} /><Line x1={18} y1={6} x2={6} y2={18} {...line} /></> : null}
       {name === 'info' ? <><Line x1={12} y1={11} x2={12} y2={18} {...line} /><Circle cx={12} cy={6} r={1.5} fill={color} /></> : null}
@@ -114,7 +114,7 @@ export function Badge({ tone = 'neutral', variant = 'soft', size = 'md', mark = 
       {mark ? <View style={[styles.mark, dot]}>{icon ?? <ToneGlyph tone={tone} size={metrics.glyph} color={solid.ink} />}</View> : null}
       {text !== null ? <Text style={[styles.label, label]} numberOfLines={1}>{text}</Text> : children}
       {href ? (
-        <Svg width={metrics.glyph} height={metrics.glyph} viewBox="0 0 24 24" fill="none" opacity={0.4}>
+        <Svg aria-hidden width={metrics.glyph} height={metrics.glyph} viewBox="0 0 24 24" fill="none" opacity={0.4}>
           <Polyline points="8 6 18 6 18 16" stroke={ink} strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" />
           <Line x1={18} y1={6} x2={6} y2={18} stroke={ink} strokeWidth={2.5} strokeLinecap="round" />
         </Svg>

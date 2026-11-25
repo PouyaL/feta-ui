@@ -101,7 +101,7 @@ export function DayStrip({ start, days = 5, value, defaultValue, onValueChange, 
     <ScrollView horizontal showsHorizontalScrollIndicator={false} bounces={false} style={[styles.scroller, style]} contentContainerStyle={styles.strip} accessibilityLabel="Day" accessibilityRole="radiogroup">
       {index >= 0 ? (
         <Animated.View style={[styles.pointer, pointer]}>
-          <Svg width={8} height={6}><Path d="M0 0h8L4 6Z" fill={colors.textPrimary} /></Svg>
+          <Svg aria-hidden width={8} height={6}><Path d="M0 0h8L4 6Z" fill={colors.textPrimary} /></Svg>
         </Animated.View>
       ) : null}
       {list.map((day) => {

@@ -117,7 +117,7 @@ const mercuryStyles = StyleSheet.create({
 function MercuryFill() {
   return (
     <View pointerEvents="none" style={mercuryStyles.clip}>
-      <Svg width={MEASURE_ROOM} height="100%" style={mercuryStyles.svg}>
+      <Svg aria-hidden width={MEASURE_ROOM} height="100%" style={mercuryStyles.svg}>
         <Defs>
           <LinearGradient id="mercury" x1="0" y1="0" x2="0" y2="1">
             {MERCURY_STOPS.map((stop) => <Stop key={stop.offset} offset={stop.offset} stopColor={stop.color} />)}

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { Pressable, StyleSheet, Text, View, type ViewInstance, type LayoutChangeEvent, type StyleProp, type ViewStyle } from 'react-native'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import Animated, { FadeIn, FadeOut, LinearTransition, runOnJS, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated'
-import { radius, space, useColors, type Colors } from '../kit'
+import { pressedState, radius, space, useColors, type Colors } from '../kit'
 import { withInk } from './button'
 import { type, useStill, useThemed } from './card'
 import { Kbd } from './kbd'
@@ -143,7 +143,7 @@ export function Toolbar({ tools, value, defaultValue, onValueChange, dock, defau
       <Tap
         accessibilityLabel={entry.label}
         accessibilityHint={entry.options ? 'Long press for more' : undefined}
-        aria-selected={on}
+        {...pressedState(on)}
         {...(entry.options ? { 'aria-expanded': flyout === entry.id } : {})}
         animated={animated}
         delayLongPress={LONG_PRESS_MS}

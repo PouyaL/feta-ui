@@ -71,7 +71,7 @@ export function TabBar({ items, value, defaultValue, onValueChange, appearance =
   const pill = useAnimatedStyle(() => ({ width: pillWidth.value, transform: [{ translateX: pillX.value }] }))
 
   return (
-    <View accessibilityRole="tabbar" accessibilityLabel={label} style={[floating ? styles.floating : styles.labeled, style]}>
+    <View role="tablist" accessibilityLabel={label} style={[floating ? styles.floating : styles.labeled, style]}>
       <View style={styles.list}>
         <Animated.View pointerEvents="none" style={[styles.pill, floating ? styles.pillFloating : styles.pillLabeled, pill]} />
         {items.map((item) => {

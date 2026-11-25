@@ -1,7 +1,7 @@
 import { useMemo, useState, type ReactNode } from 'react'
 import { Pressable, StyleSheet, Text, View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native'
 import Animated, { Easing, FadeInDown } from 'react-native-reanimated'
-import { radius, space, type Colors } from '../kit'
+import { pressedState, radius, space, type Colors } from '../kit'
 import { Button } from './button'
 import { panelEnter, rowEnter, type RenderIcon, type, useStill, useThemed } from './card'
 import { Checkbox } from './checkbox'
@@ -137,7 +137,7 @@ export function DataTable<Row>({ title, noun = 'rows', columns, rows, getId, fil
             {filters.flatMap((filter) => filter.options.map((option) => {
               const on = chips.some((chip) => chip.key === filter.key && chip.value === option)
               return (
-                <Pressable key={`${filter.key}-${option}`} accessibilityRole="button" accessibilityLabel={`${filter.label}: ${option}`} aria-selected={on} hitSlop={8} onPress={() => toggleChip(filter.key, option)} style={[styles.chip, on ? styles.chipOn : null]}>
+                <Pressable key={`${filter.key}-${option}`} accessibilityRole="button" accessibilityLabel={`${filter.label}: ${option}`} {...pressedState(on)} hitSlop={8} onPress={() => toggleChip(filter.key, option)} style={[styles.chip, on ? styles.chipOn : null]}>
                   <Text style={[styles.chipText, on ? styles.chipTextOn : null]}>{option}</Text>
                 </Pressable>
               )

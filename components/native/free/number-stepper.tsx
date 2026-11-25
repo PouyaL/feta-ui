@@ -73,7 +73,7 @@ const ROLL_MS = 200
 function Rolling({ value, still, style }: { value: string; still: boolean; style: StyleProp<TextStyle> }) {
   const styles = useStyles()
   return (
-    <View accessible accessibilityLabel={value} style={styles.rolling}>
+    <View accessible accessibilityRole="image" accessibilityLabel={value} style={styles.rolling}>
       {Array.from(value, (char, i) => <Animated.Text key={`${i}-${char}`} {...(still ? {} : { entering: FadeInDown.duration(ROLL_MS) })} style={style}>{char}</Animated.Text>)}
     </View>
   )

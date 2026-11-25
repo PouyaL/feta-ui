@@ -3,7 +3,7 @@ import { Pressable, StyleSheet, Text, View, type AccessibilityActionEvent, type 
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import Animated, { cancelAnimation, runOnJS, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated'
 import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg'
-import { radius, space, useColors, type Colors } from '../kit'
+import { pressedState, radius, space, useColors, type Colors } from '../kit'
 import { Button } from './button'
 import { type, useStill, useThemed } from './card'
 import { RollingText } from './label'
@@ -167,7 +167,7 @@ export function TipSelector({ subtotal, name = 'Sam', note, currency = '$', pres
               ))}
             </Animated.View>
             <View style={[styles.needle, dragging && styles.needleDragging]} />
-            <Svg pointerEvents="none" width="100%" height={WINDOW_HEIGHT} style={StyleSheet.absoluteFill}>
+            <Svg aria-hidden pointerEvents="none" width="100%" height={WINDOW_HEIGHT} style={StyleSheet.absoluteFill}>
               <Defs>
                 <LinearGradient id="edges" x1="0" y1="0" x2="1" y2="0">
                   <Stop offset="0" stopColor={colors.surface} stopOpacity={1} />
@@ -184,12 +184,12 @@ export function TipSelector({ subtotal, name = 'Sam', note, currency = '$', pres
           {presets.map((preset) => {
             const on = roundTip === null && percent === preset
             return (
-              <Pressable key={preset} accessibilityLabel={`${preset}%`} accessibilityRole="button" aria-disabled={status !== 'idle'} aria-selected={on} disabled={status !== 'idle'} style={[styles.chip, on && styles.chipOn, status !== 'idle' && styles.chipOff]} onPress={() => choose(preset)}>
+              <Pressable key={preset} accessibilityLabel={`${preset}%`} accessibilityRole="button" aria-disabled={status !== 'idle'} {...pressedState(on)} disabled={status !== 'idle'} style={[styles.chip, on && styles.chipOn, status !== 'idle' && styles.chipOff]} onPress={() => choose(preset)}>
                 <Text style={[styles.chipText, on && styles.chipTextOn]}>{preset}%</Text>
               </Pressable>
             )
           })}
-          <Pressable accessibilityLabel="Round up" accessibilityRole="button" aria-disabled={status !== 'idle'} aria-selected={roundTip !== null} disabled={status !== 'idle'} style={[styles.chip, roundTip !== null && styles.chipOn, status !== 'idle' && styles.chipOff]} onPress={roundUp}>
+          <Pressable accessibilityLabel="Round up" accessibilityRole="button" aria-disabled={status !== 'idle'} {...pressedState(roundTip !== null)} disabled={status !== 'idle'} style={[styles.chip, roundTip !== null && styles.chipOn, status !== 'idle' && styles.chipOff]} onPress={roundUp}>
             <Text style={[styles.chipText, roundTip !== null && styles.chipTextOn]}>Round up</Text>
           </Pressable>
         </View>

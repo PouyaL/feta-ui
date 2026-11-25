@@ -99,7 +99,7 @@ export function ItemGroup({ title, separated = true, className, children, ...res
       <ul className={styles.card}>
         {rows.map((row, i) => (
           <Fragment key={i}>
-            {i > 0 && separated ? <li role="none" className={styles.inset}><Separator /></li> : null}
+            {i > 0 && separated ? <li aria-hidden="true" className={styles.inset}><Separator /></li> : null}
             <li>{row}</li>
           </Fragment>
         ))}

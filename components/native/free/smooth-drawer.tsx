@@ -188,7 +188,7 @@ export type SmoothOptionProps = {
 export function SmoothOption({ title, meta, price, selected, onSelect, accessibilityLabel, animated = true, style }: SmoothOptionProps) {
   const styles = useThemed(createStyles)
   return (
-    <Tap accessibilityRole="radio" accessibilityLabel={accessibilityLabel ?? (typeof title === 'string' ? title : undefined)} aria-selected={selected} aria-checked={selected} animated={animated} onPress={onSelect} style={[styles.option, selected && styles.optionOn, style]}>
+    <Tap accessibilityRole="radio" accessibilityLabel={accessibilityLabel ?? (typeof title === 'string' ? title : undefined)} aria-checked={selected} animated={animated} onPress={onSelect} style={[styles.option, selected && styles.optionOn, style]}>
       <View style={styles.optionText}>
         <Copy style={styles.optionTitle}>{title}</Copy>
         {meta ? <Copy style={styles.meta}>{meta}</Copy> : null}

@@ -141,7 +141,7 @@ function Spark({ points, still }: { points: number[]; still: boolean }) {
   return (
     <View style={styles.spark} onLayout={(event) => setWidth(event.nativeEvent.layout.width)} accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
       {scale > 0 ? (
-        <Svg width={width} height={SPARK_HEIGHT}>
+        <Svg aria-hidden width={width} height={SPARK_HEIGHT}>
           <AnimatedPath animatedProps={areaProps} d={`${line} L ${width} ${SPARK_HEIGHT} L 0 ${SPARK_HEIGHT} Z`} fill={colors.ink5} />
           <AnimatedPath animatedProps={lineProps} d={line} fill="none" stroke={colors.textPrimary} strokeWidth={1.5} strokeLinejoin="round" strokeDasharray={[length, length]} />
         </Svg>
@@ -276,7 +276,7 @@ function Notes({ data, size, animated, still, onItemsChange }: { data: NotesData
       <View style={styles.todos}>
         {shown.map((item) => (
           <Pressable key={item.id} accessibilityRole="checkbox" accessibilityLabel={item.text} aria-checked={item.done} hitSlop={NOTE_SLOP} style={styles.todo} onPress={() => toggle(item.id, !item.done)}>
-            <View pointerEvents="none" accessibilityElementsHidden importantForAccessibility="no-hide-descendants"><Checkbox checked={item.done} animated={animated} /></View>
+            <Checkbox decorative checked={item.done} animated={animated} />
             <Text style={[styles.compact, styles.todoText, item.done && styles.todoDone]} numberOfLines={1}>{item.text}</Text>
           </Pressable>
         ))}

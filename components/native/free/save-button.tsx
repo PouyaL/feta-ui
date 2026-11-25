@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Modal, Pressable, StyleSheet, Text, View, useWindowDimensions, type StyleProp, type ViewInstance, type ViewStyle } from 'react-native'
 import Animated, { LayoutAnimationConfig, runOnJS, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated'
-import { accent, radius, space, useColors, type Colors } from '../kit'
+import { accent, radius, space, toggleState, useColors, type Colors } from '../kit'
 import { EASE_OUT, HEIGHT, ICON_SIZE, LabelSwap, PressScale, withInk, type Spring } from './button'
 import { type, useStill, useThemed, type RenderIcon } from './card'
 
@@ -124,9 +124,8 @@ export function SaveButton({ collections = DEFAULTS, defaultSelected = [], onCha
     <View style={[styles.root, style]}>
       <PressScale
         ref={trigger}
-        accessibilityRole="togglebutton"
+        {...toggleState(saved)}
         accessibilityLabel={text}
-        aria-checked={saved}
         aria-disabled={off}
         aria-expanded={open}
         still={still}
@@ -155,9 +154,8 @@ export function SaveButton({ collections = DEFAULTS, defaultSelected = [], onCha
               return (
                 <Pressable
                   key={collection.id}
-                  accessibilityRole="togglebutton"
+                  {...toggleState(on)}
                   accessibilityLabel={collection.name}
-                  aria-checked={on}
                   style={({ pressed }) => [styles.row, (on || pressed) && styles.rowOn]}
                   onPress={() => update(on ? selected.filter((item) => item !== collection.id) : [...selected, collection.id])}
                 >

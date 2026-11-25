@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, type TextInputInstance, View, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { Easing, FadeInUp, FadeOut, LinearTransition, ZoomIn, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
-import { font, radius, space, useColors, type Colors } from '../kit'
+import { currentState, font, radius, space, useColors, type Colors } from '../kit'
 import { type, useStill, useThemed, type RenderIcon } from './card'
 import { useFieldControl } from './field'
 import { IconButton } from './icon-button'
@@ -113,7 +113,7 @@ export function Combobox(props: ComboboxProps) {
 
   return (
     <View style={[styles.combobox, style]}>
-      <Pressable accessible={false} disabled={field.disabled} onPress={() => input.current?.focus()}>
+      <Pressable accessible={false} tabIndex={-1} disabled={field.disabled} onPress={() => input.current?.focus()}>
         <Animated.View style={[styles.field, field.disabled && styles.disabled, ring]}>
           {loading ? <Spinner size={16} label={null} color={colors.textSecondary} animated={animated} /> : iconFor(renderIcon, 'search', 16, colors.textSecondary)}
           {chips.map((value) => {
@@ -165,7 +165,7 @@ export function Combobox(props: ComboboxProps) {
                     key={option.value}
                     accessibilityLabel={option.label}
                     accessibilityRole="menuitem"
-                    aria-selected={on}
+                    {...currentState(on)}
                     aria-disabled={Boolean(option.disabled)}
                     disabled={option.disabled ?? false}
                     style={({ pressed }) => [styles.item, pressed && styles.itemPressed, option.disabled && styles.itemOff]}

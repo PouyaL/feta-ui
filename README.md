@@ -242,6 +242,7 @@ With Pro, send your key as the `X-API-Key` header and the same tools return Pro 
 - Keyboard focus plays an icon's motion when the icon sits inside a button, a link or a focusable element.
 - Icons are `aria-hidden` by default. Pass `aria-label` when an icon carries meaning on its own.
 - Components follow the WAI-ARIA patterns for their role, with full keyboard support. Each docs page lists its keys.
+- Every component is tested with axe in its default and key states, with its keyboard keys and with reduced motion on, and mounted hundreds of times to check that nothing leaks.
 
 ## Free and Pro
 

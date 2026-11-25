@@ -67,7 +67,9 @@ export function TypeWriter({ steps, styleKind = 'soft', loop = true, animated = 
   useEffect(() => {
     if (still) return undefined
     let alive = true
-    const wait = (ms: number): Promise<void> => new Promise((done) => setTimeout(done, ms))
+    // The pending pause is cleared on unmount, so no timer outlives the component.
+    let pause: ReturnType<typeof setTimeout> | undefined
+    const wait = (ms: number): Promise<void> => new Promise((done) => { pause = setTimeout(done, ms) })
     async function run(): Promise<void> {
       for (let index = 0; alive; index = loop ? (index + 1) % steps.length : index + 1) {
         const step = steps.length > index ? normal(steps[index]) : null
@@ -99,7 +101,7 @@ export function TypeWriter({ steps, styleKind = 'soft', loop = true, animated = 
       }
     }
     void run()
-    return () => { alive = false }
+    return () => { alive = false; clearTimeout(pause) }
   }, [still, loop, key]) // eslint-disable-line react-hooks/exhaustive-deps -- `key` stands for `steps`.
 
   const caret = useAnimatedStyle(() => ({ opacity: blink.value }))

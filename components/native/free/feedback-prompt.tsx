@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { Easing, FadeInDown, FadeOut, LinearTransition } from 'react-native-reanimated'
-import { radius, space, type Colors } from '../kit'
+import { pressedState, radius, space, type Colors } from '../kit'
 import { Button } from './button'
 import { EASE_STANDARD, panelEnter, type RenderIcon, type, useStill, useThemed } from './card'
 import { Input } from './input'
@@ -57,8 +57,8 @@ export function FeedbackPrompt({ question = 'Was this helpful?', reasons = ['Ina
             <View style={styles.head}>
               <Text accessibilityRole="header" style={styles.question}>{question}</Text>
               <View style={styles.choices}>
-                <Button size="sm" variant={stage === 'positive' ? 'primary' : 'secondary'} leadingIcon={renderIcon('check', 16)} aria-selected={stage === 'positive'} animated={animated} onPress={() => setStage('positive')}>Yes</Button>
-                <Button size="sm" variant={stage === 'negative' ? 'primary' : 'secondary'} leadingIcon={renderIcon('x', 16)} aria-selected={stage === 'negative'} animated={animated} onPress={() => setStage('negative')}>No</Button>
+                <Button size="sm" variant={stage === 'positive' ? 'primary' : 'secondary'} leadingIcon={renderIcon('check', 16)} {...pressedState(stage === 'positive')} animated={animated} onPress={() => setStage('positive')}>Yes</Button>
+                <Button size="sm" variant={stage === 'negative' ? 'primary' : 'secondary'} leadingIcon={renderIcon('x', 16)} {...pressedState(stage === 'negative')} animated={animated} onPress={() => setStage('negative')}>No</Button>
               </View>
             </View>
             {stage === 'negative' ? (

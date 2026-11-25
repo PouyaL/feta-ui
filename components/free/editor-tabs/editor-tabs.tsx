@@ -56,13 +56,15 @@ function Tab({ file, on, still, uid, showClose, onChoose, onClose, onKeyDown }: 
         onPointerEnter={text.handlers.onPointerEnter}
         onPointerLeave={text.handlers.onPointerLeave}
         onPointerDown={text.handlers.onPointerDown}
-        onKeyDown={onKeyDown}
+        aria-keyshortcuts={showClose ? 'Delete' : undefined}
+        onKeyDown={(e) => { if (showClose && (e.key === 'Delete' || e.key === 'Backspace')) { e.preventDefault(); onClose(); return } onKeyDown(e) }}
       >
         <span className={styles.icon}>{fileIcon(file)}</span>
         <span className={styles.name}>{text.label}</span>
         {file.modified ? <span className={styles.dot}><span className={styles.srOnly}>Unsaved changes</span></span> : null}
       </button>
-      {showClose ? <motion.button type="button" className={styles.close} aria-label={`Close ${file.name}`} tabIndex={on ? 0 : -1} onClick={onClose} {...(still ? {} : { whileTap: { scale: scalePress } })} transition={spring.press}><XIcon /></motion.button> : null}
+      {/* A tablist may only own tabs, so the close mark is for the pointer; keys close with Delete on the tab. */}
+      {showClose ? <motion.button type="button" className={styles.close} aria-hidden="true" tabIndex={-1} onClick={onClose} {...(still ? {} : { whileTap: { scale: scalePress } })} transition={spring.press}><XIcon /></motion.button> : null}
     </div>
   )
 }

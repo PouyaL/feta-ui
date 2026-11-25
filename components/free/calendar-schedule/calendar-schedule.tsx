@@ -91,21 +91,24 @@ export function CalendarSchedule({ month: firstMonth, events, today, defaultSele
             })}
           </div>
         </div>
-        <motion.aside key={key(selected)} className={styles.agenda} aria-label="Agenda" aria-live="polite" initial={still ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: still ? 0 : duration.open, ease: ease.out }}>
-          <header className={styles.agendaHead}>
-            <span>{long.format(selected)}{today && key(today) === key(selected) ? <i className={styles.today}>Today</i> : null}</span>
-            <IconButton variant="outline" size="sm" animated={animated} label="Add event" icon={<PlusIcon />} onClick={() => onAdd?.(selected)} />
-          </header>
-          {agenda.length ? (
-            <ul className={styles.rows}>
-              {agenda.map((event, i) => (
-                <motion.li key={event.id} className={styles.row} data-tone={event.tone ?? 'ink'} initial={still ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: still ? 0 : duration.open, ease: ease.out, delay: still ? 0 : i * STAGGER }}>
-                  <b>{event.title}</b><span>{event.time}</span>{event.place ? <span>{event.place}</span> : null}
-                </motion.li>
-              ))}
-            </ul>
-          ) : <p className={styles.empty}>Nothing planned</p>}
-        </motion.aside>
+        {/* The live region stays mounted, so a new day's agenda is announced; only its content is swapped. */}
+        <aside className={styles.agenda} aria-label="Agenda" aria-live="polite">
+          <motion.div key={key(selected)} className={styles.agendaSwap} initial={still ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: still ? 0 : duration.open, ease: ease.out }}>
+            <header className={styles.agendaHead}>
+              <span>{long.format(selected)}{today && key(today) === key(selected) ? <i className={styles.today}>Today</i> : null}</span>
+              <IconButton variant="outline" size="sm" animated={animated} label="Add event" icon={<PlusIcon />} onClick={() => onAdd?.(selected)} />
+            </header>
+            {agenda.length ? (
+              <ul className={styles.rows}>
+                {agenda.map((event, i) => (
+                  <motion.li key={event.id} className={styles.row} data-tone={event.tone ?? 'ink'} initial={still ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: still ? 0 : duration.open, ease: ease.out, delay: still ? 0 : i * STAGGER }}>
+                    <b>{event.title}</b><span>{event.time}</span>{event.place ? <span>{event.place}</span> : null}
+                  </motion.li>
+                ))}
+              </ul>
+            ) : <p className={styles.empty}>Nothing planned</p>}
+          </motion.div>
+        </aside>
       </div>
     </section>
   )

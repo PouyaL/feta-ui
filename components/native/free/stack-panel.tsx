@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState, type ReactNode } from 'react'
-import { AccessibilityInfo, Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native'
+import { AccessibilityInfo, Platform, Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import Animated, { Easing, ZoomIn, runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
 import { font, radius, space, useColors, type Colors } from '../kit'
@@ -47,6 +47,12 @@ export type StackPanelProps = {
 const parentOf = (path: string[], root: string): string | null => (path.length ? path[path.length - 2] ?? root : null)
 
 /** A settings panel that drills into pages and back. Swipe back reveals the parent underneath. */
+/** A row's name and its detail: the detail is the value on iOS and Android; the web has no value on a button, so it joins the name. */
+const rowName = (label: string, detail: string | undefined): { accessibilityLabel: string; 'aria-valuetext'?: string } => {
+  if (detail === undefined) return { accessibilityLabel: label }
+  return Platform.OS === 'web' ? { accessibilityLabel: `${label}, ${detail}` } : { accessibilityLabel: label, 'aria-valuetext': detail }
+}
+
 export function StackPanel({ pages, root, defaultPath = [], onPathChange, animated = true, style }: StackPanelProps) {
   const styles = useThemed(createStyles)
   const colors = useColors()
@@ -139,7 +145,7 @@ export function StackPanel({ pages, root, defaultPath = [], onPathChange, animat
       )
     }
     return (
-      <Pressable key={row.id} accessibilityRole="button" accessibilityLabel={row.label} {...(row.detail ? { 'aria-valuetext': row.detail } : {})} onPress={() => push(row.to)} style={line}>
+      <Pressable key={row.id} accessibilityRole="button" {...rowName(row.label, row.detail)} onPress={() => push(row.to)} style={line}>
         {row.icon ?? null}
         <View style={styles.rowLabel}><Text style={styles.label}>{row.label}</Text></View>
         {row.detail ? <Text style={styles.detail}>{row.detail}</Text> : null}

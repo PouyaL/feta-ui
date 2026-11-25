@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode, type RefObject } from 'react'
 import { ScrollView, StyleSheet, Text, View, type ViewInstance, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { FadeInUp, FadeOut, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated'
-import { radius, space, useColors, type Colors } from '../kit'
+import { currentState, pressedState, radius, space, useColors, type Colors } from '../kit'
 import { withInk } from './button'
 import { type, useStill, useThemed } from './card'
 import { MenuTurn } from './dropdown-menu'
@@ -98,7 +98,7 @@ export function NavItem({ label, kind = 'item', icon, count, chevron = false, op
       <Tap
         accessibilityRole={href === undefined ? 'button' : 'link'}
         accessibilityLabel={label}
-        aria-selected={active}
+        {...(href === undefined ? pressedState(active) : currentState(active))}
         aria-disabled={disabled}
         {...(chevron ? { 'aria-expanded': open } : {})}
         animated={animated}

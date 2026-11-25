@@ -97,7 +97,7 @@ export function PhotoStraighten({ src, alt, tilt = 0, defaultAngle = 0, autoLeve
           <View pointerEvents="none" style={styles.fill}>
             {/* The rule-of-thirds grid as plain lines. A percentage-sized Pattern made react-native-svg on iOS draw tiles
                 many times the box and run out of memory (CALayer setBounds abort). */}
-            <Svg width="100%" height="100%">
+            <Svg aria-hidden width="100%" height="100%">
               {['33.333%', '66.667%'].map((at) => (
                 <Line key={`v${at}`} x1={at} y1="0" x2={at} y2="100%" stroke={colors.surface} strokeOpacity={0.4} />
               ))}
@@ -116,7 +116,7 @@ export function PhotoStraighten({ src, alt, tilt = 0, defaultAngle = 0, autoLeve
       <View style={styles.controls}>
         <View style={styles.row}>
           <Button variant="ghost" shape="pill" size="sm" animated={animated} status={auto ? 'loading' : 'idle'} leadingIcon={renderIcon('sparkles', 16)} onPress={() => { void runAuto() }}>Auto</Button>
-          <AnimatedInput editable={false} pointerEvents="none" animatedProps={label} style={styles.angle} />
+          <AnimatedInput aria-hidden tabIndex={-1} editable={false} pointerEvents="none" animatedProps={label} style={styles.angle} />
           <Button variant="ghost" shape="pill" size="sm" animated={animated} disabled={settled === 0} leadingIcon={renderIcon('rotate-ccw', 16)} onPress={() => settle(0)}>Reset</Button>
         </View>
         <GestureDetector gesture={pan}>
@@ -133,7 +133,7 @@ export function PhotoStraighten({ src, alt, tilt = 0, defaultAngle = 0, autoLeve
             style={styles.ruler}
           >
             <Animated.View style={[styles.scale, scale]}>
-              <Svg width={LIMIT * 2 * POINTS_PER_DEGREE + 2} height={TICK}>
+              <Svg aria-hidden width={LIMIT * 2 * POINTS_PER_DEGREE + 2} height={TICK}>
                 {Array.from({ length: LIMIT * 2 + 1 }, (_, i) => <Line key={i} x1={i * POINTS_PER_DEGREE + 1} x2={i * POINTS_PER_DEGREE + 1} y1={0} y2={i % 5 === 0 ? TICK : TICK / 2} stroke={colors.ink10} />)}
               </Svg>
               <View style={styles.labels}>{LABELS.map((value) => <Text key={value} style={styles.tick}>{value}</Text>)}</View>

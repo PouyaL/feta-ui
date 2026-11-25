@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ReactNode } from 'react'
+import { useEffect, useId, useMemo, useState, type ReactNode } from 'react'
 import { StyleSheet, Text, View, type DimensionValue, type LayoutChangeEvent, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { Easing, cancelAnimation, useAnimatedStyle, useSharedValue, withDelay, withRepeat, withSequence, withTiming } from 'react-native-reanimated'
 import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg'
@@ -65,6 +65,8 @@ export function Skeleton({ shape = 'line', width, height, shimmer = true, delay 
     return { height: tall, width: shape === 'circle' ? tall : (width ?? '100%') }
   }, [shape, width, height])
   const measure = (e: LayoutChangeEvent): void => setWide(e.nativeEvent.layout.width)
+  // One gradient id per skeleton, so a screen of skeletons never shares defs.
+  const sheenId = `sheen${useId().replace(/[^a-zA-Z0-9]/g, '')}`
 
   return (
     <Animated.View
@@ -75,15 +77,15 @@ export function Skeleton({ shape = 'line', width, height, shimmer = true, delay 
     >
       {sheen && band > 0 ? (
         <Animated.View style={[styles.sheen, slide]}>
-          <Svg width={band} height="100%">
+          <Svg aria-hidden width={band} height="100%">
             <Defs>
-              <LinearGradient id="sheen" x1="0" y1="0" x2="1" y2="0">
+              <LinearGradient id={sheenId} x1="0" y1="0" x2="1" y2="0">
                 <Stop offset="0" stopColor={colors.ink8} stopOpacity={0} />
                 <Stop offset="0.5" stopColor={colors.ink8} />
                 <Stop offset="1" stopColor={colors.ink8} stopOpacity={0} />
               </LinearGradient>
             </Defs>
-            <Rect width={band} height="100%" fill="url(#sheen)" />
+            <Rect width={band} height="100%" fill={`url(#${sheenId})`} />
           </Svg>
         </Animated.View>
       ) : null}

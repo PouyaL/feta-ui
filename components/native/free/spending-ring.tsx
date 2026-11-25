@@ -63,7 +63,7 @@ function Arc({ on, share, start, still, color }: { on: boolean; share: number; s
     return { r, strokeWidth: CENTER * (1 - ratio.value), strokeDasharray: [share * length, length] }
   })
   const rest = strokeFor(on ? RATIO_ON : RATIO_REST)
-  return <G rotation={(start * 360) / TAU} origin={`${CENTER}, ${CENTER}`}><AnimatedCircle animatedProps={props} cx={CENTER} cy={CENTER} r={rest.r} fill="none" stroke={color} /></G>
+  return <G transform={`rotate(${(start * 360) / TAU} ${CENTER} ${CENTER})`}><AnimatedCircle animatedProps={props} cx={CENTER} cy={CENTER} r={rest.r} fill="none" stroke={color} /></G>
 }
 
 /** A monochrome donut. The selected category is ink and thicker, and the rest stay at 10%. */
@@ -103,7 +103,7 @@ export function SpendingRing({ categories, title = 'October spending', total, va
         <Svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`} accessibilityRole="image" accessibilityLabel={categories.map((item) => `${item.name} ${format(item.amount)}`).join(', ')}>
           <Defs>
             <Mask id="spending-sweep" x={0} y={0} width={SIZE} height={SIZE} maskUnits="userSpaceOnUse">
-              <G rotation={-90} origin={`${CENTER}, ${CENTER}`}><AnimatedCircle animatedProps={maskProps} cx={CENTER} cy={CENTER} r={MASK_R} fill="none" stroke="white" strokeWidth={CENTER} strokeDasharray={[MASK_LENGTH, MASK_LENGTH]} /></G>
+              <G transform={`rotate(-90 ${CENTER} ${CENTER})`}><AnimatedCircle animatedProps={maskProps} cx={CENTER} cy={CENTER} r={MASK_R} fill="none" stroke="white" strokeWidth={CENTER} strokeDasharray={[MASK_LENGTH, MASK_LENGTH]} /></G>
             </Mask>
           </Defs>
           <G mask="url(#spending-sweep)">

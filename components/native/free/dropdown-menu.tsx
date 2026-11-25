@@ -1,11 +1,18 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
-import { Pressable, ScrollView, StyleSheet, Text, View, type ViewInstance, type AccessibilityRole, type LayoutChangeEvent, type StyleProp, type ViewStyle } from 'react-native'
+import { Platform, Pressable, ScrollView, StyleSheet, Text, View, type ViewInstance, type AccessibilityRole, type LayoutChangeEvent, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { FadeInLeft, FadeInRight, ZoomIn, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
 import { radius, space, useColors, type Colors } from '../kit'
 import { Button, withInk } from './button'
 import { type, useStill, useThemed } from './card'
 import { Kbd } from './kbd'
 import { Copy, EASE_OUT, Floating, Mark, soft, Tap, useCompact, type FloatingMotion } from './popover'
+
+// A menu on the web may hold only menu items: checkbox and radio rows are menuitemcheckbox and menuitemradio there,
+// and a radio set is a group. iOS and Android have no such roles, so they keep checkbox, radio and radiogroup.
+const WEB = Platform.OS === 'web'
+const CHECK_ROLE: AccessibilityRole = WEB ? 'menuitemcheckbox' : 'checkbox'
+const RADIO_ROLE: AccessibilityRole = WEB ? 'menuitemradio' : 'radio'
+const RADIO_GROUP_ROLE: AccessibilityRole = WEB ? 'group' : 'radiogroup'
 
 const FLASH_MS = 100
 const GLIDE_MS = 100
@@ -184,7 +191,7 @@ export function Menu({ entries, label, store, still, onClose, style }: MenuProps
     if (entry.kind === 'radio') {
       const value = entry.value ?? store.radios[key] ?? entry.defaultValue
       return (
-        <View key={key} accessibilityRole="radiogroup" accessibilityLabel={entry.label}>
+        <View key={key} accessibilityRole={RADIO_GROUP_ROLE} accessibilityLabel={entry.label}>
           <Text style={styles.groupLabel}>{entry.label}</Text>
           {entry.options.map((option) => {
             const on = option.value === value
@@ -194,7 +201,7 @@ export function Menu({ entries, label, store, still, onClose, style }: MenuProps
                 key={option.value}
                 {...rowProps(rowKey)}
                 label={option.label}
-                role="radio"
+                role={RADIO_ROLE}
                 checked={on}
                 disabled={option.disabled}
                 lead={<View style={styles.indicator}>{on ? <Animated.View {...(still ? {} : { entering: DOT_IN })} style={styles.dot} /> : null}</View>}
@@ -213,7 +220,7 @@ export function Menu({ entries, label, store, still, onClose, style }: MenuProps
           key={key}
           {...rowProps(key)}
           label={entry.label}
-          role="checkbox"
+          role={CHECK_ROLE}
           checked={on}
           disabled={entry.disabled}
           lead={<View style={styles.indicator}>{on ? <Mark name="tick" /> : null}</View>}

@@ -97,7 +97,7 @@ export function Attachment({ name, meta, type: kind = 'file', icon, status = 're
           <View
             accessibilityLabel={`Upload of ${name}`}
             accessibilityRole="progressbar"
-            {...(status === 'uploading' ? { 'aria-valuemin': 0, 'aria-valuemax': 100, 'aria-valuenow': progress } : { 'aria-valuetext': 'Processing' })}
+            {...(status === 'uploading' ? { 'aria-valuemin': 0, 'aria-valuemax': 100, 'aria-valuenow': progress } : { 'aria-valuemin': 0, 'aria-valuemax': 100, 'aria-valuetext': 'Processing' })}
             style={styles.bar}
           >
             {status === 'uploading' ? <View style={[styles.fill, { width }]} /> : <Sweep still={still} />}
@@ -164,7 +164,7 @@ export function AttachmentGroup({ items, label = 'Attachments', renderIcon, anim
       </ScrollView>
       {fade ? (
         <Animated.View {...(still ? {} : { entering: FadeIn.duration(BASE_MS), exiting: FadeOut.duration(BASE_MS) })} pointerEvents="box-none" style={styles.groupFade}>
-          <Svg pointerEvents="none" style={StyleSheet.absoluteFill} width={GROUP_FADE} height="100%">
+          <Svg aria-hidden pointerEvents="none" style={StyleSheet.absoluteFill} width={GROUP_FADE} height="100%">
             <Defs>
               <LinearGradient id="attachment-fade" x1="0" y1="0" x2="1" y2="0">
                 <Stop offset="0" stopColor={colors.canvas} stopOpacity={0} />

@@ -182,7 +182,7 @@ export function PullChainLight({ title = 'Desk lamp', on, defaultOn = false, onC
       </View>
       <View style={styles.scene}>
         <Animated.View pointerEvents="none" style={[styles.light, lightStyle]}>
-          <Svg width={440} height={400}>
+          <Svg aria-hidden width={440} height={400}>
             <Defs>
               <RadialGradient id="glow" cx="50%" cy="46%" rx="50%" ry="50%">
                 <Stop offset="0" stopColor={accent.amber.from} stopOpacity={0.5} />
@@ -207,7 +207,7 @@ export function PullChainLight({ title = 'Desk lamp', on, defaultOn = false, onC
         </Animated.View>
         {MOTES.map((mote) => <Mote key={`${mote.left}-${mote.top}`} mote={mote} lit={lit} still={still} />)}
         <Animated.View pointerEvents="none" style={[styles.lamp, lampStyle]}>
-          <Svg width={280} height={232} viewBox="0 0 280 232">
+          <Svg aria-hidden width={280} height={232} viewBox="0 0 280 232">
             <Rect x="139" y="0" width="2" height="58" fill={colors.textTertiary} />
             <AnimatedPath animatedProps={cordProps} fill="none" stroke={colors.textTertiary} strokeWidth={2} />
             <Path d="M78 121C84 76 112 56 140 56s56 20 62 65z" fill={lit ? colors.textSecondary : colors.textTertiary} />
@@ -216,7 +216,7 @@ export function PullChainLight({ title = 'Desk lamp', on, defaultOn = false, onC
           </Svg>
         </Animated.View>
         <Animated.View pointerEvents="none" style={[styles.lamp, lampStyle, undersideStyle]}>
-          <Svg width={280} height={232} viewBox="0 0 280 232">
+          <Svg aria-hidden width={280} height={232} viewBox="0 0 280 232">
             <Ellipse cx="140" cy="117" rx="50" ry="6" fill={accent.amber.light} />
           </Svg>
         </Animated.View>
@@ -233,7 +233,7 @@ export function PullChainLight({ title = 'Desk lamp', on, defaultOn = false, onC
               onPress={tug}
             >
               <View style={styles.bead} />
-              <Svg width={23} height={18} viewBox="0 0 23 18"><Path d="M9 0h5l9 18H0z" fill={colors.inverse} /></Svg>
+              <Svg aria-hidden width={23} height={18} viewBox="0 0 23 18"><Path d="M9 0h5l9 18H0z" fill={colors.inverse} /></Svg>
             </Pressable>
           </Animated.View>
         </GestureDetector>

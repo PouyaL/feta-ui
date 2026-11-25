@@ -36,7 +36,7 @@ export function VoteButton({ count, voted, defaultVoted = false, onVotedChange, 
       aria-label={`${label}, ${count + (on ? 1 : 0)} votes`}
       disabled={disabled}
       data-on={on ? '' : undefined}
-      data-still={animated ? undefined : ''}
+      data-still={still ? '' : undefined}
       className={cx(styles.vote, className)}
       onClick={handle}
       {...pressProps(still, disabled)}

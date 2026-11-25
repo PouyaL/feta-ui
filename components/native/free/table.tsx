@@ -1,7 +1,7 @@
 import { Children, createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { Pressable, ScrollView, StyleSheet, Text, View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native'
 import Animated, { Easing, LinearTransition, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
-import { radius, space, type Colors } from '../kit'
+import { pressedState, radius, space, type Colors } from '../kit'
 import { type RenderIcon, type, useStill, useThemed } from './card'
 
 /** Rows slide to their sorted place. Past `SORT_ROW_LIMIT` rows they jump, so big tables stay instant. */
@@ -117,7 +117,7 @@ export function TableRow({ selected = false, onPress, accessibilityLabel, style,
   return (
     <Animated.View {...(sliding ? { layout: slide } : {})}>
       {onPress ? (
-        <Pressable accessibilityRole="button" aria-selected={selected} {...(accessibilityLabel ? { accessibilityLabel } : {})} onPress={onPress} style={look}>{children}</Pressable>
+        <Pressable accessibilityRole="button" {...pressedState(selected)} {...(accessibilityLabel ? { accessibilityLabel } : {})} onPress={onPress} style={look}>{children}</Pressable>
       ) : <View style={look}>{children}</View>}
     </Animated.View>
   )
@@ -152,7 +152,7 @@ export function TableHead({ type: cell = 'text', sort, onSort, width, noDivider 
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={`${typeof children === 'string' ? children : 'Column'}, ${sort === 'asc' ? 'sorted ascending' : sort === 'desc' ? 'sorted descending' : 'not sorted'}`}
-      aria-selected={Boolean(sort)}
+      {...pressedState(Boolean(sort))}
       onPress={onSort}
       style={look}
     >

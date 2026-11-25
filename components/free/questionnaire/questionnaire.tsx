@@ -264,7 +264,7 @@ export function Questionnaire({ questions, header = 'steps', title, value, defau
                 <h2 ref={title_} tabIndex={-1} id={`${uid}-${question.id}`} className={styles.title}>{question.title}</h2>
                 {question.description ? <p className={styles.description}>{question.description}</p> : null}
               </div>
-              <div role={mode === 'single' ? 'radiogroup' : 'group'} aria-labelledby={`${uid}-${question.id}`} aria-required={!question.optional} aria-invalid={error || undefined} aria-describedby={error ? `${uid}-error` : undefined} className={styles.choices}>
+              <div role={mode === 'single' ? 'radiogroup' : 'group'} aria-labelledby={`${uid}-${question.id}`} aria-required={mode === 'single' ? !question.optional : undefined} aria-invalid={error || undefined} aria-describedby={error ? `${uid}-error` : undefined} className={styles.choices}>
                 {question.choices.map((choice, i) => (
                   <QuestionnaireChoice
                     key={choice.value}

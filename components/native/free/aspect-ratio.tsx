@@ -62,7 +62,7 @@ function Shimmer({ moving, renderIcon }: { moving: boolean; renderIcon: RenderIc
     <View accessibilityElementsHidden importantForAccessibility="no-hide-descendants" onLayout={(e) => setWide(e.nativeEvent.layout.width)} style={styles.loading}>
       {moving ? (
         <Animated.View style={[styles.fill, slide]}>
-          <Svg width="100%" height="100%">
+          <Svg aria-hidden width="100%" height="100%">
             <Defs>
               <LinearGradient id="shimmer" x1="0" y1="0" x2="1" y2="0.2">
                 <Stop offset="0.3" stopColor={colors.ink8} stopOpacity={0} />
@@ -132,7 +132,7 @@ export function AspectRatio({ ratio = '16:9', src, alt = '', content, children, 
         {state === 'video' ? (
           <>
             <View pointerEvents="none" style={styles.fill}>
-              <Svg width="100%" height="100%">
+              <Svg aria-hidden width="100%" height="100%">
                 <Defs>
                   <LinearGradient id="scrim" x1="0" y1="1" x2="0" y2="0.3">
                     <Stop offset="0" stopColor={colors.inverse} stopOpacity={0.5} />
@@ -150,7 +150,7 @@ export function AspectRatio({ ratio = '16:9', src, alt = '', content, children, 
                 animated={animated}
                 style={styles.center}
                 accessibilityLabel={duration ? `Play video, ${duration}` : 'Play video'}
-                leadingIcon={<Svg width={14} height={16} viewBox="0 0 14 16"><Polygon points="1,0 14,8 1,16" fill={colors.textPrimary} /></Svg>}
+                leadingIcon={<Svg aria-hidden width={14} height={16} viewBox="0 0 14 16"><Polygon points="1,0 14,8 1,16" fill={colors.textPrimary} /></Svg>}
                 {...(onPlay ? { onPress: onPlay } : {})}
               />
             </View>
@@ -185,7 +185,7 @@ export function AspectRatio({ ratio = '16:9', src, alt = '', content, children, 
 export function AspectRatioScene({ style }: { style?: StyleProp<ViewStyle> }) {
   const colors = useColors()
   return (
-    <Svg width="100%" height="100%" viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice" style={style}>
+    <Svg aria-hidden width="100%" height="100%" viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice" style={style}>
       <Rect width={320} height={180} fill={colors.muted} />
       <Circle cx={226} cy={74} r={26} fill={colors.textQuaternary} />
       <Path d="M0 118C60 88 108 96 168 122S280 142 320 112V180H0Z" fill={colors.textTertiary} />

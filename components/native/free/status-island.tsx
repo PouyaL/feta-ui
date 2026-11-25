@@ -72,7 +72,7 @@ function Spinning({ size, still, children }: { size: number; still: boolean; chi
 
 function Arc({ share, color }: { share: SharedValue<number>; color: string }) {
   const animatedProps = useAnimatedProps(() => ({ strokeDashoffset: RING_LENGTH * (1 - share.value) }))
-  return <AnimatedCircle cx={14} cy={14} r={RING_RADIUS} fill="none" stroke={color} strokeWidth={2.5} strokeLinecap="round" strokeDasharray={RING_LENGTH} animatedProps={animatedProps} rotation={-90} origin="14, 14" />
+  return <AnimatedCircle cx={14} cy={14} r={RING_RADIUS} fill="none" stroke={color} strokeWidth={2.5} strokeLinecap="round" strokeDasharray={RING_LENGTH} animatedProps={animatedProps} transform="rotate(-90 14 14)" />
 }
 
 function Ring({ value, size, still }: { value: number | null; size: number; still: boolean }) {
@@ -82,7 +82,7 @@ function Ring({ value, size, still }: { value: number | null; size: number; stil
     share.value = withTiming(value === null ? 0.28 : value / 100, { duration: still ? 0 : RING_MS, easing: EASE_OUT })
   }, [share, still, value])
   const ring = (
-    <Svg width={size} height={size} viewBox="0 0 28 28">
+    <Svg aria-hidden width={size} height={size} viewBox="0 0 28 28">
       <Circle cx={14} cy={14} r={RING_RADIUS} fill="none" stroke={colors.ink10} strokeWidth={2.5} />
       <Arc share={share} color={colors.textPrimary} />
     </Svg>

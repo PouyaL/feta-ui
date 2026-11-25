@@ -271,7 +271,10 @@ export function Select({ options, value, defaultValue, onValueChange, multiple =
             exit={still ? { opacity: 0, transition: { duration: 0 } } : { opacity: 0, scale: 0.98, transition: { duration: duration.close, ease: ease.out } }}
             transition={still ? { duration: 0 } : spring.pop}
           >
-            <div ref={list} id={listId} role="listbox" aria-label={label ?? placeholder} aria-multiselectable={multiple || undefined} className={styles.list} {...(listHeight ? { style: { maxHeight: listHeight } } : {})}>
+            <div ref={list} id={listId} role="listbox" aria-label={label ?? placeholder} aria-multiselectable={multiple || undefined} className={styles.list} {...(listHeight ? { style: { maxHeight: listHeight } } : {})}
+              // Focus stays on the combobox while the pointer picks a row, so the keyboard keeps working after a click.
+              onMouseDown={(e) => e.preventDefault()}
+            >
               {options.map((entry) => (isGroup(entry) ? (
                 <div key={entry.label} role="group" aria-label={entry.label}>
                   <div className={styles.groupLabel}>{entry.label}</div>

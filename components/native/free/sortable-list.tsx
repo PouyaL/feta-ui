@@ -74,6 +74,10 @@ function Row({ item, index, total, still, renderIcon, onLift, onDrag, onDrop, on
             accessible
             accessibilityRole="adjustable"
             accessibilityLabel={`Reorder ${name}, position ${index + 1} of ${total}`}
+            aria-valuemin={1}
+            aria-valuemax={total}
+            aria-valuenow={index + 1}
+            aria-valuetext={`Position ${index + 1} of ${total}`}
             accessibilityActions={[{ name: 'increment', label: 'Move up' }, { name: 'decrement', label: 'Move down' }]}
             onAccessibilityAction={(e) => onStep(item.id, e.nativeEvent.actionName === 'increment' ? -1 : 1)}
             style={styles.grip}

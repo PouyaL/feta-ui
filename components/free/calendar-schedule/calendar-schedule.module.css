@@ -48,6 +48,7 @@
 .dots i[data-tone="danger"] { background-color: var(--feta-status-danger-text); }
 
 .agenda { display: flex; flex-direction: column; min-width: 0; gap: var(--feta-space-2); padding: var(--feta-space-4); border-left: 1px solid var(--feta-alpha-ink-base-8); }
+.agendaSwap { display: flex; flex-direction: column; gap: var(--feta-space-2); min-width: 0; }
 .agendaHead { display: flex; align-items: center; justify-content: space-between; gap: var(--feta-space-2); color: var(--feta-text-primary); font: var(--feta-text-label-default); letter-spacing: var(--feta-text-label-default-tracking); }
 .rows { display: flex; flex-direction: column; gap: var(--feta-space-1-5); margin: 0; padding: 0; list-style: none; }
 .row { display: flex; flex-direction: column; padding: var(--feta-space-2-5) var(--feta-space-3); border-radius: var(--feta-radius-xl); background-color: var(--feta-alpha-ink-base-4); color: var(--feta-text-secondary); font: var(--feta-text-caption-default); letter-spacing: var(--feta-text-caption-default-tracking); }

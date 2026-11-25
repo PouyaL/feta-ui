@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react'
 import { Pressable, View, Text, StyleSheet, type StyleProp, type TextStyle, type ViewStyle } from 'react-native'
 import Animated, { useAnimatedStyle, useSharedValue, withSequence, withSpring, withTiming } from 'react-native-reanimated'
-import { font, press, radius, space, useColors, useReduceMotion, type Colors } from '../kit'
+import { font, press, pressedState, radius, space, useColors, useReduceMotion, type Colors } from '../kit'
 
 export type AvailabilityState = 'booked' | 'one-slot' | 'open'
 const LABEL: Record<AvailabilityState, string> = { booked: 'Booked', 'one-slot': 'One slot', open: 'Open' }
@@ -44,7 +44,7 @@ export function AvailabilityCell({ month, state = 'open', note, onSelect, select
       <Pressable
         accessibilityRole="button"
         accessibilityLabel={`${month}, ${text}`}
-        aria-selected={selected}
+        {...pressedState(selected)}
         onPressIn={() => { if (!still) scale.value = withSpring(0.97, press.spring) }}
         onPressOut={() => { if (!still) scale.value = withSpring(1, press.spring) }}
         onPress={onSelect}

@@ -1,7 +1,7 @@
 import { useRef, useState, type ReactNode } from 'react'
-import { StyleSheet, Text, View, type LayoutChangeEvent, type StyleProp, type ViewStyle } from 'react-native'
+import { Platform, StyleSheet, Text, View, type LayoutChangeEvent, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { FadeIn, FadeInRight, FadeOutRight, LinearTransition } from 'react-native-reanimated'
-import { font, radius, space, useColors, type Colors } from '../kit'
+import { currentState, font, radius, space, useColors, type Colors } from '../kit'
 import { type, useStill, useThemed } from './card'
 import { DropdownMenu } from './dropdown-menu'
 import { IconButton } from './icon-button'
@@ -29,7 +29,7 @@ export function BreadcrumbSeparator({ type: kind = 'chevron', size = 'md' }: Bre
   const colors = useColors()
   const small = size === 'sm'
   return (
-    <View accessibilityElementsHidden importantForAccessibility="no-hide-descendants" style={[styles.separator, small && styles.separatorSmall]}>
+    <View aria-hidden accessibilityElementsHidden importantForAccessibility="no-hide-descendants" style={[styles.separator, small && styles.separatorSmall]}>
       {kind === 'chevron' ? <Mark name="chevron-right" size={small ? 14 : 16} color={colors.textTertiary} /> : kind === 'slash' ? <Text style={styles.slash}>/</Text> : <View style={styles.dot} />}
     </View>
   )
@@ -108,7 +108,7 @@ export function Breadcrumb({ items, appearance = 'plain', size = 'md', separator
   const shift = still ? {} : { entering: CRUMB_IN, exiting: CRUMB_OUT }
 
   return (
-    <View accessibilityLabel={label} onLayout={onRoom} style={[styles.breadcrumb, style]}>
+    <View role="navigation" accessibilityLabel={label} onLayout={onRoom} style={[styles.breadcrumb, style]}>
       <View onLayout={onList} style={[styles.list, tray && styles.tray]}>
         {links.map((item, index) => (
           <Animated.View key={item.href ?? item.label} {...shift} {...moves} style={styles.item}>
@@ -129,7 +129,7 @@ export function Breadcrumb({ items, appearance = 'plain', size = 'md', separator
           </Animated.View>
         ))}
         {current ? (
-          <Animated.View {...moves} accessibilityRole="text" aria-selected accessibilityLabel={loading ? `${current.label}, loading` : current.label} style={[styles.current, small && styles.linkSmall, tray && !loading && styles.chip]}>
+          <Animated.View {...moves} accessibilityRole="text" {...currentState(true)} aria-busy={loading} {...(Platform.OS === 'web' ? {} : { accessibilityLabel: loading ? `${current.label}, loading` : current.label })} style={[styles.current, small && styles.linkSmall, tray && !loading && styles.chip]}>
             {loading ? <Skeleton width={72} height={12} animated={animated} /> : <Animated.Text key={current.label} {...(still ? {} : { entering: LABEL_IN })} numberOfLines={1} style={[styles.currentLabel, small && styles.labelSmall]}>{current.label}</Animated.Text>}
           </Animated.View>
         ) : null}

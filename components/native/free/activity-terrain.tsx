@@ -290,6 +290,9 @@ export function ActivityTerrain({ weeks, start, view, defaultView = 'flat', onVi
             accessibilityRole="adjustable"
             accessibilityLabel={flat ? `${title} grid` : `${title} terrain`}
             aria-valuetext={subtitle}
+            aria-valuemin={first * 7}
+            aria-valuemax={Math.max(first * 7, weeks.length * 7 - 1)}
+            aria-valuenow={active ?? first * 7}
             accessibilityActions={flat ? [{ name: 'increment' }, { name: 'decrement' }] : [{ name: 'increment' }, { name: 'decrement' }, { name: 'camera', label: 'Change camera' }]}
             onAccessibilityAction={handleAction}
             style={[styles.area, compact ? styles.areaMobile : styles.areaWeb]}
@@ -298,14 +301,14 @@ export function ActivityTerrain({ weeks, start, view, defaultView = 'flat', onVi
               {width > 0 ? (
                 <>
                   <Animated.View style={[StyleSheet.absoluteFill, dimStyle]}>
-                    <Svg width={width} height={area}>
+                    <Svg aria-hidden width={width} height={area}>
                       {months.map(({ column, name }) => <SvgText key={column} x={cellX(column)} y={gridTop + 12} fontSize={12} fontFamily={font.sans} letterSpacing={font.tracking(12)} fill={colors.textTertiary}>{name}</SvgText>)}
                       {DAYS.map((day, row) => (row % 2 ? <SvgText key={day} x={gridLeft} y={cellY(row) + cell / 2 + 4} fontSize={12} fontFamily={font.sans} letterSpacing={font.tracking(12)} fill={colors.textTertiary}>{day}</SvgText> : null))}
                       {shown.map((days, column) => days.map((count, row) => <Rect key={`${column}-${row}`} x={cellX(column)} y={cellY(row)} width={cell} height={cell} rx={radius.sm} fill={tones.top[level(count)]} />))}
                     </Svg>
                   </Animated.View>
                   {lit && activeColumn >= 0 ? (
-                    <Svg width={width} height={area} style={StyleSheet.absoluteFill}>
+                    <Svg aria-hidden width={width} height={area} style={StyleSheet.absoluteFill}>
                       <Rect x={cellX(activeColumn)} y={cellY(activeDay)} width={cell} height={cell} rx={radius.sm} fill={tones.on} />
                     </Svg>
                   ) : null}
@@ -316,12 +319,12 @@ export function ActivityTerrain({ weeks, start, view, defaultView = 'flat', onVi
             <Animated.View pointerEvents={flat ? 'none' : 'auto'} style={[StyleSheet.absoluteFill, riseStyle]}>
               <Animated.View key={current === 'orbit' ? 'orbit' : 'terrain'} {...(still ? {} : { entering: cameraIn })} style={StyleSheet.absoluteFill}>
                 <Animated.View style={[StyleSheet.absoluteFill, dimStyle]}>
-                  <Svg width="100%" height="100%" viewBox={`0 0 ${camera.width} ${camera.height}`}>
+                  <Svg aria-hidden width="100%" height="100%" viewBox={`0 0 ${camera.width} ${camera.height}`}>
                     {pillars.map((pillar) => <PillarShape key={pillar.index} pillar={pillar} camera={camera} rise={rise} tones={tones} />)}
                   </Svg>
                 </Animated.View>
                 {chip ? (
-                  <Svg width="100%" height="100%" viewBox={`0 0 ${camera.width} ${camera.height}`} style={StyleSheet.absoluteFill}>
+                  <Svg aria-hidden width="100%" height="100%" viewBox={`0 0 ${camera.width} ${camera.height}`} style={StyleSheet.absoluteFill}>
                     <PillarShape pillar={chip} camera={camera} rise={rise} tones={tones} on />
                     <Rect x={chip.x + (fx + sx) / 2 - chipWidth / 2} y={chip.y - chip.height - CHIP_HEIGHT - space[1.5]} width={chipWidth} height={CHIP_HEIGHT} rx={CHIP_HEIGHT / 2} fill={colors.inverse} />
                     <SvgText x={chip.x + (fx + sx) / 2} y={chip.y - chip.height - space[1.5] - 6} fontSize={12} fontFamily={font.mono} textAnchor="middle" fill={colors.textInverse}>{chipText}</SvgText>
@@ -334,7 +337,7 @@ export function ActivityTerrain({ weeks, start, view, defaultView = 'flat', onVi
 
         <View style={styles.legend} accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
           <Text style={styles.legendText}>Less</Text>
-          <Svg width={LEVELS.length * (SWATCH + GAP) - GAP} height={SWATCH} style={styles.swatches}>
+          <Svg aria-hidden width={LEVELS.length * (SWATCH + GAP) - GAP} height={SWATCH} style={styles.swatches}>
             {LEVELS.map((step) => <Rect key={step} x={step * (SWATCH + GAP)} width={SWATCH} height={SWATCH} rx={radius.sm} fill={tones.top[step]} />)}
           </Svg>
           <Text style={styles.legendText}>More</Text>

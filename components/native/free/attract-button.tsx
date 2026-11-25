@@ -164,7 +164,7 @@ export function AttractButton({ children = 'Attract', icon, animated = true, dis
   return (
     <GestureDetector gesture={touch}>
       <View style={[styles.field, style as StyleProp<ViewStyle>]} onLayout={handleLayout}>
-        <Svg pointerEvents="none" style={StyleSheet.absoluteFill} width="100%" height="100%">
+        <Svg aria-hidden pointerEvents="none" style={StyleSheet.absoluteFill} width="100%" height="100%">
           {INKS.map((_, index) => <InkPath key={index} paths={paths} index={index} color={colors.textPrimary} />)}
         </Svg>
         <PressScale

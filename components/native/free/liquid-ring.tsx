@@ -2,7 +2,7 @@ import { useEffect, useId, useMemo, useRef, useState, type ComponentProps, type 
 import { StyleSheet, Text, TextInput, View, useColorScheme, type LayoutChangeEvent, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { Easing, FadeIn, FadeOut, useAnimatedStyle, useSharedValue, withDelay, withTiming, type SharedValue } from 'react-native-reanimated'
 import Svg, { Defs, Ellipse, LinearGradient, RadialGradient, Rect, Stop } from 'react-native-svg'
-import { accent, radius, space, useColors, type Colors } from '../kit'
+import { accent, radius, space, toggleState, useColors, type Colors } from '../kit'
 import { Button, EASE_OUT, HEIGHT, withInk } from './button'
 import { type, useStill, type RenderIcon } from './card'
 import { IconButton } from './icon-button'
@@ -187,7 +187,7 @@ export function LiquidRing({ label, placeholder = 'Ask the agent to do something
       <View style={styles.frame} onLayout={measure}>
         {ready ? (
           <Animated.View aria-hidden pointerEvents="none" style={[styles.orbit, orbitStyle]}>
-            <Svg width={box.w + SPILL * 2} height={box.h + SPILL * 2}>
+            <Svg aria-hidden width={box.w + SPILL * 2} height={box.h + SPILL * 2}>
               {ORBIT_COLOURS.map((colour, i) => ORBIT_BLUR.map((blur) => (
                 <RingDash
                   key={`${colour.key}-${blur.width}`}
@@ -236,7 +236,7 @@ export function LiquidRing({ label, placeholder = 'Ask the agent to do something
               {voice ? (
                 <>
                   <VoiceClock paused={paused} />
-                  <IconButton variant="ghost" icon={renderIcon(paused ? 'play' : 'pause', ICON)} label={paused ? 'Resume voice' : 'Pause voice'} accessibilityRole="togglebutton" aria-checked={paused} animated={animated} onPress={togglePause} />
+                  <IconButton variant="ghost" icon={renderIcon(paused ? 'play' : 'pause', ICON)} label={paused ? 'Resume voice' : 'Pause voice'} {...toggleState(paused)} animated={animated} onPress={togglePause} />
                   <IconButton variant="primary" icon={renderIcon('audio-lines', ICON)} label="Stop listening" animated={animated} onPress={onStop} />
                 </>
               ) : (
@@ -256,7 +256,7 @@ export function LiquidRing({ label, placeholder = 'Ask the agent to do something
         {ready ? (
           <View aria-hidden pointerEvents="none" style={StyleSheet.absoluteFill}>
             <Animated.View style={[StyleSheet.absoluteFill, litStyle]}>
-              <Svg width={box.w} height={box.h}>
+              <Svg aria-hidden width={box.w} height={box.h}>
                 <Defs>
                   <LinearGradient id={`${ids}-lit`} x1="0" y1="0" x2="1" y2="1">
                     <Stop offset="0" stopColor={colors.textPrimary} />
@@ -271,7 +271,7 @@ export function LiquidRing({ label, placeholder = 'Ask the agent to do something
               </Svg>
             </Animated.View>
             {loading ? (
-              <Svg style={StyleSheet.absoluteFill} width={box.w} height={box.h}>
+              <Svg aria-hidden style={StyleSheet.absoluteFill} width={box.w} height={box.h}>
                 {ARC_DASHES.map((dash) => (
                   <RingDash
                     key={`${dash.ink}-${dash.phase}`}
@@ -285,7 +285,7 @@ export function LiquidRing({ label, placeholder = 'Ask the agent to do something
         ) : null}
         {voice ? (
           <Animated.View aria-hidden pointerEvents="none" style={[styles.beam, paused && styles.beamPaused, beamStyle]}>
-            <Svg width="100%" height={10}>
+            <Svg aria-hidden width="100%" height={10}>
               <Defs>
                 <LinearGradient id={`${ids}-beam`} x1="0" y1="0" x2="1" y2="0">
                   {beamStops.map((stop) => <Stop key={stop.at} offset={stop.at} stopColor={stop.color} stopOpacity={stop.opacity} />)}
@@ -309,7 +309,7 @@ function Bloom({ id, color, peak = 1, place, style }: { id: string; color: strin
   const styles = useRingStyles()
   return (
     <Animated.View style={[styles.bloom, place, style]}>
-      <Svg width="100%" height="100%">
+      <Svg aria-hidden width="100%" height="100%">
         <Defs>
           <RadialGradient id={id} cx="50%" cy="50%" r="50%">
             <Stop offset="0" stopColor={color} stopOpacity={peak} />
@@ -417,7 +417,7 @@ function FanAction({ action, index, count, open, still, animated, tip, onPress, 
   return (
     <Animated.View aria-hidden={!open} pointerEvents={open ? 'box-none' : 'none'} style={[styles.slot, styles.action, style]}>
       <View style={styles.drop} />
-      <IconButton variant="ghost" icon={action.icon} label={action.label} disabled={action.disabled ?? false} animated={animated} onPress={onPress} onLongPress={onLongPress} />
+      <IconButton variant="ghost" icon={action.icon} label={action.label} disabled={action.disabled ?? false} {...(open ? {} : { tabIndex: -1 as const })} animated={animated} onPress={onPress} onLongPress={onLongPress} />
       {tip ? (
         <Animated.View pointerEvents="none" style={styles.tipRow} {...(still ? {} : { entering: FadeIn.duration(LIT_MS), exiting: FadeOut.duration(LIT_MS) })}>
           <Text style={styles.tip}>{action.label}</Text>

@@ -70,6 +70,9 @@ const Row = memo(function Row({ service, shownDays, active, label, onScrub, onTa
           accessibilityRole="adjustable"
           accessibilityLabel={service.name}
           aria-valuetext={label}
+          aria-valuemin={0}
+          aria-valuemax={shownDays - 1}
+          aria-valuenow={active ?? 0}
           accessibilityActions={[{ name: 'increment' }, { name: 'decrement' }, { name: 'activate', label: 'Pin this day' }]}
           onAccessibilityAction={({ nativeEvent }) => {
             if (nativeEvent.actionName === 'increment') onStep(-1)

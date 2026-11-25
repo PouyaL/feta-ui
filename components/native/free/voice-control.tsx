@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { StyleSheet, Text, View, type GestureResponderEvent, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { Easing, interpolate, useAnimatedStyle, useSharedValue, withTiming, type SharedValue } from 'react-native-reanimated'
-import { radius, space, useColors, useReduceMotion, type Colors } from '../kit'
+import { radius, space, toggleState, useColors, useReduceMotion, type Colors } from '../kit'
 import { PressScale, useLoop, withInk, type PressScaleProps } from './button'
 import { type, useStill, useThemed, type RenderIcon } from './card'
 
@@ -85,10 +85,9 @@ export function VoiceControl({ control = 'mic', label, levels, renderIcon, anima
 
   return (
     <PressScale
-      accessibilityRole={toggle ? 'togglebutton' : 'button'}
+      {...(toggle ? toggleState(control !== 'captions') : { accessibilityRole: 'button' as const })}
       accessibilityLabel={label ?? LABEL[control]}
       aria-disabled={off}
-      {...(toggle ? { 'aria-checked': control !== 'captions' } : {})}
       {...(accessibilityState ? { accessibilityState } : {})}
       still={still}
       disabled={disabled}

@@ -76,7 +76,7 @@ function teeth(width: number, down: boolean): string {
 
 function Rule() {
   return (
-    <Svg width="100%" height={1}>
+    <Svg aria-hidden width="100%" height={1}>
       <Line x1={0} y1={0.5} x2="100%" y2={0.5} stroke={INK} opacity={RULE_INK} strokeWidth={1} strokeDasharray={[3, 3]} />
     </Svg>
   )
@@ -178,10 +178,10 @@ export function ReceiptPrinter({
                 }}
                 style={[styles.paper, paperStyle]}
               >
-                {!printing && paper.width > 0 ? <Svg width={paper.width} height={TOOTH / 2} style={styles.edgeBottom}><Path d={teeth(paper.width, true)} fill={PAPER} /></Svg> : null}
-                {current === 'torn' && paper.width > 0 ? <Svg width={paper.width} height={TOOTH / 2} style={styles.edgeTop}><Path d={teeth(paper.width, false)} fill={PAPER} /></Svg> : null}
+                {!printing && paper.width > 0 ? <Svg aria-hidden width={paper.width} height={TOOTH / 2} style={styles.edgeBottom}><Path d={teeth(paper.width, true)} fill={PAPER} /></Svg> : null}
+                {current === 'torn' && paper.width > 0 ? <Svg aria-hidden width={paper.width} height={TOOTH / 2} style={styles.edgeTop}><Path d={teeth(paper.width, false)} fill={PAPER} /></Svg> : null}
                 {hanging ? (
-                  <Svg width="100%" height={1} style={styles.perforation}>
+                  <Svg aria-hidden width="100%" height={1} style={styles.perforation}>
                     <Line x1={0} y1={0.5} x2="100%" y2={0.5} stroke={INK} opacity={SOFT_INK} strokeWidth={1} strokeDasharray={[2, 2]} />
                   </Svg>
                 ) : null}

@@ -84,7 +84,7 @@ export function Checkout({ plans, addOns, defaultPlan, defaultAddOns = [], defau
               const on = item.id === planId
               return (
                 <Pressable key={item.id} accessibilityRole="radio" accessibilityLabel={`${item.name}, ${usd(item.monthly * factor)} per seat a month. ${item.pitch}`} aria-checked={on} onPress={() => setPlanId(item.id)} style={[styles.option, on && styles.on]}>
-                  <View style={styles.line}><Text style={styles.name}>{item.name}</Text><Radio checked={on} onChange={() => setPlanId(item.id)} animated={animated} /></View>
+                  <View style={styles.line}><Text style={styles.name}>{item.name}</Text><Radio decorative checked={on} animated={animated} /></View>
                   {money(item.monthly * factor)}
                   <Text style={styles.small}>per seat / mo · {item.pitch}</Text>
                 </Pressable>

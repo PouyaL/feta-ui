@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { Pressable, StyleSheet, Text, View, type StyleProp, type TextInputInstance, type ViewStyle } from 'react-native'
 import Animated, { ZoomIn, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated'
-import { font, radius, space, type Colors } from '../kit'
+import { font, pressedState, radius, space, type Colors } from '../kit'
 import { Button } from './button'
 import { type, useStill, useThemed } from './card'
 import { IconButton } from './icon-button'
@@ -49,7 +49,7 @@ export type PageItemProps = {
 export function PageItem({ page, active = false, disabled = false, onSelect, still = true }: PageItemProps) {
   const styles = useThemed(createStyles)
   return (
-    <Pressable accessibilityRole="button" accessibilityLabel={`Page ${page}`} aria-selected={active} aria-disabled={disabled} disabled={disabled} hitSlop={REACH} onPress={() => onSelect?.(page)} style={styles.item}>
+    <Pressable accessibilityRole="button" accessibilityLabel={`Page ${page}`} {...pressedState(active)} aria-disabled={disabled} disabled={disabled} hitSlop={REACH} onPress={() => onSelect?.(page)} style={styles.item}>
       <RollingText value={String(page)} still={still} style={[styles.number, active && styles.numberOn]} />
     </Pressable>
   )
@@ -85,7 +85,7 @@ function Dot({ n, current, seen, still, onSelect }: { n: number; current: number
   }, [current, n, on, shift, still, width])
   const dot = useAnimatedStyle(() => ({ width: width.value, transform: [{ translateX: shift.value }] }))
   return (
-    <Pressable accessibilityRole="button" accessibilityLabel={`Go to slide ${n}`} aria-selected={on} hitSlop={{ top: 10, bottom: 10 }} onPress={() => onSelect(n)} style={styles.dotButton}>
+    <Pressable accessibilityRole="button" accessibilityLabel={`Go to slide ${n}`} {...pressedState(on)} hitSlop={{ top: 10, bottom: 10 }} onPress={() => onSelect(n)} style={styles.dotButton}>
       <Animated.View style={[styles.dot, n <= seen && styles.dotSeen, on && styles.dotOn, dot]} />
     </Pressable>
   )

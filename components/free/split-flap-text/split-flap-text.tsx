@@ -30,6 +30,8 @@ export function SplitFlapText({ text, cells = 12, styleKind = 'soft', animated =
 
   useEffect(() => {
     if (still) { board.current = target; setShown(target); setFlipping(false); return }
+    // Nothing to flip, as on the first render: no timer, and the header never reads flipping.
+    if (board.current === target) return
     let tick = 0
     setFlipping(true)
     const timer = setInterval(() => {

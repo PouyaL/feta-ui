@@ -134,7 +134,7 @@ function Spark({ points, status, still }: { points: number[]; status: HealthStat
   })
   const color = statusColor(colors, status, colors.textSecondary)
   return (
-    <Svg width={64} height={20} viewBox="-1 -1 66 22" accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+    <Svg aria-hidden width={64} height={20} viewBox="-1 -1 66 22">
       <AnimatedPath animatedProps={lineProps} fill="none" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
       <AnimatedCircle animatedProps={dotProps} r={3} fill={color} />
     </Svg>
@@ -151,7 +151,7 @@ function Gauge({ score, status, still, animated }: { score: number; status: Heal
   const arcProps = useAnimatedProps(() => ({ strokeDashoffset: GAUGE_LENGTH * (1 - shown.value) }))
   return (
     <View accessible accessibilityRole="image" accessibilityLabel={`Health score ${score} of 100`} style={styles.gauge}>
-      <Svg width={96} height={58} viewBox="0 0 96 58" style={styles.gaugeArc}>
+      <Svg aria-hidden width={96} height={58} viewBox="0 0 96 58" style={styles.gaugeArc}>
         <Path d={GAUGE_ARC} fill="none" stroke={colors.ink8} strokeWidth={10} strokeLinecap="round" />
         <AnimatedPath animatedProps={arcProps} d={GAUGE_ARC} fill="none" stroke={statusColor(colors, status, colors.success)} strokeWidth={10} strokeLinecap="round" strokeDasharray={[GAUGE_LENGTH, GAUGE_LENGTH]} />
       </Svg>

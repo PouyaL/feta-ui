@@ -87,6 +87,9 @@ export function Command({ groups, placeholder = 'Search commands', defaultQuery 
   const flat = useMemo(() => shownGroups.flatMap((group) => group.items), [shownGroups])
   const enabled = useMemo(() => flat.filter((item) => !item.disabled), [flat])
   const askable = Boolean(onAsk && query.trim() && !flat.length)
+  // A listbox may hold only options. The empty state (with its Ask button) and an inline confirm (an alertdialog
+  // with buttons) are not options, so while either shows the list is a plain container and its rows plain rows.
+  const listed = flat.length > 0 && !confirming
   const active = enabled.some((item) => item.id === activeId) ? activeId : enabled[0]?.id ?? null
   const optionId = (id: string): string => `${uid}-${id}`
   const listId = `${uid}-list`
@@ -208,8 +211,7 @@ export function Command({ groups, placeholder = 'Search commands', defaultQuery 
         ) : (
           <div
             id={optionId(item.id)}
-            role="option"
-            aria-selected={on}
+            {...(listed ? { role: 'option', 'aria-selected': on } : {})}
             aria-disabled={item.disabled || undefined}
             aria-keyshortcuts={item.shortcut ? keyShortcut(item.shortcut) : undefined}
             className={styles.row}
@@ -243,7 +245,7 @@ export function Command({ groups, placeholder = 'Search commands', defaultQuery 
           role="combobox"
           aria-expanded={true}
           aria-controls={listId}
-          aria-activedescendant={active ? optionId(active) : undefined}
+          aria-activedescendant={active && listed ? optionId(active) : undefined}
           aria-autocomplete="list"
           aria-label={placeholder}
           autoComplete="off"
@@ -261,8 +263,8 @@ export function Command({ groups, placeholder = 'Search commands', defaultQuery 
         <motion.div
           key={path.length}
           id={listId}
-          role="listbox"
-          aria-label="Commands"
+          role={listed ? 'listbox' : undefined}
+          aria-label={listed ? 'Commands' : undefined}
           className={styles.list}
           onMouseDown={keepFocus}
           initial={still || !path.length ? false : { opacity: 0, x: -SUBMENU_X }}

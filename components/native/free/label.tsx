@@ -46,7 +46,7 @@ export type MarkName = keyof typeof MARKS
 
 export function Mark({ name, size = 16, color }: { name: MarkName; size?: number; color: string }) {
   return (
-    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <Svg aria-hidden width={size} height={size} viewBox="0 0 24 24" fill="none">
       <Path d={MARKS[name]} stroke={color} strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" />
     </Svg>
   )
@@ -64,7 +64,7 @@ const swapOut = FadeOutUp.duration(SWAP_MS).easing(SWAP_EASE)
 /** Each character rolls on its own, so only the ones that change move. */
 export function RollingText({ value, still, style }: { value: string; still: boolean; style?: StyleProp<TextStyle> }) {
   return (
-    <View accessible accessibilityLabel={value} style={rolling.row}>
+    <View accessible accessibilityRole="image" accessibilityLabel={value} style={rolling.row}>
       {Array.from(value).map((char, i) => (
         <View key={i} style={rolling.digit}>
           <Animated.Text key={char} {...(still ? {} : { entering: digitIn, exiting: digitOut })} style={style}>{char}</Animated.Text>

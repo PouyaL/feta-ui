@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated'
-import { radius, space, type Colors } from '../kit'
+import { pressedState, radius, space, type Colors } from '../kit'
 import { Badge } from './badge'
 import { Button } from './button'
 import { panelEnter, type RenderIcon, type, useFlash, useStill, useThemed } from './card'
@@ -49,7 +49,7 @@ export function ApiKey({ name, value, environment = 'live', meta, revoked = fals
         <Text style={styles.key} numberOfLines={1} ellipsizeMode="middle" selectable={open}>{open ? value : mask(value)}</Text>
         {revoked ? null : (
           <>
-            <IconButton variant="ghost" size="sm" label={shown ? 'Hide key' : 'Reveal key'} aria-selected={shown} icon={renderIcon(shown ? 'eye-off' : 'eye', 16)} onPress={() => setShown(!shown)} animated={animated} />
+            <IconButton variant="ghost" size="sm" label={shown ? 'Hide key' : 'Reveal key'} {...pressedState(shown)} icon={renderIcon(shown ? 'eye-off' : 'eye', 16)} onPress={() => setShown(!shown)} animated={animated} />
             {copied
               ? <Animated.View key="copied" {...fade} accessibilityLiveRegion="polite" style={styles.copied}>{renderIcon('check', 14)}<Text style={styles.small}>Copied</Text></Animated.View>
               : <IconButton variant="ghost" size="sm" label="Copy key" icon={renderIcon('copy', 16)} onPress={() => void copy()} animated={animated} />}

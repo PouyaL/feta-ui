@@ -85,7 +85,7 @@ export function Input({ size = 'md', type: kind = 'text', invalid, disabled, req
 
   return (
     <View style={[styles.wrap, style]}>
-      <Pressable accessible={false} disabled={field.disabled} hitSlop={2} onPress={() => inner.current?.focus()}>
+      <Pressable accessible={false} tabIndex={-1} disabled={field.disabled} hitSlop={2} onPress={() => inner.current?.focus()}>
         <Animated.View style={[styles.pill, styles[size], hasEnd && styles.withEnd, field.disabled && styles.disabled, ring]}>
           {leading ? <View style={styles.leading}>{typeof leading === 'string' ? <Text style={styles.prefix}>{leading}</Text> : leading}</View> : null}
           <TextInput
@@ -93,6 +93,7 @@ export function Input({ size = 'md', type: kind = 'text', invalid, disabled, req
             ref={inner}
             {...(value === undefined ? {} : { value })}
             {...(defaultValue === undefined ? {} : { defaultValue })}
+            accessibilityLabel={rest.accessibilityLabel ?? rest['aria-label'] ?? field.label ?? rest.placeholder}
             accessibilityHint={rest.accessibilityHint ?? field.hint}
             aria-disabled={field.disabled}
             editable={!field.disabled}

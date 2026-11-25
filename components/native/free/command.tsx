@@ -1,7 +1,7 @@
 import { useMemo, useState, type ReactNode } from 'react'
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { FadeIn, FadeInLeft, FadeInUp, FadeOut, ZoomIn } from 'react-native-reanimated'
-import { radius, space, useColors, type Colors } from '../kit'
+import { pressedState, radius, space, useColors, type Colors } from '../kit'
 import { Button } from './button'
 import { type, useStill, useThemed } from './card'
 import { Modal, useDisclosure, type DisclosureProps, type ModalMotion } from './dialog'
@@ -137,7 +137,7 @@ export function Command({ groups, placeholder = 'Search commands', defaultQuery 
           accessibilityRole="button"
           accessibilityLabel={item.title}
           accessibilityHint={item.description}
-          aria-selected={on}
+          {...pressedState(on)}
           aria-disabled={Boolean(item.disabled)}
           aria-busy={running === item.id}
           disabled={item.disabled}

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import { AccessibilityInfo, Pressable, StyleSheet, Text, View, type LayoutChangeEvent, type LayoutRectangle, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { FadeIn, FadeOut, LayoutAnimationConfig, LinearTransition, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated'
-import { radius, space, useColors, type Colors } from '../kit'
+import { radius, space, toggleState, useColors, type Colors } from '../kit'
 import { EASE_OUT_SOFT, HEIGHT, ICON_SIZE, PressScale, TARGET, usePressScale, withInk, type Spring } from './button'
 import { type, useStill, useThemed, type RenderIcon } from './card'
 import { TOGGLE_SPRING } from './toggle'
@@ -145,9 +145,8 @@ function Toolbar({ label, items, still, style }: ToolbarGroupProps & { still: bo
       {items.map((item, index) => (item === 'separator' ? <View key={index} style={styles.toolDivider} /> : (
         <PressScale
           key={item.label}
-          accessibilityRole="togglebutton"
+          {...toggleState(item.pressed)}
           accessibilityLabel={item.label}
-          aria-pressed={item.pressed}
           aria-disabled={Boolean(item.disabled)}
           still={still}
           scale={0.96}

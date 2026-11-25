@@ -57,7 +57,7 @@ export function InputGroup({ start, end, blockStart, blockEnd, invalid, disabled
 
   return (
     <GroupContext.Provider value={link}>
-      <Pressable accessible={false} disabled={field.disabled} onPress={() => entry.current?.focus()}>
+      <Pressable accessible={false} tabIndex={-1} disabled={field.disabled} onPress={() => entry.current?.focus()}>
         <Animated.View style={[block ? styles.box : styles.pill, !block && Boolean(end) && styles.withEnd, field.disabled && styles.disabled, ring, style]}>
           {block ? (
             <>
@@ -98,6 +98,7 @@ export function InputGroupInput({ disabled, required, onFocus, onBlur, style, re
       {...rest}
       {...handlers}
       ref={(node) => { inner.current = node; if (group) group.entry.current = node }}
+      accessibilityLabel={rest.accessibilityLabel ?? rest['aria-label'] ?? field.label ?? rest.placeholder}
       accessibilityHint={rest.accessibilityHint ?? field.hint}
       aria-disabled={field.disabled}
       editable={!field.disabled}
@@ -128,7 +129,8 @@ export function InputGroupTextarea({ disabled, required, onFocus, onBlur, onCont
         {...handlers}
         ref={(node) => { inner.current = node; if (group) group.entry.current = node }}
         multiline
-        accessibilityHint={rest.accessibilityHint ?? field.hint}
+        accessibilityLabel={rest.accessibilityLabel ?? rest['aria-label'] ?? field.label ?? rest.placeholder}
+      accessibilityHint={rest.accessibilityHint ?? field.hint}
         aria-disabled={field.disabled}
         editable={!field.disabled}
         placeholderTextColor={colors.textTertiary}

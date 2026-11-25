@@ -78,8 +78,12 @@ export function Carousel({ label, eyebrow, title, cards, defaultSaved = [], onSa
     if (!node) return
     const observer = new ResizeObserver(() => paint())
     observer.observe(node)
-    return () => { observer.disconnect(); clearTimeout(settle.current) }
+    return () => observer.disconnect()
   }, [go, paint, defaultIndex])
+
+  // The settle timer is cleared on unmount only. This effect reruns when reduced motion is read after the first
+  // render, and clearing the timer then left data-flicking on, hiding the card details for good.
+  useEffect(() => () => clearTimeout(settle.current), [])
 
   function onScroll(): void {
     const nearest = paint()

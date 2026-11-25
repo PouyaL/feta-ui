@@ -111,7 +111,7 @@ export function AvatarPicker({ options, title = 'Pick your avatar', hint = 'Spin
         <Text style={styles.hint}>{spinning ? spinningHint : hint}</Text>
         <View style={styles.stage}>
           <View style={styles.bezel}>
-            <Svg width={BEZEL} height={BEZEL}>
+            <Svg aria-hidden width={BEZEL} height={BEZEL}>
               <Circle cx={c} cy={c} r={c} fill={colors.ink4} />
               {Array.from({ length: TICKS }, (_, i) => <Line key={i} x1={c} y1={0} x2={c} y2={6} stroke={colors.ink8} transform={`rotate(${i * 6} ${c} ${c})`} />)}
               <Line x1={c} y1={3} x2={c} y2={10} stroke={colors.textPrimary} strokeWidth={2} strokeLinecap="round" />

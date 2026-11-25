@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Pressable, StyleSheet, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated'
 import Svg, { Polyline } from 'react-native-svg'
-import { font, press, radius, space, useColors, type Colors } from '../kit'
+import { font, press, pressedState, radius, space, useColors, type Colors } from '../kit'
 import { RollingText } from './badge'
 import { useStill, useThemed } from './card'
 
@@ -50,7 +50,7 @@ export function VoteButton({ count, voted, defaultVoted = false, onVotedChange, 
     <AnimatedPressable
       accessibilityRole="button"
       accessibilityLabel={`${label}, ${total} votes`}
-      aria-selected={on}
+      {...pressedState(on)}
       aria-disabled={disabled}
       disabled={disabled}
       onPress={toggle}
@@ -58,7 +58,7 @@ export function VoteButton({ count, voted, defaultVoted = false, onVotedChange, 
       onPressOut={() => { if (!still) scale.value = withSpring(1, press.spring) }}
       style={[styles.vote, on ? styles.on : null, disabled ? styles.disabled : null, tile, style]}
     >
-      <Svg width={16} height={16} viewBox="0 0 24 24" fill="none">
+      <Svg aria-hidden width={16} height={16} viewBox="0 0 24 24" fill="none">
         <Polyline points="6 15 12 9 18 15" stroke={ink} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
       </Svg>
       <RollingText value={String(total)} still={still} style={[styles.count, on ? styles.countOn : null, disabled ? styles.countDisabled : null]} />

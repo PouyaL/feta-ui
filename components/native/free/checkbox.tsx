@@ -60,7 +60,7 @@ function CheckMark({ filled, on, indeterminate, invalid, drawDelay, pressed, dis
   return (
     <Animated.View style={[styles.box, filled && styles.boxFilled, invalid && styles.boxInvalid, disabled && styles.boxDisabled, box]}>
       <Animated.View style={[styles.fill, invalid && styles.fillInvalid, fillStyle]} />
-      <Svg width={16} height={16} viewBox="0 0 14 14">
+      <Svg aria-hidden width={16} height={16} viewBox="0 0 14 14">
         <Stroke d={MINUS} length={MINUS_LENGTH} shown={indeterminate} delay={drawDelay * 1000} color={colors.textInverse} still={still} />
         <Stroke d={CHECK} length={CHECK_LENGTH} shown={on && !indeterminate} delay={drawDelay * 1000} color={colors.textInverse} still={still} />
       </Svg>
@@ -86,16 +86,19 @@ export type CheckboxProps = {
   /** Seconds to delay the check, so a group can ripple. */
   drawDelay?: number
   accessibilityLabel?: string
+  /** Draws the mark only, for a row that is itself the control: no press, no tab stop, hidden from screen readers. */
+  decorative?: boolean
   animated?: boolean
   style?: StyleProp<ViewStyle>
 }
 
 /** The box gives under the finger, fills from the centre and draws its check. */
-export function Checkbox({ checked, defaultChecked = false, onCheckedChange, indeterminate = false, invalid, disabled, required, drawDelay = 0, accessibilityLabel, animated = true, style }: CheckboxProps) {
+export function Checkbox({ checked, defaultChecked = false, onCheckedChange, indeterminate = false, invalid, disabled, required, drawDelay = 0, accessibilityLabel, decorative = false, animated = true, style }: CheckboxProps) {
   const still = useStill(animated)
   const field = useFieldControl({ invalid, disabled, required })
   const { on, toggle } = useChecked(checked, defaultChecked, onCheckedChange)
   const [pressed, setPressed] = useState(false)
+  if (decorative) return <View aria-hidden pointerEvents="none" style={style}><CheckMark filled={on || indeterminate} on={on} indeterminate={indeterminate} invalid={field.invalid} drawDelay={drawDelay} pressed={false} disabled={field.disabled} still={still} /></View>
   return (
     <Pressable
       accessibilityHint={field.hint}
