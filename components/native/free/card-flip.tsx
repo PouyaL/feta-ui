@@ -5,6 +5,7 @@ import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg'
 import { font, radius, space, useColors, useReduceMotion, type Colors } from '../kit'
 import { Badge } from './badge'
 import { Button } from './button'
+import { AVATAR_BG, AVATAR_INK } from './avatar'
 import { Card, QrArt, type RenderIcon, type, useStill, useThemed } from './card'
 import { Separator } from './separator'
 
@@ -79,7 +80,7 @@ function TicketBack({ ticket }: { ticket: Ticket }) {
   return (
     <View style={[styles.front, styles.back]}>
       <Text style={styles.label}>Scan at entry</Text>
-      <View style={styles.qr}><QrArt seed={ticket.number} size={96} /></View>
+      <View style={styles.qr}><QrArt seed={ticket.number} size={96} color={AVATAR_INK} /></View>
       <Text style={styles.number}>#{ticket.number}</Text>
       <View style={styles.seat}><Datum label="Gate" value={ticket.gate} /><Datum label="Section" value={ticket.section} /><Datum label="Row" value={ticket.row} /><Datum label="Seat" value={ticket.seat} /></View>
       <Text style={styles.terms}>{ticket.terms}</Text>
@@ -239,7 +240,7 @@ const createStyles = (c: Colors) => StyleSheet.create({
   details: { flexDirection: 'row', gap: space[4], height: 52, paddingBottom: space[3.5] },
   holder: { alignItems: 'flex-end', flexDirection: 'row', height: 52, justifyContent: 'space-between', paddingTop: space[3.5] },
   back: { alignItems: 'center', gap: space[3.5] },
-  qr: { alignItems: 'center', backgroundColor: c.muted, borderRadius: radius['2xl'], flexShrink: 0, height: 120, justifyContent: 'center', width: 120 },
+  qr: { alignItems: 'center', backgroundColor: AVATAR_BG, borderRadius: radius['2xl'], flexShrink: 0, height: 120, justifyContent: 'center', width: 120 },
   number: { color: c.textPrimary, fontFamily: font.mono, fontSize: 14, lineHeight: 20 },
   seat: { alignSelf: 'stretch', flexDirection: 'row', justifyContent: 'space-between', paddingVertical: space[1.5] },
   terms: { ...type(12, c.textTertiary), textAlign: 'center' },

@@ -110,7 +110,7 @@ export function UsageMeter({ metric, used, limit, unit, hint, meta, icon, render
         <Text style={styles.small}>of {format(limit)}{unit ? ` ${unit}` : ''}</Text>
       </View>
       <Meter value={ratio} tone={over ? 'danger' : warning ? 'warning' : 'neutral'} label={`${metric} used`} ms={FILL_MS} animated={animated} />
-      {hint ? <Text style={styles.small}>{hint}</Text> : null}
+      {hint ? <Text style={[styles.small, over && styles.overHint]}>{hint}</Text> : null}
     </Animated.View>
   )
 }
@@ -118,15 +118,16 @@ export function UsageMeter({ metric, used, limit, unit, hint, meta, icon, render
 const createStyles = (c: Colors) => StyleSheet.create({
   track: { backgroundColor: c.ink5, borderRadius: radius.full, overflow: 'hidden' },
   fill: { backgroundColor: c.inverse, borderRadius: radius.full, width: '100%' },
-  // kit.ts has no warning color yet, so Warning borrows danger. The Badge and icon carry the difference.
-  warning: { backgroundColor: c.danger, opacity: 0.7 },
+  warning: { backgroundColor: c.warning },
   danger: { backgroundColor: c.danger },
   marker: { backgroundColor: c.surface, left: 0, position: 'absolute', top: 0, width: 2 },
-  meter: { backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.card, borderWidth: StyleSheet.hairlineWidth, gap: space[2], padding: space[4] },
-  top: { alignItems: 'center', flexDirection: 'row', gap: space[2], justifyContent: 'space-between' },
+  // The web ring is `box-shadow: 0 0 0 4px ink-4` outside the card: a 4 pt outline that takes no layout room.
+  meter: { backgroundColor: c.surface, borderRadius: radius.panel, gap: space[2], maxWidth: 358, outlineColor: c.ink4, outlineStyle: 'solid', outlineWidth: 4, paddingHorizontal: space[5], paddingVertical: space[4], width: '100%' },
+  top: { alignItems: 'center', flexDirection: 'row', gap: space[2], justifyContent: 'space-between', minHeight: 24 },
   metric: { alignItems: 'center', flexDirection: 'row', flexShrink: 1, gap: space[1.5] },
-  name: type(14, c.textPrimary, '500'),
+  name: { ...type(16, c.textPrimary, '500'), lineHeight: 22 },
   numbers: { alignItems: 'baseline', flexDirection: 'row', gap: space[1] },
-  used: type(24, c.textPrimary, '500'),
-  small: type(12, c.textSecondary),
+  used: { ...type(24, c.textPrimary, '600'), lineHeight: 32 },
+  small: { ...type(12, c.textSecondary), lineHeight: 16 },
+  overHint: { color: c.danger },
 })

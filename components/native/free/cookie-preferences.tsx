@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native'
 import { radius, space, useColors, type Colors } from '../kit'
-import { Button, withInk } from './button'
+import { Button, withInk, SELF } from './button'
 import { type RenderIcon, type, useThemed } from './card'
 import { Modal, ModalGrabber, type ModalMotion } from './dialog'
 import { IconButton } from './icon-button'
@@ -84,13 +84,14 @@ export function CookiePreferencesPanel({ title = 'Cookie preferences', descripti
   const size = compact ? 'md' : 'sm'
   const reject = <Button style={compact ? styles.half : undefined} variant="secondary" size={size} shape="pill" disabled={holding && pressed !== 'reject'} status={holding && pressed === 'reject' ? 'loading' : 'idle'} loadingLabel="Saving" animated={animated} onPress={() => { setPressed('reject'); void save([]) }}>Reject all</Button>
   const accept = <Button style={compact ? styles.half : undefined} variant="secondary" size={size} shape="pill" disabled={holding && pressed !== 'accept'} status={holding && pressed === 'accept' ? 'loading' : 'idle'} loadingLabel="Saving" animated={animated} onPress={() => { setPressed('accept'); void save(optional) }}>Accept all</Button>
-  const keep = <Button style={styles.save} size={size} shape="pill" disabled={holding && pressed !== 'save'} status={holding && pressed === 'save' ? 'loading' : 'idle'} loadingLabel="Saving" animated={animated} onPress={() => { setPressed('save'); void save(on) }}>{saveLabel}</Button>
+  const keep = <Button style={compact ? styles.full : styles.save} size={size} shape="pill" disabled={holding && pressed !== 'save'} status={holding && pressed === 'save' ? 'loading' : 'idle'} loadingLabel="Saving" animated={animated} onPress={() => { setPressed('save'); void save(on) }}>{saveLabel}</Button>
 
   return (
     <View style={[styles.tray, style]}>
+      {compact ? <View aria-hidden style={styles.grabber} /> : null}
       <View style={styles.header}>
         <Text style={styles.title} accessibilityRole="header">{title}</Text>
-        {onClose ? <IconButton variant="ghost" size="sm" icon={renderIcon('x', 16)} label="Close" disabled={holding} animated={animated} onPress={onClose} /> : null}
+        {onClose ? <IconButton style={SELF.center} variant="ghost" size="sm" icon={renderIcon('x', 16)} label="Close" disabled={holding} animated={animated} onPress={onClose} /> : null}
       </View>
       <Text style={styles.intro}>{description}</Text>
       <View style={styles.list}>
@@ -116,10 +117,11 @@ export function CookiePreferencesPanel({ title = 'Cookie preferences', descripti
           </View>
         ))}
       </View>
+      {/* On a phone Save spans the first row and Reject all and Accept all share the second, as the web grid does. */}
       {compact ? (
         <View style={styles.footerStacked}>
           {keep}
-          <View style={styles.footer}>{reject}{accept}</View>
+          <View style={styles.pair}>{reject}{accept}</View>
         </View>
       ) : <View style={styles.footer}>{reject}{accept}{keep}</View>}
     </View>
@@ -181,7 +183,8 @@ const createStyles = (c: Colors) => StyleSheet.create({
   header: { alignItems: 'center', flexDirection: 'row', gap: space[2], justifyContent: 'space-between', minHeight: 28, paddingLeft: space[3.5], paddingRight: space[1.5], paddingTop: space[2] },
   title: { ...type(16, c.textPrimary, '600'), flexShrink: 1, lineHeight: 20 },
   intro: { ...type(14, c.textSecondary), lineHeight: 20, paddingBottom: space[2], paddingHorizontal: space[3.5] },
-  list: { backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.card, borderWidth: StyleSheet.hairlineWidth, paddingHorizontal: space[3.5], paddingVertical: space[1] },
+  grabber: { alignSelf: 'center', backgroundColor: c.ink10, borderRadius: radius.sm, height: 4, marginTop: space[1], width: 36 },
+  list: { backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.card, borderWidth: StyleSheet.hairlineWidth, boxShadow: c.surface === '#ffffff' ? '0px 1px 2px 0px #0000000a, 0px 6px 20px -10px #0000001f' : '0px 1px 2px 0px #00000080, 0px 6px 20px -10px #00000099', paddingHorizontal: space[3.5], paddingVertical: space[1] },
   row: { alignItems: 'center', flexDirection: 'row', gap: space[4], justifyContent: 'space-between', paddingVertical: space[3] },
   rowRule: { borderBottomColor: c.ink8, borderBottomWidth: StyleSheet.hairlineWidth },
   text: { flex: 1, gap: space[0.5], minWidth: 0 },
@@ -191,7 +194,9 @@ const createStyles = (c: Colors) => StyleSheet.create({
   alwaysText: type(12, c.textSecondary, '500'),
   focusRing: { borderColor: c.textPrimary, borderRadius: radius.full, borderWidth: 2, padding: space[0.5] },
   footer: { flexDirection: 'row', gap: space[1.5], paddingBottom: space[1], paddingHorizontal: space[1], paddingTop: space[1.5] },
-  footerStacked: { gap: space[1.5] },
+  footerStacked: { gap: space[1.5], paddingBottom: space[1], paddingHorizontal: space[1], paddingTop: space[1.5] },
+  pair: { flexDirection: 'row', gap: space[1.5] },
   half: { flex: 1 },
+  full: { alignSelf: 'stretch' },
   save: { flex: 1 },
 })

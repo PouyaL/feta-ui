@@ -3,10 +3,9 @@ import { StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-na
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import Animated, { cancelAnimation, runOnJS, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated'
 import Svg, { Line, Path, Rect } from 'react-native-svg'
-import { accent, radius, space, type Colors } from '../kit'
-import { Button } from './button'
+import { accent, radius, softElevation, space, type Colors } from '../kit'
+import { Button, SELF } from './button'
 import { type, useStill, useThemed } from './card'
-import { soft } from './popover'
 
 /** Print: 40 ms per line of paper. */
 const LINE_MS = 40
@@ -161,7 +160,7 @@ export function ReceiptPrinter({
         <View style={styles.titleRow}>
           <Text style={styles.title} accessibilityRole="header">{shop}</Text>
           {current === 'torn'
-            ? <Button contentStyle={styles.again} variant="link" size="sm" animated={animated} onPress={() => move('idle')}>Print again</Button>
+            ? <Button style={SELF.center} contentStyle={styles.again} variant="link" size="sm" animated={animated} onPress={() => move('idle')}>Print again</Button>
             : <Text style={styles.status} accessibilityLiveRegion="polite">{STATUS[current]}</Text>}
         </View>
         <View style={styles.slot} />
@@ -222,7 +221,7 @@ export function ReceiptPrinter({
 
 const createStyles = (c: Colors) => StyleSheet.create({
   printer: { backgroundColor: c.ink4, borderRadius: radius.tray, height: 608, maxWidth: 358, overflow: 'hidden', padding: space[1], width: '100%' },
-  header: { backgroundColor: c.surface, borderColor: c.ink8, borderTopLeftRadius: radius.card, borderTopRightRadius: radius.card, borderWidth: StyleSheet.hairlineWidth, flexShrink: 0, gap: space[4.5], height: 78, paddingBottom: space[3.5], paddingHorizontal: space[5], paddingTop: space[5], zIndex: 2, ...soft(c) },
+  header: { backgroundColor: c.surface, borderColor: c.ink8, borderTopLeftRadius: radius.card, borderTopRightRadius: radius.card, borderWidth: StyleSheet.hairlineWidth, flexShrink: 0, gap: space[4.5], height: 78, paddingBottom: space[3.5], paddingHorizontal: space[5], paddingTop: space[5], zIndex: 2, boxShadow: softElevation(c) },
   titleRow: { alignItems: 'center', flexDirection: 'row', gap: space[2], height: 20, justifyContent: 'space-between' },
   title: type(14, c.textPrimary, '500'),
   status: type(14, c.textSecondary),
@@ -230,7 +229,7 @@ const createStyles = (c: Colors) => StyleSheet.create({
   slot: { alignSelf: 'center', backgroundColor: c.ink8, borderRadius: radius.full, height: 6, width: '96%' },
   output: { flex: 1, minHeight: 0, overflow: 'hidden' },
   feed: { left: space[8], position: 'absolute', right: space[8], top: 0, transformOrigin: 'left top' },
-  paper: { backgroundColor: PAPER, gap: space[3.5], padding: space[7], ...soft(c) },
+  paper: { backgroundColor: PAPER, gap: space[3.5], padding: space[7], boxShadow: softElevation(c) },
   edgeBottom: { bottom: -TOOTH / 2, left: 0, position: 'absolute' },
   edgeTop: { left: 0, position: 'absolute', top: -TOOTH / 2 },
   perforation: { left: 0, position: 'absolute', right: 0, top: space[2] },

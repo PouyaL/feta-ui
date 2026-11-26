@@ -1,12 +1,12 @@
 import { useEffect, type ReactNode } from 'react'
 import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { FadeInUp, useAnimatedStyle, useSharedValue, withSequence, withTiming } from 'react-native-reanimated'
-import { radius, space, type Colors } from '../kit'
+import { radius, softElevation, space, type Colors } from '../kit'
 import { Alert, AlertBadge } from './alert'
 import { Button } from './button'
 import { type, useStill, useThemed } from './card'
 import { Modal, ModalGrabber, useDisclosure, useModal, type DisclosureProps, type DismissReason, type ModalMotion } from './dialog'
-import { Copy, EASE_IN_OUT, EASE_OUT, soft } from './popover'
+import { Copy, EASE_IN_OUT, EASE_OUT } from './popover'
 
 const ENTER = { duration: 240, easing: EASE_OUT }
 const EXIT = { duration: 160, easing: EASE_IN_OUT }
@@ -140,7 +140,7 @@ function Body({ title, description, tone, size, media, status, actionLabel, canc
 const createStyles = (c: Colors) => StyleSheet.create({
   tray: { backgroundColor: c.muted, borderRadius: radius.tray, padding: space[1] },
   traySheet: { borderBottomLeftRadius: 0, borderBottomRightRadius: 0, borderTopLeftRadius: radius.sheet, borderTopRightRadius: radius.sheet, paddingBottom: space[5], paddingHorizontal: space[1.5], paddingTop: space[1.5] },
-  card: { ...soft(c), backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.card, borderWidth: 1, gap: space[4], paddingBottom: space[5], paddingHorizontal: space[6], paddingTop: space[6] },
+  card: { boxShadow: softElevation(c), backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.card, borderWidth: 1, gap: space[4], paddingBottom: space[5], paddingHorizontal: space[6], paddingTop: space[6] },
   cardSmall: { alignItems: 'center' },
   text: { gap: space[1] },
   title: { ...type(18, c.textPrimary, '600'), lineHeight: 24 },

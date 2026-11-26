@@ -1,9 +1,9 @@
 import { useMemo, useState, type ReactNode } from 'react'
-import { StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native'
+import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native'
 import Animated from 'react-native-reanimated'
 import { radius, space, type Colors } from '../kit'
 import { Badge } from './badge'
-import { Button } from './button'
+import { Button, SELF } from './button'
 import { Panel, PanelBody, rowEnter, type RenderIcon, type, useStill, useThemed } from './card'
 import { SearchField } from './search'
 import { Tabs } from './tabs'
@@ -51,10 +51,10 @@ export function Integrations({ items, onConnect, onConfigure, connecting, render
           return (
             <Animated.View key={item.id} {...(still ? {} : { entering: rowEnter(i) })} style={styles.row}>
               <View style={styles.tile}>{item.icon}</View>
-              <View style={styles.text}><Text style={styles.name} numberOfLines={1}>{item.name} <Text style={styles.small}>{item.category}</Text></Text><Text style={styles.small} numberOfLines={2}>{item.description}</Text></View>
+              <View style={styles.text}><Text style={styles.name} numberOfLines={1}>{item.name} <Text style={styles.small}>{item.category}</Text></Text><Text style={styles.small}>{item.description}</Text></View>
               {connected.includes(item.id)
-                ? <View style={styles.status}><Badge size="sm" tone="success" mark>Connected</Badge><Button variant="ghost" size="sm" onPress={() => onConfigure?.(item.id)} animated={animated}>Configure</Button></View>
-                : <Button variant={isBusy ? 'primary' : 'secondary'} shape="pill" size="sm" leadingIcon={renderIcon('plus', 14)} status={isBusy ? 'loading' : 'idle'} loadingLabel="Connecting" onPress={() => void connect(item.id)} animated={animated}>Connect</Button>}
+                ? <Pressable style={styles.status} accessibilityRole="button" accessibilityLabel={`Configure ${item.name}`} accessibilityHint="Connected" onPress={() => onConfigure?.(item.id)}><Badge size="sm" tone="success" mark>Connected</Badge></Pressable>
+                : <Button style={SELF.center} variant={isBusy ? 'primary' : 'secondary'} shape="pill" size="sm" leadingIcon={renderIcon('plus', 14)} status={isBusy ? 'loading' : 'idle'} loadingLabel="Connecting" onPress={() => void connect(item.id)} animated={animated}>Connect</Button>}
             </Animated.View>
           )
         })}
@@ -66,11 +66,11 @@ export function Integrations({ items, onConnect, onConfigure, connecting, render
 
 const createStyles = (c: Colors) => StyleSheet.create({
   controls: { gap: space[2], paddingBottom: space[3], paddingHorizontal: space[4] },
-  row: { alignItems: 'center', flexDirection: 'row', gap: space[3], minHeight: 56 },
-  tile: { alignItems: 'center', backgroundColor: c.ink4, borderRadius: radius.field, height: 36, justifyContent: 'center', width: 36 },
+  row: { alignItems: 'center', flexDirection: 'row', gap: space[3], minHeight: 60, paddingVertical: space[2] },
+  tile: { alignItems: 'center', backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.xl, borderWidth: StyleSheet.hairlineWidth * 2, height: 36, justifyContent: 'center', width: 36 },
   text: { flex: 1, gap: space[0.5] },
-  name: type(14, c.textPrimary, '500'),
+  name: type(16, c.textPrimary, '500'),
   small: type(12, c.textSecondary),
-  status: { alignItems: 'flex-end' },
+  status: { alignSelf: 'center', justifyContent: 'center', minHeight: 44 },
   empty: { ...type(14, c.textSecondary), textAlign: 'center' },
 })

@@ -3,13 +3,14 @@ import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } fro
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import Animated, { Easing, FadeOut, cancelAnimation, runOnJS, useAnimatedProps, useAnimatedStyle, useSharedValue, withDelay, withSpring, withTiming } from 'react-native-reanimated'
 import Svg, { Circle, Path } from 'react-native-svg'
-import { radius, space, useColors, type Colors } from '../kit'
+import { radius, space, useAppActive, useColors, type Colors } from '../kit'
 import { useCountdown } from './alert'
 import { BadgeState, ToneGlyph, type BadgeStateKind } from './badge'
-import { Button } from './button'
+import { Button, SELF } from './button'
 import { type RenderIcon, type, useStill, useThemed } from './card'
 import { IconButton } from './icon-button'
 import { Progress } from './progress'
+import { useEdgeInsets } from './dialog'
 
 export type ToastKind = 'success' | 'error' | 'warning' | 'info' | 'loading' | 'action' | 'undo' | 'promise'
 
@@ -71,9 +72,11 @@ export type ToastProps = ToastData & {
   style?: StyleProp<ViewStyle>
 }
 
-function UndoRing({ paused, animated, still, styles, ink }: { paused: boolean; animated: boolean; still: boolean; styles: ReturnType<typeof makeStyles>; ink: string }) {
+function UndoRing({ paused: asked, animated, still, styles, ink }: { paused: boolean; animated: boolean; still: boolean; styles: ReturnType<typeof makeStyles>; ink: string }) {
   const [left, setLeft] = useState(UNDO_MS / 1000)
   const sweep = useSharedValue(0)
+  const appActive = useAppActive()
+  const paused = asked || !appActive
   useEffect(() => {
     if (paused) return undefined
     const timer = setInterval(() => setLeft((s) => Math.max(s - 1, 0)), 1000)
@@ -147,7 +150,7 @@ export function Toast({ kind, title, description, action, cancel, progress, meta
             </Svg>
           )}
         </View>
-        {!collapsed && onDismiss ? <IconButton variant="ghost" size="sm" icon={<ToneGlyph tone="danger" size={16} color={colors.textSecondary} />} label="Dismiss" onPress={onDismiss} animated={animated} /> : null}
+        {!collapsed && onDismiss ? <IconButton style={SELF.center} variant="ghost" size="sm" icon={<ToneGlyph tone="danger" size={16} color={colors.textSecondary} />} label="Dismiss" onPress={onDismiss} animated={animated} /> : null}
       </View>
       {collapsed ? null : (
         <Animated.View style={[styles.tray, tray]}>
@@ -162,8 +165,8 @@ export function Toast({ kind, title, description, action, cancel, progress, meta
             {shape === 'expanded' && (action || cancel || undo) ? (
               <View style={[styles.actions, undo ? styles.actionsUndo : null]}>
                 {undo ? <UndoRing paused={paused} animated={animated} still={still} styles={styles} ink={colors.textTertiary} /> : null}
-                {cancel ? <Button variant="ghost" size="sm" animated={animated} {...(cancel.onPress ? { onPress: cancel.onPress } : {})}>{cancel.label}</Button> : null}
-                {action ? <Button variant={kind === 'action' || kind === 'info' ? 'primary' : 'secondary'} size="sm" animated={animated} onPress={action.onPress} {...(leading ? { leadingIcon: leading } : {})}>{action.label}</Button> : null}
+                {cancel ? <Button style={SELF.center} variant="ghost" size="sm" animated={animated} {...(cancel.onPress ? { onPress: cancel.onPress } : {})}>{cancel.label}</Button> : null}
+                {action ? <Button style={SELF.center} variant={kind === 'action' || kind === 'info' ? 'primary' : 'secondary'} size="sm" animated={animated} onPress={action.onPress} {...(leading ? { leadingIcon: leading } : {})}>{action.label}</Button> : null}
               </View>
             ) : null}
           </View>
@@ -316,7 +319,9 @@ export function Toaster({ position = 'bottom', inset = 8, renderIcon, animated =
   const [heights, setHeights] = useState<Record<number, number>>({})
   const top = position === 'top'
   const measured = list.map(({ id }) => heights[id] ?? 40)
-  const place = useMemo(() => (top ? { top: inset } : { bottom: inset }), [top, inset])
+  // Docked to the screen edge, so the gap starts past the status bar or the home indicator.
+  const insets = useEdgeInsets()
+  const place = useMemo(() => (top ? { top: inset + insets.top } : { bottom: inset + insets.bottom }), [top, inset, insets.top, insets.bottom])
   return (
     <View pointerEvents="box-none" role="region" accessibilityLabel="Notifications" accessibilityLiveRegion="polite" style={[styles.region, place]}>
       {list.map((entry, index) => (

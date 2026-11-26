@@ -1,4 +1,4 @@
-import { useEffect, type ReactNode } from 'react'
+import { Children, cloneElement, Fragment, isValidElement, useEffect, type ReactNode } from 'react'
 import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { Easing, FadeInDown, useAnimatedStyle, useSharedValue, withDelay, withTiming } from 'react-native-reanimated'
 import { radius, space, type Colors } from '../kit'
@@ -30,6 +30,18 @@ export type EmptyProps = {
   children?: ReactNode
 }
 
+/** Each action fills the row on a phone, like the web's Mobile layout: Buttons hug their label by default. */
+function fullWidth(node: ReactNode): ReactNode[] {
+  return Children.toArray(node).flatMap((child) => {
+    if (!isValidElement<{ children?: ReactNode; style?: StyleProp<ViewStyle> }>(child)) return [child]
+    if (child.type === Fragment) return fullWidth(child.props.children)
+    if (typeof child.type === 'string') return [child]
+    return [cloneElement(child, { style: [child.props.style, stretch] })]
+  })
+}
+
+const stretch: ViewStyle = { alignSelf: 'stretch' }
+
 /** Says what is missing and offers the one next step. */
 export function Empty({ container = 'card', media, title, description, actions, footer, animated = true, style, children }: EmptyProps) {
   const styles = useThemed(makeStyles)
@@ -43,7 +55,7 @@ export function Empty({ container = 'card', media, title, description, actions, 
           {typeof title === 'string' ? <Text accessibilityRole="header" style={styles.title}>{title}</Text> : title}
           {typeof description === 'string' ? <Text style={styles.description}>{description}</Text> : description}
         </Animated.View>
-        {actions ? <Animated.View {...step(2)} style={styles.actions}>{actions}</Animated.View> : null}
+        {actions ? <Animated.View {...step(2)} style={styles.actions}>{fullWidth(actions)}</Animated.View> : null}
         {footer || children ? <Animated.View {...step(3)} style={styles.footer}>{footer}{children}</Animated.View> : null}
       </Animated.View>
     </View>
@@ -99,7 +111,7 @@ const makeStyles = (c: Colors) => StyleSheet.create({
   background: { backgroundColor: c.ink4 },
   outline: { borderWidth: 1, borderStyle: 'dashed', borderColor: c.ink10 },
   body: { alignItems: 'center', gap: space[4], paddingTop: space[8], paddingHorizontal: space[5], paddingBottom: space[6], borderRadius: radius.card },
-  bodyCard: { borderWidth: 1, borderColor: c.ink8, backgroundColor: c.surface },
+  bodyCard: { borderWidth: 1, borderColor: c.ink8, backgroundColor: c.surface, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 6, shadowOffset: { width: 0, height: 2 } },
   media: { alignItems: 'center' },
   copy: { alignItems: 'center', gap: space[1] },
   title: { ...type(16, c.textPrimary, '600'), lineHeight: 22, textAlign: 'center' },
@@ -107,8 +119,8 @@ const makeStyles = (c: Colors) => StyleSheet.create({
   actions: { flexDirection: 'column-reverse', alignSelf: 'stretch', gap: space[2] },
   footer: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', alignSelf: 'stretch', gap: space[2] },
   fan: { alignItems: 'center', justifyContent: 'center', width: 52, height: 52 },
-  ghost: { position: 'absolute', width: 44, height: 44, borderRadius: radius.control, borderWidth: 1, borderColor: c.ink8, backgroundColor: c.surface },
-  tile: { alignItems: 'center', justifyContent: 'center', width: 52, height: 52, borderRadius: radius['2xl'], borderWidth: 1, borderColor: c.ink8, backgroundColor: c.surface },
+  ghost: { position: 'absolute', width: 44, height: 44, borderRadius: radius.control, borderWidth: 1, borderColor: c.ink8, backgroundColor: c.surface, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 6, shadowOffset: { width: 0, height: 2 } },
+  tile: { alignItems: 'center', justifyContent: 'center', width: 52, height: 52, borderRadius: radius['2xl'], borderWidth: 1, borderColor: c.ink8, backgroundColor: c.surface, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 6, shadowOffset: { width: 0, height: 2 } },
   tileDanger: { borderColor: c.danger },
   code: { ...type(40, c.textQuaternary, '600', true), lineHeight: 44 },
   chip: { justifyContent: 'center', height: 28, paddingHorizontal: space[3], borderRadius: radius.full, backgroundColor: c.ink5 },

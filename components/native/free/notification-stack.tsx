@@ -2,11 +2,10 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { StyleSheet, Text, View, type AccessibilityActionEvent, type StyleProp, type ViewStyle } from 'react-native'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import Animated, { Easing, FadeIn, FadeOut, interpolate, runOnJS, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated'
-import { font, radius, space, useColors, type Colors } from '../kit'
+import { font, radius, softElevation, space, useColors, type Colors } from '../kit'
 import { Button, withInk } from './button'
 import { type RenderIcon, type, useStill, useThemed } from './card'
 import { IconButton } from './icon-button'
-import { soft } from './popover'
 
 const EASE_OUT = Easing.bezierFn(0.23, 1, 0.32, 1)
 const STEP = 66
@@ -222,7 +221,7 @@ export function NotificationStack({ items, title = 'Notifications', expanded, de
           <Text style={styles.headingText} accessibilityRole="header">{title}</Text>
           <Text style={styles.count}>{shown.length}</Text>
         </View>
-        {empty ? null : <Button variant="ghost" size="sm" animated={animated} aria-expanded={open} onPress={toggle}>{open ? 'Show less' : 'Show all'}</Button>}
+        {empty ? null : <Button variant="ghost" size="sm" style={styles.toggle} animated={animated} aria-expanded={open} onPress={toggle}>{open ? 'Show less' : 'Show all'}</Button>}
       </View>
       {empty ? (
         <View style={styles.empty}><Text style={styles.emptyText}>You’re all caught up.</Text></View>
@@ -241,14 +240,16 @@ const createStyles = (c: Colors) => StyleSheet.create({
   fill: { backgroundColor: c.ink4, borderRadius: radius.tray, left: 0, position: 'absolute', right: 0, top: 0 },
   header: { alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', minHeight: HEADER_HEIGHT, paddingLeft: space[3], paddingRight: space[1.5] },
   heading: { flexDirection: 'row', gap: space[2] },
-  headingText: type(14, c.textPrimary, '500'),
-  count: { ...type(14, c.textTertiary, '500'), fontVariant: ['tabular-nums'] },
+  // Mobile heading: Label default, 16 on 22.
+  headingText: { ...type(16, c.textPrimary, '500'), lineHeight: 22 },
+  count: { ...type(16, c.textTertiary, '500'), fontVariant: ['tabular-nums'], lineHeight: 22 },
+  toggle: { alignSelf: 'center' },
   empty: { alignItems: 'center', height: 72, justifyContent: 'center' },
   emptyText: type(14, c.textSecondary),
   item: { height: CARD, left: 0, position: 'absolute', right: 0, top: 0 },
   layer: { height: CARD, transformOrigin: 'top' },
-  notice: { backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.card, borderWidth: StyleSheet.hairlineWidth, height: CARD },
-  noticeRaised: soft(c),
+  notice: { backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.card, borderWidth: 1, height: CARD },
+  noticeRaised: { boxShadow: softElevation(c) },
   content: { flexDirection: 'row', gap: space[3], height: '100%', paddingLeft: space[3], paddingRight: space[3.5], paddingVertical: space[3] },
   tile: { alignItems: 'center', borderRadius: radius.md, flexShrink: 0, height: 32, justifyContent: 'center', width: 32 },
   success: { backgroundColor: c.success },
@@ -257,8 +258,8 @@ const createStyles = (c: Colors) => StyleSheet.create({
   inverse: { backgroundColor: c.inverse },
   text: { flex: 1, gap: space[0.5], minWidth: 0 },
   top: { alignItems: 'baseline', flexDirection: 'row', gap: space[2], justifyContent: 'space-between' },
-  title: { ...type(14, c.textPrimary, '500'), flexShrink: 1 },
-  time: { color: c.textTertiary, flexShrink: 0, fontFamily: font.mono, fontSize: 12 },
+  title: { ...type(14, c.textPrimary, '500'), flexShrink: 1, lineHeight: 18 },
+  time: { color: c.textTertiary, flexShrink: 0, fontFamily: font.mono, fontSize: 12, lineHeight: 16 },
   body: { ...type(12, c.textSecondary), lineHeight: 18 },
   strip: { ...StyleSheet.absoluteFill, alignItems: 'center', borderRadius: radius.card, flexDirection: 'row', gap: space[1.5], overflow: 'hidden', paddingLeft: space[4] },
   stripTint: { ...StyleSheet.absoluteFill, backgroundColor: c.danger, opacity: 0.1 },

@@ -2,8 +2,8 @@ import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react
 import { StyleSheet, Text, View, type AccessibilityActionEvent, type StyleProp, type ViewStyle } from 'react-native'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import Animated, { Easing, Keyframe, LayoutAnimationConfig, runOnJS, useAnimatedStyle, useSharedValue, withTiming, type SharedValue } from 'react-native-reanimated'
-import { font, pressedState, radius, space, useColors, type Colors } from '../kit'
-import { useLoop, withInk } from './button'
+import { font, pressedState, radius, space, useAppActive, useColors, type Colors } from '../kit'
+import { useLoop, withInk, SELF } from './button'
 import { Card, type RenderIcon, type, useStill, useThemed } from './card'
 import { IconButton } from './icon-button'
 
@@ -173,13 +173,14 @@ export function NowPlaying({ track, playing, defaultPlaying = true, onPlayingCha
     onPlayingChange?.(next)
   }
 
+  const appActive = useAppActive()
   useEffect(() => {
-    if (!isPlaying || seeking || elapsed !== undefined) return undefined
+    if (!appActive || !isPlaying || seeking || elapsed !== undefined) return undefined
     const timer = setInterval(() => {
       setHeldTime((current) => Math.min(current + 1, track.length))
     }, TICK_MS)
     return () => clearInterval(timer)
-  }, [isPlaying, seeking, elapsed, track.length])
+  }, [appActive, isPlaying, seeking, elapsed, track.length])
 
   useEffect(() => {
     if (time < track.length || !isPlaying || elapsed !== undefined) return
@@ -215,7 +216,7 @@ export function NowPlaying({ track, playing, defaultPlaying = true, onPlayingCha
               <Text style={styles.subText} numberOfLines={1}>{track.artist} · {clock(time)}</Text>
             </View>
           </View>
-          <IconButton size="sm" variant="ghost" icon={renderIcon('skip-forward', 16)} label="Next" animated={animated} onPress={onNext} />
+          <IconButton style={SELF.center} size="sm" variant="ghost" icon={renderIcon('skip-forward', 16)} label="Next" animated={animated} onPress={onNext} />
           {toggle}
         </View>
       </Card>
@@ -232,20 +233,20 @@ export function NowPlaying({ track, playing, defaultPlaying = true, onPlayingCha
             <Text style={styles.track} numberOfLines={1}>{track.title}</Text>
             <Text style={styles.small} numberOfLines={1}>{track.artist}</Text>
           </View>
-          <IconButton size="sm" variant="ghost" icon={renderIcon('more-horizontal', 16)} label="More" animated={animated} onPress={onMore} />
+          <IconButton style={SELF.center} size="sm" variant="ghost" icon={renderIcon('more-horizontal', 16)} label="More" animated={animated} onPress={onMore} />
         </View>
         <View style={styles.progress}>
           <SeekBar time={time} length={track.length} seeking={seeking} still={still} onSeekingChange={setSeeking} onSeek={seekTo} />
           <View style={styles.times}><Text style={styles.timeNow}>{clock(time)}</Text><Text style={styles.timeEnd}>{clock(track.length)}</Text></View>
         </View>
         <View style={styles.controls}>
-          <IconButton size="sm" variant="ghost" contentStyle={shuffle ? styles.toggleOn : undefined} icon={withInk(renderIcon('shuffle', 16), shuffle ? colors.textPrimary : colors.textSecondary)} label="Shuffle" {...pressedState(shuffle)} animated={animated} onPress={() => setShuffle(!shuffle)} />
+          <IconButton style={SELF.center} size="sm" variant="ghost" contentStyle={shuffle ? styles.toggleOn : undefined} icon={withInk(renderIcon('shuffle', 16), shuffle ? colors.textPrimary : colors.textSecondary)} label="Shuffle" {...pressedState(shuffle)} animated={animated} onPress={() => setShuffle(!shuffle)} />
           <View style={styles.main}>
-            <IconButton variant="ghost" icon={renderIcon('skip-back', 20)} label="Previous" animated={animated} onPress={onPrevious} />
+            <IconButton style={SELF.center} variant="ghost" icon={renderIcon('skip-back', 20)} label="Previous" animated={animated} onPress={onPrevious} />
             {toggle}
-            <IconButton variant="ghost" icon={renderIcon('skip-forward', 20)} label="Next" animated={animated} onPress={onNext} />
+            <IconButton style={SELF.center} variant="ghost" icon={renderIcon('skip-forward', 20)} label="Next" animated={animated} onPress={onNext} />
           </View>
-          <IconButton size="sm" variant="ghost" contentStyle={repeat ? styles.toggleOn : undefined} icon={withInk(renderIcon('repeat', 16), repeat ? colors.textPrimary : colors.textSecondary)} label="Repeat" {...pressedState(repeat)} animated={animated} onPress={() => setRepeat(!repeat)} />
+          <IconButton style={SELF.center} size="sm" variant="ghost" contentStyle={repeat ? styles.toggleOn : undefined} icon={withInk(renderIcon('repeat', 16), repeat ? colors.textPrimary : colors.textSecondary)} label="Repeat" {...pressedState(repeat)} animated={animated} onPress={() => setRepeat(!repeat)} />
         </View>
       </View>
     </Card>

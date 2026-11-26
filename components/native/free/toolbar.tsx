@@ -2,11 +2,11 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { Pressable, StyleSheet, Text, View, type ViewInstance, type LayoutChangeEvent, type StyleProp, type ViewStyle } from 'react-native'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import Animated, { FadeIn, FadeOut, LinearTransition, runOnJS, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated'
-import { pressedState, radius, space, useColors, type Colors } from '../kit'
+import { pressedState, radius, softElevation, space, useColors, type Colors } from '../kit'
 import { withInk } from './button'
 import { type, useStill, useThemed } from './card'
 import { Kbd } from './kbd'
-import { Floating, soft, Tap, useCompact, type FloatingMotion, type Side } from './popover'
+import { Floating, Tap, useCompact, type FloatingMotion, type Side } from './popover'
 import { Tooltip } from './tooltip'
 
 const REDOCK = { stiffness: 380, damping: 32 }
@@ -233,7 +233,7 @@ const zones = StyleSheet.create({
 })
 
 const createStyles = (c: Colors) => StyleSheet.create({
-  dock: { ...soft(c), alignItems: 'center', backgroundColor: c.muted, borderColor: c.ink8, borderRadius: radius.full, borderWidth: 1, flexDirection: 'row', gap: space[0.5], padding: space[1] },
+  dock: { boxShadow: softElevation(c), alignItems: 'center', backgroundColor: c.muted, borderColor: c.ink8, borderRadius: radius.full, borderWidth: 1, flexDirection: 'row', gap: space[0.5], padding: space[1] },
   dockVertical: { flexDirection: 'column' },
   zone: { backgroundColor: c.ink4, borderRadius: radius.full, position: 'absolute' },
   plate: { backgroundColor: c.inverse, borderRadius: radius.full, height: TOOL, left: 0, position: 'absolute', top: 0, width: TOOL },
@@ -246,7 +246,7 @@ const createStyles = (c: Colors) => StyleSheet.create({
   tool: { alignItems: 'center', borderRadius: radius.full, height: TOOL, justifyContent: 'center', width: TOOL },
   caret: { borderBottomColor: c.textSecondary, borderBottomWidth: 4, borderLeftColor: 'transparent', borderLeftWidth: 4, bottom: 6, height: 0, position: 'absolute', right: 6, width: 0 },
   caretOn: { borderBottomColor: c.textInverse },
-  flyout: { ...soft(c), backgroundColor: c.muted, borderColor: c.ink8, borderRadius: radius['2xl'], borderWidth: 1, padding: space[1] },
+  flyout: { boxShadow: softElevation(c), backgroundColor: c.muted, borderColor: c.ink8, borderRadius: radius['2xl'], borderWidth: 1, padding: space[1] },
   option: { alignItems: 'center', borderRadius: radius.xl, flexDirection: 'row', gap: space[2], height: 44, paddingHorizontal: space[2.5] },
   optionLabel: { ...type(14, c.textPrimary), flex: 1, lineHeight: 20 },
 })

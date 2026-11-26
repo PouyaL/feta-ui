@@ -67,8 +67,8 @@ function Row({ item, index, total, still, renderIcon, onLift, onDrag, onDrop, on
   }))
   const name = nameOf(item)
   return (
-    <Animated.View {...(still ? {} : { layout: neighbor })} style={styles.slot}>
-      <Animated.View style={[styles.item, lifted ? styles.itemLifted : null, motion]}>
+    <Animated.View {...(still ? {} : { layout: neighbor })} style={[styles.slot, lifted ? styles.slotLifted : null]}>
+      <Animated.View style={[styles.item, motion]}>
         <GestureDetector gesture={pan}>
           <View
             accessible
@@ -149,12 +149,17 @@ export function SortableList({ items: start, onReorder, label, renderIcon, anima
 
 const makeStyles = (c: Colors) => StyleSheet.create({
   list: { width: '100%', gap: ROW_GAP, padding: space[1], borderRadius: radius.tray, backgroundColor: c.ink4 },
-  slot: { borderRadius: radius.card, borderWidth: 1, borderStyle: 'dashed', borderColor: c.ink10 },
-  item: { flexDirection: 'row', alignItems: 'center', gap: space[2], minHeight: 64, paddingRight: space[3], borderRadius: radius.card, borderWidth: 1, borderColor: c.ink8, backgroundColor: c.surface },
-  itemLifted: { borderColor: c.textPrimary },
-  grip: { alignItems: 'center', justifyContent: 'center', width: 44, height: 44 },
+  // The dashed slot shows only under a lifted row.
+  slot: { borderRadius: radius.card, borderWidth: 1, borderStyle: 'dashed', borderColor: 'transparent' },
+  slotLifted: { borderColor: c.ink10 },
+  item: {
+    flexDirection: 'row', alignItems: 'center', gap: space[3], minHeight: 54, paddingVertical: space[1] - 1, paddingLeft: space[1] - 1, paddingRight: space[3] - 1,
+    borderRadius: radius.card, borderWidth: 1, borderColor: c.ink8, backgroundColor: c.surface,
+    shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.06, shadowRadius: 10,
+  },
+  grip: { alignItems: 'center', justifyContent: 'center', width: 40, height: 44, borderRadius: radius.control, backgroundColor: c.ink4 },
   text: { flex: 1, minWidth: 0 },
-  title: type(14, c.textPrimary, '500'),
-  subtitle: type(12, c.textSecondary),
-  order: type(12, c.textTertiary, '400', true),
+  title: { ...type(16, c.textPrimary, '500'), lineHeight: 22 },
+  subtitle: { ...type(12, c.textSecondary), lineHeight: 16 },
+  order: { ...type(12, c.textTertiary, '400', true), lineHeight: 16 },
 })

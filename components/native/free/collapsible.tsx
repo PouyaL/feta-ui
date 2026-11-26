@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withDelay, withSpring, withTiming } from 'react-native-reanimated'
-import { radius, space, type Colors } from '../kit'
+import { radius, softElevation, space, useColors, type Colors } from '../kit'
+import { withInk } from './button'
 import { type RenderIcon, type, useStill, useThemed } from './card'
 
 const OPEN_SPRING = { duration: 320, dampingRatio: 0.7 } as const
@@ -12,6 +13,8 @@ const CONTENT_OUT_MS = 120
 const CHEVRON_MS = 200
 const REDUCED_FADE_MS = 120
 const IN_OUT = Easing.bezier(0.65, 0, 0.35, 1)
+/** --feta-size-icon on a phone. */
+const CHEVRON_ICON = 20
 const OUT = Easing.bezier(0.23, 1, 0.32, 1)
 
 export type DisclosurePanelProps = {
@@ -80,6 +83,7 @@ export type CollapsibleProps = {
 /** A trigger on the Soft tray and an inset card that drops in. */
 export function Collapsible({ title, children, open, defaultOpen = false, onOpenChange, disabled = false, accessibilityLabel, renderIcon, animated = true, style }: CollapsibleProps) {
   const styles = useThemed(makeStyles)
+  const colors = useColors()
   const still = useStill(animated)
   const [held, setHeld] = useState(defaultOpen)
   const current = open ?? held
@@ -106,13 +110,19 @@ export function Collapsible({ title, children, open, defaultOpen = false, onOpen
         style={({ pressed }) => [styles.trigger, pressed ? styles.triggerPressed : null]}
       >
         {typeof title === 'string' ? <Text style={[styles.title, disabled ? styles.titleDisabled : null]} numberOfLines={1}>{title}</Text> : title}
-        <Animated.View style={[styles.chevron, chevron]}>{renderIcon('chevron-up', 16)}</Animated.View>
+        <Animated.View style={[styles.chevron, chevron]}>{withInk(renderIcon('chevron-up', CHEVRON_ICON), colors.textSecondary)}</Animated.View>
       </Pressable>
       <DisclosurePanel open={current} still={still} animated={animated}>
         <View style={styles.card}>{children}</View>
       </DisclosurePanel>
     </View>
   )
+}
+
+/** A paragraph in the card, in the card's secondary 15/22 type. */
+export function CollapsibleText({ children }: { children: ReactNode }) {
+  const styles = useThemed(makeStyles)
+  return <Text style={styles.rowLabel}>{children}</Text>
 }
 
 /** A label and value row with a hairline between rows, for inside the card. */
@@ -139,7 +149,11 @@ const makeStyles = (c: Colors) => StyleSheet.create({
   title: { ...type(16, c.textPrimary, '500'), flexShrink: 1, lineHeight: 22 },
   titleDisabled: { color: c.textQuaternary },
   chevron: { alignItems: 'center', justifyContent: 'center', width: 36, height: 36 },
-  card: { gap: space[1.5], marginTop: space[1], padding: space[4], borderRadius: radius.card, borderWidth: 1, borderColor: c.ink8, backgroundColor: c.surface },
+  // The web's inset hairline plus --feta-elevation-soft.
+  card: {
+    gap: space[1.5], marginTop: space[1], padding: space[4], borderRadius: radius.card, borderWidth: 1, borderColor: c.ink8, backgroundColor: c.surface,
+    boxShadow: softElevation(c),
+  },
   row: { flexDirection: 'row', justifyContent: 'space-between', gap: space[3], paddingVertical: space[2] },
   rowRule: { borderTopWidth: 1, borderTopColor: c.ink5 },
   rowLabel: { ...type(15, c.textSecondary), lineHeight: 22 },

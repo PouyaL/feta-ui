@@ -112,10 +112,10 @@ export function SpendingRing({ categories, title = 'October spending', total, va
         </Svg>
         {current ? (
           <View accessibilityLiveRegion="polite" pointerEvents="none" style={styles.readout}>
-            <Text style={styles.small}>{current.name}</Text>
+            <View style={styles.nameRow}><View style={styles.nameDot} /><Text style={styles.small}>{current.name}</Text></View>
             <Tween value={current.amount} format={format} animated={animated} style={styles.amount} />
             <Text style={styles.small}>{Math.round((current.amount / fullTotal) * 100)}% of total</Text>
-            {current.delta ? <Text style={styles.small}>{current.delta}</Text> : null}
+            {current.delta ? <Text style={styles.delta}>{current.delta}</Text> : null}
           </View>
         ) : null}
       </View>
@@ -125,8 +125,8 @@ export function SpendingRing({ categories, title = 'October spending', total, va
           return (
             <Pressable key={item.name} accessibilityRole="radio" accessibilityLabel={`${item.name}, ${formatShort(item.amount)}`} aria-checked={on} onPress={() => choose(item.name)} style={[styles.item, on && styles.itemOn]}>
               <View style={[styles.dot, on && styles.dotOn]} />
-              <Text style={styles.itemName} numberOfLines={1}>{item.name}</Text>
-              <Text style={styles.small}>{formatShort(item.amount)}</Text>
+              <Text style={[styles.itemName, on && styles.itemNameOn]} numberOfLines={1}>{item.name}</Text>
+              <Text style={styles.itemValue}>{formatShort(item.amount)}</Text>
             </Pressable>
           )
         })}
@@ -135,17 +135,24 @@ export function SpendingRing({ categories, title = 'October spending', total, va
   )
 }
 
+// The web's mobile card: a 14/20 semibold header, a 200 px ring with a dotted name over a 24 px amount, and a
+// two column legend whose values read in the title weight.
 const createStyles = (c: Colors) => StyleSheet.create({
-  header: { flexDirection: 'row', justifyContent: 'space-between' },
-  title: type(16, c.textPrimary, '500'),
-  ring: { alignItems: 'center', alignSelf: 'center', height: SIZE, justifyContent: 'center', width: SIZE },
-  readout: { alignItems: 'center', gap: space[0.5], left: space[10], position: 'absolute', right: space[10] },
-  small: { ...type(12, c.textSecondary), textAlign: 'center' },
-  amount: { ...type(20, c.textPrimary, '500'), textAlign: 'center' },
-  legend: { gap: space[0.5] },
-  item: { alignItems: 'center', borderRadius: radius.field, flexDirection: 'row', gap: space[2], minHeight: 44, paddingHorizontal: space[2] },
-  itemOn: { backgroundColor: c.ink4 },
+  header: { alignItems: 'center', flexDirection: 'row', gap: space[2], justifyContent: 'space-between' },
+  title: { ...type(14, c.textPrimary, '600'), lineHeight: 20 },
+  ring: { alignItems: 'center', alignSelf: 'center', height: SIZE, justifyContent: 'center', marginVertical: space[1], width: SIZE },
+  readout: { alignItems: 'center', gap: space[0.5], position: 'absolute', width: 128 },
+  nameRow: { alignItems: 'center', flexDirection: 'row', gap: space[1.5] },
+  nameDot: { backgroundColor: c.inverse, borderRadius: radius.full, height: 6, width: 6 },
+  small: { ...type(12, c.textSecondary), lineHeight: 16, textAlign: 'center' },
+  delta: { ...type(12, c.textTertiary), lineHeight: 16, textAlign: 'center' },
+  amount: { ...type(24, c.textPrimary, '600'), lineHeight: 32, textAlign: 'center' },
+  legend: { columnGap: space[1], flexDirection: 'row', flexWrap: 'wrap', rowGap: space[0.5] },
+  item: { alignItems: 'center', borderRadius: radius.field, flexBasis: '48%', flexDirection: 'row', flexGrow: 1, gap: space[2], minHeight: 30, minWidth: 0, paddingHorizontal: space[2], paddingVertical: space[1.5] },
+  itemOn: { backgroundColor: c.ink5 },
   dot: { backgroundColor: c.ink10, borderRadius: radius.full, height: 8, width: 8 },
   dotOn: { backgroundColor: c.inverse },
-  itemName: { ...type(14, c.textPrimary), flex: 1 },
+  itemName: { ...type(14, c.textSecondary), flex: 1, lineHeight: 18, minWidth: 0 },
+  itemNameOn: { color: c.textPrimary },
+  itemValue: { ...type(14, c.textPrimary, '500'), lineHeight: 18 },
 })

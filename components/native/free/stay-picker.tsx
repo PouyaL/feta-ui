@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { Easing, FadeInUp, FadeOut } from 'react-native-reanimated'
 import { pressedState, radius, space, useColors, type Colors } from '../kit'
-import { Button } from './button'
+import { Button, SELF } from './button'
 import { type, useStill, useThemed, type RenderIcon } from './card'
 import { IconButton } from './icon-button'
 import { LabelSwap, RollingText, iconFor } from './label'
@@ -76,12 +76,12 @@ export function StayPicker({ month: firstMonth, priceFor, currency = '$', curren
   return (
     <View accessibilityLabel="Choose your stay" style={[styles.card, style]}>
       <View style={styles.head}>
-        <IconButton variant="ghost" size="sm" animated={animated} label="Previous month" icon={iconFor(renderIcon, 'chevron-left', 16, colors.textPrimary)} onPress={() => setMonth(new Date(month.getFullYear(), month.getMonth() - 1, 1))} />
+        <IconButton style={SELF.center} variant="ghost" size="sm" animated={animated} label="Previous month" icon={iconFor(renderIcon, 'chevron-left', 16, colors.textPrimary)} onPress={() => setMonth(new Date(month.getFullYear(), month.getMonth() - 1, 1))} />
         <View style={styles.heading}>
           <Text accessibilityLiveRegion="polite" style={styles.title}>{title}</Text>
           <Text style={styles.caption}>Nightly price in {currencyName}</Text>
         </View>
-        <IconButton variant="ghost" size="sm" animated={animated} label="Next month" icon={iconFor(renderIcon, 'chevron-right', 16, colors.textPrimary)} onPress={() => setMonth(new Date(month.getFullYear(), month.getMonth() + 1, 1))} />
+        <IconButton style={SELF.center} variant="ghost" size="sm" animated={animated} label="Next month" icon={iconFor(renderIcon, 'chevron-right', 16, colors.textPrimary)} onPress={() => setMonth(new Date(month.getFullYear(), month.getMonth() + 1, 1))} />
       </View>
       <View accessibilityLabel={title} style={styles.grid}>
         <View style={styles.week}>
@@ -133,7 +133,7 @@ export function StayPicker({ month: firstMonth, priceFor, currency = '$', curren
           ) : <Text style={styles.total}>Pick dates</Text>}
           {reserved ? <Text style={styles.caption}>Confirmation sent</Text> : total && count ? <Text style={styles.caption}>{currency}{Math.round(total / count)} a night, taxes in</Text> : null}
         </View>
-        <Button animated={animated} disabled={!from || !to || reserved} onPress={() => { if (from && to) { setReserved(true); onReserve?.({ from, to }, total) } }}>{reserved ? 'Reserved' : 'Reserve'}</Button>
+        <Button style={SELF.center} animated={animated} disabled={!from || !to || reserved} onPress={() => { if (from && to) { setReserved(true); onReserve?.({ from, to }, total) } }}>{reserved ? 'Reserved' : 'Reserve'}</Button>
       </View>
     </View>
   )

@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { Platform, Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated'
-import Svg, { Polygon } from 'react-native-svg'
+import { StarIcon as FilledStarIcon } from '@fetaui/react-native/filled/star'
+import { StarIcon as RoundedStarIcon } from '@fetaui/react-native/rounded/star'
 import { space, useColors, type Colors } from '../kit'
 import { type, useStill, useThemed } from './card'
 
@@ -9,22 +10,15 @@ const STARS = [1, 2, 3, 4, 5] as const
 const TAP_SCALE = 0.9
 const PRESS_SPRING = { stiffness: 600, damping: 32 } as const
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable)
+/** Stars sit 4 apart like the web; the slop grows each one to a 44 point target. */
+const STAR_SLOP = { top: 10, bottom: 10, left: 2, right: 2 } as const
 
-/** A five point star on a 24 box, built from angles so its fill can follow the rating. */
-const STAR_POINTS = Array.from({ length: 10 }, (_, i) => {
-  const r = i % 2 === 0 ? 10 : 4.5
-  const angle = (i * Math.PI) / 5 - Math.PI / 2
-  return `${(12 + r * Math.cos(angle)).toFixed(2)},${(12.5 + r * Math.sin(angle)).toFixed(2)}`
-}).join(' ')
-
+/** Like the web: an on star is the fetaUI star filled in ink, an off star the Rounded outline in quaternary ink. */
 function Star({ size, filled }: { size: number; filled: boolean }) {
   const colors = useColors()
-  const ink = filled ? colors.textPrimary : colors.textQuaternary
-  return (
-    <Svg aria-hidden width={size} height={size} viewBox="0 0 24 24">
-      <Polygon points={STAR_POINTS} fill={filled ? ink : 'none'} stroke={ink} strokeWidth={1.5} strokeLinejoin="round" />
-    </Svg>
-  )
+  return filled
+    ? <FilledStarIcon size={size} color={colors.textPrimary} trigger="none" />
+    : <RoundedStarIcon size={size} color={colors.textQuaternary} trigger="none" />
 }
 
 function StarButton({ star, filled, selected, disabled, still, onPick }: { star: number; filled: boolean; selected: boolean; disabled: boolean; still: boolean; onPick: (star: number) => void }) {
@@ -41,6 +35,7 @@ function StarButton({ star, filled, selected, disabled, still, onPick }: { star:
       onPress={() => onPick(star)}
       onPressIn={() => { if (!still) scale.value = withSpring(TAP_SCALE, PRESS_SPRING) }}
       onPressOut={() => { if (!still) scale.value = withSpring(1, PRESS_SPRING) }}
+      hitSlop={STAR_SLOP}
       style={[styles.target, disabled ? styles.disabled : null, motion]}
     >
       <Star size={24} filled={filled} />
@@ -115,11 +110,11 @@ export function Rating({ label, value, defaultValue = 0, onValueChange, readOnly
 
 const makeStyles = (c: Colors) => StyleSheet.create({
   rating: { width: '100%', maxWidth: 358, gap: space[1.5] },
-  label: type(14, c.textPrimary, '500'),
+  label: { ...type(14, c.textPrimary, '500'), lineHeight: 20 },
   row: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: space[3] },
-  stars: { flexDirection: 'row' },
+  stars: { flexDirection: 'row', gap: space[1] },
   starsSmall: { flexDirection: 'row', gap: space[0.5] },
-  target: { alignItems: 'center', justifyContent: 'center', width: 44, height: 44 },
+  target: { alignItems: 'center', justifyContent: 'center', width: 24, height: 24 },
   disabled: { opacity: 0.5 },
-  value: type(12, c.textSecondary),
+  value: { ...type(12, c.textSecondary), lineHeight: 16, fontVariant: ['tabular-nums'] },
 })

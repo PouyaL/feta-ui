@@ -1,10 +1,9 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import { Pressable, StyleSheet, Text, View, type LayoutChangeEvent, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { FadeInLeft, FadeOut, LinearTransition, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated'
-import { radius, space, useColors, type Colors } from '../kit'
+import { radius, softElevation, space, useColors, type Colors } from '../kit'
 import { withInk } from './button'
 import { type, useStill, useThemed } from './card'
-import { soft } from './popover'
 
 const LABEL_MS = 120
 const LABEL_X = -6
@@ -100,7 +99,7 @@ export function TabBar({ items, value, defaultValue, onValueChange, appearance =
 
 const createStyles = (c: Colors) => StyleSheet.create({
   labeled: { backgroundColor: c.surface, borderTopColor: c.ink8, borderTopWidth: 1, maxWidth: '100%', paddingBottom: space[7], paddingTop: space[1.5], width: '100%' },
-  floating: { ...soft(c), alignSelf: 'center', backgroundColor: c.muted, borderColor: c.ink8, borderRadius: radius.full, borderWidth: 1, padding: space[1.5] },
+  floating: { boxShadow: softElevation(c), alignSelf: 'center', backgroundColor: c.muted, borderColor: c.ink8, borderRadius: radius.full, borderWidth: 1, padding: space[1.5] },
   list: { flexDirection: 'row', justifyContent: 'space-around' },
   slot: { flex: 1 },
   pill: { left: 0, position: 'absolute', top: 0 },

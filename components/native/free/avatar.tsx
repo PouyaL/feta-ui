@@ -66,13 +66,16 @@ export function AvatarBadge({ type: kind, size = 'md', label, renderIcon, animat
   )
 }
 
+export const AVATAR_BG = '#e3dcdb'
+export const AVATAR_INK = '#2d333e'
+
 /** The illustrated photo. Replace it with `src` when you have a real one. */
 export function AvatarPhoto({ person, style }: { person: AvatarPerson; style?: StyleProp<ViewStyle> }) {
-  const colors = useColors()
+  // --feta-avatar-bg and --feta-avatar-ink: a warm beige tile with dark ink, the same in Light and Dark.
   return (
     <Svg aria-hidden width="100%" height="100%" viewBox="0 0 64 64" style={style}>
-      <Rect width={64} height={64} fill={colors.muted} />
-      <Path fillRule="evenodd" clipRule="evenodd" d={AVATAR_PHOTOS[person]} fill={colors.textSecondary} />
+      <Rect width={64} height={64} fill={AVATAR_BG} />
+      <Path fillRule="evenodd" clipRule="evenodd" d={AVATAR_PHOTOS[person]} fill={AVATAR_INK} />
     </Svg>
   )
 }

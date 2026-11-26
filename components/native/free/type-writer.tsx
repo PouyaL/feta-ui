@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { cancelAnimation, useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from 'react-native-reanimated'
-import { radius, space, type Colors } from '../kit'
+import { radius, space, useAppActive, type Colors } from '../kit'
 import { type, useStill, useThemed } from './card'
 
 const TYPE_MS = 70
@@ -52,6 +52,7 @@ export function TypeWriter({ steps, styleKind = 'soft', loop = true, animated = 
   const [text, setText] = useState('')
   const [phase, setPhase] = useState<'typing' | 'typo' | 'selecting' | 'idle'>('typing')
   const blink = useSharedValue(1)
+  const active = useAppActive()
   const all = steps.map(normal).map((step) => step.text).join(', ')
   const key = steps.map(normal).map((step) => step.text).join('|')
   const solid = phase === 'typing' || phase === 'typo'
@@ -59,10 +60,10 @@ export function TypeWriter({ steps, styleKind = 'soft', loop = true, animated = 
   useEffect(() => {
     cancelAnimation(blink)
     blink.value = 1
-    if (still || solid) return undefined
+    if (still || solid || !active) return undefined
     blink.value = withRepeat(withSequence(withTiming(1, { duration: BLINK_MS }), withTiming(0, { duration: 0 }), withTiming(0, { duration: BLINK_MS }), withTiming(1, { duration: 0 })), -1)
     return () => cancelAnimation(blink)
-  }, [still, solid, blink])
+  }, [still, solid, active, blink])
 
   useEffect(() => {
     if (still) return undefined
@@ -122,7 +123,8 @@ const makeStyles = (c: Colors) => StyleSheet.create({
   state: type(12, c.textTertiary, '400', true),
   body: { padding: space[4], borderRadius: radius.card, borderWidth: 1, borderColor: c.ink8, backgroundColor: c.surface },
   line: { flexDirection: 'row', alignItems: 'center', minHeight: 34 },
-  word: { ...type(18, c.textPrimary, '600'), lineHeight: 24 },
-  selected: { backgroundColor: c.ink10 },
-  caret: { width: 2, height: 18, marginLeft: space[0.5], backgroundColor: c.textPrimary },
+  // The web's heading-small: 24 on a 32 line.
+  word: { ...type(24, c.textPrimary, '600'), lineHeight: 32 },
+  selected: { backgroundColor: 'rgba(14,165,233,0.14)' },
+  caret: { width: 2, height: 24, marginLeft: space[0.5], backgroundColor: c.textPrimary },
 })

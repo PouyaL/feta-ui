@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { ScrollView, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { Easing, FadeIn, LinearTransition, useAnimatedStyle, useSharedValue, withDelay, withTiming } from 'react-native-reanimated'
 import { font, radius, space, type Colors, hscroll } from '../kit'
-import { Button } from './button'
+import { Button, SELF } from './button'
 import { type RenderIcon, type, useStill, useThemed } from './card'
 
 const COPIED_HOLD_MS = 2000
@@ -55,7 +55,7 @@ export function CodeBlockLine({ number, variant = 'default', delay = 0, still = 
       {marked ? <Animated.View style={[styles.wash, styles[`wash_${variant}` as const], wash]} /> : null}
       {marked ? <Animated.View style={[styles.bar, styles[`bar_${variant}` as const], bar]} /> : null}
       <Text style={styles.number}>{number}</Text>
-      <Text style={styles.sign}>{SIGN[variant]}</Text>
+      <Text style={[styles.sign, variant === 'added' ? styles.sign_added : variant === 'removed' ? styles.sign_removed : null]}>{SIGN[variant]}</Text>
       <Text style={styles.text}>{children}</Text>
     </View>
   )
@@ -113,7 +113,7 @@ export function CodeBlock({ code, lines, fileName, language, collapsible = false
   return (
     <View style={[styles.tray, style]}>
       <View style={styles.header}>
-        {renderIcon('file-code', 16)}
+        <View style={styles.fileIcon}>{renderIcon('file-code', 16)}</View>
         {fileName ? <Text style={styles.name} numberOfLines={1}>{fileName}</Text> : null}
         {language ? <Text style={styles.language}>{fileName ? '· ' : ''}{language}</Text> : null}
         <View style={styles.spacer} />
@@ -131,7 +131,7 @@ export function CodeBlock({ code, lines, fileName, language, collapsible = false
         </ScrollView>
         {foldable ? (
           <View style={styles.more}>
-            <Button variant="ghost" size="sm" animated={animated} aria-expanded={open} onPress={() => setOpen(!open)}>{open ? 'Show less' : `Show ${rows.length - COLLAPSED_LINES} more lines`}</Button>
+            <Button style={SELF.center} variant="ghost" size="sm" animated={animated} aria-expanded={open} onPress={() => setOpen(!open)}>{open ? 'Show less' : `Show ${rows.length - COLLAPSED_LINES} more lines`}</Button>
           </View>
         ) : null}
       </Animated.View>
@@ -139,36 +139,50 @@ export function CodeBlock({ code, lines, fileName, language, collapsible = false
   )
 }
 
-const mono = (c: Colors) => ({ fontFamily: font.mono, fontSize: 12, lineHeight: 20, color: c.textPrimary })
+// Syntax colours: the web's --feta-code-* tokens, plus the subtle status washes for diff lines.
+const LIGHT_CODE = { tag: '#006292', attr: '#704b00', string: '#006b2d', punct: '#6b6b6b', comment: '#9a9a9a', addedWash: '#ecfdf5', removedWash: '#fef2f2', addedSign: '#047857', removedSign: '#b91c1c' }
+const DARK_CODE: typeof LIGHT_CODE = { tag: '#7cc4ec', attr: '#e3b263', string: '#86d49e', punct: '#9a9a9a', comment: '#6a6a6a', addedWash: '#022c22', removedWash: '#450a0a', addedSign: '#6ee7b7', removedSign: '#fca5a5' }
+const codeColours = (c: Colors): typeof LIGHT_CODE => (c.canvas === '#ffffff' ? LIGHT_CODE : DARK_CODE)
+/** Primary text at a given opacity, like the web's color-mix on --feta-text-primary. */
+const faded = (c: Colors, alpha: number): string => (c.canvas === '#ffffff' ? `rgba(24,24,27,${alpha})` : `rgba(244,244,245,${alpha})`)
 
-const makeStyles = (c: Colors) => StyleSheet.create({
-  tray: { width: '100%', padding: space[1], borderRadius: radius.tray, backgroundColor: c.ink4 },
-  header: { flexDirection: 'row', alignItems: 'center', gap: space[2], minHeight: 44, paddingLeft: space[3], paddingRight: space[1] },
-  name: { ...type(13, c.textPrimary, '500'), flexShrink: 1 },
-  language: type(12, c.textTertiary, '400', true),
-  spacer: { flex: 1 },
-  // Button hugs the top of a row by default; Copy sits level with the file name.
-  copy: { alignSelf: 'center' },
-  card: { overflow: 'hidden', borderRadius: radius.card, borderWidth: 1, borderColor: c.ink8, backgroundColor: c.surface },
-  // Grows to the card width, so marked lines wash the whole row even when every line is short.
-  pre: { flexGrow: 1, paddingVertical: space[3] },
-  lines: { flexGrow: 1 },
-  line: { flexDirection: 'row', paddingRight: space[3] },
-  wash: { ...StyleSheet.absoluteFill },
-  wash_highlighted: { backgroundColor: c.ink4 },
-  wash_added: { backgroundColor: c.ink4 },
-  wash_removed: { backgroundColor: c.ink4 },
-  bar: { position: 'absolute', top: 0, bottom: 0, left: 0, width: 2 },
-  bar_highlighted: { backgroundColor: c.textPrimary },
-  bar_added: { backgroundColor: c.success },
-  bar_removed: { backgroundColor: c.danger },
-  number: { ...mono(c), width: 32, textAlign: 'right', color: c.textTertiary },
-  sign: { ...mono(c), width: 16, textAlign: 'center', color: c.textTertiary },
-  text: mono(c),
-  comment: { color: c.textTertiary },
-  string: { color: c.textSecondary },
-  attr: { fontWeight: '500' },
-  tag: { color: c.textPrimary },
-  punct: { color: c.textTertiary },
-  more: { alignItems: 'center', paddingBottom: space[1], borderTopWidth: 1, borderTopColor: c.ink5 },
-})
+const mono = (c: Colors) => ({ fontFamily: font.mono, fontSize: 13, lineHeight: 20, color: c.textPrimary })
+
+const makeStyles = (c: Colors) => {
+  const k = codeColours(c)
+  return StyleSheet.create({
+    tray: { width: '100%', padding: space[1], borderRadius: radius.tray, backgroundColor: c.ink4 },
+    header: { flexDirection: 'row', alignItems: 'center', gap: space[1.5], height: 44, paddingLeft: space[3], paddingRight: space[1] },
+    // The icon draws in its own colour; this brings it to about text-secondary like the web.
+    fileIcon: { opacity: 0.6 },
+    name: { ...type(16, c.textPrimary, '500'), lineHeight: 22, flexShrink: 1 },
+    language: { ...type(12, faded(c, 0.4), '400', true), lineHeight: 16 },
+    spacer: { flex: 1 },
+    // Button hugs the top of a row by default; Copy sits level with the file name.
+    copy: { alignSelf: 'center' },
+    card: { overflow: 'hidden', borderRadius: radius.card, borderWidth: 1, borderColor: c.ink8, backgroundColor: c.surface, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 6, shadowOffset: { width: 0, height: 2 } },
+    // Grows to the card width, so marked lines wash the whole row even when every line is short.
+    pre: { flexGrow: 1, paddingVertical: space[3] },
+    lines: { flexGrow: 1 },
+    line: { flexDirection: 'row', minHeight: 20, paddingRight: space[4] },
+    wash: { ...StyleSheet.absoluteFill },
+    wash_highlighted: { backgroundColor: c.ink5 },
+    wash_added: { backgroundColor: k.addedWash },
+    wash_removed: { backgroundColor: k.removedWash },
+    bar: { position: 'absolute', top: 0, bottom: 0, left: 0, width: 2 },
+    bar_highlighted: { backgroundColor: c.textPrimary },
+    bar_added: { backgroundColor: c.success },
+    bar_removed: { backgroundColor: c.danger },
+    number: { ...mono(c), width: 34, textAlign: 'right', color: faded(c, 0.3) },
+    sign: { ...mono(c), width: 22, textAlign: 'center', color: c.textSecondary },
+    sign_added: { color: k.addedSign },
+    sign_removed: { color: k.removedSign },
+    text: mono(c),
+    comment: { color: k.comment },
+    string: { color: k.string },
+    attr: { color: k.attr },
+    tag: { color: k.tag },
+    punct: { color: k.punct },
+    more: { alignItems: 'center', paddingHorizontal: space[2], paddingBottom: space[2] },
+  })
+}

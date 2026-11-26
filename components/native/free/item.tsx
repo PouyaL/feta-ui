@@ -1,7 +1,8 @@
 import { Children, Fragment, useMemo, type ReactNode } from 'react'
 import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated'
-import { currentState, openLink, press, pressedState, radius, space, type Colors } from '../kit'
+import { currentState, openLink, press, pressedState, radius, space, useColors, type Colors } from '../kit'
+import { withInk } from './button'
 import { type RenderIcon, type, useStill, useThemed } from './card'
 import { Separator } from './separator'
 
@@ -42,6 +43,7 @@ export type ItemProps = {
 /** A row that shows one thing: media, title, description and at most one action. */
 export function Item({ variant = 'default', size = 'md', media, title, description, action, meta, href, chevron = true, external = false, onPress, active = false, disabled = false, renderIcon, accessibilityLabel, animated = true, style }: ItemProps) {
   const styles = useThemed(makeStyles)
+  const colors = useColors()
   const still = useStill(animated)
   const scale = useSharedValue(1)
   const motion = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }))
@@ -56,7 +58,7 @@ export function Item({ variant = 'default', size = 'md', media, title, descripti
       </View>
       {typeof meta === 'string' ? <Text style={styles.meta}>{meta}</Text> : meta}
       {action ? <View>{action}</View> : null}
-      {href && chevron ? renderIcon?.(external ? 'arrow-up-right' : 'chevron-right', 16) : null}
+      {href && chevron && renderIcon ? withInk(renderIcon(external ? 'arrow-up-right' : 'chevron-right', 16), colors.textTertiary) : null}
     </>
   )
   if (!target && !(onPress && disabled)) return <View style={[...row, style]}>{body}</View>

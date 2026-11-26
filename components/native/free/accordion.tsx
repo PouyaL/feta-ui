@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { Easing, cancelAnimation, useAnimatedStyle, useSharedValue, withDelay, withRepeat, withSequence, withSpring, withTiming } from 'react-native-reanimated'
-import { press, radius, space, type Colors } from '../kit'
+import { press, radius, softElevation, space, type Colors } from '../kit'
 import { Badge } from './badge'
 import { type RenderIcon, type, useStill, useThemed } from './card'
 import { Spinner } from './spinner'
@@ -207,7 +207,7 @@ const makeStyles = (c: Colors) => StyleSheet.create({
   headerTitle: { ...type(13, c.textPrimary, '500'), lineHeight: 16 },
   meta: type(12, c.textTertiary, '400', true),
   rule: { borderTopWidth: 1, borderTopColor: c.ink8 },
-  card: { ...StyleSheet.absoluteFill, borderRadius: radius.card, borderWidth: 1, borderColor: c.ink8, backgroundColor: c.surface },
+  card: { ...StyleSheet.absoluteFill, borderRadius: radius.card, borderWidth: 1, borderColor: c.ink8, backgroundColor: c.surface, boxShadow: softElevation(c) },
   trigger: { flexDirection: 'row', alignItems: 'center', gap: space[3], width: '100%', minHeight: 56, paddingVertical: space[1], paddingHorizontal: space[4], borderRadius: radius.control },
   triggerEditorial: { minHeight: 44, paddingHorizontal: 0, borderRadius: radius.md },
   triggerPressed: { backgroundColor: c.ink8 },

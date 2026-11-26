@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { Easing, FadeInDown, FadeOut, LinearTransition, useAnimatedStyle, useSharedValue, withSequence, withSpring, withTiming } from 'react-native-reanimated'
-import { pressedState, radius, space, useColors, type Colors } from '../kit'
+import { pressedState, radius, softElevation, space, useColors, type Colors } from '../kit'
 import { Button } from './button'
 import { type, useStill, useThemed, type RenderIcon } from './card'
 import { iconFor } from './label'
@@ -194,9 +194,9 @@ const createStyles = (c: Colors) => StyleSheet.create({
   small: type(12, c.textSecondary),
   name: type(16, c.textPrimary, '500'),
   currency: type(10, c.textTertiary, '400', true),
-  body: { backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.card, borderWidth: StyleSheet.hairlineWidth, gap: space[3], padding: space[5] },
+  body: { backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.card, borderWidth: 1, boxShadow: softElevation(c), gap: space[3], padding: space[5] },
   chars: { flexDirection: 'row', justifyContent: 'center', overflow: 'hidden' },
-  amount: { ...type(48, c.textPrimary, '600'), lineHeight: 56 },
+  amount: { ...type(64, c.textPrimary, '600'), lineHeight: 72 },
   amountEmpty: { color: c.textQuaternary },
   amountOver: { color: c.danger },
   ghost: { color: c.textQuaternary },

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { Easing, FadeInDown, FadeOut, LinearTransition } from 'react-native-reanimated'
 import { pressedState, radius, space, type Colors } from '../kit'
-import { Button } from './button'
+import { Button, SELF } from './button'
 import { EASE_STANDARD, panelEnter, type RenderIcon, type, useStill, useThemed } from './card'
 import { Input } from './input'
 import { Toggle } from './toggle'
@@ -71,7 +71,7 @@ export function FeedbackPrompt({ question = 'Was this helpful?', reasons = ['Ina
             {stage === 'default' ? null : (
               <Animated.View key={stage} {...enter} style={styles.note}>
                 <Input accessibilityLabel="Note" placeholder={stage === 'positive' ? 'What worked well? (optional)' : 'Tell us more (optional)'} value={note} onChangeText={setNote} animated={animated} />
-                <Button size="sm" animated={animated} onPress={send}>Send feedback</Button>
+                <Button style={SELF.end} size="sm" animated={animated} onPress={send}>Send feedback</Button>
               </Animated.View>
             )}
           </Animated.View>

@@ -4,7 +4,7 @@ import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import Animated, { FadeIn, FadeOut, ZoomIn, runOnJS, useAnimatedProps, useAnimatedStyle, useSharedValue, withSequence, withTiming } from 'react-native-reanimated'
 import Svg, { Line, Path } from 'react-native-svg'
 import { radius, space, useColors, type Colors } from '../kit'
-import { Button } from './button'
+import { Button, SELF } from './button'
 import { type, useStill, useThemed, type RenderIcon } from './card'
 import { iconFor } from './label'
 
@@ -200,12 +200,12 @@ export function SignaturePad({ title = 'Sign to accept', onChange, onConfirm, re
       <View style={styles.footer}>
         {required && !signed ? <Text accessibilityLiveRegion="polite" accessibilityRole="alert" style={styles.error}>A signature is required</Text> : null}
         {confirmed ? (
-          <Button variant="ghost" size="sm" animated={animated} onPress={() => setConfirmed(false)}>Edit</Button>
+          <Button style={SELF.center} variant="ghost" size="sm" animated={animated} onPress={() => setConfirmed(false)}>Edit</Button>
         ) : (
           <>
-            <Button variant="ghost" size="sm" animated={animated} disabled={!signed || disabled} leadingIcon={iconFor(renderIcon, 'undo', 16, colors.textPrimary)} onPress={undo}>Undo</Button>
-            <Button variant="secondary" size="sm" animated={animated} disabled={!signed || disabled} onPress={clear}>Clear</Button>
-            <Button size="sm" animated={animated} disabled={disabled} onPress={confirm}>Confirm</Button>
+            <Button style={SELF.center} variant="ghost" size="sm" animated={animated} disabled={!signed || disabled} leadingIcon={iconFor(renderIcon, 'undo', 16, colors.textPrimary)} onPress={undo}>Undo</Button>
+            <Button style={SELF.center} variant="secondary" size="sm" animated={animated} disabled={!signed || disabled} onPress={clear}>Clear</Button>
+            <Button style={SELF.center} size="sm" animated={animated} disabled={disabled} onPress={confirm}>Confirm</Button>
           </>
         )}
       </View>

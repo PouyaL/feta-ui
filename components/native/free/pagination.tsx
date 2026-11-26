@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { Pressable, StyleSheet, Text, View, type StyleProp, type TextInputInstance, type ViewStyle } from 'react-native'
 import Animated, { ZoomIn, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated'
-import { font, pressedState, radius, space, type Colors } from '../kit'
-import { Button } from './button'
+import { font, pressedState, radius, softElevation, space, type Colors } from '../kit'
+import { Button, SELF } from './button'
 import { type, useStill, useThemed } from './card'
 import { IconButton } from './icon-button'
 import { Input } from './input'
 import { RollingText } from './label'
-import { EASE_OUT, Mark, soft } from './popover'
+import { EASE_OUT, Mark, useCompact } from './popover'
 import { Select } from './select'
 
 /** Pages shown around the current one in Numbered and Jump. */
@@ -119,6 +119,9 @@ export type PaginationProps = {
 export function Pagination({ kind = 'numbered', pages = 12, page, defaultPage = 1, onPageChange, perPage = 25, perPageOptions = [10, 25, 50, 100], onPerPageChange, total = 0, shown = 0, step = 20, onLoadMore, 'aria-label': label = 'Pagination', animated = true, style }: PaginationProps) {
   const styles = useThemed(createStyles)
   const still = useStill(animated)
+  // Phones follow the web's Mobile frame: Numbered fills one row with 44 arrows at the ends and only first, current
+  // and last between them; Table drops Rows per page; Compact spaces its arrows 16 from the count.
+  const phone = useCompact()
   const [held, setHeld] = useState(defaultPage)
   const [heldPer, setHeldPer] = useState(perPage)
   const [seen, setSeen] = useState(defaultPage)
@@ -149,8 +152,8 @@ export function Pagination({ kind = 'numbered', pages = 12, page, defaultPage = 
     setJumping(null)
   }
 
-  const arrow = (direction: -1 | 1, variant: 'ghost' | 'secondary' = 'ghost'): ReactNode => (
-    <IconButton variant={variant} size="sm" animated={animated} label={direction < 0 ? 'Previous page' : 'Next page'} icon={<Mark name={direction < 0 ? 'chevron-left' : 'chevron-right'} />} disabled={direction < 0 ? current <= 1 : current >= pages} onPress={() => go(current + direction)} />
+  const arrow = (direction: -1 | 1, variant: 'ghost' | 'secondary' = 'ghost', size: 'sm' | 'md' = 'sm'): ReactNode => (
+    <IconButton variant={variant} size={size} style={styles.arrow} animated={animated} label={direction < 0 ? 'Previous page' : 'Next page'} icon={<Mark name={direction < 0 ? 'chevron-left' : 'chevron-right'} />} disabled={direction < 0 ? current <= 1 : current >= pages} onPress={() => go(current + direction)} />
   )
 
   const tray = (list: (number | null)[]): ReactNode => (
@@ -173,10 +176,10 @@ export function Pagination({ kind = 'numbered', pages = 12, page, defaultPage = 
         return tray(Array.from({ length: pages }, (_, i) => i + 1))
       case 'compact':
         return (
-          <View style={styles.row}>
-            {arrow(-1)}
+          <View style={[styles.row, phone && styles.compactPhone]}>
+            {arrow(-1, 'ghost', phone ? 'md' : 'sm')}
             <Text style={styles.status}>Page <Text style={styles.strong}>{current}</Text> of {pages}</Text>
-            {arrow(1)}
+            {arrow(1, 'ghost', phone ? 'md' : 'sm')}
           </View>
         )
       case 'table': {
@@ -184,13 +187,15 @@ export function Pagination({ kind = 'numbered', pages = 12, page, defaultPage = 
         const from = (current - 1) * per + 1
         const to = Math.min(current * per, total)
         return (
-          <View style={[styles.row, styles.spread]}>
-            <View style={styles.perPage}>
-              <Text style={styles.status}>Rows per page</Text>
-              <Select kind="pill" accessibilityLabel="Rows per page" animated={animated} value={String(per)} onValueChange={(v) => { setHeldPer(Number(v)); onPerPageChange?.(Number(v)) }} options={perPageOptions.map((n) => ({ value: String(n), label: String(n) }))} style={styles.perSelect} />
-            </View>
-            <Text style={styles.range}>{from} to {to} of {total}</Text>
-            <View style={styles.row}>{arrow(-1, 'secondary')}{arrow(1, 'secondary')}</View>
+          <View style={[styles.row, styles.spread, phone && styles.phoneRow]}>
+            {phone ? null : (
+              <View style={styles.perPage}>
+                <Text style={styles.status}>Rows per page</Text>
+                <Select kind="pill" accessibilityLabel="Rows per page" animated={animated} value={String(per)} onValueChange={(v) => { setHeldPer(Number(v)); onPerPageChange?.(Number(v)) }} options={perPageOptions.map((n) => ({ value: String(n), label: String(n) }))} style={styles.perSelect} />
+              </View>
+            )}
+            <Text style={phone ? styles.rangePhone : styles.range}>{from} to {to} of {total}</Text>
+            <View style={[styles.row, phone && styles.pagerPhone]}>{arrow(-1, 'secondary', phone ? 'md' : 'sm')}{arrow(1, 'secondary', phone ? 'md' : 'sm')}</View>
           </View>
         )
       }
@@ -201,7 +206,7 @@ export function Pagination({ kind = 'numbered', pages = 12, page, defaultPage = 
             <View style={styles.row}>
               <Text style={styles.status}>Go to</Text>
               <Input size="sm" keyboardType="number-pad" accessibilityLabel="Go to page" returnKeyType="go" value={typed} onChangeText={setTyped} onSubmitEditing={submit} animated={animated} style={styles.jumpInput} />
-              <Button variant="secondary" size="sm" animated={animated} onPress={submit}>Go</Button>
+              <Button style={SELF.center} variant="secondary" size="sm" animated={animated} onPress={submit}>Go</Button>
             </View>
           </View>
         )
@@ -212,7 +217,7 @@ export function Pagination({ kind = 'numbered', pages = 12, page, defaultPage = 
             <View accessibilityRole="progressbar" accessibilityLabel="Loaded" aria-valuemin={0} aria-valuemax={total} aria-valuenow={shown} style={styles.track}>
               <Animated.View style={[styles.fill, progress]} />
             </View>
-            {shown < total ? <Button variant="secondary" size="sm" animated={animated} onPress={onLoadMore}>{`Load ${Math.min(step, total - shown)} more`}</Button> : null}
+            {shown < total ? <Button style={SELF.center} variant="secondary" size="sm" animated={animated} onPress={onLoadMore}>{`Load ${Math.min(step, total - shown)} more`}</Button> : null}
           </View>
         )
       case 'dots':
@@ -223,16 +228,17 @@ export function Pagination({ kind = 'numbered', pages = 12, page, defaultPage = 
         )
       default:
         return (
-          <View style={styles.row}>
-            {arrow(-1, 'secondary')}
-            {tray(pageRange(current, pages))}
-            {arrow(1, 'secondary')}
+          <View style={[styles.row, phone && styles.phoneRow]}>
+            {arrow(-1, 'secondary', phone ? 'md' : 'sm')}
+            {tray(pageRange(current, pages, phone ? 0 : SIBLINGS))}
+            {arrow(1, 'secondary', phone ? 'md' : 'sm')}
           </View>
         )
     }
   }
 
-  return <View accessibilityLabel={label} style={[kind === 'table' ? styles.full : styles.pagination, style]}>{body()}</View>
+  const fills = kind === 'table' || (phone && kind === 'numbered')
+  return <View accessibilityLabel={label} style={[fills ? styles.full : styles.pagination, style]}>{body()}</View>
 }
 
 const createStyles = (c: Colors) => StyleSheet.create({
@@ -240,16 +246,21 @@ const createStyles = (c: Colors) => StyleSheet.create({
   full: { alignSelf: 'stretch' },
   row: { alignItems: 'center', flexDirection: 'row', flexWrap: 'wrap', gap: space[2] },
   spread: { flex: 1, justifyContent: 'space-between' },
+  phoneRow: { flexWrap: 'nowrap', justifyContent: 'space-between', width: '100%' },
+  compactPhone: { gap: space[4] },
+  pagerPhone: { flexWrap: 'nowrap', gap: space[1] },
+  arrow: { alignSelf: 'center' },
   tray: { alignItems: 'center', backgroundColor: c.ink4, borderRadius: radius['2xl'], flexDirection: 'row', gap: ITEM_GAP, padding: TRAY_PADDING },
-  pill: { ...soft(c), backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.xl, borderWidth: 1, height: ITEM, left: TRAY_PADDING, position: 'absolute', top: TRAY_PADDING, width: ITEM },
+  pill: { boxShadow: softElevation(c), backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.xl, borderWidth: 1, height: ITEM, left: TRAY_PADDING, position: 'absolute', top: TRAY_PADDING, width: ITEM },
   item: { alignItems: 'center', borderRadius: radius.xl, height: ITEM, justifyContent: 'center', minWidth: ITEM },
-  number: { color: c.textSecondary, fontFamily: font.mono, fontSize: 15, lineHeight: 20 },
+  number: { color: c.textSecondary, fontFamily: font.mono, fontSize: 14, lineHeight: 20 },
   numberOn: { color: c.textPrimary },
   status: { ...type(14, c.textSecondary), lineHeight: 20 },
   strong: { color: c.textPrimary, fontFamily: font.mono, fontWeight: '500', letterSpacing: 0 },
   perPage: { alignItems: 'center', flexDirection: 'row', gap: space[2] },
   perSelect: { width: 80 },
   range: { color: c.textPrimary, fontFamily: font.mono, fontSize: 12, lineHeight: 16 },
+  rangePhone: { ...type(14, c.textSecondary), lineHeight: 18 },
   jumpInput: { width: 56 },
   inlineJump: { width: 56 },
   load: { alignItems: 'center', gap: space[2] },

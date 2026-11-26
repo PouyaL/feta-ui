@@ -27,7 +27,7 @@ export type InviteFieldProps = {
 }
 
 /** A wrapping box of email chips, a role Select and Send. Send waits until every address is valid. */
-export function InviteField({ value, defaultValue = [], onValueChange, roles = ['Admin', 'Member', 'Viewer'], defaultRole = 'Member', label = 'Invite by email', placeholder = 'name@company.com, separated by commas', help = 'Invites expire after 7 days', sendLabel = (count) => (count === 0 ? 'Send invites' : count > 1 ? `Send ${count} invites` : 'Send invite'), onSend, animated = true, className }: InviteFieldProps) {
+export function InviteField({ value, defaultValue = [], onValueChange, roles = ['Admin', 'Member', 'Viewer'], defaultRole = 'Member', label = 'Invite by email', placeholder = 'name@company.example, separated by commas', help = 'Invites expire after 7 days', sendLabel = (count) => (count === 0 ? 'Send invites' : count > 1 ? `Send ${count} invites` : 'Send invite'), onSend, animated = true, className }: InviteFieldProps) {
   const still = useStill(animated)
   const uid = useId()
   const input = useRef<HTMLInputElement>(null)

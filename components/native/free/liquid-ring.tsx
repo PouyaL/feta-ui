@@ -1,17 +1,17 @@
 import { useEffect, useId, useMemo, useRef, useState, type ComponentProps, type ReactNode } from 'react'
 import { StyleSheet, Text, TextInput, View, useColorScheme, type LayoutChangeEvent, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { Easing, FadeIn, FadeOut, useAnimatedStyle, useSharedValue, withDelay, withTiming, type SharedValue } from 'react-native-reanimated'
-import Svg, { Defs, Ellipse, LinearGradient, RadialGradient, Rect, Stop } from 'react-native-svg'
-import { accent, radius, space, toggleState, useColors, type Colors } from '../kit'
-import { Button, EASE_OUT, HEIGHT, withInk } from './button'
+import Svg, { Defs, Ellipse, FeGaussianBlur, Filter, G, LinearGradient, RadialGradient, Rect, Stop } from 'react-native-svg'
+import { accent, radius, space, toggleState, useAppActive, useColors, type Colors } from '../kit'
+import { Button, EASE_OUT, HEIGHT, withInk, SELF } from './button'
 import { type, useStill, type RenderIcon } from './card'
 import { IconButton } from './icon-button'
-import { MetalRing, RingDash, ringShape, shadowInk, useAppActive, useTurn } from './metal-frame'
+import { MetalRing, RingDash, ringShape, shadowInk, useTurn } from './metal-frame'
 
 /*
  * What differs from web: the chrome rings are Metal Frame's native ring. The orbit glow, a blurred conic light masked
- * to the spill past the box on the web, is a run of coloured dashes travelling a path 3 px outside the box, each drawn
- * three times at growing width and falling opacity to read as the blur; the box covers whatever falls inside. The
+ * to the spill past the box on the web, is a run of coloured dashes travelling a path 3 px outside the box under an SVG
+ * Gaussian blur (a filter on a fixed user-space region); the box covers whatever falls inside. The
  * loading arc is the same: soft dashes round the 1.5 px band. The focus ring is a diagonal linear gradient in place of
  * the conic one, and the blooms are radial gradients in place of blurred capsules. The pinks have no token on the web
  * either; they use the danger red at reduced strength, and blue-300 and blue-400 map to the sky accent in kit.ts. The
@@ -51,9 +51,11 @@ const LINE = 22
 /** The danger red stands in for the web's untokened pink, at about the pink's lightness over a light surface. */
 const PINK_PEAK = 0.55
 
-/** The orbit's light as dashes: where each colour sits round the path, its share, and the blur drawn as three widths. */
+/** The orbit's light as dashes: where each colour sits round the path and its share, softened by a Gaussian blur. */
 const ORBIT_COLOURS = [{ key: 'glow1', phase: 0.66, share: 0.16 }, { key: 'glow2', phase: 0.77, share: 0.1 }, { key: 'glow3', phase: 0.86, share: 0.12 }] as const
-const ORBIT_BLUR = [{ width: 12, opacity: 0.25 }, { width: 7, opacity: 0.45 }, { width: 3, opacity: 0.7 }] as const
+/** The dash width and the blur on it: about the web's 6 px blur over its spill. */
+const ORBIT_WIDTH = 8
+const ORBIT_SOFTEN = 4
 /** The arc rests at 200° like the web's, and runs a soft tail of ink into a blue head. */
 const ARC_REST = 200 / 360
 const ARC_DASHES = [{ ink: 'primary', phase: 0.06, share: 0.12, opacity: 0.45 }, { ink: 'primary', phase: 0.07, share: 0.06, opacity: 0.9 }, { ink: 'blue', phase: 0.12, share: 0.06, opacity: 0.9 }] as const
@@ -188,13 +190,20 @@ export function LiquidRing({ label, placeholder = 'Ask the agent to do something
         {ready ? (
           <Animated.View aria-hidden pointerEvents="none" style={[styles.orbit, orbitStyle]}>
             <Svg aria-hidden width={box.w + SPILL * 2} height={box.h + SPILL * 2}>
-              {ORBIT_COLOURS.map((colour, i) => ORBIT_BLUR.map((blur) => (
-                <RingDash
-                  key={`${colour.key}-${blur.width}`}
-                  shape={orbit} turn={orbitTurn} period={orbit.length} share={colour.share} pace={1} phase={colour.phase}
-                  color={ink.glow[i] ?? ink.blue} opacity={blur.opacity * (i === 2 ? ink.glow3Opacity : 1)} strokeWidth={blur.width}
-                />
-              )))}
+              <Defs>
+                <Filter id={`${ids}-soft`} x={0} y={0} width={box.w + SPILL * 2} height={box.h + SPILL * 2} filterUnits="userSpaceOnUse">
+                  <FeGaussianBlur stdDeviation={ORBIT_SOFTEN} />
+                </Filter>
+              </Defs>
+              <G filter={`url(#${ids}-soft)`}>
+                {ORBIT_COLOURS.map((colour, i) => (
+                  <RingDash
+                    key={colour.key}
+                    shape={orbit} turn={orbitTurn} period={orbit.length} share={colour.share} pace={1} phase={colour.phase}
+                    color={ink.glow[i] ?? ink.blue} opacity={i === 2 ? ink.glow3Opacity : 1} strokeWidth={ORBIT_WIDTH}
+                  />
+                ))}
+              </G>
             </Svg>
           </Animated.View>
         ) : null}
@@ -225,7 +234,7 @@ export function LiquidRing({ label, placeholder = 'Ask the agent to do something
             <View style={styles.side}>
               {actions.length > 0
                 ? <ActionsFan actions={actions} open={fanOpen} onOpenChange={setFanOpen} onAction={onAction} still={still} animated={animated} disabled={loading} renderIcon={renderIcon} />
-                : <IconButton variant="secondary" icon={renderIcon('plus', ICON)} label="Add" animated={animated} onPress={onAttach} />}
+                : <IconButton style={SELF.center} variant="secondary" icon={renderIcon('plus', ICON)} label="Add" animated={animated} onPress={onAttach} />}
               {model && !voice ? (
                 <Animated.View aria-hidden={fanOpen} pointerEvents={fanOpen ? 'none' : 'auto'} style={[styles.model, modelStyle]}>
                   <Button variant="ghost" shape="pill" size="sm" animated={animated} leadingIcon={renderIcon('sparkles', ICON)} trailingIcon={<View style={styles.down}>{renderIcon('chevron-up', ICON)}</View>} onPress={onModel}>{model}</Button>
@@ -236,8 +245,8 @@ export function LiquidRing({ label, placeholder = 'Ask the agent to do something
               {voice ? (
                 <>
                   <VoiceClock paused={paused} />
-                  <IconButton variant="ghost" icon={renderIcon(paused ? 'play' : 'pause', ICON)} label={paused ? 'Resume voice' : 'Pause voice'} {...toggleState(paused)} animated={animated} onPress={togglePause} />
-                  <IconButton variant="primary" icon={renderIcon('audio-lines', ICON)} label="Stop listening" animated={animated} onPress={onStop} />
+                  <IconButton style={SELF.center} variant="ghost" icon={renderIcon(paused ? 'play' : 'pause', ICON)} label={paused ? 'Resume voice' : 'Pause voice'} {...toggleState(paused)} animated={animated} onPress={togglePause} />
+                  <IconButton style={SELF.center} variant="primary" icon={renderIcon('audio-lines', ICON)} label="Stop listening" animated={animated} onPress={onStop} />
                 </>
               ) : (
                 // The open fan reaches the mic on a phone, so the mic steps aside until it folds back.

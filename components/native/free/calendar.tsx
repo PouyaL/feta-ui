@@ -2,7 +2,7 @@ import { useMemo, useState, type ReactNode } from 'react'
 import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { Easing, FadeIn, FadeInLeft, FadeInRight, FadeOut, FadeOutLeft, FadeOutRight, ZoomIn } from 'react-native-reanimated'
 import { pressedState, radius, space, useColors, type Colors } from '../kit'
-import { Button } from './button'
+import { Button, SELF } from './button'
 import { type, useStill, useThemed, type RenderIcon } from './card'
 import { IconButton } from './icon-button'
 import { iconFor } from './label'
@@ -79,7 +79,7 @@ function Day({ day, label, outside, today, booked, off, band, start, end, chosen
       onPress={onPick}
     >
       {chosen ? <Animated.View {...(still ? {} : { entering: chipIn })} style={styles.chip} /> : null}
-      <Text style={[styles.number, today && styles.numberToday, booked && styles.numberBooked, chosen && styles.numberChosen]}>{day.getDate()}</Text>
+      <Text style={[styles.number, outside && styles.numberOutside, today && styles.numberToday, booked && styles.numberBooked, chosen && styles.numberChosen]}>{day.getDate()}</Text>
       {event ? <View style={[styles.dot, chosen && styles.dotChosen]} /> : null}
     </Pressable>
   )
@@ -180,7 +180,7 @@ export function Calendar(props: CalendarProps) {
           return (
             <View key={i}>
               <View style={styles.header}>
-                {i === 0 ? <IconButton variant="ghost" size="sm" animated={animated} label="Previous month" icon={iconFor(renderIcon, 'arrow-left', 16, colors.textPrimary)} onPress={() => page(-1)} /> : <View style={styles.navSpace} />}
+                {i === 0 ? <IconButton style={SELF.center} variant="ghost" size="sm" animated={animated} label="Previous month" icon={iconFor(renderIcon, 'arrow-left', 16, colors.textPrimary)} onPress={() => page(-1)} /> : <View style={styles.navSpace} />}
                 {dropdowns ? (
                   <View style={styles.selects}>
                     <Select kind="pill" accessibilityLabel="Month" animated={animated} value={String(month.getMonth())} options={monthNames} onValueChange={(next) => jump(new Date(month.getFullYear(), Number(next), 1))} />
@@ -191,7 +191,7 @@ export function Calendar(props: CalendarProps) {
                     <Animated.Text key={key} {...(still ? {} : { entering: FadeIn.duration(FOCUS_MS), exiting: FadeOut.duration(FOCUS_MS) })} style={styles.title}>{titleFormat.format(month)}</Animated.Text>
                   </View>
                 )}
-                {i === shown.length - 1 ? <IconButton variant="ghost" size="sm" animated={animated} label="Next month" icon={iconFor(renderIcon, 'arrow-right', 16, colors.textPrimary)} onPress={() => page(1)} /> : <View style={styles.navSpace} />}
+                {i === shown.length - 1 ? <IconButton style={SELF.center} variant="ghost" size="sm" animated={animated} label="Next month" icon={iconFor(renderIcon, 'arrow-right', 16, colors.textPrimary)} onPress={() => page(1)} /> : <View style={styles.navSpace} />}
               </View>
               <View style={styles.week}>
                 {weekdays.map((d) => <Text key={d.long} accessibilityLabel={d.long} style={styles.weekday}>{d.short}</Text>)}
@@ -223,14 +223,14 @@ export function Calendar(props: CalendarProps) {
       {applyRange ? (
         <View style={styles.footer}>
           <Text style={styles.summary}>{summary}</Text>
-          <Button size="sm" variant="ghost" animated={animated} onPress={() => setRange(null)}>Clear</Button>
-          <Button size="sm" animated={animated} disabled={!range?.end} onPress={() => { if (range) applyRange(range) }}>Apply</Button>
+          <Button style={SELF.center} size="sm" variant="ghost" animated={animated} onPress={() => setRange(null)}>Clear</Button>
+          <Button style={SELF.center} size="sm" animated={animated} disabled={!range?.end} onPress={() => { if (range) applyRange(range) }}>Apply</Button>
         </View>
       ) : null}
       {applyDatetime ? (
         <View style={styles.footer}>
           <Text style={styles.summary}>{date ? `${shortFormat.format(date)}${slot ? ` at ${slot}` : ''}` : 'Pick a date'}</Text>
-          <Button size="sm" animated={animated} disabled={!date || !slot} onPress={() => { if (date && slot) applyDatetime(date, slot) }}>Confirm</Button>
+          <Button style={SELF.center} size="sm" animated={animated} disabled={!date || !slot} onPress={() => { if (date && slot) applyDatetime(date, slot) }}>Confirm</Button>
         </View>
       ) : null}
     </View>
@@ -259,6 +259,8 @@ const createStyles = (c: Colors) => StyleSheet.create({
   pressed: { backgroundColor: c.ink5 },
   chip: { ...StyleSheet.absoluteFill, backgroundColor: c.inverse, borderRadius: radius.control },
   number: type(16, c.textPrimary, '500'),
+  // The web's ink 60 under the 0.67 fade: days of the next and last month read as grey.
+  numberOutside: { color: c.canvas === '#ffffff' ? 'rgba(0,0,0,0.6)' : 'rgba(255,255,255,0.6)' },
   numberToday: { fontWeight: '600' },
   numberBooked: { color: c.textTertiary, textDecorationLine: 'line-through' },
   numberChosen: { color: c.textInverse },

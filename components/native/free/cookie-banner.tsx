@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { Easing, FadeIn, FadeInDown, FadeOut, FadeOutDown, LayoutAnimationConfig, runOnJS } from 'react-native-reanimated'
 import { radius, space, useColors, type Colors } from '../kit'
-import { Button, withInk } from './button'
+import { Button, withInk, SELF } from './button'
 import { type RenderIcon, type, useStill, useThemed } from './card'
 import { COOKIE_CATEGORIES, CookiePreferences, type CookieCategory, type CookieChoices } from './cookie-preferences'
 import { EASE_OUT, openLink, useCompact } from './popover'
@@ -101,7 +101,8 @@ export function CookieBanner({
   }
 
   const size = stacked ? 'md' : 'sm'
-  const customize = <Button variant="ghost" size={size} disabled={busy} animated={animated} onPress={() => setPreferring(true)}>Customize</Button>
+  // On a phone Customize spans both columns under Reject all and Accept all, its label centred, as the web grid does.
+  const customize = <Button style={stacked ? styles.full : undefined} variant="ghost" size={size} disabled={busy} animated={animated} onPress={() => setPreferring(true)}>Customize</Button>
   const reject = <Button style={stacked ? styles.half : undefined} variant="secondary" shape="pill" size={size} disabled={busy && pressed !== 'reject'} status={busy && pressed === 'reject' ? 'loading' : 'idle'} loadingLabel="Saving" animated={animated} onPress={() => { setPressed('reject'); void answer(locked) }}>Reject all</Button>
   const accept = <Button style={stacked ? styles.half : undefined} variant="secondary" shape="pill" size={size} disabled={busy && pressed !== 'accept'} status={busy && pressed === 'accept' ? 'loading' : 'idle'} loadingLabel="Saving" animated={animated} onPress={() => { setPressed('accept'); void answer([...locked, ...optional]) }}>Accept all</Button>
 
@@ -122,7 +123,7 @@ export function CookieBanner({
                     <Text style={styles.savedTitle}>Choices saved</Text>
                     <Text style={styles.savedDetail}>{summary(choices, categories)}</Text>
                   </View>
-                  <Button variant="ghost" size="sm" animated={animated} onPress={() => setPreferring(true)}>Change</Button>
+                  <Button style={SELF.center} variant="ghost" size="sm" animated={animated} onPress={() => setPreferring(true)}>Change</Button>
                 </View>
               </Animated.View>
             ) : (
@@ -154,6 +155,9 @@ export function CookieBanner({
   )
 }
 
+/** --feta-elevation-soft. */
+const softShadow = (c: Colors): string => (c.surface === '#ffffff' ? '0px 1px 2px 0px #0000000a, 0px 6px 20px -10px #0000001f' : '0px 1px 2px 0px #00000080, 0px 6px 20px -10px #00000099')
+
 const createStyles = (c: Colors) => StyleSheet.create({
   host: { maxWidth: 358, width: '100%' },
   fixed: { alignSelf: 'center', bottom: space[4], position: 'absolute', zIndex: 50 },
@@ -161,13 +165,14 @@ const createStyles = (c: Colors) => StyleSheet.create({
   trayWide: { alignItems: 'center', flexDirection: 'row', gap: space[4], paddingBottom: space[3.5], paddingLeft: space[5], paddingRight: space[3], paddingTop: space[3.5] },
   plate: { backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.card, borderWidth: StyleSheet.hairlineWidth, bottom: space[1], left: space[1], position: 'absolute', right: space[1], top: space[1] },
   copy: { flex: 1, minWidth: 0 },
-  copyCard: { backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.card, borderWidth: StyleSheet.hairlineWidth, flex: 0, padding: space[3.5] },
+  copyCard: { backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.card, borderWidth: StyleSheet.hairlineWidth, boxShadow: softShadow(c), flex: 0, padding: space[3.5] },
   compactRow: { alignItems: 'center', flexDirection: 'row', flexWrap: 'wrap' },
   text: { ...type(14, c.textSecondary), lineHeight: 20 },
   link: { ...type(14, c.textPrimary, '500'), marginLeft: space[0.5], textDecorationLine: 'underline' },
   actions: { alignItems: 'center', flexDirection: 'row', flexShrink: 0, gap: space[1.5] },
   actionsStacked: { gap: space[1.5], paddingTop: space[1] },
   half: { flex: 1 },
+  full: { alignSelf: 'stretch' },
   savedTray: { backgroundColor: c.ink4, borderRadius: radius.tray, padding: space[1] },
   savedCard: { alignItems: 'center', backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.card, borderWidth: StyleSheet.hairlineWidth, flexDirection: 'row', gap: space[2.5], paddingLeft: space[3], paddingRight: space[2], paddingVertical: space[2.5] },
   tile: { alignItems: 'center', backgroundColor: c.ink5, borderRadius: radius.full, flexShrink: 0, height: 28, justifyContent: 'center', width: 28 },

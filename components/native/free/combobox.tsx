@@ -5,6 +5,7 @@ import { currentState, font, radius, space, useColors, type Colors } from '../ki
 import { type, useStill, useThemed, type RenderIcon } from './card'
 import { useFieldControl } from './field'
 import { IconButton } from './icon-button'
+import { SELF } from './button'
 import { useFocusRing } from './input'
 import { iconFor } from './label'
 import { Spinner } from './spinner'
@@ -116,39 +117,42 @@ export function Combobox(props: ComboboxProps) {
       <Pressable accessible={false} tabIndex={-1} disabled={field.disabled} onPress={() => input.current?.focus()}>
         <Animated.View style={[styles.field, field.disabled && styles.disabled, ring]}>
           {loading ? <Spinner size={16} label={null} color={colors.textSecondary} animated={animated} /> : iconFor(renderIcon, 'search', 16, colors.textSecondary)}
-          {chips.map((value) => {
-            const option = options.find((o) => o.value === value)
-            const name = option?.label ?? value
-            return (
-              <Animated.View key={value} {...(still ? {} : { entering: chipIn, exiting: FadeOut.duration(FAST_MS), layout: chipMove })} style={styles.chip}>
-                {option?.avatar ? <View style={styles.avatar}><Text style={styles.avatarText}>{option.avatar}</Text></View> : null}
-                <Text style={styles.chipText}>{name}</Text>
-                <Pressable accessibilityLabel={`Remove ${name}`} accessibilityRole="button" disabled={field.disabled} hitSlop={14} onPress={() => emit(selected.filter((v) => v !== value))}>
-                  {iconFor(renderIcon, 'x', 12, colors.textSecondary)}
-                </Pressable>
-              </Animated.View>
-            )
-          })}
-          {fold ? <View style={styles.more}><Text style={styles.moreText}>+{fold}</Text></View> : null}
-          <TextInput
-            ref={input}
-            accessibilityHint={field.hint}
-            accessibilityLabel={accessibilityLabel ?? placeholder}
-            accessibilityRole="combobox"
-            aria-disabled={field.disabled}
-            aria-expanded={open}
-            autoCorrect={false}
-            editable={!field.disabled}
-            placeholder={selected.length ? '' : placeholder}
-            placeholderTextColor={colors.textTertiary}
-            style={styles.entry}
-            value={open || !single ? query : single.label}
-            onBlur={() => { close(); field.onBlur?.() }}
-            onChangeText={(next) => { setQuery(next); setOpen(true) }}
-            onFocus={() => { setOpen(true); field.onFocus?.() }}
-          />
+          {/* Chips and the entry wrap inside their own box, so the clear button and chevron stay on the first line. */}
+          <View style={styles.values}>
+            {chips.map((value) => {
+              const option = options.find((o) => o.value === value)
+              const name = option?.label ?? value
+              return (
+                <Animated.View key={value} {...(still ? {} : { entering: chipIn, exiting: FadeOut.duration(FAST_MS), layout: chipMove })} style={styles.chip}>
+                  {option?.avatar ? <View style={styles.avatar}><Text style={styles.avatarText}>{option.avatar}</Text></View> : null}
+                  <Text style={styles.chipText}>{name}</Text>
+                  <Pressable accessibilityLabel={`Remove ${name}`} accessibilityRole="button" disabled={field.disabled} hitSlop={14} onPress={() => emit(selected.filter((v) => v !== value))}>
+                    {iconFor(renderIcon, 'x', 12, colors.textSecondary)}
+                  </Pressable>
+                </Animated.View>
+              )
+            })}
+            {fold ? <View style={styles.more}><Text style={styles.moreText}>+{fold}</Text></View> : null}
+            <TextInput
+              ref={input}
+              accessibilityHint={field.hint}
+              accessibilityLabel={accessibilityLabel ?? placeholder}
+              accessibilityRole="combobox"
+              aria-disabled={field.disabled}
+              aria-expanded={open}
+              autoCorrect={false}
+              editable={!field.disabled}
+              placeholder={selected.length ? '' : placeholder}
+              placeholderTextColor={colors.textTertiary}
+              style={styles.entry}
+              value={open || !single ? query : single.label}
+              onBlur={() => { close(); field.onBlur?.() }}
+              onChangeText={(next) => { setQuery(next); setOpen(true) }}
+              onFocus={() => { setOpen(true); field.onFocus?.() }}
+            />
+          </View>
           {!props.multiple && single ? (
-            <IconButton variant="ghost" size="sm" animated={animated} label="Clear" disabled={field.disabled} icon={iconFor(renderIcon, 'x', 16, colors.textSecondary)} onPress={() => { emit([]); setQuery('') }} />
+            <IconButton style={SELF.center} variant="ghost" size="sm" animated={animated} label="Clear" disabled={field.disabled} icon={iconFor(renderIcon, 'x', 16, colors.textSecondary)} onPress={() => { emit([]); setQuery('') }} />
           ) : null}
           <Animated.View style={chevron}>{iconFor(renderIcon, 'chevron-up', 16, colors.textSecondary)}</Animated.View>
         </Animated.View>
@@ -190,7 +194,8 @@ export function Combobox(props: ComboboxProps) {
 
 const createStyles = (c: Colors) => StyleSheet.create({
   combobox: { width: '100%' },
-  field: { alignItems: 'center', borderRadius: radius.frame, flexDirection: 'row', flexWrap: 'wrap', gap: space[1], minHeight: 48, paddingHorizontal: space[3.5], paddingVertical: space[1.5] },
+  field: { alignItems: 'center', borderRadius: radius.frame, flexDirection: 'row', gap: space[1], minHeight: 48, paddingHorizontal: space[3.5], paddingVertical: space[1.5] },
+  values: { alignItems: 'center', flex: 1, flexDirection: 'row', flexWrap: 'wrap', gap: space[1], minWidth: 0 },
   disabled: { opacity: 0.5 },
   chip: { alignItems: 'center', backgroundColor: c.ink5, borderRadius: radius.full, flexDirection: 'row', gap: space[1], maxWidth: '100%', padding: space[1] },
   chipText: type(14, c.textPrimary, '500'),
@@ -199,7 +204,7 @@ const createStyles = (c: Colors) => StyleSheet.create({
   avatarText: type(12, c.textPrimary, '500'),
   more: { backgroundColor: c.inverse, borderRadius: radius.full, paddingHorizontal: space[2], paddingVertical: space[0.5] },
   moreText: type(14, c.textInverse, '500'),
-  entry: { color: c.textPrimary, flex: 1, fontFamily: font.sans, fontSize: 16, includeFontPadding: false, letterSpacing: font.tracking(16), minHeight: 32, minWidth: 80, paddingVertical: 0 },
+  entry: { color: c.textPrimary, flex: 1, fontFamily: font.sans, fontSize: 16, includeFontPadding: false, letterSpacing: font.tracking(16), minHeight: 32, minWidth: 32, paddingVertical: 0 },
   status: { height: 0, opacity: 0 },
   pop: { backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.panel, borderWidth: 1, marginTop: space[1.5], padding: space[1.5] },
   list: { maxHeight: 260 },

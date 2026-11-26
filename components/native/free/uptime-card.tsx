@@ -2,7 +2,8 @@ import { memo, useMemo, useState, type ReactNode } from 'react'
 import { StyleSheet, Text, View, type LayoutChangeEvent, type StyleProp, type ViewStyle } from 'react-native'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import Animated, { FadeIn, FadeOut, runOnJS, useSharedValue } from 'react-native-reanimated'
-import { radius, space, type Colors } from '../kit'
+import { accent, radius, space, type Colors } from '../kit'
+import { withInk, SELF } from './button'
 import { Badge } from './badge'
 import { Card, type RenderIcon, type, useStill, useThemed } from './card'
 import { IconButton } from './icon-button'
@@ -63,7 +64,7 @@ const Row = memo(function Row({ service, shownDays, active, label, onScrub, onTa
   const tap = Gesture.Tap().onEnd((event) => { runOnJS(onTap)(hit(event.x)) })
   return (
     <View style={styles.service}>
-      <View style={styles.label}><Text style={styles.name}>{service.name}</Text><Text style={styles.meta}>{service.uptime}</Text></View>
+      <View style={styles.label}><Text style={styles.name}>{service.name}</Text><Text style={styles.uptime}>{service.uptime}</Text></View>
       <GestureDetector gesture={Gesture.Race(pan, tap)}>
         <View
           accessible
@@ -85,7 +86,7 @@ const Row = memo(function Row({ service, shownDays, active, label, onScrub, onTa
           {Array.from({ length: shownDays }, (_, i) => {
             const daysAgo = shownDays - 1 - i
             const status = incidents.get(daysAgo)?.status
-            return <View key={daysAgo} style={[styles.day, status === 'degraded' && styles.degraded, status === 'outage' && styles.outage, active === daysAgo && styles.dayOn]} />
+            return <View key={daysAgo} style={[styles.day, status === 'degraded' && styles.dayDegraded, status === 'outage' && styles.dayOutage, active === daysAgo && styles.dayOn]} />
           })}
         </View>
       </GestureDetector>
@@ -124,23 +125,25 @@ export function UptimeCard({ services, title = 'System status', days = DEFAULT_D
   }
 
   return (
-    <Card animated={animated} style={style}>
+    <Card animated={animated} style={style} bodyStyle={styles.body}>
+      <View style={styles.stack}>
       <View style={styles.header}>
         <Text style={styles.title} accessibilityRole="header">{title}</Text>
         <Badge tone={tone} animated={animated}>{tone === 'success' ? 'Operational' : 'Incident'}</Badge>
       </View>
       <View style={styles.slot}>
         {shown ? (
-          <Animated.View key={`${shown.service}-${shown.daysAgo}`} {...(still ? {} : { entering: FadeIn.duration(120), exiting: FadeOut.duration(120) })} accessibilityLiveRegion="polite" style={styles.detail}>
-            <View style={styles.state}>{renderIcon(status === 'operational' ? 'check' : 'alert', 12)}</View>
+          <Animated.View key={`${shown.service}-${shown.daysAgo}`} {...(still ? {} : { entering: FadeIn.duration(120), exiting: FadeOut.duration(120) })} accessibilityLiveRegion="polite" style={[styles.detail, isPinned && styles.detailPinned]}>
+            <View style={[styles.state, styles[status]]}>{withInk(renderIcon(status === 'operational' ? 'check' : 'alert-02', 12), accent.onSolid)}</View>
             <View style={styles.detailText}>
               <Text style={styles.headline} numberOfLines={1}>{incident?.title ?? `${services[shown.service]?.name ?? ''} operational`}</Text>
               <Text style={styles.meta} numberOfLines={1}>{dateAt(shown.daysAgo)} · {incident?.detail ?? 'no incidents'}</Text>
             </View>
-            {isPinned ? <IconButton variant="ghost" size="sm" icon={renderIcon('x', 16)} label="Unpin" animated={animated} onPress={() => pin(null)} /> : <Text style={styles.meta}>Tap to pin</Text>}
+            {isPinned ? <IconButton style={SELF.center} variant="ghost" size="sm" icon={renderIcon('x', 16)} label="Unpin" animated={animated} onPress={() => pin(null)} /> : <Text style={styles.meta}>Tap to pin</Text>}
           </Animated.View>
-        ) : <Text style={styles.meta}>Drag along a row to see what happened</Text>}
+        ) : <Text style={styles.hint}>Drag along a row to see what happened</Text>}
       </View>
+      <View style={styles.bars}>
       {services.map((service, index) => (
         <Row
           key={service.name}
@@ -157,28 +160,39 @@ export function UptimeCard({ services, title = 'System status', days = DEFAULT_D
           }}
         />
       ))}
+      </View>
       <View style={styles.axis}><Text style={styles.meta}>{shownDays} days ago</Text><Text style={styles.meta}>Today</Text></View>
+      </View>
     </Card>
   )
 }
 
 const createStyles = (c: Colors) => StyleSheet.create({
+  body: { padding: space[5] },
+  stack: { gap: space[3.5] },
   header: { alignItems: 'center', flexDirection: 'row', gap: space[2], justifyContent: 'space-between' },
-  title: type(16, c.textPrimary, '500'),
-  slot: { justifyContent: 'center', minHeight: 44 },
-  detail: { alignItems: 'center', flexDirection: 'row', gap: space[2] },
-  state: { alignItems: 'center', backgroundColor: c.ink5, borderRadius: radius.full, height: 20, justifyContent: 'center', width: 20 },
-  detailText: { flex: 1, gap: space[0.5] },
-  headline: type(14, c.textPrimary, '500'),
-  meta: type(12, c.textSecondary),
-  service: { gap: space[1] },
-  label: { flexDirection: 'row', justifyContent: 'space-between' },
-  name: type(14, c.textPrimary),
+  title: { ...type(14, c.textPrimary, '600'), lineHeight: 20 },
+  slot: { justifyContent: 'center', height: 48 },
+  hint: { ...type(12, c.textTertiary), lineHeight: 16 },
+  detail: { alignItems: 'center', backgroundColor: c.ink4, borderRadius: radius.control, flexDirection: 'row', gap: space[2.5], height: 48, paddingLeft: space[2.5], paddingRight: space[2.5], paddingVertical: space[2] },
+  detailPinned: { backgroundColor: c.surface, borderColor: c.ink8, borderWidth: 1, paddingRight: space[1.5], shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.06, shadowRadius: 10 },
+  state: { alignItems: 'center', borderRadius: radius.full, height: 20, justifyContent: 'center', width: 20 },
+  operational: { backgroundColor: c.success },
+  degraded: { backgroundColor: c.warning },
+  outage: { backgroundColor: c.danger },
+  detailText: { flex: 1, minWidth: 0 },
+  headline: { ...type(14, c.textPrimary, '500'), lineHeight: 18 },
+  meta: { ...type(12, c.textTertiary), lineHeight: 16 },
+  bars: { gap: space[3] },
+  service: { gap: space[1.5] },
+  label: { alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' },
+  name: { ...type(14, c.textPrimary, '500'), lineHeight: 18 },
+  uptime: { ...type(12, c.textTertiary, '400', true), lineHeight: 16 },
+  // The finger target is the row (44 high); the bars inside it are 28, as on the web.
   days: { alignItems: 'center', flexDirection: 'row', gap: 2, minHeight: 44 },
-  day: { backgroundColor: c.success, borderRadius: radius.xs, flex: 1, height: BAR_HEIGHT, opacity: 0.8 },
-  // kit.ts has no warning color yet, so a degraded day is a paler danger.
-  degraded: { backgroundColor: c.danger, opacity: 0.5 },
-  outage: { backgroundColor: c.danger, opacity: 1 },
-  dayOn: { opacity: 1, transform: [{ scaleY: 1.15 }] },
+  day: { backgroundColor: c.ink10, borderRadius: radius.xs, flex: 1, height: BAR_HEIGHT },
+  dayDegraded: { backgroundColor: c.warning },
+  dayOutage: { backgroundColor: c.danger },
+  dayOn: { backgroundColor: c.inverse, transform: [{ scaleY: 1.15 }] },
   axis: { flexDirection: 'row', justifyContent: 'space-between' },
 })

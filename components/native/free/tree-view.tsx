@@ -6,7 +6,6 @@ import { type RenderIcon, type, useStill, useThemed } from './card'
 import { IconButton } from './icon-button'
 
 const UNFOLD_MS = 240
-const GUIDE = 16
 
 export type TreeNode = { id: string; name: string; children?: TreeNode[]; /** A short git mark, like M. */ mark?: string }
 
@@ -88,7 +87,10 @@ export function TreeView({ label, nodes, heading, defaultExpanded, defaultSelect
       {heading ? (
         <View style={styles.headingRow}>
           <Text style={styles.heading}>{heading}</Text>
-          {onAdd ? <IconButton variant="ghost" size="sm" label="New file" icon={renderIcon('plus', 16)} animated={animated} onPress={onAdd} /> : null}
+          <View style={styles.tools}>
+            {onAdd ? <IconButton variant="ghost" size="sm" label="New file" icon={renderIcon('plus', 16)} animated={animated} onPress={onAdd} /> : null}
+            <IconButton variant="ghost" size="sm" label="Collapse all" icon={renderIcon('minus', 16)} animated={animated} onPress={() => setOpen([])} />
+          </View>
         </View>
       ) : null}
       <View accessibilityLabel={label} style={styles.card}>
@@ -107,7 +109,7 @@ export function TreeView({ label, nodes, heading, defaultExpanded, defaultSelect
               onPress={() => choose(item)}
               style={[styles.item, on ? styles.itemOn : null]}
             >
-              {Array.from({ length: level }, (_, i) => <View key={i} style={styles.guide} />)}
+              {Array.from({ length: level }, (_, i) => <View key={i} style={styles.guide}><View style={styles.guideLine} /></View>)}
               <View style={styles.chevron}>{folder ? <Chevron open={open.includes(node.id)} still={still} renderIcon={renderIcon} /> : null}</View>
               {renderIcon(folder ? 'folder-open' : 'file-code', 16)}
               {renaming === node.id ? (
@@ -133,17 +135,21 @@ export function TreeView({ label, nodes, heading, defaultExpanded, defaultSelect
 }
 
 const makeStyles = (c: Colors) => StyleSheet.create({
-  tree: { width: '100%', padding: space[1], borderRadius: radius.tray, backgroundColor: c.ink4 },
-  headingRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', minHeight: 36, paddingHorizontal: space[3] },
-  heading: type(12, c.textSecondary, '500'),
-  card: { overflow: 'hidden', paddingVertical: space[1], borderRadius: radius.card, borderWidth: 1, borderColor: c.ink8, backgroundColor: c.surface },
-  item: { flexDirection: 'row', alignItems: 'center', gap: space[1.5], minHeight: 44, paddingHorizontal: space[2] },
-  itemOn: { backgroundColor: c.ink5 },
-  guide: { alignSelf: 'stretch', width: GUIDE, marginRight: -space[1.5], borderLeftWidth: 1, borderLeftColor: c.ink8 },
+  // Fills the column: the web tree is 358 wide at 390.
+  tree: { width: '100%', gap: space[1], padding: space[1], borderRadius: radius.tray, backgroundColor: c.ink4 },
+  headingRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingLeft: space[3] },
+  tools: { flexDirection: 'row' },
+  heading: { ...type(12, c.textSecondary), letterSpacing: 0, lineHeight: 16 },
+  card: { overflow: 'hidden', paddingVertical: space[2], paddingHorizontal: space[1.5], borderRadius: radius.card, backgroundColor: c.surface },
+  item: { flexDirection: 'row', alignItems: 'center', gap: space[1], minHeight: 44, paddingLeft: space[1], paddingRight: space[2], borderRadius: radius.field },
+  itemOn: { backgroundColor: c.ink8 },
+  // A 1 point line down the middle of each 14 point indent.
+  guide: { alignSelf: 'stretch', alignItems: 'center', width: 14 },
+  guideLine: { flex: 1, width: 1, backgroundColor: c.ink8 },
   chevron: { alignItems: 'center', justifyContent: 'center', width: 14 },
-  name: { ...type(14, c.textPrimary), flex: 1, minWidth: 0 },
-  ext: { color: c.textTertiary },
-  rename: { ...type(14, c.textPrimary), flex: 1, padding: 0 },
-  mark: type(12, c.textTertiary, '400', true),
-  footer: { ...type(12, c.textTertiary, '400', true), paddingVertical: space[2], paddingHorizontal: space[3] },
+  name: { ...type(14, c.textPrimary), flex: 1, lineHeight: 20, minWidth: 0 },
+  ext: { opacity: 0.6 },
+  rename: { ...type(14, c.textPrimary), flex: 1, height: 24, paddingHorizontal: space[1], borderRadius: radius.md, borderWidth: 1.5, borderColor: c.textPrimary, backgroundColor: c.surface },
+  mark: { ...type(10, c.warning, '400', true), lineHeight: 12, marginLeft: 'auto' },
+  footer: { ...type(12, c.textTertiary), lineHeight: 16, paddingVertical: space[2], paddingHorizontal: space[3] },
 })

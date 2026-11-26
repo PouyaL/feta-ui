@@ -5,6 +5,7 @@ import { font, radius, space, useColors, type Colors } from '../kit'
 import { type, useStill, useThemed, type RenderIcon } from './card'
 import { useFieldControl } from './field'
 import { IconButton } from './icon-button'
+import { SELF } from './button'
 import { iconFor } from './label'
 
 const COPIED_MS = 2000
@@ -110,8 +111,8 @@ export function Input({ size = 'md', type: kind = 'text', invalid, disabled, req
               {iconFor(renderIcon, 'alert-circle', 16, colors.danger)}
             </Animated.View>
           ) : null}
-          {password ? <IconButton variant="ghost" size="sm" animated={animated} label={shown ? 'Hide password' : 'Show password'} disabled={field.disabled} icon={iconFor(renderIcon, shown ? 'eye-off' : 'eye', 16, colors.textSecondary)} onPress={() => setShown(!shown)} /> : null}
-          {copyable ? <IconButton variant="ghost" size="sm" animated={animated} label={copied ? 'Copied' : 'Copy'} disabled={field.disabled} icon={iconFor(renderIcon, copied ? 'tick-02' : 'copy', 16, copied ? colors.success : colors.textSecondary)} onPress={() => void copy()} /> : null}
+          {password ? <IconButton style={SELF.center} variant="ghost" size="sm" animated={animated} label={shown ? 'Hide password' : 'Show password'} disabled={field.disabled} icon={iconFor(renderIcon, shown ? 'eye-off' : 'eye', 16, colors.textSecondary)} onPress={() => setShown(!shown)} /> : null}
+          {copyable ? <IconButton style={SELF.center} variant="ghost" size="sm" animated={animated} label={copied ? 'Copied' : 'Copy'} disabled={field.disabled} icon={iconFor(renderIcon, copied ? 'tick-02' : 'copy', 16, copied ? colors.success : colors.textSecondary)} onPress={() => void copy()} /> : null}
         </Animated.View>
       </Pressable>
       {strength === undefined ? null : (

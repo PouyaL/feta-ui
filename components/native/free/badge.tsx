@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, Text, View, type StyleProp, type TextStyle, type
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated'
 import Svg, { Circle, Line, Path, Polyline } from 'react-native-svg'
 import { font, openLink, radius, space, useColors, useReduceMotion, type Colors } from '../kit'
+import { withInk } from './button'
 import { Spinner } from './spinner'
 
 export type BadgeTone = 'neutral' | 'info' | 'success' | 'warning' | 'danger' | 'accent'
@@ -20,8 +21,12 @@ const ROLL_OFFSET = 8
 
 /** A tone's solid fill and the ink on it. Tone is never shown by colour alone: each has its own glyph. */
 export function toneColors(c: Colors, tone: BadgeTone): { fill: string; ink: string } {
-  if (tone === 'success') return { fill: c.success, ink: c.textInverse }
-  if (tone === 'danger') return { fill: c.danger, ink: c.textInverse }
+  // Every tone has its status colour, as on the web (--feta-status-*); only neutral is the inverse ink.
+  if (tone === 'success') return { fill: c.success, ink: c.onSolid }
+  if (tone === 'danger') return { fill: c.danger, ink: c.onSolid }
+  if (tone === 'warning') return { fill: c.warning, ink: c.onSolid }
+  if (tone === 'info') return { fill: c.info, ink: c.onSolid }
+  if (tone === 'accent') return { fill: c.accent, ink: c.onSolid }
   return { fill: c.inverse, ink: c.textInverse }
 }
 
@@ -111,7 +116,7 @@ export function Badge({ tone = 'neutral', variant = 'soft', size = 'md', mark = 
   const label = useMemo(() => ({ fontSize: metrics.text, letterSpacing: font.tracking(metrics.text), color: ink }), [metrics, ink])
   const body = (
     <>
-      {mark ? <View style={[styles.mark, dot]}>{icon ?? <ToneGlyph tone={tone} size={metrics.glyph} color={solid.ink} />}</View> : null}
+      {mark ? <View style={[styles.mark, dot]}>{icon ? withInk(icon, solid.ink) : <ToneGlyph tone={tone} size={metrics.glyph} color={solid.ink} />}</View> : null}
       {text !== null ? <Text style={[styles.label, label]} numberOfLines={1}>{text}</Text> : children}
       {href ? (
         <Svg aria-hidden width={metrics.glyph} height={metrics.glyph} viewBox="0 0 24 24" fill="none" opacity={0.4}>

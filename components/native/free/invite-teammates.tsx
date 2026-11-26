@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-na
 import Animated from 'react-native-reanimated'
 import { radius, space, type Colors } from '../kit'
 import { Avatar, AvatarGroup } from './avatar'
-import { Button } from './button'
+import { Button, SELF } from './button'
 import { Panel, PanelBody, rowEnter, type RenderIcon, type, useStill, useThemed } from './card'
 import { IconButton } from './icon-button'
 import { Input } from './input'
@@ -52,24 +52,25 @@ export function InviteTeammates({ workspace, plan, seats, members, pending = [],
 
   return (
     <Panel title="Invite teammates" subtitle={`Add people to ${workspace} by name or email`} label="Invite teammates" animated={animated} actions={people ? <AvatarGroup items={people.map((name) => ({ key: name, initials: initials(name) }))} max={people.length} size="sm" label={people.join(', ')} animated={animated} /> : undefined} style={style}>
-      <PanelBody>
+      <PanelBody style={styles.firstBody}>
         <Input value={text} invalid={over} placeholder="Name or email" accessibilityLabel="Names or emails" autoCapitalize="none" animated={animated} onChangeText={setText} />
         {over ? <Text accessibilityRole="alert" style={styles.error}>Only {left} seats left on {plan.replace(/ plan$/, '')}. Remove one or upgrade.</Text> : <Text style={styles.small}>Separate with commas, or paste a whole list</Text>}
         {sample && !over ? <Button variant="link" size="sm" animated={animated} leadingIcon={renderIcon('copy', 12)} onPress={() => setText(sample)}>Paste a sample list</Button> : null}
         <View accessibilityLabel={`${used} of ${seats} seats on ${plan}`} accessible style={styles.usage}>
-          <View style={styles.usageHead}><Text style={[styles.total, over && styles.overText]}>{used} of {seats} seats</Text><Text style={styles.tertiary}>{plan}</Text></View>
+          <View style={styles.usageHead}><Text style={styles.totalRest}><Text style={[styles.total, over && styles.overText]}>{used}</Text> of {seats} seats</Text><Text style={styles.tertiary}>{plan}</Text></View>
           <View style={styles.bar}>{parts.map((part) => (part.size > 0 ? <View key={part.name} style={[styles.segment, styles[part.name], { flexGrow: part.size }]} /> : null))}</View>
           <View style={styles.keys}>{key('members', `${members} members`)}{key('pending', `${pending.length} pending`)}{key(over ? 'over' : 'new', `${entries.length} new`)}</View>
         </View>
         <View style={styles.actions}>
-          <IconButton variant="ghost" size="sm" animated={animated} label="Clear" disabled={!text} icon={renderIcon('rotate-ccw', 16)} onPress={() => setText('')} />
+          <IconButton style={SELF.center} variant="ghost" size="sm" animated={animated} label="Clear" disabled={!text} icon={renderIcon('rotate-ccw', 16)} onPress={() => setText('')} />
           {over
-            ? <Button variant="secondary" shape="pill" animated={animated} onPress={onUpgrade}>{upgradeLabel}</Button>
-            : <Button shape="pill" animated={animated} leadingIcon={renderIcon('send', 16)} disabled={entries.length === 0} feedback={{ loading: 'Sending', success: `${sentCount} sent`, loadingMs: 900 }} onPress={() => { setSentCount(entries.length); onSend?.(entries); setTimeout(() => setText(''), 900) }}>Send invites</Button>}
+            ? <Button style={SELF.center} variant="secondary" shape="pill" animated={animated} onPress={onUpgrade}>{upgradeLabel}</Button>
+            : <Button style={SELF.center} shape="pill" animated={animated} leadingIcon={renderIcon('send', 16)} disabled={entries.length === 0} feedback={{ loading: 'Sending', success: `${sentCount} sent`, loadingMs: 900 }} onPress={() => { setSentCount(entries.length); onSend?.(entries); setTimeout(() => setText(''), 900) }}>Send invites</Button>}
         </View>
       </PanelBody>
       {pending.length ? (
-        <PanelBody title={`Pending ${pending.length}`}>
+        <PanelBody>
+          <View style={styles.pendingHead} accessibilityRole="header" accessible accessibilityLabel={`Pending ${pending.length}`}><Text style={styles.pendingTitle}>Pending</Text><Text style={styles.count}>{pending.length}</Text></View>
           {pending.map((person, index) => (
             <Animated.View key={person.id} {...(still ? {} : { entering: rowEnter(index) })} style={styles.person}>
               <Avatar initials={initials(person.name)} size="md" animated={animated} />
@@ -78,8 +79,8 @@ export function InviteTeammates({ workspace, plan, seats, members, pending = [],
                 <Text style={styles.small} numberOfLines={1}>{person.role} · {person.email}</Text>
                 <Text style={styles.tertiary}>Sent {person.sent}</Text>
               </View>
-              <Button variant="ghost" size="sm" animated={animated} accessibilityLabel={`Resend to ${person.name}`} feedback={{ loading: 'Sending', success: 'Sent', loadingMs: 900 }} onPress={() => onResend?.(person.id)}>Resend</Button>
-              <IconButton variant="ghost" size="sm" animated={animated} label={`Revoke ${person.name}`} icon={renderIcon('x', 16)} onPress={() => onRevoke?.(person.id)} />
+              <Button style={SELF.center} variant="ghost" size="sm" animated={animated} accessibilityLabel={`Resend to ${person.name}`} feedback={{ loading: 'Sending', success: 'Sent', loadingMs: 900 }} onPress={() => onResend?.(person.id)}>Resend</Button>
+              <IconButton style={SELF.center} variant="ghost" size="sm" animated={animated} label={`Revoke ${person.name}`} icon={renderIcon('x', 16)} onPress={() => onRevoke?.(person.id)} />
             </Animated.View>
           ))}
         </PanelBody>
@@ -89,24 +90,30 @@ export function InviteTeammates({ workspace, plan, seats, members, pending = [],
 }
 
 const createStyles = (c: Colors) => StyleSheet.create({
+  // The web runs the first section straight on from the header: no hairline, no second inset.
+  firstBody: { borderTopWidth: 0, paddingTop: 0 },
   small: type(12, c.textSecondary),
   tertiary: type(12, c.textTertiary),
   error: type(12, c.danger),
-  usage: { gap: space[2] },
+  usage: { borderBottomColor: c.ink8, borderBottomWidth: StyleSheet.hairlineWidth, gap: space[2], paddingBottom: space[4] },
   usageHead: { flexDirection: 'row', justifyContent: 'space-between' },
   total: type(14, c.textPrimary, '500'),
+  totalRest: type(14, c.textSecondary),
+  pendingHead: { alignItems: 'baseline', flexDirection: 'row', gap: space[2] },
+  pendingTitle: type(14, c.textPrimary, '500'),
+  count: type(10, c.textTertiary, '400', true),
   overText: { color: c.danger },
-  bar: { borderRadius: radius.full, flexDirection: 'row', gap: 2, height: 8, overflow: 'hidden' },
-  segment: { flexBasis: 0, height: 8 },
-  members: { backgroundColor: c.inverse },
-  pending: { backgroundColor: c.textTertiary },
-  new: { backgroundColor: c.success },
+  bar: { flexDirection: 'row', gap: space[1], height: 6 },
+  segment: { borderRadius: radius.sm, flexBasis: 0, height: 6 },
+  members: { backgroundColor: c.canvas === '#ffffff' ? 'rgba(0,0,0,0.6)' : 'rgba(255,255,255,0.6)' },
+  pending: { backgroundColor: c.ink10 },
+  new: { backgroundColor: c.textPrimary },
   over: { backgroundColor: c.danger },
-  free: { backgroundColor: c.ink5 },
+  free: { backgroundColor: c.ink4 },
   keys: { flexDirection: 'row', gap: space[3] },
   key: { alignItems: 'center', flexDirection: 'row', gap: space[1] },
   keyDot: { borderRadius: radius.full, height: 8, width: 8 },
-  actions: { alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' },
+  actions: { alignItems: 'center', flexDirection: 'row', gap: space[3], justifyContent: 'flex-end' },
   person: { alignItems: 'center', flexDirection: 'row', gap: space[2], minHeight: 56 },
   who: { flex: 1, gap: space[0.5] },
   name: type(14, c.textPrimary, '500'),

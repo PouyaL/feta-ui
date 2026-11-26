@@ -1,11 +1,11 @@
 import { useRef, useState, type ReactNode } from 'react'
 import { Platform, StyleSheet, Text, View, type LayoutChangeEvent, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { FadeIn, FadeInRight, FadeOutRight, LinearTransition } from 'react-native-reanimated'
-import { currentState, font, radius, space, useColors, type Colors } from '../kit'
+import { currentState, font, radius, softElevation, space, useColors, type Colors } from '../kit'
 import { type, useStill, useThemed } from './card'
 import { DropdownMenu } from './dropdown-menu'
 import { IconButton } from './icon-button'
-import { EASE_OUT, Mark, openLink, soft, Tap, useCompact } from './popover'
+import { EASE_OUT, Mark, openLink, Tap, useCompact } from './popover'
 import { Skeleton } from './skeleton'
 
 const ENTER_X = 8
@@ -148,14 +148,15 @@ const createStyles = (c: Colors) => StyleSheet.create({
   linkTray: { borderRadius: radius.full },
   linkIconOnly: { justifyContent: 'center', paddingHorizontal: 0, width: 44 },
   linkIconOnlySmall: { width: 36 },
-  linkLabel: { ...type(14, c.textSecondary), lineHeight: 20 },
-  labelSmall: { fontSize: 13, letterSpacing: font.tracking(13), lineHeight: 18 },
+  // --feta-text-label-default and -small at their Mobile sizes, 16 and 14.
+  linkLabel: { ...type(16, c.textSecondary), lineHeight: 22 },
+  labelSmall: { fontSize: 14, letterSpacing: font.tracking(14), lineHeight: 18 },
   separator: { alignItems: 'center', height: 20, justifyContent: 'center', width: 20 },
   separatorSmall: { height: 16, width: 16 },
   // No line height: iOS puts the extra leading above the glyph, which sat the slash low beside the labels.
   slash: type(14, c.textTertiary),
   dot: { backgroundColor: c.textTertiary, borderRadius: radius.full, height: 4, width: 4 },
   current: { alignItems: 'center', flexDirection: 'row', height: 44, paddingHorizontal: space[3] },
-  chip: { ...soft(c), backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.full, borderWidth: 1 },
-  currentLabel: { ...type(14, c.textPrimary, '500'), lineHeight: 20 },
+  chip: { boxShadow: softElevation(c), backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.full, borderWidth: 1 },
+  currentLabel: { ...type(16, c.textPrimary, '500'), lineHeight: 22 },
 })

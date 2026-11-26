@@ -2,9 +2,10 @@ import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { StyleSheet, Text, TextInput, View, type StyleProp, type TextInputProps, type TextStyle, type ViewStyle } from 'react-native'
 import Animated, { Easing, cancelAnimation, useAnimatedProps, useAnimatedStyle, useDerivedValue, useSharedValue, withRepeat, withSequence, withTiming } from 'react-native-reanimated'
 import Svg, { Defs, LinearGradient, Path, Pattern, Rect, Stop } from 'react-native-svg'
-import { currentState, radius, space, useColors, type Colors } from '../kit'
+import { currentState, radius, space, useAppActive, useColors, type Colors } from '../kit'
 import { type RenderIcon, type, useStill, useThemed } from './card'
 import { IconButton } from './icon-button'
+import { SELF } from './button'
 import { Spinner } from './spinner'
 
 const FILL_MS = 300
@@ -58,6 +59,7 @@ export function Progress({ value, max = 100, size = 'md', state, label, fillColo
   const styles = useThemed(makeStyles)
   const colors = useColors()
   const still = useStill(animated)
+  const active = useAppActive()
   const unknown = state === 'indeterminate' || (value === undefined && state === undefined)
   const pct = percent(value ?? 0, max)
   const shown = state ?? (unknown ? 'indeterminate' : pct >= 100 ? 'complete' : pct <= 0 ? 'empty' : 'partial')
@@ -91,7 +93,7 @@ export function Progress({ value, max = 100, size = 'md', state, label, fillColo
   }, [shown, still, bump, shake])
 
   useEffect(() => {
-    if (!indeterminate || !animated) return undefined
+    if (!indeterminate || !animated || !active) return undefined
     if (still) fade.value = withRepeat(withSequence(withTiming(0.4, { duration: 800, easing: Easing.linear }), withTiming(1, { duration: 800, easing: Easing.linear })), -1)
     else comet.value = withRepeat(withTiming(1, { duration: COMET_MS, easing: SPREAD }), -1, false)
     return () => {
@@ -100,7 +102,7 @@ export function Progress({ value, max = 100, size = 'md', state, label, fillColo
       comet.value = 0
       fade.value = 1
     }
-  }, [indeterminate, animated, still, comet, fade])
+  }, [indeterminate, animated, active, still, comet, fade])
 
   const moving = !still
   const span = wide * COMET_SHARE
@@ -270,11 +272,12 @@ export function ProgressUpload({ title, value, animated = true }: Recipe & { tit
   const [wide, setWide] = useState(0)
   const at = useSharedValue(value)
   const glow = useSharedValue(0.12)
+  const active = useAppActive()
   useEffect(() => {
     at.value = still ? value : withTiming(value, { duration: FILL_MS, easing: OUT })
   }, [value, still, at])
   useEffect(() => {
-    if (done || still) {
+    if (done || still || !active) {
       cancelAnimation(glow)
       glow.value = done ? 0 : 0.12
       return undefined
@@ -282,7 +285,7 @@ export function ProgressUpload({ title, value, animated = true }: Recipe & { tit
     glow.value = 0.08
     glow.value = withRepeat(withTiming(0.16, { duration: GLOW_MS, easing: SPREAD }), -1, true)
     return () => cancelAnimation(glow)
-  }, [done, still, glow])
+  }, [done, still, active, glow])
   const rail = useAnimatedStyle(() => ({ transform: [{ translateX: (wide * at.value) / 100 }] }))
   const halo = useAnimatedStyle(() => ({ opacity: glow.value }))
   return (
@@ -342,7 +345,7 @@ export function ProgressTicks({ title, description, value, delta, compared, tick
     <Shell>
       <View style={styles.row}>
         <View style={styles.titles}><Text style={styles.name}>{title}</Text><Text style={styles.small}>{description}</Text></View>
-        {onMore ? <IconButton variant="ghost" size="sm" icon={renderIcon('more-horizontal', 16)} label="More" onPress={onMore} /> : null}
+        {onMore ? <IconButton style={SELF.center} variant="ghost" size="sm" icon={renderIcon('more-horizontal', 16)} label="More" onPress={onMore} /> : null}
       </View>
       <View style={styles.delta}>
         <Text style={styles.name}>{value}%</Text>

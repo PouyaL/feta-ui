@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import { Platform, Pressable, ScrollView, StyleSheet, Text, View, type ViewInstance, type AccessibilityRole, type LayoutChangeEvent, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { FadeInLeft, FadeInRight, ZoomIn, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
-import { radius, space, useColors, type Colors } from '../kit'
+import { radius, softElevation, space, useColors, type Colors } from '../kit'
 import { Button, withInk } from './button'
 import { type, useStill, useThemed } from './card'
 import { Kbd } from './kbd'
-import { Copy, EASE_OUT, Floating, Mark, soft, Tap, useCompact, type FloatingMotion } from './popover'
+import { Copy, EASE_OUT, Floating, Mark, Tap, useCompact, type FloatingMotion } from './popover'
 
 // A menu on the web may hold only menu items: checkbox and radio rows are menuitemcheckbox and menuitemradio there,
 // and a radio set is a group. iOS and Android have no such roles, so they keep checkbox, radio and radiogroup.
@@ -21,7 +21,6 @@ const TURN_MS = 160
 const DRILL_MS = 180
 const DRILL_X = 24
 const GAP = 6
-const COMPACT_WIDTH = 358
 const MENU_WIDTH = 240
 
 const GLIDE = { duration: GLIDE_MS, easing: EASE_OUT }
@@ -294,7 +293,7 @@ export type DropdownMenuProps = {
   avatar?: ReactNode
   /** Which edge of the trigger the menu lines up with. */
   align?: 'start' | 'end'
-  /** Panel width on tablets. Default `240`. Phones use 358. */
+  /** Panel width. Default `240`, on phones too, like the web's mobile view. */
   width?: number
   open?: boolean
   defaultOpen?: boolean
@@ -310,7 +309,6 @@ export function DropdownMenu({ entries, label, trigger, icon, avatar, align = 's
   const styles = useThemed(createStyles)
   const colors = useColors()
   const still = useStill(animated)
-  const compact = useCompact()
   const anchor = useRef<ViewInstance>(null)
   const store = useMenuStore()
   const [held, setHeld] = useState(defaultOpen)
@@ -334,7 +332,7 @@ export function DropdownMenu({ entries, label, trigger, icon, avatar, align = 's
       ) : (
         <Button {...props} variant="secondary" size="sm" animated={animated} leadingIcon={icon} trailingIcon={<MenuTurn open={shown} still={still} />}>{label}</Button>
       )}
-      <Floating anchor={anchor} open={shown} side="bottom" align={align} offset={GAP} width={compact ? COMPACT_WIDTH : width} motion={MENU_MOTION} animated={animated} onDismiss={() => set(false)}>
+      <Floating anchor={anchor} open={shown} side="bottom" align={align} offset={GAP} width={width} motion={MENU_MOTION} animated={animated} onDismiss={() => set(false)}>
         {() => <Menu entries={entries} label={label} store={store} still={still} onClose={() => set(false)} />}
       </Floating>
     </View>
@@ -350,7 +348,7 @@ const createStyles = (c: Colors) => StyleSheet.create({
   accountText: { flexShrink: 1, minWidth: 0 },
   accountName: { ...type(14, c.textPrimary, '500'), lineHeight: 20 },
   accountEmail: { ...type(12, c.textSecondary), lineHeight: 16 },
-  menu: { ...soft(c), backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.card, borderWidth: 1, padding: space[1.5] },
+  menu: { boxShadow: softElevation(c), backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.card, borderWidth: 1, padding: space[1.5] },
   scroll: { maxHeight: 420 },
   glide: { backgroundColor: c.ink4, borderRadius: radius.xl, left: 0, position: 'absolute', right: 0, top: 0 },
   row: { alignItems: 'center', borderRadius: radius.xl, flexDirection: 'row', gap: space[2.5], minHeight: 44, padding: space[3] },

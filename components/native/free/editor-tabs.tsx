@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { Pressable, ScrollView, StyleSheet, Text, View, type LayoutChangeEvent, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { Easing, FadeIn, FadeInDown, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated'
-import { font, radius, space, useColors, type Colors, hscroll } from '../kit'
-import { useStill, useThemed } from './card'
+import { font, hscroll, radius, softElevation, space, useColors, type Colors } from '../kit'
+import { withInk } from './button'
+import { type RenderIcon, useStill, useThemed } from './card'
 import { DropdownMenu } from './dropdown-menu'
-import { Mark, soft, Tap, useCompact } from './popover'
+import { Mark, Tap, useCompact } from './popover'
 
 const ENTER_MS = 400
 const ROW_MS = 240
@@ -28,23 +29,25 @@ export type EditorTabsProps = {
   /** Without it the close mark is hidden. */
   onClose?: (name: string) => void
   label?: string
+  /** Draws each tab's file icon: `file-code`, or `palette` for CSS. A file's own `icon` wins. */
+  renderIcon?: RenderIcon
   animated?: boolean
   style?: StyleProp<ViewStyle>
 }
 
-function Tab({ file, on, closable, animated, onChoose, onClose, onLayout }: { file: EditorFile; on: boolean; closable: boolean; animated: boolean; onChoose: () => void; onClose: () => void; onLayout: (e: LayoutChangeEvent) => void }) {
+function Tab({ file, on, closable, animated, renderIcon, onChoose, onClose, onLayout }: { file: EditorFile; on: boolean; closable: boolean; animated: boolean; renderIcon: RenderIcon | undefined; onChoose: () => void; onClose: () => void; onLayout: (e: LayoutChangeEvent) => void }) {
   const styles = useThemed(createStyles)
   const colors = useColors()
   return (
     <View onLayout={onLayout} style={styles.tabWrap}>
       <Pressable accessibilityRole="tab" accessibilityLabel={file.modified ? `${file.name}, unsaved changes` : file.name} aria-selected={on} onPress={onChoose} style={styles.tab}>
-        {file.icon ?? null}
+        {file.icon ?? (renderIcon ? withInk(renderIcon(file.name.endsWith('.css') ? 'palette' : 'file-code', 14), on ? colors.textPrimary : colors.textSecondary) : null)}
         <Text numberOfLines={1} style={[styles.name, on && styles.nameOn]}>{file.name}</Text>
         {file.modified ? <View style={styles.dot} /> : null}
       </Pressable>
       {closable && on ? (
         <Tap accessibilityLabel={`Close ${file.name}`} animated={animated} hitSlop={CLOSE_REACH} onPress={onClose} style={styles.close}>
-          <Mark name="x" size={14} color={colors.textSecondary} />
+          {renderIcon ? withInk(renderIcon('x', 14), colors.textSecondary) : <Mark name="x" size={14} color={colors.textSecondary} />}
         </Tap>
       ) : null}
     </View>
@@ -52,7 +55,7 @@ function Tab({ file, on, closable, animated, onChoose, onClose, onLayout }: { fi
 }
 
 /** File tabs for editors. The active tab sits on the surface, and unsaved files carry a warning dot. */
-export function EditorTabs({ files, value, defaultValue, onValueChange, onClose, label = 'Open files', animated = true, style }: EditorTabsProps) {
+export function EditorTabs({ files, value, defaultValue, onValueChange, onClose, label = 'Open files', renderIcon, animated = true, style }: EditorTabsProps) {
   const styles = useThemed(createStyles)
   const still = useStill(animated)
   const compact = useCompact()
@@ -100,7 +103,7 @@ export function EditorTabs({ files, value, defaultValue, onValueChange, onClose,
         <View accessibilityRole="tablist" accessibilityLabel={label} style={styles.tabs}>
           <ScrollView style={hscroll} horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.track}>
             {onScreen ? <Animated.View pointerEvents="none" style={[styles.plate, plate]} /> : null}
-            {shown.map((item) => <Tab key={item.name} file={item} on={item.name === file?.name} closable={Boolean(onClose)} animated={animated} onChoose={() => choose(item.name)} onClose={() => onClose?.(item.name)} onLayout={measure(item.name)} />)}
+            {shown.map((item) => <Tab key={item.name} file={item} on={item.name === file?.name} closable={Boolean(onClose)} animated={animated} renderIcon={renderIcon} onChoose={() => choose(item.name)} onClose={() => onClose?.(item.name)} onLayout={measure(item.name)} />)}
           </ScrollView>
         </View>
         {folded.length ? (
@@ -134,13 +137,12 @@ const createStyles = (c: Colors) => StyleSheet.create({
   bar: { alignItems: 'center', flexDirection: 'row', gap: space[1], minHeight: 44, padding: space[1] },
   tabs: { flex: 1, minWidth: 0 },
   track: { flexDirection: 'row', gap: space[0.5] },
-  plate: { ...soft(c), backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.control, borderWidth: 1, bottom: 0, left: 0, position: 'absolute', top: 0 },
+  plate: { boxShadow: softElevation(c), backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.control, borderWidth: 1, bottom: 0, left: 0, position: 'absolute', top: 0 },
   tabWrap: { alignItems: 'center', borderRadius: radius.control, flexDirection: 'row' },
   tab: { alignItems: 'center', flexDirection: 'row', gap: space[1.5], height: 44, paddingHorizontal: space[2.5] },
   name: { color: c.textSecondary, fontFamily: font.mono, fontSize: 12, lineHeight: 16 },
   nameOn: { color: c.textPrimary },
-  // kit.ts has no warning color yet, so the unsaved dot borrows danger.
-  dot: { backgroundColor: c.danger, borderRadius: radius.full, height: 6, width: 6 },
+  dot: { backgroundColor: c.warning, borderRadius: radius.full, height: 6, width: 6 },
   close: { alignItems: 'center', borderRadius: radius.lg, height: 28, justifyContent: 'center', marginLeft: -space[1], marginRight: space[1.5], width: 28 },
   more: { alignItems: 'center', backgroundColor: c.ink5, borderRadius: radius.control, height: 44, justifyContent: 'center', paddingHorizontal: space[2.5] },
   body: { backgroundColor: c.surface, borderColor: c.ink8, borderRadius: space[5], borderWidth: 1, padding: space[4] },

@@ -2,10 +2,11 @@ import { useEffect, useState, type ReactNode } from 'react'
 import { AccessibilityInfo, Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { Easing, FadeIn, FadeInDown, FadeOut, LinearTransition, ZoomIn, cancelAnimation, useAnimatedProps, useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming, type SharedValue } from 'react-native-reanimated'
 import Svg, { Circle } from 'react-native-svg'
-import { font, radius, space, useColors, type Colors } from '../kit'
-import { Button } from './button'
+import { font, radius, softElevation, space, useAppActive, useColors, type Colors } from '../kit'
+import { Button, SELF } from './button'
 import { type, useStill, useThemed } from './card'
-import { EASE_OUT, Mark, soft, useCompact } from './popover'
+import { EASE_OUT, Mark, useCompact } from './popover'
+import { useEdgeInsets } from './dialog'
 
 const MORPH = { stiffness: 400, damping: 30 }
 const ENTER_Y = 12
@@ -51,6 +52,8 @@ export type StatusIslandProps = {
   onClearDone?: () => void
   /** Opens the tray from the start. */
   defaultExpanded?: boolean
+  /** Floats at the top centre of the screen, under the status bar and notch. Place it in a full-screen parent. */
+  docked?: boolean
   animated?: boolean
   style?: StyleProp<ViewStyle>
 }
@@ -58,14 +61,16 @@ export type StatusIslandProps = {
 function Spinning({ size, still, children }: { size: number; still: boolean; children: ReactNode }) {
   const turn = useSharedValue(0)
   const pulse = useSharedValue(1)
+  const active = useAppActive()
   useEffect(() => {
+    if (!active) return undefined
     if (still) pulse.value = withRepeat(withTiming(0.5, { duration: PULSE_MS, easing: SPREAD }), -1, true)
     else turn.value = withRepeat(withTiming(360, { duration: SPIN_MS, easing: Easing.linear }), -1, false)
     return () => {
       cancelAnimation(turn)
       cancelAnimation(pulse)
     }
-  }, [pulse, still, turn])
+  }, [active, pulse, still, turn])
   const spin = useAnimatedStyle(() => ({ height: size, opacity: pulse.value, width: size, transform: [{ rotate: `${turn.value}deg` }] }), [size])
   return <Animated.View style={spin}>{children}</Animated.View>
 }
@@ -110,7 +115,8 @@ function Waiting({ depth, still }: { depth: number; still: boolean }) {
 }
 
 /** A floating pill that reports background work. It morphs between states and opens into a tray of every task. */
-export function StatusIsland({ tasks, onExpire, onClearDone, defaultExpanded = false, animated = true, style }: StatusIslandProps) {
+export function StatusIsland({ tasks, onExpire, onClearDone, defaultExpanded = false, docked = false, animated = true, style }: StatusIslandProps) {
+  const insets = useEdgeInsets()
   const styles = useThemed(createStyles)
   const still = useStill(animated)
   const compact = useCompact()
@@ -152,12 +158,12 @@ export function StatusIsland({ tasks, onExpire, onClearDone, defaultExpanded = f
   const doneCount = tasks.filter((item) => item.state === 'done').length
 
   return (
-    <View style={[styles.root, style]}>
+    <View pointerEvents={docked ? 'box-none' : 'auto'} style={[styles.root, docked && [styles.docked, { top: insets.top + space[2] }], style]}>
       {expanded ? (
         <Animated.View {...(still ? {} : { entering: TRAY_IN, exiting: TRAY_OUT })} style={[styles.tray, compact ? styles.trayPhone : styles.trayTablet]}>
           <View style={styles.trayHead}>
             <Text style={styles.trayTitle}>{tasks.length} TASKS</Text>
-            {doneCount ? <Button variant="ghost" size="sm" animated={animated} onPress={onClearDone}>Clear done</Button> : null}
+            {doneCount ? <Button style={SELF.center} variant="ghost" size="sm" animated={animated} onPress={onClearDone}>Clear done</Button> : null}
           </View>
           <View style={styles.rows}>
             {tasks.map((item, i) => (
@@ -196,10 +202,11 @@ export function StatusIsland({ tasks, onExpire, onClearDone, defaultExpanded = f
 }
 
 const createStyles = (c: Colors) => StyleSheet.create({
-  root: { alignItems: 'center', alignSelf: 'flex-start', gap: space[2], maxWidth: '100%' },
+  root: { alignItems: 'center', alignSelf: 'center', gap: space[2], maxWidth: '100%' },
+  docked: { left: 0, position: 'absolute', right: 0 },
   stack: { alignItems: 'center', flexDirection: 'row', gap: space[1], maxWidth: '100%' },
-  layer: { ...StyleSheet.absoluteFill, ...soft(c), backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.full, borderWidth: 1 },
-  pill: { ...soft(c), alignItems: 'center', backgroundColor: c.muted, borderColor: c.ink8, borderRadius: radius.full, borderWidth: 1, flexDirection: 'row', gap: space[1], height: 40, maxWidth: '100%', paddingLeft: space[1], paddingRight: space[1.5], paddingVertical: space[1] },
+  layer: { ...StyleSheet.absoluteFill, boxShadow: softElevation(c), backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.full, borderWidth: 1 },
+  pill: { boxShadow: softElevation(c), alignItems: 'center', backgroundColor: c.muted, borderColor: c.ink8, borderRadius: radius.full, borderWidth: 1, flexDirection: 'row', gap: space[1], height: 40, maxWidth: '100%', paddingLeft: space[1], paddingRight: space[1.5], paddingVertical: space[1] },
   pillPhone: { height: 44 },
   pillError: { borderColor: c.danger, borderWidth: 1.5 },
   pillMain: { alignItems: 'center', borderRadius: radius.full, flexDirection: 'row', flexShrink: 1, gap: space[2], height: '100%', minHeight: 44, minWidth: 0, paddingRight: space[1.5] },
@@ -210,7 +217,7 @@ const createStyles = (c: Colors) => StyleSheet.create({
   badgeDone: { backgroundColor: c.success },
   badgeError: { backgroundColor: c.danger },
   percent: { backgroundColor: c.ink5, borderRadius: radius.full, color: c.textSecondary, flexShrink: 0, fontFamily: font.mono, fontSize: 11, lineHeight: 14, overflow: 'hidden', paddingHorizontal: space[1.5], paddingVertical: space[0.5] },
-  tray: { ...soft(c), backgroundColor: c.muted, borderColor: c.ink8, borderRadius: radius.tray, borderWidth: 1, maxWidth: '100%', padding: space[1] },
+  tray: { boxShadow: softElevation(c), backgroundColor: c.muted, borderColor: c.ink8, borderRadius: radius.tray, borderWidth: 1, maxWidth: '100%', padding: space[1] },
   trayPhone: { width: 358 },
   trayTablet: { width: 320 },
   trayHead: { alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', minHeight: 32, paddingLeft: space[3], paddingRight: space[1] },

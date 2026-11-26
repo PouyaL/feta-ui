@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react'
 import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import Animated, { interpolate, runOnJS, useAnimatedReaction, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated'
-import Svg, { Circle, Line } from 'react-native-svg'
+import Svg, { Circle, Line, Path } from 'react-native-svg'
 import { radius, space, useColors, type Colors } from '../kit'
-import { Avatar, AvatarPhoto, type AvatarPerson } from './avatar'
-import { Button } from './button'
+import { AVATAR_BG, Avatar, AvatarPhoto, type AvatarPerson } from './avatar'
+import { Button, SELF } from './button'
 import { type RenderIcon, type, useStill, useThemed } from './card'
 import { Field } from './field'
 import { IconButton } from './icon-button'
@@ -19,6 +19,15 @@ const THROW_MS = 160
 const STILL_SWIPE = 8
 const BEZEL = 176
 const TICKS = 60
+/** The web dial's repeating conic gradient: a 1 degree ink wedge every 6 degrees, centre to rim (the coin covers the middle). */
+const wedgePath = (size: number): string => {
+  const c = size / 2
+  const at = (deg: number): string => {
+    const r = ((deg - 90) * Math.PI) / 180
+    return `${(c + c * Math.cos(r)).toFixed(2)} ${(c + c * Math.sin(r)).toFixed(2)}`
+  }
+  return Array.from({ length: TICKS }, (_, i) => `M${c} ${c}L${at(i * 6)}A${c} ${c} 0 0 1 ${at(i * 6 + 1)}Z`).join('')
+}
 const SHADE_MAX = 0.4
 
 export type AvatarOption = { person: AvatarPerson; name: string }
@@ -39,6 +48,8 @@ export type AvatarPickerProps = {
 const wrap = (index: number, length: number): number => ((index % length) + length) % length
 
 /** A coin that spins on real physics and settles on a face. */
+const TICK_WEDGES = wedgePath(BEZEL)
+
 export function AvatarPicker({ options, title = 'Pick your avatar', hint = 'Spin the coin or pick a face.', spinningHint = 'Spinning… let go to land on a face.', defaultName, onContinue, renderIcon, animated = true, style }: AvatarPickerProps) {
   const styles = useThemed(makeStyles)
   const colors = useColors()
@@ -113,7 +124,7 @@ export function AvatarPicker({ options, title = 'Pick your avatar', hint = 'Spin
           <View style={styles.bezel}>
             <Svg aria-hidden width={BEZEL} height={BEZEL}>
               <Circle cx={c} cy={c} r={c} fill={colors.ink4} />
-              {Array.from({ length: TICKS }, (_, i) => <Line key={i} x1={c} y1={0} x2={c} y2={6} stroke={colors.ink8} transform={`rotate(${i * 6} ${c} ${c})`} />)}
+              <Path d={TICK_WEDGES} fill={colors.ink8} />
               <Line x1={c} y1={3} x2={c} y2={10} stroke={colors.textPrimary} strokeWidth={2} strokeLinecap="round" />
             </Svg>
           </View>
@@ -149,7 +160,7 @@ export function AvatarPicker({ options, title = 'Pick your avatar', hint = 'Spin
             </Pressable>
           ))}
           <View style={styles.spacer} />
-          <IconButton variant="secondary" size="sm" icon={renderIcon('dice', 16)} label="Shuffle" animated={animated} onPress={() => step(1 + Math.floor(Math.random() * Math.max(1, count - 1)))} />
+          <IconButton style={SELF.center} variant="secondary" size="sm" icon={renderIcon('dice', 16)} label="Shuffle" animated={animated} onPress={() => step(1 + Math.floor(Math.random() * Math.max(1, count - 1)))} />
         </View>
         <Field label="Display name">
           <Input value={shownName} placeholder="Your name" onChangeText={(text: string) => { setEdited(true); setName(text) }} />
@@ -170,7 +181,7 @@ const makeStyles = (c: Colors) => StyleSheet.create({
   stage: { alignItems: 'center', justifyContent: 'center', height: BEZEL },
   bezel: { position: 'absolute', width: BEZEL, height: BEZEL },
   coin: { width: 128, height: 128, borderRadius: radius.full },
-  side: { ...StyleSheet.absoluteFill, alignItems: 'center', justifyContent: 'center', overflow: 'hidden', borderRadius: radius.full, borderWidth: 1, borderColor: c.ink8, backgroundColor: c.muted, backfaceVisibility: 'hidden' },
+  side: { ...StyleSheet.absoluteFill, alignItems: 'center', justifyContent: 'center', overflow: 'hidden', borderRadius: radius.full, borderWidth: 1, borderColor: c.ink8, backgroundColor: AVATAR_BG, backfaceVisibility: 'hidden' },
   sideEmpty: { backgroundColor: c.muted },
   shade: { ...StyleSheet.absoluteFill, borderRadius: radius.full, backgroundColor: c.inverse },
   badge: { position: 'absolute', top: '50%', left: '50%', alignItems: 'center', justifyContent: 'center', width: 26, height: 26, marginTop: 36, marginLeft: 36, borderWidth: 2, borderColor: c.surface, borderRadius: radius.full, backgroundColor: c.success },

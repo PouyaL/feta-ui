@@ -2,7 +2,7 @@ import { cloneElement, useEffect, useRef, useState, type ReactElement, type Reac
 import { Modal as NativeModal, Pressable, StyleSheet, Text, View, useWindowDimensions, type AccessibilityState, type LayoutChangeEvent, type PressableProps, type StyleProp, type TextStyle, type ViewInstance, type ViewStyle } from 'react-native'
 import Animated, { Easing, runOnJS, useAnimatedStyle, useSharedValue, withSpring, withTiming, type WithSpringConfig, type WithTimingConfig } from 'react-native-reanimated'
 import Svg, { Circle, Path, Polyline } from 'react-native-svg'
-import { press, radius, space, useColors, type Colors } from '../kit'
+import { press, radius, softElevation, space, useColors, type Colors } from '../kit'
 import { type, useStill, useThemed } from './card'
 
 const EDGE = 8
@@ -39,8 +39,6 @@ export function animateTo(to: number, transition: Transition, done?: () => void)
 /** Phones get the Mobile layout, by the same 640 rule as the web tokens. */
 export const useCompact = (): boolean => useWindowDimensions().width <= PHONE_MAX
 
-/** The soft elevation. kit.ts has no shadow color yet, so it borrows the ink hairline. */
-export const soft = (c: Colors): ViewStyle => ({ elevation: 4, shadowColor: c.ink10, shadowOffset: { width: 0, height: 6 }, shadowOpacity: 1, shadowRadius: 10 })
 
 export { openLink } from '../kit'
 
@@ -404,10 +402,10 @@ const layer = StyleSheet.create({
 const createStyles = (c: Colors) => StyleSheet.create({
   anchor: { alignSelf: 'flex-start' },
   trigger: { alignItems: 'center', backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.full, borderWidth: 1, flexDirection: 'row', gap: space[1.5], minHeight: 44, paddingLeft: space[3.5], paddingRight: space[4] },
-  triggerOpen: { ...soft(c), borderColor: c.ink10 },
+  triggerOpen: { boxShadow: softElevation(c), borderColor: c.ink10 },
   triggerLabel: { ...type(15, c.textPrimary, '500'), lineHeight: 20 },
   disabled: { opacity: 0.4 },
-  panel: { ...soft(c), backgroundColor: c.muted, borderRadius: radius.tray, padding: space[1] },
+  panel: { boxShadow: softElevation(c), backgroundColor: c.muted, borderRadius: radius.tray, padding: space[1] },
   body: { backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.card, borderWidth: 1, padding: space[4] },
   title: { ...type(15, c.textPrimary, '600'), lineHeight: 20 },
   description: { ...type(13, c.textSecondary), lineHeight: 18, marginTop: space[0.5] },

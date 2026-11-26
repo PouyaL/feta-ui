@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { StyleSheet, type GestureResponderEvent } from 'react-native'
 import Animated, { interpolateColor, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
-import { radius, space, toggleState, useColors, type Colors } from '../kit'
+import { radius, softElevation, space, toggleState, useColors, type Colors } from '../kit'
 import { EASE_OUT, HEIGHT, PressScale, TARGET, withInk, type PressScaleProps, type Spring } from './button'
 import { type, useStill, useThemed } from './card'
 
@@ -73,7 +73,7 @@ export function Toggle({ pressed, defaultPressed = false, onPressedChange, appea
       spring={TOGGLE_SPRING}
       disabled={disabled}
       hitSlop={(TARGET - HEIGHT.sm) / 2}
-      style={[styles.box, disabled && styles.off, boxStyle, style]}
+      style={[styles.box, disabled && styles.off, appearance === 'segment' && on && !sliding && styles.lifted, boxStyle, style]}
       contentStyle={[styles.content, children ? styles.withText : styles.iconOnly]}
       onPress={handlePress}
       {...rest}
@@ -87,6 +87,8 @@ export function Toggle({ pressed, defaultPressed = false, onPressedChange, appea
 const createStyles = (c: Colors) => StyleSheet.create({
   box: { alignSelf: 'flex-start', borderRadius: radius.full, borderWidth: 1, height: HEIGHT.sm },
   off: { opacity: 0.4 },
+  // The web lift for a segment toggle that is on with no sliding thumb under it.
+  lifted: { boxShadow: softElevation(c) },
   content: { alignItems: 'center', flex: 1, flexDirection: 'row', gap: space[1.5], justifyContent: 'center' },
   withText: { paddingHorizontal: space[2.5] },
   iconOnly: { width: HEIGHT.sm - 2 },

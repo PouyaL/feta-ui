@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-na
 import Animated from 'react-native-reanimated'
 import { radius, space, type Colors } from '../kit'
 import { Badge } from './badge'
-import { Button } from './button'
+import { Button, SELF } from './button'
 import { rowEnter, type RenderIcon, type, useStill, useThemed } from './card'
 import { IconButton } from './icon-button'
 
@@ -36,24 +36,26 @@ export function InvoiceRow({ number, date, plan, amount, state, renderIcon, onDo
       <View style={styles.tile}>{renderIcon('receipt', 18)}</View>
       <View style={styles.main}>
         <Text style={styles.number} numberOfLines={1}>{number}</Text>
-        <Text style={[styles.date, state === 'overdue' && styles.overdue]} numberOfLines={1}>{date} · {plan}</Text>
+        {/* The plan is hidden at phone width, as on the web, but still read out. */}
+        <Text accessibilityLabel={`${date} · ${plan}`} style={[styles.date, state === 'overdue' && styles.overdue]} numberOfLines={1}>{date}</Text>
       </View>
       <View style={styles.money}>
         <Text style={styles.amount}>{amount}</Text>
         <Badge size="sm" tone={tone} mark>{label}</Badge>
       </View>
       {state === 'overdue'
-        ? <Button size="sm" shape="pill" onPress={onPay} animated={animated}>Pay now</Button>
-        : <IconButton variant="ghost" size="sm" label={`Download ${number}`} icon={renderIcon('download', 16)} onPress={onDownload} animated={animated} />}
+        ? <Button style={SELF.center} size="sm" shape="pill" onPress={onPay} animated={animated}>Pay now</Button>
+        : <IconButton style={SELF.center} variant="ghost" size="sm" label={`Download ${number}`} icon={renderIcon('download', 16)} onPress={onDownload} animated={animated} />}
     </Animated.View>
   )
 }
 
 const createStyles = (c: Colors) => StyleSheet.create({
-  row: { alignItems: 'center', flexDirection: 'row', gap: space[3], minHeight: 56, paddingVertical: space[2] },
-  tile: { alignItems: 'center', backgroundColor: c.ink4, borderRadius: radius.field, height: 36, justifyContent: 'center', width: 36 },
-  main: { flex: 1, gap: space[0.5] },
-  number: type(14, c.textPrimary, '500'),
+  // The web's phone row: an outlined 64 px row, a 40 px tile, a 12 px mono number, and the plan left out.
+  row: { alignItems: 'center', borderColor: c.ink8, borderRadius: radius.control, borderWidth: 1, flexDirection: 'row', gap: space[3], minHeight: 64, paddingHorizontal: space[3], paddingVertical: space[2.5] },
+  tile: { alignItems: 'center', backgroundColor: c.ink4, borderRadius: radius.field, height: 40, justifyContent: 'center', width: 40 },
+  main: { flex: 1, gap: space[0.5], minWidth: 0 },
+  number: { ...type(12, c.textPrimary, '400', true), lineHeight: 18 },
   date: type(12, c.textSecondary),
   overdue: { color: c.danger },
   money: { alignItems: 'flex-end', gap: space[1] },

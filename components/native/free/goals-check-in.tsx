@@ -3,7 +3,7 @@ import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } fro
 import Animated, { Easing, FadeInUp, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
 import { radius, space, useColors, type Colors } from '../kit'
 import { Avatar, type AvatarPerson } from './avatar'
-import { Button } from './button'
+import { Button, SELF } from './button'
 import { EASE_STANDARD, panelEnter, rowEnter, type RenderIcon, type, useStill, useThemed } from './card'
 import { IconButton } from './icon-button'
 import { Input } from './input'
@@ -83,9 +83,9 @@ export function GoalsCheckIn({ title = 'Company goals', summary, periods, goals,
             <Text style={styles.sub}>{summary}</Text>
           </View>
           <View style={styles.period}>
-            <IconButton variant="ghost" size="sm" icon={renderIcon('chevron-left', 16)} label="Previous period" disabled={period === 0} animated={animated} onPress={() => setPeriod((p) => p - 1)} />
+            <IconButton style={SELF.center} variant="ghost" size="sm" icon={renderIcon('chevron-left', 16)} label="Previous period" disabled={period === 0} animated={animated} onPress={() => setPeriod((p) => p - 1)} />
             <Text accessibilityLiveRegion="polite" style={styles.periodText}>{periods[period]}</Text>
-            <IconButton variant="ghost" size="sm" icon={renderIcon('chevron-right', 16)} label="Next period" disabled={period === periods.length - 1} animated={animated} onPress={() => setPeriod((p) => p + 1)} />
+            <IconButton style={SELF.center} variant="ghost" size="sm" icon={renderIcon('chevron-right', 16)} label="Next period" disabled={period === periods.length - 1} animated={animated} onPress={() => setPeriod((p) => p + 1)} />
           </View>
         </View>
         {goals.map((goal, i) => {
@@ -136,7 +136,7 @@ export function GoalsCheckIn({ title = 'Company goals', summary, periods, goals,
         })}
         <View style={styles.footer}>
           <Text style={styles.due}>{due}</Text>
-          <Button variant="secondary" size="sm" animated={animated} onPress={() => setOpen(goals[0]?.id ?? null)}>Check in</Button>
+          <Button style={SELF.center} variant="secondary" size="sm" animated={animated} onPress={() => setOpen(goals[0]?.id ?? null)}>Check in</Button>
         </View>
       </View>
     </Animated.View>

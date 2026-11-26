@@ -80,7 +80,7 @@ export function SignInCard({ product = 'Halden', providers = ['Orbit', 'Codeharb
       <div className={styles.or} role="separator"><span>or</span></div>
       <form className={styles.form} onSubmit={submit}>
         <Field label="Work email" animated={animated}>
-          <Input size="sm" type="email" autoComplete="email" required placeholder="you@company.com" value={email} onChange={(event) => setEmail(event.target.value)} animated={animated} />
+          <Input size="sm" type="email" autoComplete="email" required placeholder="you@company.example" value={email} onChange={(event) => setEmail(event.target.value)} animated={animated} />
         </Field>
         <Button type="submit" trailingIcon={<ArrowRightIcon />} status={sent ? 'success' : 'idle'} successLabel="Link sent" onSuccessEnd={() => setSent(false)} animated={animated}>Send magic link</Button>
       </form>
@@ -237,7 +237,7 @@ export type StepperCardProps = Base & {
 
 const STEPPER: NonNullable<StepperCardProps['steps']> = [
   { label: 'Project details', title: 'Project details', description: 'A little context helps the team find it later.', field: 'Project name', defaultValue: 'Arc launch' },
-  { label: 'Assign owner', title: 'Assign owner', description: 'One person answers for it. You can change this later.', field: 'Owner email', placeholder: 'you@company.com' },
+  { label: 'Assign owner', title: 'Assign owner', description: 'One person answers for it. You can change this later.', field: 'Owner email', placeholder: 'you@company.example' },
 ]
 
 /** Numbered steps with one field each, and Back and Continue on the tray. */

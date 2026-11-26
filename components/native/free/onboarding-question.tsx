@@ -1,9 +1,11 @@
 import { useState, type ReactNode } from 'react'
 import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native'
 import Animated from 'react-native-reanimated'
-import { radius, space, type Colors } from '../kit'
+import { radius, space, useColors, type Colors } from '../kit'
+import { withInk, SELF } from './button'
 import { Button } from './button'
 import { Panel, rowEnter, type RenderIcon, type, useStill, useThemed } from './card'
+import { Kbd } from './kbd'
 import { Meter } from './usage-meter'
 
 export type OnboardingChoice = { value: string; label: string; description: string; icon: ReactNode }
@@ -34,10 +36,11 @@ export type OnboardingQuestionProps = {
   style?: StyleProp<ViewStyle>
 }
 
-/** One onboarding question: progress, Skip, choice cards and Continue. */
+/** One onboarding question: progress, Skip, choice cards with number keys, and Continue. */
 export function OnboardingQuestion({ question, description, choices, step, steps, value, defaultValue, renderIcon, onValueChange, onContinue, onSkip, animated = true, style }: OnboardingQuestionProps) {
   const styles = useThemed(createStyles)
   const still = useStill(animated)
+  const colors = useColors()
   const [held, setHeld] = useState(defaultValue)
   const current = value ?? held
   function choose(next: string): void {
@@ -50,7 +53,7 @@ export function OnboardingQuestion({ question, description, choices, step, steps
         <Meter value={step / steps} label={`Question ${step} of ${steps}`} animated={animated} />
         <View style={styles.top}>
           <Text style={styles.count}>Question {step} of {steps}</Text>
-          {onSkip ? <Button variant="link" size="sm" animated={animated} onPress={onSkip}>Skip</Button> : null}
+          {onSkip ? <Button style={SELF.center} variant="link" size="sm" animated={animated} onPress={onSkip}>Skip</Button> : null}
         </View>
         <Text style={styles.title} accessibilityRole="header">{question}</Text>
         {description ? <Text style={styles.sub}>{description}</Text> : null}
@@ -59,16 +62,17 @@ export function OnboardingQuestion({ question, description, choices, step, steps
             const on = current === choice.value
             return (
               <Animated.View key={choice.value} {...(still ? {} : { entering: rowEnter(index) })}>
-                <Pressable accessibilityRole="radio" accessibilityLabel={`${choice.label}. ${choice.description}`} aria-checked={on} onPress={() => choose(choice.value)} style={({ pressed }) => [styles.choice, on && styles.on, pressed && styles.pressed]}>
-                  <View style={styles.icon}>{choice.icon}</View>
-                  <View style={styles.text}><Text style={styles.label}>{choice.label}</Text><Text style={styles.sub}>{choice.description}</Text></View>
+                <Pressable accessibilityRole="radio" accessibilityLabel={`${choice.label}. ${choice.description}`} aria-checked={on} onPress={() => choose(choice.value)} style={({ pressed }) => [styles.choice, on && styles.on, pressed && !on && styles.pressed]}>
+                  <View style={styles.icon}>{withInk(choice.icon, colors.textSecondary)}</View>
+                  <View style={styles.text}><Text style={styles.label}>{choice.label}</Text><Text style={styles.caption}>{choice.description}</Text></View>
+                  <View aria-hidden style={styles.key}><Kbd size="sm" animated={animated}>{String(index + 1)}</Kbd></View>
                 </Pressable>
               </Animated.View>
             )
           })}
         </View>
         <View style={styles.footer}>
-          <Button shape="pill" animated={animated} trailingIcon={renderIcon('chevron-right', 14)} disabled={!current} onPress={() => { if (current) onContinue?.(current) }}>Continue</Button>
+          <Button shape="pill" style={styles.continue} animated={animated} trailingIcon={renderIcon('chevron-right', 14)} disabled={!current} onPress={() => { if (current) onContinue?.(current) }}>Continue</Button>
         </View>
       </View>
     </Panel>
@@ -77,16 +81,19 @@ export function OnboardingQuestion({ question, description, choices, step, steps
 
 const createStyles = (c: Colors) => StyleSheet.create({
   body: { gap: space[3], padding: space[4] },
-  top: { alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', minHeight: 44 },
-  count: type(12, c.textTertiary),
-  title: type(20, c.textPrimary, '500'),
-  sub: type(14, c.textSecondary),
+  top: { alignItems: 'center', flexDirection: 'row', gap: space[3], justifyContent: 'space-between', minHeight: 20 },
+  count: { ...type(12, c.textTertiary), lineHeight: 16 },
+  title: { ...type(24, c.textPrimary, '600'), lineHeight: 32, marginTop: space[1] },
+  sub: { ...type(16, c.textSecondary), lineHeight: 24, marginTop: -space[2] },
   choices: { gap: space[2] },
-  choice: { alignItems: 'center', borderColor: c.ink8, borderRadius: radius.control, borderWidth: 1, flexDirection: 'row', gap: space[3], minHeight: 56, padding: space[3] },
-  on: { borderColor: c.textPrimary },
+  choice: { borderColor: c.ink8, borderRadius: radius.control, borderWidth: 1, gap: space[2], padding: space[3.5] },
+  on: { backgroundColor: c.ink4, borderColor: c.textPrimary, borderWidth: 1.5, padding: space[3.5] - 0.5 },
   pressed: { backgroundColor: c.ink4 },
-  icon: { alignItems: 'center', backgroundColor: c.ink4, borderRadius: radius.field, height: 36, justifyContent: 'center', width: 36 },
-  text: { flex: 1, gap: space[0.5] },
-  label: type(14, c.textPrimary, '500'),
+  icon: { alignItems: 'center', alignSelf: 'flex-start', flexDirection: 'row', height: 24 },
+  text: { minWidth: 0 },
+  label: { ...type(14, c.textPrimary, '500'), lineHeight: 20 },
+  caption: { ...type(12, c.textSecondary), lineHeight: 16 },
+  key: { position: 'absolute', right: 12, top: 12 },
   footer: { alignItems: 'flex-end' },
+  continue: { alignSelf: 'flex-end' },
 })

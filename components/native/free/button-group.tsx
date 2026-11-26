@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import { AccessibilityInfo, Pressable, StyleSheet, Text, View, type LayoutChangeEvent, type LayoutRectangle, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { FadeIn, FadeOut, LayoutAnimationConfig, LinearTransition, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated'
-import { radius, space, toggleState, useColors, type Colors } from '../kit'
+import { radius, softElevation, space, toggleState, useColors, type Colors } from '../kit'
 import { EASE_OUT_SOFT, HEIGHT, ICON_SIZE, PressScale, TARGET, usePressScale, withInk, type Spring } from './button'
 import { type, useStill, useThemed, type RenderIcon } from './card'
 import { TOGGLE_SPRING } from './toggle'
@@ -281,7 +281,7 @@ export function ButtonGroup(props: ButtonGroupProps) {
 const createStyles = (c: Colors) => StyleSheet.create({
   hug: { alignSelf: 'flex-start' },
   tray: { alignItems: 'center', alignSelf: 'flex-start', backgroundColor: c.ink4, borderRadius: radius.control, flexDirection: 'row', gap: space[0.5], padding: space[1] },
-  card: { backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.field, borderWidth: 1, left: 0, position: 'absolute', top: 0 },
+  card: { backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.field, borderWidth: 1, boxShadow: softElevation(c), left: 0, position: 'absolute', top: 0 },
   segment: { alignItems: 'center', borderRadius: radius.field, height: HEIGHT.sm, justifyContent: 'center', paddingHorizontal: space[3] },
   segmentText: type(16, c.textSecondary, '500'),
   textOn: { color: c.textPrimary },

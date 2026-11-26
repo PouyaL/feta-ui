@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native'
-import Animated, { Easing, interpolateColor, useAnimatedStyle, useSharedValue, withSequence, withSpring, withTiming } from 'react-native-reanimated'
+import Animated, { Easing, interpolateColor, useAnimatedStyle, useSharedValue, withSequence, withTiming } from 'react-native-reanimated'
 import { radius, space, useColors, type Colors } from '../kit'
 import { type, useStill, useThemed } from './card'
 import { useFieldControl } from './field'
@@ -10,10 +10,16 @@ const HEIGHT = 28
 const THUMB = 24
 const INSET = 2
 const STRETCH = 6
+const HALO = 5
 const FAST_MS = 150
+const PRESS_MS = 100
+// The web's --feta-motion-duration-thumb and --feta-motion-ease-thumb: the curve overshoots a touch, like a spring.
+const THUMB_MS = 260
+const THUMB_EASE = Easing.bezier(0.34, 1.4, 0.64, 1)
 const SHAKE_LEG_MS = 80
-const THUMB_SPRING = { stiffness: 500, damping: 30, mass: 1 } as const
 const OUT = Easing.bezier(0.23, 1, 0.32, 1)
+// --feta-bg-danger-subtle (red 50 in Light, red 950 in Dark).
+const DANGER_SUBTLE = { light: '#fef2f2', dark: '#450a0a' } as const
 
 type TrackProps = { on: boolean; invalid: boolean; disabled: boolean; pressed: boolean; still: boolean }
 
@@ -28,13 +34,13 @@ function Track({ on, invalid, disabled, pressed, still }: TrackProps) {
 
   useEffect(() => {
     const target = on ? 1 : 0
-    travel.value = still ? target : withSpring(target, THUMB_SPRING)
+    travel.value = still ? target : withTiming(target, { duration: THUMB_MS, easing: THUMB_EASE })
     shade.value = still ? target : withTiming(target, { duration: FAST_MS, easing: OUT })
   }, [on, still, travel, shade])
 
   useEffect(() => {
     const target = pressed && !still && !disabled ? 1 : 0
-    stretch.value = still ? target : withSpring(target, THUMB_SPRING)
+    stretch.value = still ? target : withTiming(target, { duration: PRESS_MS, easing: OUT })
   }, [pressed, disabled, still, stretch])
 
   useEffect(() => {
@@ -43,10 +49,11 @@ function Track({ on, invalid, disabled, pressed, still }: TrackProps) {
     x.value = withSequence(withTiming(-2, leg), withTiming(2, leg), withTiming(0, leg))
   }, [invalid, still, x])
 
-  const { ink5, ink8, textPrimary, danger } = colors
+  const { ink8, textPrimary, danger } = colors
+  const dangerSubtle = isDark(colors) ? DANGER_SUBTLE.dark : DANGER_SUBTLE.light
   const room = WIDTH - INSET * 2 - THUMB
   const trackStyle = useAnimatedStyle(() => ({
-    backgroundColor: interpolateColor(shade.value, [0, 1], invalid ? [ink5, danger] : [ink8, textPrimary]),
+    backgroundColor: interpolateColor(shade.value, [0, 1], invalid ? [dangerSubtle, danger] : [ink8, textPrimary]),
     transform: [{ translateX: x.value }],
   }))
   const thumbStyle = useAnimatedStyle(() => ({
@@ -57,10 +64,12 @@ function Track({ on, invalid, disabled, pressed, still }: TrackProps) {
   const glintStyle = useAnimatedStyle(() => ({ opacity: shade.value * 0.5 }))
 
   return (
-    <Animated.View style={[styles.track, invalid && styles.trackInvalid, disabled && styles.disabled, trackStyle]}>
+    <Animated.View style={[styles.track, invalid && !on && styles.trackInvalid, disabled && styles.disabled, trackStyle]}>
       <Animated.View style={[styles.glint, glintStyle]} />
-      <Animated.View style={[styles.thumb, thumbStyle]}>
+      {/* The halo is the thumb's sibling, drawn first, so it sits behind the thumb as the web's z-index -1 does. */}
+      <Animated.View style={[styles.thumbSlot, thumbStyle]}>
         <Animated.View style={[styles.halo, on && styles.haloOn, haloStyle]} />
+        <View style={styles.thumb} />
       </Animated.View>
     </Animated.View>
   )
@@ -126,18 +135,26 @@ export function SwitchField({ label, description, checked, defaultChecked = fals
         <Text style={styles.title}>{label}</Text>
         {description ? <Text style={styles.description}>{description}</Text> : null}
       </View>
-      <Track on={on} invalid={field.invalid} disabled={false} pressed={pressed} still={still} />
+      <Track on={on} invalid={field.invalid} disabled={field.disabled} pressed={pressed} still={still} />
     </Pressable>
   )
 }
 
+const isDark = (c: Colors): boolean => c.surface !== '#ffffff'
+
 const createStyles = (c: Colors) => StyleSheet.create({
   track: { borderRadius: radius.full, height: HEIGHT, justifyContent: 'center', padding: space[0.5], width: WIDTH },
-  trackInvalid: { borderColor: c.danger, borderWidth: 1 },
+  // An inset ring, as the web's box-shadow, so the 1 px line does not push the thumb in.
+  trackInvalid: { boxShadow: `inset 0px 0px 0px 1px ${c.danger}` },
   disabled: { opacity: 0.4 },
   dimmed: { opacity: 0.5 },
-  thumb: { backgroundColor: c.surface, borderRadius: radius.full, height: THUMB },
-  halo: { backgroundColor: c.ink5, borderRadius: radius.full, bottom: -6, left: -6, position: 'absolute', right: -6, top: -6, zIndex: -1 },
+  thumbSlot: { height: THUMB },
+  // --feta-elevation-soft.
+  thumb: {
+    backgroundColor: c.surface, borderRadius: radius.full, flex: 1,
+    boxShadow: isDark(c) ? '0px 1px 2px 0px #00000080, 0px 6px 20px -10px #00000099' : '0px 1px 2px 0px #0000000a, 0px 6px 20px -10px #0000001f',
+  },
+  halo: { backgroundColor: c.ink5, borderRadius: radius.full, bottom: -HALO, left: -HALO, position: 'absolute', right: -HALO, top: -HALO },
   haloOn: { backgroundColor: c.ink10 },
   glint: { backgroundColor: c.textInverse, borderRadius: radius.full, height: 4, left: space[2], position: 'absolute', width: 4 },
   row: { alignItems: 'center', flexDirection: 'row', gap: space[3], justifyContent: 'space-between', minHeight: 44, width: '100%' },

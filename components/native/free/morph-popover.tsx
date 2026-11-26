@@ -2,7 +2,7 @@ import { useEffect, useState, type ReactNode } from 'react'
 import { Pressable, StyleSheet, Text, TextInput, View, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { FadeIn, FadeOut, LayoutAnimationConfig, LinearTransition, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated'
 import { font, radius, space, useColors, type Colors } from '../kit'
-import { Button, ICON_SIZE, withInk, type Spring } from './button'
+import { Button, ICON_SIZE, withInk, type Spring, SELF } from './button'
 import { type, useStill, useThemed, type RenderIcon } from './card'
 import { IconButton } from './icon-button'
 
@@ -75,7 +75,7 @@ export function MorphPopover({ label = 'Feedback', placeholder = 'What would mak
                 {glyph}
                 <Text numberOfLines={1} style={styles.titleText}>{label}</Text>
               </View>
-              <IconButton variant="ghost" size="sm" label="Close" animated={animated} icon={renderIcon('x', ICON_SIZE)} onPress={close} />
+              <IconButton style={SELF.center} variant="ghost" size="sm" label="Close" animated={animated} icon={renderIcon('x', ICON_SIZE)} onPress={close} />
             </View>
             <Animated.View {...(still ? {} : { entering: BODY_IN })} style={styles.body}>
               <LayoutAnimationConfig skipEntering>
@@ -100,7 +100,7 @@ export function MorphPopover({ label = 'Feedback', placeholder = 'What would mak
                       onChangeText={setText}
                     />
                     <View style={styles.footer}>
-                      <Button size="sm" shape="pill" animated={animated} disabled={!text.trim()} status={state === 'sending' ? 'loading' : 'idle'} loadingLabel="Sending" onPress={() => void send()}>Send</Button>
+                      <Button style={SELF.end} size="sm" shape="pill" animated={animated} disabled={!text.trim()} status={state === 'sending' ? 'loading' : 'idle'} loadingLabel="Sending" onPress={() => void send()}>Send</Button>
                     </View>
                   </Animated.View>
                 )}

@@ -1,8 +1,8 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { Easing, FadeIn, FadeInDown, FadeOut, FadeOutDown, ZoomIn } from 'react-native-reanimated'
-import { radius, space, useReduceMotion, type Colors } from '../kit'
-import { Button } from './button'
+import { radius, space, useColors, useReduceMotion, type Colors } from '../kit'
+import { Button, withInk } from './button'
 import { Card, type RenderIcon, type, useStill, useThemed } from './card'
 import { IconButton } from './icon-button'
 
@@ -45,6 +45,7 @@ export type ConsentCardProps = {
 /** Asks once whether analytics may run, then folds to a one line confirmation. */
 export function ConsentCard({ value, defaultValue = 'asking', onValueChange, onDismiss, title = 'Cookies', description = 'This site uses analytics to see which pages help. Nothing is sold or shared.', acceptLabel = 'Accept', declineLabel = 'Decline', acceptedTitle = 'Analytics on', declinedTitle = 'Analytics off', note = 'Change it any time in Settings', hideAfter = HIDE_AFTER_MS, placement = 'inline', renderIcon, animated = true, style }: ConsentCardProps) {
   const styles = useThemed(createStyles)
+  const colors = useColors()
   const still = useStill(animated)
   const reduce = useReduceMotion()
   const [held, setHeld] = useState<ConsentValue>(defaultValue)
@@ -77,9 +78,9 @@ export function ConsentCard({ value, defaultValue = 'asking', onValueChange, onD
     <Animated.View {...open} accessibilityLabel="Consent" style={[placement === 'corner' && styles.corner, style]}>
       {asking ? (
         <Animated.View key="asking" {...(still ? {} : { exiting: FadeOut.duration(180) })}>
-          <Card animated={animated} footer={<><Button variant="secondary" animated={animated} onPress={() => choose('declined')}>{declineLabel}</Button><Button animated={animated} onPress={() => choose('accepted')}>{acceptLabel}</Button></>}>
+          <Card animated={animated} bodyStyle={styles.askBody} footerStyle={styles.actions} footer={<><Button variant="secondary" size="lg" animated={animated} style={styles.action} onPress={() => choose('declined')}>{declineLabel}</Button><Button size="lg" animated={animated} style={styles.action} onPress={() => choose('accepted')}>{acceptLabel}</Button></>}>
             <View style={styles.header}>
-              <View style={styles.cookie}>{renderIcon('cookie', 16)}</View>
+              <View style={styles.cookie}>{withInk(renderIcon('cookie', 20), colors.textInverse)}</View>
               <Text style={styles.title} accessibilityRole="header">{title}</Text>
               {closeButton}
             </View>
@@ -88,10 +89,10 @@ export function ConsentCard({ value, defaultValue = 'asking', onValueChange, onD
         </Animated.View>
       ) : (
         <Animated.View key="answered" {...(still ? {} : { entering: ZoomIn.springify().stiffness(420).damping(26).withInitialValues({ transform: [{ scale: 0.98 }] }) })} accessibilityLiveRegion="polite">
-          <Card animated={animated}>
-            <View style={styles.header}>
-              <View style={[styles.mark, answer === 'accepted' && styles.markOn]}>{renderIcon(answer === 'accepted' ? 'check' : 'x', 14)}</View>
-              <View style={styles.lineText}><Text style={styles.title}>{answer === 'accepted' ? acceptedTitle : declinedTitle}</Text><Text style={styles.note}>{note}</Text></View>
+          <Card animated={animated} bodyStyle={styles.doneBody}>
+            <View style={styles.line}>
+              <View style={[styles.mark, answer === 'accepted' && styles.markOn]}>{withInk(renderIcon(answer === 'accepted' ? 'check' : 'x', 14), answer === 'accepted' ? colors.onSolid : colors.textSecondary)}</View>
+              <View style={styles.lineText}><Text style={styles.lineTitle}>{answer === 'accepted' ? acceptedTitle : declinedTitle}</Text><Text style={styles.note}>{note}</Text></View>
               {closeButton}
             </View>
           </Card>
@@ -103,12 +104,18 @@ export function ConsentCard({ value, defaultValue = 'asking', onValueChange, onD
 
 const createStyles = (c: Colors) => StyleSheet.create({
   corner: { bottom: space[4], left: space[4], position: 'absolute', right: space[4] },
-  header: { alignItems: 'center', flexDirection: 'row', gap: space[2] },
-  cookie: { alignItems: 'center', backgroundColor: c.ink4, borderRadius: radius.field, height: 32, justifyContent: 'center', width: 32 },
-  title: { ...type(16, c.textPrimary, '500'), flex: 1 },
-  description: type(14, c.textSecondary),
-  mark: { alignItems: 'center', backgroundColor: c.ink5, borderRadius: radius.full, height: 24, justifyContent: 'center', width: 24 },
-  markOn: { backgroundColor: c.ink10 },
+  askBody: { padding: space[5] },
+  header: { alignItems: 'center', flexDirection: 'row', gap: space[2.5], marginBottom: space[1] },
+  cookie: { alignItems: 'center', backgroundColor: c.inverse, borderRadius: radius.full, height: 32, justifyContent: 'center', width: 32 },
+  title: { ...type(14, c.textPrimary, '600'), lineHeight: 20, flex: 1 },
+  description: { ...type(16, c.textSecondary), lineHeight: 24 },
+  actions: { paddingTop: space[2], paddingHorizontal: space[1], paddingBottom: space[1] },
+  action: { flex: 1 },
+  doneBody: { paddingVertical: space[3.5], paddingLeft: space[3.5], paddingRight: space[4] },
+  line: { alignItems: 'center', flexDirection: 'row', gap: space[3] },
+  mark: { alignItems: 'center', backgroundColor: c.ink8, borderRadius: radius.full, height: 28, justifyContent: 'center', width: 28 },
+  markOn: { backgroundColor: c.success },
   lineText: { flex: 1, gap: space[0.5] },
-  note: type(12, c.textSecondary),
+  lineTitle: { ...type(14, c.textPrimary, '500'), lineHeight: 20 },
+  note: { ...type(12, c.textTertiary), lineHeight: 16 },
 })

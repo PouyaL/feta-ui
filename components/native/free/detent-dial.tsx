@@ -3,7 +3,7 @@ import { Pressable, StyleSheet, Text, View, type AccessibilityActionEvent, type 
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import Animated, { cancelAnimation, runOnJS, useAnimatedProps, useAnimatedStyle, useSharedValue, withSpring, type SharedValue } from 'react-native-reanimated'
 import Svg, { Line } from 'react-native-svg'
-import { radius, space, useColors, type Colors } from '../kit'
+import { radius, softElevation, space, useColors, type Colors } from '../kit'
 import { type, useStill, useThemed, type RenderIcon } from './card'
 import { RollingText, iconFor } from './label'
 
@@ -167,7 +167,7 @@ export function DetentDial({ value, defaultValue = 21, onValueChange, min = 16, 
       onPressIn={() => hold(direction)}
       onPressOut={release}
     >
-      {iconFor(renderIcon, name, 16, colors.textPrimary)}
+      {iconFor(renderIcon, name, 20, colors.textPrimary)}
     </Pressable>
   )
 
@@ -215,11 +215,12 @@ export function DetentDial({ value, defaultValue = 21, onValueChange, min = 16, 
 }
 
 const createStyles = (c: Colors) => StyleSheet.create({
-  tray: { backgroundColor: c.ink4, borderRadius: radius.tray, maxWidth: 300, padding: space[1], width: '100%' },
+  // The web's tray is 300 wide at most and its stage is narrower on a phone, so it fills the column there; native fills too.
+  tray: { backgroundColor: c.ink4, borderRadius: radius.tray, padding: space[1], width: '100%' },
   disabled: { opacity: 0.5 },
-  card: { alignItems: 'center', backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.card, borderWidth: StyleSheet.hairlineWidth, padding: space[3] },
+  card: { alignItems: 'center', backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.card, borderWidth: 1, boxShadow: softElevation(c), padding: space[3] },
   dial: { alignItems: 'center', height: SIZE, justifyContent: 'center', width: SIZE },
-  knob: { alignItems: 'center', backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.full, borderWidth: 1, height: SIZE * 0.64, justifyContent: 'center', width: SIZE * 0.64 },
+  knob: { alignItems: 'center', backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.full, borderWidth: 1, boxShadow: softElevation(c), height: SIZE * 0.64, justifyContent: 'center', width: SIZE * 0.64 },
   indicator: { alignSelf: 'center', backgroundColor: c.textPrimary, borderRadius: radius.xs, height: 10, marginTop: space[1.5], width: 3 },
   indicatorLimit: { backgroundColor: c.danger },
   readout: { alignItems: 'center' },

@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { FadeInDown, FadeOut } from 'react-native-reanimated'
-import { radius, space, type Colors } from '../kit'
+import { radius, space, useColors, type Colors } from '../kit'
 import { Badge } from './badge'
-import { Button } from './button'
-import { EASE_STANDARD, Panel, ROW_MS, type RenderIcon, type, useStill, useThemed } from './card'
+import { Button, withInk, SELF } from './button'
+import { EASE_STANDARD, panelEnter, ROW_MS, type RenderIcon, type, useStill, useThemed } from './card'
 import { Radio } from './radio'
 import { Textarea } from './textarea'
 
@@ -40,6 +40,7 @@ const swapIn = FadeInDown.duration(ROW_MS).easing(EASE_STANDARD).withInitialValu
 /** A three step cancellation: a reason, a retention offer, then a final confirm. */
 export function CancelFlow({ plan, summary, renews, reasons, offer, confirm = CONFIRM, noteHint, notePlaceholder, noteLimit = 500, renderIcon, onAccept, onCancel, defaultStep = 0, defaultReason, animated = true, style }: CancelFlowProps) {
   const styles = useThemed(createStyles)
+  const colors = useColors()
   const still = useStill(animated)
   const [step, setStep] = useState<number>(defaultStep)
   const [reason, setReason] = useState(defaultReason)
@@ -53,14 +54,22 @@ export function CancelFlow({ plan, summary, renews, reasons, offer, confirm = CO
     setStatus('cancelled')
   }
 
+  // The web's product tray: a 4% ink tray round a surface body, the plan and its renewal tag in the body's header.
   return (
-    <Panel title={plan} subtitle={summary} label="Cancel plan" animated={animated} actions={<Badge size="sm" mark>{renews}</Badge>} style={style}>
+    <Animated.View {...(still ? {} : { entering: panelEnter })} accessibilityLabel="Cancel plan" style={[styles.tray, style]}>
       <View style={styles.body}>
+        <View style={styles.header}>
+          <View style={styles.plan}>
+            <Text style={styles.planTitle} accessibilityRole="header">{plan}</Text>
+            <Text style={styles.small}>{summary}</Text>
+          </View>
+          <Badge size="sm" mark animated={animated}>{renews}</Badge>
+        </View>
         <View style={styles.steps}>
           {STEPS.map((name, i) => (
             <View key={name} accessible accessibilityLabel={`${name}${i === step ? ', current step' : ''}`} style={styles.step}>
               <View style={[styles.stepBar, i <= step && styles.stepOn]} />
-              <Text style={[styles.small, i === step && styles.now]}>{name}</Text>
+              <Text style={[styles.stepText, i === step && styles.now]}>{name}</Text>
             </View>
           ))}
         </View>
@@ -84,9 +93,11 @@ export function CancelFlow({ plan, summary, renews, reasons, offer, confirm = CO
                   )
                 })}
               </View>
-              <Text style={styles.label}>Add a note <Text style={styles.small}>Optional</Text></Text>
-              <Textarea rows={4} limit={noteLimit} value={note} animated={animated} {...(notePlaceholder ? { placeholder: notePlaceholder } : {})} accessibilityLabel="Add a note" onChangeText={setNote} />
-              {noteHint ? <Text style={styles.small}>{noteHint}</Text> : null}
+              <View style={styles.note}>
+                <Text style={styles.label}>Add a note  <Text style={styles.tertiary}>Optional</Text></Text>
+                <Textarea rows={4} limit={noteLimit} value={note} animated={animated} {...(notePlaceholder ? { placeholder: notePlaceholder } : {})} accessibilityLabel="Add a note" {...(noteHint ? { accessibilityHint: noteHint } : {})} onChangeText={setNote} />
+                {noteHint ? <Text style={styles.tertiary}>{noteHint}</Text> : null}
+              </View>
             </>
           ) : step === 1 ? (
             <>
@@ -94,9 +105,9 @@ export function CancelFlow({ plan, summary, renews, reasons, offer, confirm = CO
               <Text style={styles.lead}>{offer.body}</Text>
               <View style={styles.offer}>
                 <View style={styles.reasonText}><Text style={styles.price}>{offer.price}</Text><Text style={styles.small}>{offer.detail}</Text></View>
-                <Badge size="sm" tone="success" mark>{offer.tag}</Badge>
+                <Badge size="sm" tone="success" mark animated={animated}>{offer.tag}</Badge>
               </View>
-              {offer.pause ? <View style={styles.pause}>{renderIcon('info', 14)}<Text style={styles.pauseText}>{offer.pause}</Text></View> : null}
+              {offer.pause ? <View style={styles.pause}>{withInk(renderIcon('info', 14), colors.textSecondary)}<Text style={styles.pauseText}>{offer.pause}</Text></View> : null}
             </>
           ) : (
             <><Text style={styles.title} accessibilityRole="header">{confirm.title}</Text><Text style={styles.lead}>{confirm.body}</Text></>
@@ -104,36 +115,44 @@ export function CancelFlow({ plan, summary, renews, reasons, offer, confirm = CO
         </Animated.View>
         {finished ? null : (
           <View style={styles.footer}>
-            {step === 0 ? <View /> : <Button variant="ghost" shape="pill" animated={animated} onPress={() => setStep(step === 1 ? 2 : 1)}>{step === 1 ? 'Cancel anyway' : 'Back'}</Button>}
-            {step === 0 ? <Button shape="pill" animated={animated} disabled={!reason} onPress={() => setStep(1)}>Continue</Button> : null}
-            {step === 1 ? <Button shape="pill" animated={animated} onPress={() => { onAccept?.(reason); setStatus('kept') }}>{offer.accept}</Button> : null}
-            {step === 2 ? <Button variant="destructive" shape="pill" animated={animated} status={status === 'working' ? 'loading' : 'idle'} onPress={() => void finish()}>{confirm.action}</Button> : null}
+            {step === 0 ? <View /> : <Button style={SELF.center} variant="ghost" shape="pill" animated={animated} disabled={status === 'working'} onPress={() => setStep(step === 1 ? 2 : 1)}>{step === 1 ? 'Cancel anyway' : 'Back'}</Button>}
+            {step === 0 ? <Button style={SELF.center} shape="pill" animated={animated} disabled={!reason} onPress={() => setStep(1)}>Continue</Button> : null}
+            {step === 1 ? <Button style={SELF.center} shape="pill" animated={animated} onPress={() => { onAccept?.(reason); setStatus('kept') }}>{offer.accept}</Button> : null}
+            {step === 2 ? <Button style={SELF.center} variant="destructive" shape="pill" animated={animated} status={status === 'working' ? 'loading' : 'idle'} onPress={() => void finish()}>{confirm.action}</Button> : null}
           </View>
         )}
       </View>
-    </Panel>
+    </Animated.View>
   )
 }
 
 const createStyles = (c: Colors) => StyleSheet.create({
-  body: { gap: space[4], padding: space[4] },
+  tray: { backgroundColor: c.ink4, borderRadius: radius.frame, padding: space[1], width: '100%' },
+  body: { backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.panel, borderWidth: 1, gap: space[3], overflow: 'hidden', padding: space[4] },
+  header: { alignItems: 'flex-start', flexDirection: 'row', gap: space[3], justifyContent: 'space-between' },
+  plan: { flex: 1, minWidth: 0 },
+  planTitle: { ...type(16, c.textPrimary, '600'), lineHeight: 20 },
+  small: { ...type(12, c.textSecondary), lineHeight: 16 },
+  tertiary: { ...type(12, c.textTertiary), lineHeight: 16 },
   steps: { flexDirection: 'row', gap: space[2] },
-  step: { flex: 1, gap: space[1] },
-  stepBar: { backgroundColor: c.ink8, borderRadius: radius.full, height: 4 },
-  stepOn: { backgroundColor: c.inverse },
-  small: type(12, c.textSecondary),
-  now: { color: c.textPrimary },
+  step: { flex: 1, gap: space[2] },
+  stepBar: { backgroundColor: c.ink8, borderRadius: radius.xs, height: 2 },
+  stepOn: { backgroundColor: c.textPrimary },
+  stepText: { ...type(12, c.textTertiary), lineHeight: 16 },
+  now: { color: c.textPrimary, fontWeight: '500' },
   view: { gap: space[3] },
-  title: type(20, c.textPrimary, '500'),
-  lead: type(14, c.textSecondary),
+  title: { ...type(24, c.textPrimary, '600'), lineHeight: 32, marginTop: space[2] },
+  lead: { ...type(14, c.textSecondary), lineHeight: 20 },
   reasons: { gap: space[2] },
-  reason: { alignItems: 'center', borderColor: c.ink8, borderRadius: radius.control, borderWidth: 1, flexDirection: 'row', gap: space[3], minHeight: 56, padding: space[3] },
-  reasonOn: { borderColor: c.textPrimary },
-  reasonText: { flex: 1, gap: space[0.5] },
-  label: type(14, c.textPrimary, '500'),
-  offer: { alignItems: 'center', backgroundColor: c.ink4, borderRadius: radius.control, flexDirection: 'row', gap: space[3], padding: space[4] },
-  price: type(20, c.textPrimary, '500'),
-  pause: { alignItems: 'center', flexDirection: 'row', gap: space[1.5] },
-  pauseText: { ...type(12, c.textSecondary), flex: 1 },
-  footer: { alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' },
+  reason: { alignItems: 'flex-start', borderColor: c.ink8, borderRadius: radius.control, borderWidth: 1, flexDirection: 'row', gap: space[2], justifyContent: 'space-between', padding: space[3] },
+  // 1.5 px on the web; the padding gives back the half pixel so the text does not shift.
+  reasonOn: { borderColor: c.textPrimary, borderWidth: 1.5, padding: space[3] - 0.5 },
+  reasonText: { flex: 1, minWidth: 0 },
+  label: { ...type(14, c.textPrimary, '500'), lineHeight: 20 },
+  note: { gap: space[2] },
+  offer: { alignItems: 'center', backgroundColor: c.ink4, borderRadius: radius.control, flexDirection: 'row', gap: space[3], justifyContent: 'space-between', padding: space[3.5] },
+  price: { ...type(20, c.textPrimary, '500'), lineHeight: 28 },
+  pause: { alignItems: 'center', flexDirection: 'row', gap: space[2] },
+  pauseText: { ...type(12, c.textSecondary), flex: 1, lineHeight: 16 },
+  footer: { alignItems: 'center', borderTopColor: c.ink8, borderTopWidth: 1, flexDirection: 'row', gap: space[3], justifyContent: 'space-between', paddingTop: space[3] },
 })

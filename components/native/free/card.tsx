@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { Pressable, StyleSheet, Text, View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native'
 import Animated, { Easing, FadeIn, FadeInDown, ZoomIn, ZoomOut, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated'
-import Svg, { G, Rect } from 'react-native-svg'
-import { font, press, pressedState, radius, space, useColors, useReduceMotion, type Colors } from '../kit'
+import Svg, { Defs, Ellipse, G, LinearGradient, Rect, Stop } from 'react-native-svg'
+import { accent, font, press, pressedState, radius, space, useColors, useReduceMotion, type Colors } from '../kit'
 
 /** Draws a fetaUI icon by name, for example `check` or `chevron-right`. The app owns the icon set. */
 export type RenderIcon = (name: string, size: number) => ReactNode
@@ -150,8 +150,37 @@ export function Card({ variant = 'tray', title, description, meta, media, header
 /** The placeholder scene. Replace it with an image. */
 export function CardMedia({ style }: { style?: StyleProp<ViewStyle> }) {
   const styles = useThemed(createCardStyles)
-  return <View style={[styles.scene, style]} accessibilityElementsHidden importantForAccessibility="no-hide-descendants"><View style={styles.sun} /></View>
+  const [box, setBox] = useState({ width: 0, height: 0 })
+  const { width, height } = box
+  // The web scene: a sky-400 to amber-100 sky, an amber sun 28 across, 28 from the top and 56 from the right, and two
+  // emerald hills as wide ellipses dipping under the bottom edge. The same in Light and Dark.
+  return (
+    <View
+      style={[styles.scene, style]}
+      accessibilityElementsHidden
+      importantForAccessibility="no-hide-descendants"
+      onLayout={(e) => { const next = e.nativeEvent.layout; setBox((prev) => (prev.width === next.width && prev.height === next.height ? prev : { width: next.width, height: next.height })) }}
+    >
+      {width > 0 ? (
+        <Svg aria-hidden width={width} height={height}>
+          <Defs>
+            <LinearGradient id="card-media-sky" x1="0" y1="0" x2="0" y2="1">
+              <Stop offset="0" stopColor={accent.sky.from} />
+              <Stop offset="1" stopColor={SCENE.dusk} />
+            </LinearGradient>
+          </Defs>
+          <Rect width={width} height={height} fill="url(#card-media-sky)" />
+          <Ellipse cx={width - 56 - 14} cy={28 + 14} rx={14} ry={14} fill={accent.amber.from} />
+          <Ellipse cx={-40 + 175} cy={height + 50 - 55} rx={175} ry={55} fill={accent.emerald.from} />
+          <Ellipse cx={width + 60 - 160.5} cy={height + 48 - 45} rx={160.5} ry={45} fill={accent.emerald.to} />
+        </Svg>
+      ) : null}
+    </View>
+  )
 }
+
+/** amber-100, the warm foot of the web scene's sky. */
+const SCENE = { dusk: '#fef3c7' } as const
 
 export type PanelProps = {
   title?: ReactNode
@@ -223,7 +252,7 @@ const createCardStyles = (c: Colors) => StyleSheet.create({
   bodyMuted: { backgroundColor: c.ink5, borderWidth: 0 },
   disabled: { opacity: 0.5 },
   content: { gap: space[2] },
-  media: { borderRadius: radius.xl, height: 140, marginBottom: space[2], overflow: 'hidden' },
+  media: { borderRadius: radius.control, height: 140, marginBottom: space[2], overflow: 'hidden' },
   header: { alignItems: 'flex-start', flexDirection: 'row', gap: space[3] },
   text: { flex: 1, gap: space[0.5] },
   aside: { alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' },
@@ -240,7 +269,6 @@ const createCardStyles = (c: Colors) => StyleSheet.create({
   check: { alignItems: 'center', backgroundColor: c.inverse, borderRadius: radius.full, height: 24, justifyContent: 'center', position: 'absolute', right: space[3], top: space[3], width: 24 },
   checkMark: type(14, c.textInverse, '600'),
   scene: { backgroundColor: c.muted, flex: 1 },
-  sun: { backgroundColor: c.textQuaternary, borderRadius: radius.full, height: 32, left: space[6], position: 'absolute', top: space[6], width: 32 },
   panel: { backgroundColor: c.ink4, borderRadius: radius.tray, padding: space[1] },
   sheet: { backgroundColor: c.surface, borderRadius: radius.card, overflow: 'hidden' },
   bare: { gap: space[2] },
@@ -262,11 +290,14 @@ export type QrArtProps = {
   size: number
   /** Corner radius of the three finder squares, in grid cells. The inner squares take half. Default 1. */
   finderRadius?: number
+  /** The ink. Default the primary text colour. */
+  color?: string
 }
 
 /** A stand-in QR pattern on a 21 cell grid, seeded so it never changes between renders. Not a scannable code. */
-export function QrArt({ seed, size, finderRadius = 1 }: QrArtProps) {
+export function QrArt({ seed, size, finderRadius = 1, color }: QrArtProps) {
   const colors = useColors()
+  const ink = color ?? colors.textPrimary
   const cells = useMemo(() => {
     let hash = 7
     for (const char of seed) hash = (hash * 31 + char.charCodeAt(0)) >>> 0
@@ -281,11 +312,11 @@ export function QrArt({ seed, size, finderRadius = 1 }: QrArtProps) {
     return list
   }, [seed])
   return (
-    <Svg aria-hidden width={size} height={size} viewBox="0 0 21 21" fill={colors.textPrimary}>
+    <Svg aria-hidden width={size} height={size} viewBox="0 0 21 21" fill={ink}>
       {cells.map(([x, y]) => <Rect key={`${x}-${y}`} x={x} y={y} width={1} height={1} rx={0.2} />)}
       {FINDERS.map(([x, y]) => (
         <G key={`${x}-${y}`}>
-          <Rect x={x + 0.5} y={y + 0.5} width={6} height={6} rx={finderRadius} fill="none" stroke={colors.textPrimary} strokeWidth={1} />
+          <Rect x={x + 0.5} y={y + 0.5} width={6} height={6} rx={finderRadius} fill="none" stroke={ink} strokeWidth={1} />
           <Rect x={x + 2} y={y + 2} width={3} height={3} rx={finderRadius / 2} />
         </G>
       ))}

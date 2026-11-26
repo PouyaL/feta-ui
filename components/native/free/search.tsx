@@ -4,6 +4,7 @@ import Animated, { Easing, FadeIn, FadeInRight, FadeInUp, FadeOut, LinearTransit
 import { currentState, font, hscroll, pressedState, radius, space, useColors, type Colors } from '../kit'
 import { type, useStill, useThemed, type RenderIcon } from './card'
 import { IconButton } from './icon-button'
+import { SELF } from './button'
 import { useFocusRing } from './input'
 import { iconFor } from './label'
 import { Spinner } from './spinner'
@@ -70,7 +71,7 @@ export function SearchField({ value, defaultValue = '', onValueChange, placehold
         onChangeText={set}
         onFocus={() => setFocused(true)}
       />
-      {text ? <IconButton variant="ghost" size="sm" animated={animated} label="Clear" icon={iconFor(renderIcon, 'x', 16, colors.textSecondary)} onPress={() => { set(''); input.current?.focus() }} /> : null}
+      {text ? <IconButton style={SELF.center} variant="ghost" size="sm" animated={animated} label="Clear" icon={iconFor(renderIcon, 'x', 16, colors.textSecondary)} onPress={() => { set(''); input.current?.focus() }} /> : null}
     </Animated.View>
   )
 }
@@ -155,7 +156,7 @@ export function CommandPalette({ groups, placeholder = 'Search or run a command'
           <Pressable accessibilityLabel={`Back from ${page.label}`} accessibilityRole="button" hitSlop={12} style={styles.pageChip} onPress={back}>
             <Text style={styles.pageText}>{page.label}</Text>
           </Pressable>
-        ) : iconFor(renderIcon, 'search', 16, colors.textSecondary)}
+        ) : iconFor(renderIcon, 'search', 20, colors.textSecondary)}
         <TextInput
           accessibilityLabel="Command"
           autoCorrect={false}
@@ -197,6 +198,7 @@ export function CommandPalette({ groups, placeholder = 'Search or run a command'
                       <Text style={styles.title}><Match text={item.title} query={query.trim()} /></Text>
                       {item.description ? <Text style={styles.description}>{item.description}</Text> : null}
                     </View>
+                    {item.shortcut ? <View style={styles.kbd}><Text style={styles.kbdText}>{item.shortcut}</Text></View> : null}
                     {item.chevron ? iconFor(renderIcon, 'arrow-right', 16, colors.textSecondary) : null}
                   </Pressable>
                 )
@@ -389,17 +391,19 @@ const createStyles = (c: Colors) => StyleSheet.create({
   head: { alignItems: 'center', flexDirection: 'row', gap: space[2], height: 44, paddingHorizontal: space[3] },
   pageChip: { backgroundColor: c.ink5, borderRadius: radius.full, paddingHorizontal: space[2], paddingVertical: space[1] },
   pageText: type(12, c.textPrimary, '500'),
-  body: { backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.card, borderWidth: StyleSheet.hairlineWidth, maxHeight: 320, minHeight: 120, padding: space[1] },
+  body: { backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.card, borderWidth: 1, maxHeight: 320, minHeight: 120, padding: space[1], shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.06, shadowRadius: 10 },
   groupLabel: { ...type(10, c.textTertiary, '400', true), paddingBottom: space[1], paddingHorizontal: space[2], paddingTop: space[2], textTransform: 'uppercase' },
-  item: { alignItems: 'center', borderRadius: radius.control, flexDirection: 'row', gap: space[2], minHeight: 44, paddingHorizontal: space[3], paddingVertical: space[2] },
+  item: { alignItems: 'center', borderRadius: radius.xl, flexDirection: 'row', gap: space[2], minHeight: 44, paddingHorizontal: space[3], paddingVertical: space[2] },
+  kbd: { backgroundColor: c.ink5, borderRadius: radius.md, paddingHorizontal: space[1.5], paddingVertical: space[0.5] },
+  kbdText: { ...type(10, c.textSecondary, '400', true), lineHeight: 12 },
   itemOn: { backgroundColor: c.ink5 },
   itemOff: { opacity: 0.4 },
   tile: { alignItems: 'center', backgroundColor: c.ink4, borderRadius: radius.lg, height: 28, justifyContent: 'center', width: 28 },
   tileOn: { backgroundColor: c.surface, borderColor: c.ink8, borderWidth: 1 },
   tileDone: { backgroundColor: c.success },
   itemBody: { flex: 1, minWidth: 0 },
-  title: type(16, c.textPrimary, '500'),
-  description: type(12, c.textSecondary),
+  title: { ...type(16, c.textPrimary, '500'), lineHeight: 22 },
+  description: { ...type(12, c.textSecondary), lineHeight: 16 },
   empty: { ...type(14, c.textSecondary), paddingHorizontal: space[3], paddingVertical: space[8], textAlign: 'center' },
   status: { height: 0, opacity: 0 },
   motion: { width: '100%' },

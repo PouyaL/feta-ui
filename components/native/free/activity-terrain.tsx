@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, type AccessibilityActionEvent, type StyleProp, 
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import Animated, { Easing, FadeIn, interpolate, runOnJS, useAnimatedProps, useAnimatedStyle, useSharedValue, withTiming, type SharedValue } from 'react-native-reanimated'
 import Svg, { Path, Rect, Text as SvgText } from 'react-native-svg'
-import { font, radius, space, useColors, type Colors } from '../kit'
+import { font, space, useColors, type Colors } from '../kit'
 import { Card, type, useStill, useThemed } from './card'
 import { ToggleGroup } from './toggle-group'
 
@@ -304,12 +304,12 @@ export function ActivityTerrain({ weeks, start, view, defaultView = 'flat', onVi
                     <Svg aria-hidden width={width} height={area}>
                       {months.map(({ column, name }) => <SvgText key={column} x={cellX(column)} y={gridTop + 12} fontSize={12} fontFamily={font.sans} letterSpacing={font.tracking(12)} fill={colors.textTertiary}>{name}</SvgText>)}
                       {DAYS.map((day, row) => (row % 2 ? <SvgText key={day} x={gridLeft} y={cellY(row) + cell / 2 + 4} fontSize={12} fontFamily={font.sans} letterSpacing={font.tracking(12)} fill={colors.textTertiary}>{day}</SvgText> : null))}
-                      {shown.map((days, column) => days.map((count, row) => <Rect key={`${column}-${row}`} x={cellX(column)} y={cellY(row)} width={cell} height={cell} rx={radius.sm} fill={tones.top[level(count)]} />))}
+                      {shown.map((days, column) => days.map((count, row) => <Rect key={`${column}-${row}`} x={cellX(column)} y={cellY(row)} width={cell} height={cell} rx={cell / 2} fill={tones.top[level(count)]} />))}
                     </Svg>
                   </Animated.View>
                   {lit && activeColumn >= 0 ? (
                     <Svg aria-hidden width={width} height={area} style={StyleSheet.absoluteFill}>
-                      <Rect x={cellX(activeColumn)} y={cellY(activeDay)} width={cell} height={cell} rx={radius.sm} fill={tones.on} />
+                      <Rect x={cellX(activeColumn)} y={cellY(activeDay)} width={cell} height={cell} rx={cell / 2} fill={tones.on} />
                     </Svg>
                   ) : null}
                 </>
@@ -338,7 +338,7 @@ export function ActivityTerrain({ weeks, start, view, defaultView = 'flat', onVi
         <View style={styles.legend} accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
           <Text style={styles.legendText}>Less</Text>
           <Svg aria-hidden width={LEVELS.length * (SWATCH + GAP) - GAP} height={SWATCH} style={styles.swatches}>
-            {LEVELS.map((step) => <Rect key={step} x={step * (SWATCH + GAP)} width={SWATCH} height={SWATCH} rx={radius.sm} fill={tones.top[step]} />)}
+            {LEVELS.map((step) => <Rect key={step} x={step * (SWATCH + GAP)} width={SWATCH} height={SWATCH} rx={SWATCH / 2} fill={tones.top[step]} />)}
           </Svg>
           <Text style={styles.legendText}>More</Text>
         </View>

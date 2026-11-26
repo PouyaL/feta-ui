@@ -131,7 +131,7 @@ export function LiquidGauge({ used, total, unit = 'GB', label = 'Storage', icon,
       animated={animated}
       style={[styles.gaugeCard, style]}
       footerStyle={styles.footer}
-      footer={<Button size="sm" variant={full ? 'primary' : 'secondary'} animated={animated} onPress={onAction}>{full ? urgentActionLabel : actionLabel}</Button>}
+      footer={<Button size="md" variant={full ? 'primary' : 'secondary'} style={styles.action} animated={animated} onPress={onAction}>{full ? urgentActionLabel : actionLabel}</Button>}
     >
       {still ? null : <DeviceTilt lean={lean} />}
       <View style={styles.header}>
@@ -209,5 +209,7 @@ const createStyles = (c: Colors) => StyleSheet.create({
   statEnd: { alignItems: 'flex-end' },
   statLabel: type(12, c.textTertiary),
   statValue: { ...type(14, c.textPrimary, '600'), lineHeight: 20 },
+  // On Mobile the web Card footer fills its row and takes the md button height.
+  action: { flex: 1 },
   footer: { paddingBottom: space[1], paddingHorizontal: space[1], paddingTop: space[2] },
 })

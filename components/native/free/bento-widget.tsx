@@ -105,10 +105,17 @@ function CountUp({ value, format, still, style }: { value: number; format: (valu
   useEffect(() => {
     shown.value = still ? value : withTiming(value, ARRIVE)
   }, [shown, still, value])
-  return <TextInput editable={false} scrollEnabled={false} value={text} accessibilityLabel={format(value)} style={[reset, style]} />
+  // A TextInput keeps the width of the text it first drew, so the hidden final value sizes the box and the count runs on top.
+  return (
+    <View>
+      <Text accessible={false} importantForAccessibility="no" style={[style, hidden]}>{format(value)}</Text>
+      <TextInput editable={false} scrollEnabled={false} value={text} accessibilityLabel={format(value)} style={[reset, style, StyleSheet.absoluteFill]} />
+    </View>
+  )
 }
 
 const reset: TextStyle = { padding: 0 }
+const hidden: TextStyle = { opacity: 0 }
 
 /** The six dots of a grip. */
 export function BentoGripDots({ hovered = false }: { hovered?: boolean }) {

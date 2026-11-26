@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { FadeInDown, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated'
 import { font, press, radius, space, type Colors } from '../kit'
-import { Button } from './button'
+import { Button, SELF } from './button'
 import { EASE_STANDARD, panelEnter, type, useStill, useThemed } from './card'
 
 const SCORES = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as const
@@ -61,7 +61,7 @@ export function NpsScale({ question, low = 'Not likely', high = 'Very likely', d
         {score === undefined ? null : (
           <Animated.View {...(still ? {} : { entering: reveal })} style={styles.result}>
             <Text accessibilityLiveRegion="polite" style={styles.picked}>You picked {score}</Text>
-            <Button size="sm" animated={animated} onPress={() => onSubmit?.(score)}>Submit</Button>
+            <Button style={SELF.center} size="sm" animated={animated} onPress={() => onSubmit?.(score)}>Submit</Button>
           </Animated.View>
         )}
       </View>

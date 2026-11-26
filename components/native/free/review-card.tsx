@@ -1,17 +1,11 @@
 import { StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native'
-import Svg, { Polygon } from 'react-native-svg'
+import { StarIcon } from '@fetaui/react-native/filled/star'
 import { radius, space, useColors, type Colors } from '../kit'
 import { Avatar, type AvatarProps } from './avatar'
 import { type RenderIcon, type, useThemed } from './card'
 import { ExpandableText } from './expandable-text'
 
 const MAX_STARS = 5
-const STAR_POINTS = Array.from({ length: 10 }, (_, i) => {
-  const r = i % 2 === 0 ? 11 : 5
-  const angle = (i * Math.PI) / 5 - Math.PI / 2
-  return `${(12 + r * Math.cos(angle)).toFixed(2)},${(12.5 + r * Math.sin(angle)).toFixed(2)}`
-}).join(' ')
-
 export type ReviewCardProps = {
   name: string
   date: string
@@ -40,7 +34,7 @@ export function ReviewCard({ name, date, rating, headline, children, avatar, ren
       <View style={styles.rating}>
         <View accessible accessibilityRole="image" accessibilityLabel={`${rating} out of ${MAX_STARS} stars`} style={styles.stars}>
           {Array.from({ length: MAX_STARS }, (_, i) => (
-            <Svg aria-hidden key={i} width={14} height={14} viewBox="0 0 24 24"><Polygon points={STAR_POINTS} fill={i < rating ? colors.textPrimary : colors.ink10} /></Svg>
+            <StarIcon key={i} size={14} color={i < rating ? colors.textPrimary : colors.ink10} trigger="none" />
           ))}
         </View>
         <Text accessibilityRole="header" style={styles.headline}>{headline}</Text>
@@ -51,11 +45,11 @@ export function ReviewCard({ name, date, rating, headline, children, avatar, ren
 }
 
 const makeStyles = (c: Colors) => StyleSheet.create({
-  card: { width: '100%', gap: space[2], padding: space[4], borderRadius: radius.card, borderWidth: 1, borderColor: c.ink8, backgroundColor: c.surface },
+  card: { width: '100%', gap: space[2], padding: space[4], borderRadius: radius.card, borderWidth: 1, borderColor: c.ink8, backgroundColor: c.surface, shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 8, shadowOffset: { width: 0, height: 2 } },
   top: { flexDirection: 'row', alignItems: 'center', gap: space[2] },
-  name: { ...type(14, c.textPrimary, '500'), flex: 1, minWidth: 0 },
-  date: type(12, c.textTertiary),
+  name: { ...type(16, c.textPrimary, '500'), lineHeight: 22, flex: 1, minWidth: 0 },
+  date: { ...type(12, c.textTertiary), lineHeight: 16 },
   rating: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', columnGap: space[2], rowGap: space[1] },
   stars: { flexDirection: 'row', gap: space[0.5] },
-  headline: type(14, c.textPrimary, '500'),
+  headline: { ...type(16, c.textPrimary, '500'), lineHeight: 22 },
 })

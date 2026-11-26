@@ -2,7 +2,7 @@
 // Needs React 19, so React Native 0.78 or newer: components take `ref` as a normal prop.
 // Ported from the web source, behaviour tested (tools/native) and run on the iOS Simulator (tools/native-app).
 // Skia is not a dependency: every component draws with react-native-svg and Reanimated.
-import { AccessibilityInfo, Linking, Platform, useColorScheme } from 'react-native'
+import { AccessibilityInfo, AppState, Linking, Platform, useColorScheme } from 'react-native'
 import { useEffect, useRef, useState } from 'react'
 
 export const space = { 0: 0, 0.5: 2, 1: 4, 1.5: 6, 2: 8, 2.5: 10, 3: 12, 3.5: 14, 4: 16, 4.5: 18, 5: 20, 6: 24, 7: 28, 8: 32, 10: 40, 12: 48, 14: 56 } as const
@@ -13,14 +13,14 @@ const LIGHT = {
   canvas: '#ffffff', surface: '#ffffff', subtle: '#fafafa', muted: '#f4f4f5', inverse: '#18181b',
   textPrimary: '#18181b', textSecondary: '#71717a', textTertiary: '#a1a1aa', textQuaternary: '#d4d4d8', textInverse: '#ffffff',
   ink4: 'rgba(0,0,0,0.04)', ink5: 'rgba(0,0,0,0.05)', ink8: 'rgba(0,0,0,0.08)', ink10: 'rgba(0,0,0,0.1)',
-  onSolid: '#ffffff', danger: '#ef4444', success: '#10b981', warning: '#f97316', info: '#0ea5e9', accent: '#0ea5e9',
+  onSolid: '#ffffff', danger: '#ef4444', success: '#10b981', warning: '#f97316', info: '#0ea5e9', accent: '#2563eb',
 }
 
 const DARK: typeof LIGHT = {
   canvas: '#09090b', surface: '#18181b', subtle: '#18181b', muted: '#27272a', inverse: '#f4f4f5',
   textPrimary: '#f4f4f5', textSecondary: '#a1a1aa', textTertiary: '#71717a', textQuaternary: '#52525b', textInverse: '#18181b',
   ink4: 'rgba(255,255,255,0.04)', ink5: 'rgba(255,255,255,0.05)', ink8: 'rgba(255,255,255,0.08)', ink10: 'rgba(255,255,255,0.1)',
-  onSolid: '#ffffff', danger: '#ef4444', success: '#10b981', warning: '#fb923c', info: '#38bdf8', accent: '#38bdf8',
+  onSolid: '#ffffff', danger: '#ef4444', success: '#10b981', warning: '#fb923c', info: '#38bdf8', accent: '#60a5fa',
 }
 
 export type Colors = typeof LIGHT
@@ -43,10 +43,25 @@ export const useColors = (): Colors => (useColorScheme() === 'dark' ? DARK : LIG
  */
 export const hscroll = { flexGrow: 0 } as const
 
+/**
+ * `--feta-elevation-soft`: the web's two shadow layers as a `boxShadow`, which follows the view's corner radius on iOS
+ * and Android and is not cut by the view's own overflow. A clipping parent (a ScrollView, overflow hidden) still cuts it.
+ */
+export const softElevation = (c: Colors): string => (c !== DARK
+  ? '0px 1px 2px 0px #0000000a, 0px 6px 20px -10px #0000001f'
+  : '0px 1px 2px 0px #00000080, 0px 6px 20px -10px #00000099')
+
 /** The press every control shares: 0.98 on a firm spring. */
 export const press = { scale: 0.98, spring: { stiffness: 600, damping: 32, mass: 1 } } as const
 
-export const font = { sans: 'TikTokSans', mono: 'IBMPlexMono', tracking: (size: number): number => size * -0.04 } as const
+/*
+ * Families. `mono` is the web's --feta-type-font-mono: IBM Plex Mono with the system monospace behind it. React Native
+ * takes one family name and iOS falls back to the system sans for a name the app has not bundled, which drew every
+ * code block, id and readout in sans; so native uses a monospace every device has (Menlo on iOS, the platform
+ * monospace on Android), and the web keeps the token's full stack.
+ */
+const MONO = Platform.select({ ios: 'Menlo', android: 'monospace', default: '"IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace' })
+export const font = { sans: 'TikTokSans', mono: MONO, tracking: (size: number): number => size * -0.04 } as const
 
 /*
  * States iOS and Android name differently from the web. React Native gives any element a `selected` state, which
@@ -70,6 +85,16 @@ export const gridCellRole = WEB ? 'gridcell' : 'cell'
 /** A toggle button: the togglebutton role with checked on iOS and Android, a button with aria-pressed on the web. */
 export const toggleState = (on: boolean): { accessibilityRole: 'togglebutton' | 'button'; 'aria-checked'?: boolean; 'aria-pressed'?: boolean } =>
   (WEB ? { accessibilityRole: 'button', 'aria-pressed': on } : { accessibilityRole: 'togglebutton', 'aria-checked': on })
+
+/** True while the app is in the foreground. Loops hold where they are in the background. */
+export function useAppActive(): boolean {
+  const [active, setActive] = useState(AppState.currentState !== 'background')
+  useEffect(() => {
+    const sub = AppState.addEventListener('change', (next) => setActive(next === 'active'))
+    return () => sub.remove()
+  }, [])
+  return active
+}
 
 /** True when the person asked for less motion. */
 export function useReduceMotion(): boolean {

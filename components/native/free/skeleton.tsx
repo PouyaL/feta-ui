@@ -80,9 +80,10 @@ export function Skeleton({ shape = 'line', width, height, shimmer = true, delay 
           <Svg aria-hidden width={band} height="100%">
             <Defs>
               <LinearGradient id={sheenId} x1="0" y1="0" x2="1" y2="0">
-                <Stop offset="0" stopColor={colors.ink8} stopOpacity={0} />
-                <Stop offset="0.5" stopColor={colors.ink8} />
-                <Stop offset="1" stopColor={colors.ink8} stopOpacity={0} />
+                {/* A soft light sweep. react-native-svg drops the alpha of an rgba stop colour, so the strength lives in stopOpacity. */}
+                <Stop offset="0" stopColor="#ffffff" stopOpacity={0} />
+                <Stop offset="0.5" stopColor="#ffffff" stopOpacity={colors.canvas === '#ffffff' ? 0.75 : 0.08} />
+                <Stop offset="1" stopColor="#ffffff" stopOpacity={0} />
               </LinearGradient>
             </Defs>
             <Rect width={band} height="100%" fill={`url(#${sheenId})`} />

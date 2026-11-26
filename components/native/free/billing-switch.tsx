@@ -4,6 +4,7 @@ import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-na
 import { radius, space, type Colors } from '../kit'
 import { type, useStill, useThemed } from './card'
 import { RollingText } from './label'
+import { segmentThumb } from './toggle-group'
 
 const JUMP = { stiffness: 500, damping: 34, mass: 1 } as const
 
@@ -97,7 +98,7 @@ const createStyles = (c: Colors) => StyleSheet.create({
   billing: { alignItems: 'center', alignSelf: 'center', gap: space[3], maxWidth: '100%' },
   disabled: { opacity: 0.5 },
   tray: { backgroundColor: c.ink4, borderRadius: radius.full, flexDirection: 'row', gap: space[0.5], padding: space[1] },
-  pill: { backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.full, borderWidth: 1, bottom: space[1], left: 0, position: 'absolute', top: space[1] },
+  pill: { ...segmentThumb(c), bottom: space[1], left: 0, position: 'absolute', top: space[1] },
   option: { alignItems: 'center', borderRadius: radius.full, flexDirection: 'row', gap: space[1.5], height: 44, paddingHorizontal: space[4] },
   text: type(14, c.textSecondary, '500'),
   textOn: { color: c.textPrimary },

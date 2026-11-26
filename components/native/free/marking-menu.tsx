@@ -3,10 +3,10 @@ import { StyleSheet, Text, View, type AccessibilityActionEvent, type LayoutChang
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import Animated, { FadeIn, FadeInDown, FadeOut, ZoomIn, runOnJS, useAnimatedProps, useAnimatedStyle, useSharedValue, withDelay, withSpring, withTiming } from 'react-native-reanimated'
 import Svg, { Line, Path } from 'react-native-svg'
-import { radius, space, useColors, type Colors } from '../kit'
+import { radius, softElevation, space, useColors, type Colors } from '../kit'
 import { withInk } from './button'
 import { type, useStill, useThemed } from './card'
-import { animateTo, EASE_OUT, soft, useCompact } from './popover'
+import { animateTo, EASE_OUT, useCompact } from './popover'
 
 const HOLD_MS = 250
 const FLICK_SPEED = 0.6
@@ -307,7 +307,7 @@ export function MarkingMenu({ items, onPick, children, label = 'Canvas', default
 const createStyles = (c: Colors) => StyleSheet.create({
   area: { backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.card, borderWidth: 1, minHeight: 320, overflow: 'hidden', width: '100%' },
   fill: { ...StyleSheet.absoluteFill },
-  disc: { ...soft(c), backgroundColor: c.muted, borderColor: c.ink8, borderRadius: radius.full, borderWidth: 1, position: 'absolute', zIndex: 5 },
+  disc: { boxShadow: softElevation(c), backgroundColor: c.muted, borderColor: c.ink8, borderRadius: radius.full, borderWidth: 1, position: 'absolute', zIndex: 5 },
   target: { alignItems: 'center', borderColor: 'transparent', borderRadius: radius.full, borderWidth: 1.5, height: 40, justifyContent: 'center', position: 'absolute', width: 40 },
   targetOn: { backgroundColor: c.surface, borderColor: c.textPrimary },
   targetPicked: { backgroundColor: c.ink10 },

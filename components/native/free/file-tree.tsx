@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import type { StyleProp, ViewStyle } from 'react-native'
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
-import { useStill } from './card'
+import { type RenderIcon, useStill } from './card'
 import { IconButton } from './icon-button'
 import { EASE_OUT, Mark } from './popover'
 import { Tree, TreeCard, type TreeNode } from './tree'
@@ -18,8 +18,10 @@ export type FileTreeProps = {
   selected?: string
   defaultSelected?: string
   onSelect?: (path: string) => void
-  /** Picks the icon for a file or a folder, so the app can draw it with its own fetaUI icons. */
+  /** Picks the icon for a file or a folder. Wins over `renderIcon`. */
   fileIcon?: (name: string, folder: boolean) => ReactNode
+  /** Draws the web's icons by name: `folder-open` for folders, `palette` for CSS, `file-text` for JSON, Markdown and text, `file-code` for the rest. */
+  renderIcon?: RenderIcon
   animated?: boolean
   style?: StyleProp<ViewStyle>
 }
@@ -36,12 +38,16 @@ const toNodes = (files: FileNode[], fileIcon: FileTreeProps['fileIcon'], parent 
   }
 })
 
+/** The web's type icons. */
+export const fileIconName = (name: string, folder: boolean): string => (folder ? 'folder-open' : name.endsWith('.css') ? 'palette' : /\.(json|md|txt)$/.test(name) ? 'file-text' : 'file-code')
+
 const foldersOf = (nodes: TreeNode[]): string[] => nodes.flatMap((node) => (node.children ? [node.id, ...foldersOf(node.children)] : []))
 
 /** A file explorer: folders with chevrons, files with type icons, git marks and a selected row. */
-export function FileTree({ files, title = 'Explorer', defaultExpanded = [], selected, defaultSelected, onSelect, fileIcon, animated = true, style }: FileTreeProps) {
+export function FileTree({ files, title = 'Explorer', defaultExpanded = [], selected, defaultSelected, onSelect, fileIcon, renderIcon, animated = true, style }: FileTreeProps) {
   const still = useStill(animated)
-  const nodes = useMemo(() => toNodes(files, fileIcon), [files, fileIcon])
+  const pick = useMemo(() => fileIcon ?? (renderIcon ? (name: string, folder: boolean) => renderIcon(fileIconName(name, folder), 20) : undefined), [fileIcon, renderIcon])
+  const nodes = useMemo(() => toNodes(files, pick), [files, pick])
   const [open, setOpen] = useState(defaultExpanded)
   const folders = useMemo(() => foldersOf(nodes), [nodes])
   // Collapsed keeps the roots open, so the top level folders stay in view. With nothing deeper, it closes them.

@@ -1,12 +1,12 @@
 import type { ReactNode } from 'react'
 import { StyleSheet, Text, View, type PressableProps, type StyleProp, type ViewStyle } from 'react-native'
 import { GestureDetector } from 'react-native-gesture-handler'
-import { radius, space, useColors, type Colors } from '../kit'
+import { radius, softElevation, space, useColors, type Colors } from '../kit'
 import { withInk } from './button'
 import { type, useThemed } from './card'
-import { Modal, ModalGrabber, useDisclosure, useModal, useModalDrag, type DisclosureProps, type DismissReason, type ModalMotion } from './dialog'
+import { dockedBottom, Modal, ModalGrabber, useDisclosure, useEdgeInsets, useModal, useModalDrag, type DisclosureProps, type DismissReason, type ModalMotion } from './dialog'
 import { IconButton } from './icon-button'
-import { Copy, EASE_IN, EASE_OUT, Mark, soft, Tap, useCompact } from './popover'
+import { Copy, EASE_IN, EASE_OUT, Mark, Tap, useCompact } from './popover'
 import { Skeleton } from './skeleton'
 
 const OPEN = { duration: 400, dampingRatio: 0.85 }
@@ -49,6 +49,7 @@ export function BottomSheet({ title, description, footer, loading = false, locke
 function Parts({ title, description, footer, loading, animated, style, children }: { title: ReactNode; description: ReactNode; footer: ReactNode; loading: boolean; animated: boolean; style: StyleProp<ViewStyle>; children: ReactNode }) {
   const styles = useThemed(createStyles)
   const { requestClose, locked, mobile, drag } = useModal()
+  const insets = useEdgeInsets()
   const pull = useModalDrag()
   const header = (
     <View style={styles.header}>
@@ -56,11 +57,13 @@ function Parts({ title, description, footer, loading, animated, style, children 
         <Copy style={styles.title}>{title}</Copy>
         {description ? <Copy style={styles.description}>{description}</Copy> : null}
       </View>
-      {mobile ? null : <IconButton variant="ghost" size="sm" label="Close" animated={animated} disabled={locked} icon={<Mark name="x" />} onPress={() => requestClose('close')} />}
+      {/* Phones drop the close button only when a footer offers a way out, as the web does. */}
+      {mobile && footer ? null : <IconButton variant="ghost" size="sm" label="Close" animated={animated} disabled={locked} icon={<Mark name="x" />} onPress={() => requestClose('close')} />}
     </View>
   )
   return (
-    <View style={[styles.tray, mobile && styles.traySheet, style]}>
+    <View style={[styles.tray, mobile && styles.traySheet, mobile && { paddingBottom: dockedBottom(insets) }, style]}>
+      <View aria-hidden pointerEvents="none" style={[styles.wash, mobile && styles.traySheet]} />
       {mobile && drag ? <ModalGrabber /> : null}
       <View style={styles.card}>
         {pull ? <GestureDetector gesture={pull}>{header}</GestureDetector> : header}
@@ -101,9 +104,11 @@ export function BottomSheetAction({ icon, label, tone = 'default', animated = tr
 }
 
 const createStyles = (c: Colors) => StyleSheet.create({
-  tray: { backgroundColor: c.muted, borderRadius: radius.sheet, flexShrink: 1, gap: space[1.5], padding: space[1.5] },
+  // The web's surface under a 4% ink wash.
+  tray: { backgroundColor: c.surface, borderRadius: radius.sheet, flexShrink: 1, gap: space[1.5], padding: space[1.5] },
+  wash: { ...StyleSheet.absoluteFill, backgroundColor: c.ink4, borderRadius: radius.sheet },
   traySheet: { borderBottomLeftRadius: 0, borderBottomRightRadius: 0, paddingBottom: space[7] },
-  card: { ...soft(c), backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.tray, borderWidth: 1, flexShrink: 1, gap: space[5], padding: space[5] },
+  card: { boxShadow: softElevation(c), backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.tray, borderWidth: 1, flexShrink: 1, gap: space[5], padding: space[5] },
   header: { alignItems: 'flex-start', flexDirection: 'row', gap: space[3] },
   heading: { flex: 1, minWidth: 0 },
   title: { ...type(18, c.textPrimary, '600'), lineHeight: 24 },

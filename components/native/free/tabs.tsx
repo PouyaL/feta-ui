@@ -4,7 +4,8 @@ import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated'
 import { font, radius, space, type Colors } from '../kit'
 import { type, useStill, useThemed } from './card'
-import { Copy, soft } from './popover'
+import { Copy } from './popover'
+import { segmentThumb, segmentTrack } from './toggle-group'
 import { Tooltip } from './tooltip'
 
 const RUBBER_BAND = 0.35
@@ -13,6 +14,8 @@ const SNAP_AT = 0.5
 const TOGGLE = { stiffness: 420, damping: 38 }
 const SWIPE_START = 12
 const LIST_INSET = 4
+// Pill tabs are 36 tall like the web mobile view; the slop takes the touch target to 44.
+const PILL_SLOP = { top: 4, bottom: 4, left: 0, right: 0 }
 
 export type TabItem = {
   value: string
@@ -53,6 +56,9 @@ export function Tabs({ items, value, defaultValue, onValueChange, appearance = '
   const index = Math.max(0, items.findIndex((item) => item.value === current))
   const vertical = orientation === 'vertical'
   const line = appearance === 'line'
+  // A ScrollView clips its content. Inset inside a plain list it cut the thumb's shadow into a grey box, so a scrolling
+  // pill list makes the ScrollView itself the capsule tray, padded inside, and any clip follows the capsule.
+  const scrollPill = !line && !vertical && !fill
   const panels = items.some((item) => item.content !== undefined)
   const swipes = panels && !vertical
   const last = items.length - 1
@@ -144,6 +150,7 @@ export function Tabs({ items, value, defaultValue, onValueChange, appearance = '
         aria-disabled={Boolean(item.disabled)}
         disabled={item.disabled}
         onPress={() => choose(item)}
+        hitSlop={line ? undefined : PILL_SLOP}
         style={[styles.tab, line && styles.tabLine, vertical && styles.tabVertical, line && !vertical && styles.tabLineTall, Boolean(item.disabled) && styles.off]}
       >
         {item.icon ?? null}
@@ -160,15 +167,15 @@ export function Tabs({ items, value, defaultValue, onValueChange, appearance = '
 
   const list = (
     <>
-      <Animated.View pointerEvents="none" style={[styles.indicator, line && !vertical ? styles.indicatorLine : null, vertical ? styles.indicatorVertical : styles.indicatorHorizontal, !line || vertical ? styles.indicatorPill : null, indicator]} />
+      <Animated.View pointerEvents="none" style={[styles.indicator, line && !vertical ? styles.indicatorLine : null, vertical ? styles.indicatorVertical : styles.indicatorHorizontal, !line || vertical ? styles.indicatorPill : null, vertical ? styles.indicatorRound : null, indicator]} />
       {items.map(tab)}
     </>
   )
 
   return (
     <View style={[styles.tabs, vertical && styles.tabsVertical, style]}>
-      <View accessibilityRole="tablist" accessibilityLabel={label} style={[styles.list, line ? styles.listLine : styles.listPill, vertical && styles.listVertical, fill && styles.listFill]}>
-        {vertical || fill ? <View style={vertical ? styles.column : styles.rowFill}>{list}</View> : <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.scroller} contentContainerStyle={[styles.row, line && styles.rowLine]}>{list}</ScrollView>}
+      <View accessibilityRole="tablist" accessibilityLabel={label} style={[styles.list, line ? styles.listLine : scrollPill ? null : styles.listPill, vertical && styles.listVertical, fill && styles.listFill]}>
+        {vertical || fill ? <View style={vertical ? styles.column : styles.rowFill}>{list}</View> : <ScrollView horizontal showsHorizontalScrollIndicator={false} style={[styles.scroller, scrollPill && styles.scrollPill]} contentContainerStyle={[styles.row, line && styles.rowLine, scrollPill && styles.rowPill]}>{list}</ScrollView>}
       </View>
       {panels ? (
         <View onLayout={(e) => setWidth(e.nativeEvent.layout.width)} style={styles.viewport}>
@@ -195,12 +202,14 @@ const createStyles = (c: Colors) => StyleSheet.create({
   tabs: { gap: space[3], minWidth: 0, width: '100%' },
   tabsVertical: { flexDirection: 'row', gap: space[4] },
   list: { alignSelf: 'flex-start', maxWidth: '100%' },
-  listPill: { backgroundColor: c.ink4, borderRadius: radius.full, padding: LIST_INSET },
+  listPill: { ...segmentTrack(c), flexDirection: 'column', padding: LIST_INSET },
   listLine: { alignSelf: 'stretch', borderBottomColor: c.ink8, borderBottomWidth: 1 },
   listVertical: { alignSelf: 'flex-start', backgroundColor: c.ink4, borderBottomWidth: 0, borderRadius: radius['2xl'], flexShrink: 0, padding: LIST_INSET, width: 128 },
   listFill: { alignSelf: 'stretch' },
   // ScrollView defaults to flexGrow 1, which grew the column list to hundreds of points tall on iOS.
   scroller: { flexGrow: 0 },
+  scrollPill: { backgroundColor: c.ink4, borderRadius: radius.full },
+  rowPill: { padding: LIST_INSET },
   row: { flexDirection: 'row', gap: space[0.5] },
   rowLine: { gap: space[5] },
   rowFill: { flexDirection: 'row', gap: space[0.5] },
@@ -209,9 +218,10 @@ const createStyles = (c: Colors) => StyleSheet.create({
   indicator: { left: 0, position: 'absolute', top: 0 },
   indicatorHorizontal: { bottom: 0 },
   indicatorVertical: { right: 0 },
-  indicatorPill: { ...soft(c), backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.full, borderWidth: 1 },
+  indicatorPill: segmentThumb(c),
+  indicatorRound: { borderRadius: radius.xl },
   indicatorLine: { backgroundColor: c.textPrimary, height: 2, top: 'auto' },
-  tab: { alignItems: 'center', borderRadius: radius.full, flexDirection: 'row', gap: space[1.5], height: 44, justifyContent: 'center', paddingHorizontal: space[3] },
+  tab: { alignItems: 'center', borderRadius: radius.full, flexDirection: 'row', gap: space[1.5], height: 36, justifyContent: 'center', paddingHorizontal: space[3] },
   tabLine: { borderRadius: radius.lg, paddingHorizontal: space[1] },
   tabLineTall: { height: 48 },
   tabVertical: { borderRadius: radius.xl, justifyContent: 'flex-start', paddingHorizontal: space[3] },

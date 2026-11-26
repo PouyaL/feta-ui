@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
-import { AppState, StyleSheet, View, useColorScheme, type LayoutChangeEvent, type StyleProp, type ViewStyle } from 'react-native'
+import { StyleSheet, View, useColorScheme, type LayoutChangeEvent, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { Easing, cancelAnimation, useAnimatedProps, useAnimatedStyle, useSharedValue, withRepeat, withTiming, type SharedValue } from 'react-native-reanimated'
 import Svg, { Rect } from 'react-native-svg'
-import { accent, radius, space, useColors, type Colors } from '../kit'
+import { accent, radius, space, useAppActive, useColors, type Colors } from '../kit'
 import { EASE_OUT } from './button'
 import { useStill } from './card'
 
@@ -24,24 +24,25 @@ const THINKING_SPEED = 2.5
 /** The thinking glow breathes between 60% and full over 2.4 s. */
 const BREATHE_MS = 2400
 const IN_OUT = Easing.bezier(0.42, 0, 0.58, 1)
-/** Three light bands round the edge, each built from three dashes so its edges fall off softly. */
+/**
+ * A soft dash: `layers` dashes centred on one point, from `widest` down to a tenth of it, each faint enough that their
+ * overlap builds to `peak` in the middle. Many small steps read as the shader's smooth falloff; three big ones banded.
+ */
+export function softDashes(layers: number, widest: number, peak: number): { share: number; opacity: number }[] {
+  const opacity = 1 - (1 - peak) ** (1 / layers)
+  return Array.from({ length: layers }, (_, i) => ({ share: widest * (1 - (0.9 * i) / layers), opacity }))
+}
+
+/** Three light bands round the edge, each a soft dash so its edges fall off smoothly. */
 const BANDS = 3
-const BAND_DASHES = [{ share: 0.5, opacity: 0.4 }, { share: 0.3, opacity: 0.45 }, { share: 0.14, opacity: 0.6 }] as const
+const BAND_DASHES = softDashes(12, 0.62, 0.72)
 /** Seven glints drift the other way at 5/7 the pace, so a whole turn lands them where they started. */
 const GLINTS = 7
 const GLINT_PACE = -5 / 7
+const GLINT_LAYERS = 6
+const GLINT_WIDEST = 0.3
 
 const AnimatedRect = Animated.createAnimatedComponent(Rect)
-
-/** True while the app is in the foreground. Loops hold where they are in the background. */
-export function useAppActive(): boolean {
-  const [active, setActive] = useState(AppState.currentState !== 'background')
-  useEffect(() => {
-    const sub = AppState.addEventListener('change', (next) => setActive(next === 'active'))
-    return () => sub.remove()
-  }, [])
-  return active
-}
 
 /**
  * A linear clock in turns on the UI thread, one turn every `periodMs` while `running`. Stopping holds the clock where
@@ -168,7 +169,9 @@ export function MetalRing({ borderRadius = radius.card, ringCssPx = 1.5, strengt
           {BAND_DASHES.map((dash) => (
             <RingDash key={dash.share} shape={band} turn={turn} period={band.length / BANDS} share={dash.share} pace={1} color={ink.hi} opacity={dash.opacity} strokeWidth={ringCssPx} />
           ))}
-          {ink.glintOpacity > 0 ? <RingDash shape={band} turn={turn} period={band.length / GLINTS} share={0.24} pace={GLINT_PACE} color={ink.glint} opacity={ink.glintOpacity} strokeWidth={ringCssPx} /> : null}
+          {ink.glintOpacity > 0 ? softDashes(GLINT_LAYERS, GLINT_WIDEST, ink.glintOpacity).map((dash) => (
+            <RingDash key={`glint-${dash.share}`} shape={band} turn={turn} period={band.length / GLINTS} share={dash.share} pace={GLINT_PACE} color={ink.glint} opacity={dash.opacity} strokeWidth={ringCssPx} />
+          )) : null}
           {/* The bright lip on the outer edge. */}
           <Rect x={lip.x} y={lip.y} width={lip.width} height={lip.height} rx={lip.rx} ry={lip.rx} fill="none" stroke={ink.glint} strokeOpacity={ink.glintOpacity * 0.6} strokeWidth={0.5} />
         </Svg>

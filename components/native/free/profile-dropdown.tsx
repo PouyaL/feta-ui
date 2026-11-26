@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState, type ComponentRef, type ReactNode } from 'react'
 import { Pressable, StyleSheet, Text, Vibration, View, type LayoutChangeEvent, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { Easing, FadeInLeft, FadeInRight, FadeInUp, FadeOutLeft, FadeOutRight, cancelAnimation, runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
-import { pressedState, radius, space, useColors, type Colors } from '../kit'
+import { pressedState, radius, softElevation, space, useColors, type Colors } from '../kit'
 import { Avatar, type AvatarBadgeType } from './avatar'
 import { type, useStill, useThemed } from './card'
 import { Menu, MenuTurn, useMenuStore, type MenuEntry } from './dropdown-menu'
 import { IconButton } from './icon-button'
-import { EASE_OUT, Floating, Mark, soft, Tap, useCompact, type FloatingMotion } from './popover'
+import { SELF } from './button'
+import { EASE_OUT, Floating, Mark, Tap, useCompact, type FloatingMotion } from './popover'
 import { ToggleGroup } from './toggle-group'
 
 const HOLD_MS = 1200
@@ -219,7 +220,7 @@ export function ProfileDropdown({ account, accounts = [], plan = 'Pro', status, 
             ) : (
               <Animated.View key="switch" {...(still ? {} : { entering: SWITCH_IN, exiting: SWITCH_OUT })} style={styles.panel}>
                 <View style={styles.head}>
-                  <IconButton variant="ghost" size="sm" label="Back" icon={<Mark name="chevron-left" />} animated={animated} onPress={() => setPanel('main')} />
+                  <IconButton style={SELF.center} variant="ghost" size="sm" label="Back" icon={<Mark name="chevron-left" />} animated={animated} onPress={() => setPanel('main')} />
                   <Text style={styles.headTitle}>Switch account</Text>
                 </View>
                 <View accessibilityLabel="Accounts" style={styles.accounts}>
@@ -252,7 +253,7 @@ const createStyles = (c: Colors) => StyleSheet.create({
   who: { flex: 1, minWidth: 0 },
   name: { ...type(14, c.textPrimary, '500'), lineHeight: 20 },
   email: { ...type(12, c.textSecondary), lineHeight: 16 },
-  pop: { ...soft(c), backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.tray, borderWidth: 1, overflow: 'hidden', padding: space[1.5] },
+  pop: { boxShadow: softElevation(c), backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.tray, borderWidth: 1, overflow: 'hidden', padding: space[1.5] },
   panel: { gap: space[1.5] },
   block: { backgroundColor: c.ink4, borderRadius: radius['2xl'], gap: space[2], padding: space[3] },
   card: { alignItems: 'center', flexDirection: 'row', gap: space[3] },

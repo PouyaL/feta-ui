@@ -4,6 +4,7 @@ import Animated, { Easing, FadeInDown } from 'react-native-reanimated'
 import { pressedState, radius, space, useColors, type Colors } from '../kit'
 import { type, useStill, useThemed, type RenderIcon } from './card'
 import { IconButton } from './icon-button'
+import { SELF } from './button'
 import { iconFor } from './label'
 
 const WEEK = 7
@@ -65,8 +66,8 @@ export function CalendarSchedule({ month: firstMonth, events, today, defaultSele
               <Text accessibilityLiveRegion="polite" style={styles.title}>{title}</Text>
               <Text style={styles.caption}>{monthCount} {monthCount === 1 ? 'event' : 'events'} this month</Text>
             </View>
-            <IconButton variant="ghost" size="sm" animated={animated} label="Previous month" icon={iconFor(renderIcon, 'chevron-left', 16, colors.textPrimary)} onPress={() => setMonth(new Date(month.getFullYear(), month.getMonth() - 1, 1))} />
-            <IconButton variant="ghost" size="sm" animated={animated} label="Next month" icon={iconFor(renderIcon, 'chevron-right', 16, colors.textPrimary)} onPress={() => setMonth(new Date(month.getFullYear(), month.getMonth() + 1, 1))} />
+            <IconButton style={SELF.center} variant="ghost" size="sm" animated={animated} label="Previous month" icon={iconFor(renderIcon, 'chevron-left', 16, colors.textPrimary)} onPress={() => setMonth(new Date(month.getFullYear(), month.getMonth() - 1, 1))} />
+            <IconButton style={SELF.center} variant="ghost" size="sm" animated={animated} label="Next month" icon={iconFor(renderIcon, 'chevron-right', 16, colors.textPrimary)} onPress={() => setMonth(new Date(month.getFullYear(), month.getMonth() + 1, 1))} />
           </View>
           <View style={styles.week}>
             {weekdays.map((weekday, i) => <Text key={i} style={styles.weekday}>{weekday}</Text>)}
@@ -106,7 +107,7 @@ export function CalendarSchedule({ month: firstMonth, events, today, defaultSele
                 <Text style={styles.agendaDay}>{long.format(selected)}</Text>
                 {today && key(today) === key(selected) ? <Text style={styles.today}>Today</Text> : null}
               </View>
-              {onAdd ? <IconButton variant="outline" size="sm" animated={animated} label="Add event" icon={iconFor(renderIcon, 'plus', 16, colors.textPrimary)} onPress={() => onAdd(selected)} /> : null}
+              {onAdd ? <IconButton style={SELF.center} variant="outline" size="sm" animated={animated} label="Add event" icon={iconFor(renderIcon, 'plus', 16, colors.textPrimary)} onPress={() => onAdd(selected)} /> : null}
             </View>
             {agenda.length ? (
               <View style={styles.rows}>

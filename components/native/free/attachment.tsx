@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useId, useRef, useState, type ReactNode } from 'react'
 import { ScrollView, StyleSheet, Text, View, type DimensionValue, type LayoutChangeEvent, type NativeScrollEvent, type NativeSyntheticEvent, type ScrollViewInstance, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { Easing, FadeIn, FadeOut, FadeOutUp, LinearTransition, ZoomIn, ZoomOut, cancelAnimation, useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from 'react-native-reanimated'
 import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg'
-import { radius, space, useColors, type Colors, hscroll } from '../kit'
-import { Button } from './button'
+import { accent, radius, space, useColors, type Colors, hscroll } from '../kit'
+import { Button, withInk, SELF } from './button'
 import { type, useStill, useThemed, type RenderIcon } from './card'
 import { IconButton } from './icon-button'
 import { iconFor } from './label'
@@ -24,8 +24,16 @@ const rowMove = LinearTransition.springify().stiffness(ROW_SPRING.stiffness).dam
 export type AttachmentType = 'file' | 'image' | 'pdf' | 'archive' | 'sheet' | 'code' | 'video' | 'audio'
 export type AttachmentStatus = 'ready' | 'uploading' | 'processing' | 'error' | 'uploaded'
 
-/** Shown on the tile when the app passes no `icon`. */
+/** The tile glyph per type, as on the web, drawn through `renderIcon`. */
+const GLYPH: Record<AttachmentType, string> = { file: 'file-text', image: 'image', pdf: 'file-text', archive: 'archive', sheet: 'table', code: 'file-text', video: 'file-video', audio: 'mic' }
+/** Shown on the tile when the app passes neither `icon` nor `renderIcon`. */
 const TAG: Record<AttachmentType, string> = { file: 'FILE', image: 'IMG', pdf: 'PDF', archive: 'ZIP', sheet: 'XLS', code: 'CODE', video: 'VID', audio: 'AUD' }
+/** The web tile's gradient per type (top to bottom). File is the inverse ink and PDF solid danger. */
+const TILE_GRADIENT: Partial<Record<AttachmentType, { from: string; to: string }>> = {
+  archive: accent.amber, sheet: accent.emerald, code: accent.violet, audio: accent.orange, image: accent.sky, video: accent.sky,
+}
+/** The web's scrim over a tile while it uploads. */
+const SCRIM = 'rgba(0,0,0,0.45)'
 
 export type AttachmentProps = {
   name: string
@@ -72,6 +80,11 @@ export function Attachment({ name, meta, type: kind = 'file', icon, status = 're
   const shake = useAnimatedStyle(() => ({ transform: [{ translateX: x.value }] }))
   const hasActions = Boolean(onRemove || (status === 'error' && onRetry) || (status === 'uploaded' && onMore))
   const width: DimensionValue = `${Math.min(100, Math.max(0, progress))}%`
+  const gradient = TILE_GRADIENT[kind]
+  const gradientId = `tile${useId().replace(/[^a-zA-Z0-9]/g, '')}`
+  const glyphSize = vertical ? 28 : size === 'xsmall' ? 14 : 20
+  // The tile keeps overflow visible for its badge, so the gradient draws its own corners.
+  const tileRadius = vertical ? radius.xl : size === 'small' ? radius.field : size === 'xsmall' ? radius.lg : radius.xl
 
   useEffect(() => {
     if (status !== 'error' || still) return
@@ -81,12 +94,23 @@ export function Attachment({ name, meta, type: kind = 'file', icon, status = 're
 
   return (
     <Animated.View style={[styles.card, size === 'small' && styles.cardSmall, size === 'xsmall' && styles.cardTiny, vertical && styles.cardUp, status === 'error' && styles.cardError, shake, style]}>
-      <View style={[styles.tile, kind === 'pdf' && styles.tilePdf, size === 'small' && styles.tileSmall, size === 'xsmall' && styles.tileTiny, vertical && styles.tileUp]}>
-        {icon ?? <Text style={[styles.tag, size === 'xsmall' && styles.tagTiny]}>{TAG[kind]}</Text>}
+      <View style={[styles.tile, kind === 'pdf' && styles.tilePdf, gradient && styles.tileClear, size === 'small' && styles.tileSmall, size === 'xsmall' && styles.tileTiny, vertical && styles.tileUp]}>
+        {gradient ? (
+          <Svg aria-hidden pointerEvents="none" style={StyleSheet.absoluteFill} width="100%" height="100%">
+            <Defs>
+              <LinearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+                <Stop offset="0" stopColor={gradient.from} />
+                <Stop offset="1" stopColor={gradient.to} />
+              </LinearGradient>
+            </Defs>
+            <Rect width="100%" height="100%" rx={tileRadius} fill={`url(#${gradientId})`} />
+          </Svg>
+        ) : null}
+        {icon ?? (renderIcon ? withInk(renderIcon(GLYPH[kind], glyphSize), kind === 'file' ? colors.textInverse : colors.onSolid) : <Text style={[styles.tag, size === 'xsmall' && styles.tagTiny]}>{TAG[kind]}</Text>)}
         {status === 'uploading' ? <View style={styles.veil}><Spinner size={16} label={null} color={colors.textInverse} animated={animated} /></View> : null}
         {status === 'uploaded' || status === 'error' ? (
           <Animated.View key={status} {...(still ? {} : { entering: badgeIn })} style={[styles.badge, status === 'error' && styles.badgeError]}>
-            {iconFor(renderIcon, status === 'uploaded' ? 'tick-02' : 'alert-circle', 11, colors.textInverse)}
+            {withInk(iconFor(renderIcon, status === 'uploaded' ? 'tick-02' : 'alert-circle', 10, colors.onSolid), colors.onSolid)}
           </Animated.View>
         ) : null}
       </View>
@@ -106,9 +130,9 @@ export function Attachment({ name, meta, type: kind = 'file', icon, status = 're
       </View>
       {hasActions ? (
         <View style={[styles.actions, vertical && styles.actionsUp]}>
-          {status === 'error' && onRetry ? <IconButton variant="ghost" size="sm" animated={animated} label={`Retry ${name}`} icon={iconFor(renderIcon, 'undo', 16, colors.textSecondary)} onPress={onRetry} /> : null}
-          {status === 'uploaded' && onMore ? <IconButton variant="ghost" size="sm" animated={animated} label={`More for ${name}`} icon={iconFor(renderIcon, 'more-horizontal', 16, colors.textSecondary)} onPress={onMore} /> : null}
-          {onRemove ? <IconButton variant="ghost" size="sm" animated={animated} label={`Remove ${name}`} icon={iconFor(renderIcon, 'x', 16, colors.textSecondary)} onPress={onRemove} /> : null}
+          {status === 'error' && onRetry ? <IconButton style={SELF.center} variant="ghost" size="sm" animated={animated} label={`Retry ${name}`} icon={iconFor(renderIcon, 'undo', 16, colors.textSecondary)} onPress={onRetry} /> : null}
+          {status === 'uploaded' && onMore ? <IconButton style={SELF.center} variant="ghost" size="sm" animated={animated} label={`More for ${name}`} icon={iconFor(renderIcon, 'more-horizontal', 16, colors.textSecondary)} onPress={onMore} /> : null}
+          {onRemove ? <IconButton style={SELF.center} variant="ghost" size="sm" animated={animated} label={`Remove ${name}`} icon={iconFor(renderIcon, 'x', 16, colors.textSecondary)} onPress={onRemove} /> : null}
         </View>
       ) : null}
     </Animated.View>
@@ -173,7 +197,7 @@ export function AttachmentGroup({ items, label = 'Attachments', renderIcon, anim
             </Defs>
             <Rect width={GROUP_FADE} height="100%" fill="url(#attachment-fade)" />
           </Svg>
-          <IconButton variant="outline" size="sm" animated={animated} label="More attachments" icon={iconFor(renderIcon, 'arrow-right', 16, colors.textPrimary)} onPress={() => row.current?.scrollTo({ x: offset + PAGE, animated: !still })} />
+          <IconButton style={SELF.end} variant="outline" size="sm" animated={animated} label="More attachments" icon={iconFor(renderIcon, 'arrow-right', 16, colors.textPrimary)} onPress={() => row.current?.scrollTo({ x: offset + PAGE, animated: !still })} />
         </Animated.View>
       ) : null}
     </View>
@@ -205,7 +229,7 @@ export function FileUpload({ items = [], onBrowse, hint = 'PNG, PDF or ZIP, up t
           <Text style={styles.name}>Add files</Text>
           <Text style={styles.meta}>{hint}</Text>
         </View>
-        <Button size="sm" variant="secondary" animated={animated} {...(onBrowse ? { onPress: onBrowse } : { disabled: true })}>Browse</Button>
+        <Button size="sm" variant="secondary" animated={animated} style={items.length === 0 ? styles.centered : undefined} {...(onBrowse ? { onPress: onBrowse } : { disabled: true })}>Browse</Button>
       </View>
       <View>
         {items.map(({ id, ...item }) => (
@@ -220,20 +244,21 @@ export function FileUpload({ items = [], onBrowse, hint = 'PNG, PDF or ZIP, up t
 }
 
 const createStyles = (c: Colors) => StyleSheet.create({
-  card: { alignItems: 'center', backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.card, borderWidth: 1, flexDirection: 'row', gap: space[3], minHeight: 64, padding: space[3], width: '100%' },
+  card: { alignItems: 'center', backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius['2xl'], borderWidth: 1, flexDirection: 'row', gap: space[3], minHeight: 64, padding: space[3], width: '100%' },
   cardSmall: { borderRadius: radius.control, minHeight: 52, padding: space[2] },
   cardTiny: { alignSelf: 'flex-start', borderRadius: radius.full, minHeight: 36, paddingHorizontal: space[1.5], paddingVertical: space[1], width: undefined },
   cardUp: { alignItems: 'stretch', flexDirection: 'column', gap: space[2], paddingBottom: space[2.5], paddingHorizontal: space[1], paddingTop: space[1], width: 168 },
   cardError: { borderColor: c.danger, borderWidth: 1.5 },
-  tile: { alignItems: 'center', backgroundColor: c.inverse, borderRadius: radius.xl, height: 40, justifyContent: 'center', width: 40 },
+  tile: { alignItems: 'center', backgroundColor: c.inverse, borderRadius: radius.xl, height: 40, justifyContent: 'center', overflow: 'visible', width: 40 },
   tilePdf: { backgroundColor: c.danger },
+  tileClear: { backgroundColor: 'transparent' },
   tileSmall: { borderRadius: radius.field, height: 32, width: 32 },
-  tileTiny: { borderRadius: radius.full, height: 24, width: 24 },
+  tileTiny: { borderRadius: radius.lg, height: 24, width: 24 },
   tileUp: { height: 112, width: 160 },
   tag: type(10, c.textInverse, '500', true),
   tagTiny: { fontSize: 8 },
-  veil: { ...StyleSheet.absoluteFill, alignItems: 'center', backgroundColor: c.ink10, borderRadius: radius.xl, justifyContent: 'center' },
-  badge: { alignItems: 'center', backgroundColor: c.success, borderColor: c.surface, borderRadius: radius.full, borderWidth: 2, bottom: -4, height: 18, justifyContent: 'center', position: 'absolute', right: -4, width: 18 },
+  veil: { ...StyleSheet.absoluteFill, alignItems: 'center', backgroundColor: SCRIM, borderRadius: radius.xl, justifyContent: 'center' },
+  badge: { alignItems: 'center', backgroundColor: c.success, borderColor: c.surface, borderRadius: radius.full, borderWidth: 2, height: 20, justifyContent: 'center', position: 'absolute', right: -6, top: -6, width: 20 },
   badgeError: { backgroundColor: c.danger },
   text: { flex: 1, minWidth: 0 },
   textUp: { paddingHorizontal: space[1.5] },
@@ -249,6 +274,8 @@ const createStyles = (c: Colors) => StyleSheet.create({
   zoneCompact: { flexDirection: 'row', paddingHorizontal: space[3], paddingVertical: space[2.5] },
   zoneText: { flex: 1, minWidth: 0 },
   zoneTextCentered: { alignItems: 'center', flex: 0 },
+  // Button hugs the start of its row by default; the empty zone centres it, as on the web.
+  centered: { alignSelf: 'center' },
   row: { overflow: 'hidden', paddingTop: space[1] },
   group: { maxWidth: 480, width: '100%' },
   groupRow: { gap: space[2], padding: space[1] },

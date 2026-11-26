@@ -3,9 +3,10 @@ import { Pressable, StyleSheet, Text, View, type AccessibilityActionEvent, type 
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import Animated, { Easing, FadeInDown, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated'
 import { radius, space, useColors, type Colors } from '../kit'
-import { Button } from './button'
+import { Button, SELF } from './button'
 import { type, useStill, useThemed, type RenderIcon } from './card'
 import { LabelSwap, iconFor } from './label'
+import { ToggleGroup } from './toggle-group'
 
 const SNAP = 0.25
 const HOUR = 40
@@ -117,16 +118,7 @@ export function SlotPicker({ title, subtitle, avatar, days, lengths = [30, 60, 9
           {subtitle ? <Text style={styles.caption}>{subtitle}</Text> : null}
         </View>
       </View>
-      <View accessibilityLabel="Length" accessibilityRole="radiogroup" style={styles.lengths}>
-        {lengths.map((length) => {
-          const on = length === minutes
-          return (
-            <Pressable key={length} accessibilityLabel={lengthLabel(length)} accessibilityRole="radio" aria-checked={on} hitSlop={6} style={[styles.length, on && styles.lengthOn]} onPress={() => { setMinutes(length); setStart(null); setBooked(false) }}>
-              <Text style={[styles.lengthText, on && styles.textOn]}>{lengthLabel(length)}</Text>
-            </Pressable>
-          )
-        })}
-      </View>
+      <ToggleGroup type="single" label="Length" animated={animated} items={lengths.map((length) => ({ value: String(length), label: lengthLabel(length) }))} value={String(minutes)} onValueChange={(next) => { setMinutes(Number(next)); setStart(null); setBooked(false) }} />
       <View accessibilityLabel="Day" accessibilityRole="radiogroup" style={styles.days}>
         {days.map((one) => {
           const on = one.key === dayKey
@@ -140,7 +132,7 @@ export function SlotPicker({ title, subtitle, avatar, days, lengths = [30, 60, 9
         })}
       </View>
       <View style={styles.timeline}>
-        <View style={styles.hours}>
+        <View style={[styles.hours, { height: total * HOUR }]}>
           {Array.from({ length: total + 1 }, (_, i) => <Text key={i} style={styles.hour}>{clock(from + i)}</Text>)}
         </View>
         <GestureDetector gesture={place}>
@@ -174,7 +166,7 @@ export function SlotPicker({ title, subtitle, avatar, days, lengths = [30, 60, 9
         </GestureDetector>
       </View>
       <View style={styles.foot}>
-        <Text style={styles.caption}>{zone}</Text>
+        <Text style={styles.zone}>{zone}</Text>
         <View style={styles.footRow}>
           <View style={styles.summary}>
             <View accessibilityLiveRegion="polite"><LabelSwap swapKey={summary} still={still} style={styles.when}>{summary}</LabelSwap></View>
@@ -185,7 +177,7 @@ export function SlotPicker({ title, subtitle, avatar, days, lengths = [30, 60, 9
               </Animated.View>
             ) : null}
           </View>
-          <Button size="sm" animated={animated} disabled={start === null || booked} onPress={() => { if (start !== null) { setBooked(true); onConfirm?.(dayKey, start, minutes) } }}>{booked ? 'Booked' : 'Confirm'}</Button>
+          <Button size="sm" style={SELF.end} animated={animated} disabled={start === null || booked} onPress={() => { if (start !== null) { setBooked(true); onConfirm?.(dayKey, start, minutes) } }}>{booked ? 'Booked' : 'Confirm'}</Button>
         </View>
       </View>
     </View>
@@ -193,36 +185,38 @@ export function SlotPicker({ title, subtitle, avatar, days, lengths = [30, 60, 9
 }
 
 const createStyles = (c: Colors) => StyleSheet.create({
-  card: { backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.frame, borderWidth: 1, gap: space[3], padding: space[4], width: '100%' },
+  card: {
+    backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius['2xl'], borderWidth: 1, gap: space[3], padding: space[4], width: '100%',
+    shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.06, shadowRadius: 10,
+  },
   head: { alignItems: 'center', flexDirection: 'row', gap: space[2] },
   heading: { flex: 1 },
-  title: type(16, c.textPrimary, '500'),
-  caption: type(12, c.textSecondary),
-  lengths: { backgroundColor: c.ink4, borderRadius: radius.full, flexDirection: 'row', gap: space[0.5], padding: space[1] },
-  length: { alignItems: 'center', borderRadius: radius.full, flex: 1, height: 32, justifyContent: 'center' },
-  lengthOn: { backgroundColor: c.inverse },
-  lengthText: type(14, c.textPrimary, '500'),
+  title: { ...type(16, c.textPrimary, '500'), lineHeight: 22 },
+  caption: { ...type(12, c.textSecondary), lineHeight: 16 },
+  // Length is the web's Toggle Group: a soft track that hugs its options, the chosen one a raised white pill.
   textOn: { color: c.textInverse },
   days: { flexDirection: 'row', gap: space[1] },
   day: { alignItems: 'center', backgroundColor: c.ink4, borderRadius: radius.xl, flex: 1, gap: space[0.5], minHeight: 44, paddingHorizontal: space[0.5], paddingVertical: space[1.5] },
   dayOn: { backgroundColor: c.inverse },
   dayFull: { opacity: 0.45 },
-  dayText: type(14, c.textPrimary, '500'),
-  dayFree: { ...type(12, c.textPrimary, '500'), opacity: 0.65 },
+  dayText: { ...type(14, c.textPrimary, '500'), lineHeight: 18 },
+  dayFree: { ...type(12, c.textPrimary, '500'), lineHeight: 16, opacity: 0.65, textAlign: 'center' },
   timeline: { flexDirection: 'row', gap: space[2] },
-  hours: { width: 40 },
-  hour: { ...type(12, c.textTertiary, '400', true), height: HOUR, transform: [{ translateY: -6 }] },
-  line: { backgroundColor: c.ink4, borderRadius: radius.field, flex: 1, overflow: 'hidden' },
+  hours: { overflow: 'visible', width: 40 },
+  hour: { ...type(12, c.textTertiary, '400', true), height: HOUR, lineHeight: 16, transform: [{ translateY: -6 }] },
+  // Only hour rules on the line, so busy blocks read as their own grey.
+  line: { borderRadius: radius.field, flex: 1 },
   rule: { borderTopColor: c.ink5, borderTopWidth: 1, height: HOUR },
   busy: { backgroundColor: c.ink5, borderRadius: radius.field, left: 0, paddingHorizontal: space[2.5], paddingVertical: space[1.5], position: 'absolute', right: 0 },
-  busyText: type(12, c.textTertiary, '500'),
+  busyText: { ...type(12, c.textTertiary, '500'), lineHeight: 16 },
   block: { backgroundColor: c.inverse, borderRadius: radius.field, flexDirection: 'row', justifyContent: 'space-between', left: 0, paddingHorizontal: space[2.5], paddingVertical: space[1.5], position: 'absolute', right: 0 },
   blockText: type(14, c.textInverse, '500'),
-  handle: { alignSelf: 'center', backgroundColor: c.textInverse, borderRadius: radius.xs, bottom: space[1], height: 3, opacity: 0.5, position: 'absolute', width: 20 },
+  handle: { alignSelf: 'center', backgroundColor: c.textInverse, borderRadius: radius.xs, bottom: space[1], height: 3, left: '50%', marginLeft: -10, opacity: 0.5, position: 'absolute', width: 20 },
   foot: { gap: space[1] },
+  zone: { ...type(12, c.textTertiary), lineHeight: 16 },
   footRow: { alignItems: 'flex-end', flexDirection: 'row', gap: space[2] },
   summary: { flex: 1, minWidth: 0 },
-  when: type(14, c.textPrimary, '500'),
+  when: { ...type(16, c.textPrimary, '500'), lineHeight: 20 },
   done: { alignItems: 'center', flexDirection: 'row', gap: space[1] },
   noteBooked: { color: c.success },
 })

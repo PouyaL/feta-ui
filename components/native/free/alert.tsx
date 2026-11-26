@@ -161,6 +161,7 @@ export function Alert({ variant = 'card', tone = 'neutral', title, description, 
 
   if (!open) return null
   const titleNode = typeof title === 'string' ? <Text style={styles.title}>{title}</Text> : title
+  const dismissButton = <IconButton variant="ghost" size="sm" icon={<ToneGlyph tone="danger" size={16} color={colors.textSecondary} />} label="Dismiss" onPress={dismiss} animated={animated} />
   const descriptionNode = typeof description === 'string' ? <Text style={styles.description}>{description}</Text> : description
 
   return (
@@ -191,10 +192,14 @@ export function Alert({ variant = 'card', tone = 'neutral', title, description, 
             </>
           )}
         </View>
+        {/* On a phone the card's action drops to its own row under the text, lined up with it (web mobile layout). */}
+        {dismissible && card ? <View style={styles.cardDismiss}>{dismissButton}</View> : null}
         {action && variant !== 'inline' ? (
-          <Button variant="secondary" size="sm" status={action.loading ? 'loading' : 'idle'} disabled={action.disabled ?? false} animated={animated} {...(action.onPress ? { onPress: action.onPress } : {})}>{action.label}</Button>
+          <View style={card ? styles.cardAction : undefined}>
+            <Button variant="secondary" size="sm" status={action.loading ? 'loading' : 'idle'} disabled={action.disabled ?? false} animated={animated} {...(action.onPress ? { onPress: action.onPress } : {})}>{action.label}</Button>
+          </View>
         ) : null}
-        {dismissible ? <IconButton variant="ghost" size="sm" icon={<ToneGlyph tone="danger" size={16} color={colors.textSecondary} />} label="Dismiss" onPress={dismiss} animated={animated} /> : null}
+        {dismissible && !card ? dismissButton : null}
       </Animated.View>
     </GestureDetector>
   )
@@ -210,6 +215,8 @@ const makeStyles = (c: Colors) => StyleSheet.create({
   md: { width: BADGE_SIZE.md, height: BADGE_SIZE.md },
   lg: { width: BADGE_SIZE.lg, height: BADGE_SIZE.lg },
   icon: { marginTop: space[0.5] },
+  cardDismiss: { marginRight: -space[1], marginTop: -space[2] },
+  cardAction: { alignItems: 'flex-start', paddingLeft: space[10], width: '100%' },
   text: { flex: 1, minWidth: 0, gap: space[0.5] },
   title: type(14, c.textPrimary, '500'),
   description: { ...type(13, c.textSecondary), lineHeight: 20 },

@@ -14,7 +14,8 @@ export type ColorOption = { value: string; label: string; color: string; disable
 
 /** The default swatches. Graphite follows the color scheme, so this is a function of the colors. */
 export const defaultColors = (colors: Colors): ColorOption[] => [
-  { value: 'graphite', label: 'Graphite', color: colors.textPrimary },
+  // The web's --feta-text-strong: zinc 700 in Light, zinc 200 in Dark.
+  { value: 'graphite', label: 'Graphite', color: colors.canvas === '#ffffff' ? '#3f3f46' : '#e4e4e7' },
   { value: 'sky', label: 'Sky', color: accent.sky.to },
   { value: 'emerald', label: 'Emerald', color: accent.emerald.to },
   { value: 'violet', label: 'Violet', color: accent.violet.to },
@@ -102,11 +103,11 @@ export function ColorSelector({ legend = 'Color', options, value, defaultValue, 
 }
 
 const createStyles = (c: Colors) => StyleSheet.create({
-  tray: { alignSelf: 'flex-start', backgroundColor: c.ink4, borderRadius: radius.tray, maxWidth: '100%', padding: space[1] },
+  tray: { alignSelf: 'stretch', backgroundColor: c.ink4, borderRadius: radius.tray, maxWidth: '100%', padding: space[1] },
   header: { alignItems: 'center', flexDirection: 'row', gap: space[2], justifyContent: 'space-between', paddingBottom: space[2.5], paddingHorizontal: space[3], paddingTop: space[2] },
   legend: type(16, c.textPrimary, '500'),
   meta: type(12, c.textSecondary),
-  body: { backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.card, borderWidth: 1, flexDirection: 'row', flexWrap: 'wrap', gap: space[1], padding: space[2.5] },
+  body: { backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.card, borderWidth: 1, flexDirection: 'row', flexWrap: 'wrap', gap: space[1], padding: space[2.5], shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 6, shadowOffset: { width: 0, height: 2 } },
   swatch: { alignItems: 'center', height: SWATCH, justifyContent: 'center', width: SWATCH },
   well: { height: 36, width: 36 },
   wellOff: { opacity: 0.4 },

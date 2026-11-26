@@ -18,7 +18,7 @@ export type NumberStepperProps = {
   style?: StyleProp<ViewStyle>
 }
 
-/** Minus, value and plus in a 10% ink pill. Minus turns off at `min`, plus at `max`. */
+/** Minus, value and plus inside a 1 px 10% ink ring, 118 by 42 on Mobile. Minus turns off at `min`, plus at `max`. */
 export function NumberStepper({ value, defaultValue = 1, onValueChange, min = 0, max = 999, step = 1, label, disabled = false, animated = true, renderIcon, style }: NumberStepperProps) {
   const styles = useStyles()
   const c = useColors()
@@ -32,9 +32,9 @@ export function NumberStepper({ value, defaultValue = 1, onValueChange, min = 0,
   }
   return (
     <View accessibilityLabel={label} style={[styles.stepper, disabled && styles.off, style]}>
-      <IconPress label={`Fewer ${label.toLowerCase()}`} disabled={disabled || current <= min} onPress={() => change(current - step)} animated={animated}><Icon name="minus" size={16} color={c.textPrimary} render={renderIcon} /></IconPress>
+      <IconPress label={`Fewer ${label.toLowerCase()}`} disabled={disabled || current <= min} onPress={() => change(current - step)} animated={animated}><Icon name="minus" size={16} color={c.textSecondary} render={renderIcon} /></IconPress>
       <View accessibilityLiveRegion="polite" style={styles.value}><Rolling value={String(current)} still={!animated || reduce} style={styles.number} /></View>
-      <IconPress label={`More ${label.toLowerCase()}`} disabled={disabled || current >= max} onPress={() => change(current + step)} animated={animated}><Icon name="plus" size={16} color={c.textPrimary} render={renderIcon} /></IconPress>
+      <IconPress label={`More ${label.toLowerCase()}`} disabled={disabled || current >= max} onPress={() => change(current + step)} animated={animated}><Icon name="plus" size={16} color={c.textSecondary} render={renderIcon} /></IconPress>
     </View>
   )
 }
@@ -51,7 +51,7 @@ function Icon({ name, size, color, render }: { name: string; size: number; color
   return glyph ? <Text accessible={false} style={[styles.glyph, { color, fontSize: size, lineHeight: size + 2 }]}>{glyph}</Text> : null
 }
 
-/** A 44 px icon target. Presses to 0.98. */
+/** A 36 px ghost icon button that reaches 44 px through its hit slop. Presses to 0.98. */
 function IconPress({ label, disabled = false, onPress, animated, children }: { label: string; disabled?: boolean; onPress?: (() => void) | undefined; animated: boolean; children: ReactNode }) {
   const styles = useStyles()
   const reduce = useReduceMotion()
@@ -61,7 +61,7 @@ function IconPress({ label, disabled = false, onPress, animated, children }: { l
     if (animated && !reduce) scale.value = withSpring(to, press.spring)
   }
   return (
-    <AnimatedPressable accessibilityRole="button" accessibilityLabel={label} aria-disabled={disabled} disabled={disabled} onPress={onPress} onPressIn={() => springTo(press.scale)} onPressOut={() => springTo(1)} style={[styles.iconPress, disabled && styles.iconPressOff, pressed]}>
+    <AnimatedPressable accessibilityRole="button" accessibilityLabel={label} aria-disabled={disabled} disabled={disabled} hitSlop={4} onPress={onPress} onPressIn={() => springTo(press.scale)} onPressOut={() => springTo(1)} style={[styles.iconPress, disabled && styles.iconPressOff, pressed]}>
       {children}
     </AnimatedPressable>
   )
@@ -89,12 +89,12 @@ const useStyles = () => {
 const text = (size: number, lineHeight: number, weight: TextStyle['fontWeight'] = '400'): TextStyle => ({ fontFamily: font.sans, fontSize: size, lineHeight, fontWeight: weight, letterSpacing: font.tracking(size) })
 
 const createStyles = (c: Colors) => StyleSheet.create({
-  stepper: { flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-start', borderRadius: radius.full, backgroundColor: c.ink10 },
+  stepper: { flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-start', gap: 4, padding: 2, borderRadius: radius.full, borderWidth: 1, borderColor: c.ink10 },
   off: { opacity: 0.5 },
-  value: { alignItems: 'center', minWidth: 32 },
+  value: { alignItems: 'center', width: 32 },
   number: { ...text(14, 20, '500'), fontVariant: ['tabular-nums'], color: c.textPrimary },
   glyph: { fontFamily: font.sans, textAlign: 'center' },
-  iconPress: { alignItems: 'center', justifyContent: 'center', width: 44, height: 44, borderRadius: radius.full },
+  iconPress: { alignItems: 'center', justifyContent: 'center', width: 36, height: 36, borderRadius: radius.full },
   iconPressOff: { opacity: 0.5 },
   rolling: { flexDirection: 'row', overflow: 'hidden' },
 })

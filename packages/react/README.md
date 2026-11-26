@@ -233,6 +233,7 @@ With Pro, send your key as the `X-API-Key` header and the same tools return Pro 
 - **Next.js App Router and Vite.** Also other bundlers that resolve package `exports`. Icons and components are client components, so they render on the server and animate after hydration.
 - **Pages Router, Remix and Astro.** Server rendering may need the package transpiled, because components import their own CSS. In Next.js, set `transpilePackages: ['@fetaui/react']`.
 - **React Native.** Use [`@fetaui/react-native`](https://www.npmjs.com/package/@fetaui/react-native): the same icons and props, drawn with react-native-svg and animated with Reanimated 4. This package is for the web.
+- **React Native and SwiftUI components.** Each component page on fetaui.dev has a React Native file and a SwiftUI file to copy, built to match the web mobile view. Overlays that dock to a screen edge need react-native-safe-area-context with `SafeAreaProvider` at your app root. There is no Swift package: each snippet is one file and draws the same fetaUI icons. The [installation guide](https://fetaui.dev/docs/installation#react-native-components) has the setup.
 - **Module formats.** The UI paths (`@fetaui/react/ui/*`) are ES modules only. Icons and `@fetaui/react/lib` also ship CommonJS.
 - **Bundle size.** A single icon is typically 0.4 to 1.2 KB gzipped and at most about 2 KB (about 4 KB for Outlined), excluding Motion and the shared runtime, which loads once. Each component adds only its own code and CSS.
 

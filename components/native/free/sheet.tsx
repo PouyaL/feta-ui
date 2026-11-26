@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react'
 import { ScrollView, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { FadeInDown } from 'react-native-reanimated'
-import { font, radius, space, type Colors } from '../kit'
+import { font, radius, softElevation, space, type Colors } from '../kit'
 import { type, useThemed } from './card'
 import { Modal, ModalGrabber, useDisclosure, useModal, type DisclosureProps, type DismissReason, type ModalMotion, type ModalPlacement, type ModalPose } from './dialog'
 import { IconButton } from './icon-button'
-import { Copy, EASE_IN, EASE_OUT, Mark, soft, useCompact } from './popover'
+import { Copy, EASE_IN, EASE_OUT, Mark, useCompact } from './popover'
 
 /** The 28% in the spec, as a share of the scrim token. */
 const SCRIM = 0.51
@@ -97,7 +97,7 @@ function Parts({ side, title, description, footer, eyebrow, style, children }: {
 }
 
 const createStyles = (c: Colors) => StyleSheet.create({
-  tray: { ...soft(c), backgroundColor: c.muted, borderRadius: radius.frame, flexGrow: 1, flexShrink: 1, padding: space[1] },
+  tray: { boxShadow: softElevation(c), backgroundColor: c.muted, borderRadius: radius.frame, flexGrow: 1, flexShrink: 1, padding: space[1] },
   header: { alignItems: 'flex-start', flexDirection: 'row', gap: space[2], justifyContent: 'space-between', paddingBottom: space[2.5], paddingLeft: space[3.5], paddingRight: space[2], paddingTop: space[2.5] },
   heading: { flex: 1, minWidth: 0 },
   eyebrow: { color: c.textSecondary, fontFamily: font.mono, fontSize: 11, lineHeight: 14, marginBottom: space[0.5] },

@@ -133,7 +133,8 @@ export function TearButton({ title = 'Redeem ticket', meta = 'Tear the stub to c
 }
 
 const createStyles = (c: Colors) => StyleSheet.create({
-  ticket: { flexDirection: 'row', height: HEIGHT, maxWidth: 304, width: '100%' },
+  // Fills its column like the web ticket does at 390.
+  ticket: { flexDirection: 'row', height: HEIGHT, width: '100%' },
   off: { opacity: 0.4 },
   body: { alignItems: 'center', backgroundColor: c.surface, borderBottomLeftRadius: radius.card, borderColor: c.ink8, borderTopLeftRadius: radius.card, borderWidth: 1, flex: 1, flexDirection: 'row', gap: space[3], minWidth: 0, paddingHorizontal: space[3.5] },
   bodyTorn: { borderRadius: radius.card },

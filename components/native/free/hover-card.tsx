@@ -2,10 +2,10 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { StyleSheet, Text, View, type StyleProp, type TextStyle, type ViewInstance, type ViewStyle } from 'react-native'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import Animated, { FadeInUp, FadeOut, runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
-import { radius, space, useColors, type Colors } from '../kit'
+import { radius, softElevation, space, useColors, type Colors } from '../kit'
 import { type, useStill, useThemed } from './card'
 import { IconButton } from './icon-button'
-import { Copy, EASE_IN, EASE_OUT, Floating, Mark, Nub, openLink, soft, Tap, type FloatingMotion, type Side } from './popover'
+import { Copy, EASE_IN, EASE_OUT, Floating, Mark, Nub, openLink, Tap, type FloatingMotion, type Side } from './popover'
 import { Skeleton } from './skeleton'
 
 const OFFSET = 12
@@ -135,7 +135,7 @@ const createStyles = (c: Colors) => StyleSheet.create({
   anchor: { alignSelf: 'flex-start' },
   trigger: { justifyContent: 'center', minHeight: 44 },
   link: { ...type(14, c.textPrimary, '500'), lineHeight: 20, textDecorationLine: 'underline' },
-  card: { ...soft(c), backgroundColor: c.muted, borderRadius: radius.tray, padding: space[1] },
+  card: { boxShadow: softElevation(c), backgroundColor: c.muted, borderRadius: radius.tray, padding: space[1] },
   body: { backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.card, borderWidth: 1, overflow: 'hidden', padding: space[4] },
   content: { gap: space[3] },
   close: { position: 'absolute', right: 0, top: 0, zIndex: 1 },

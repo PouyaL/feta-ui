@@ -1,11 +1,11 @@
 import { createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode, type RefObject } from 'react'
 import { ScrollView, StyleSheet, Text, View, type ViewInstance, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { FadeInUp, FadeOut, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated'
-import { currentState, pressedState, radius, space, useColors, type Colors } from '../kit'
+import { currentState, pressedState, radius, softElevation, space, useColors, type Colors } from '../kit'
 import { withInk } from './button'
 import { type, useStill, useThemed } from './card'
 import { MenuTurn } from './dropdown-menu'
-import { EASE_OUT, openLink, soft, Tap } from './popover'
+import { EASE_OUT, openLink, Tap } from './popover'
 import { Tooltip } from './tooltip'
 
 const COLLAPSED_WIDTH = 64
@@ -14,6 +14,8 @@ const COLLAPSE_MS = 260
 const FADE_MS = 120
 const SLIDE = { stiffness: 420, damping: 34 }
 const WIDTH = { rail: 264, drawer: 320 }
+/** Columns up to this wide are phones: the open bar fills them. */
+const PHONE_COLUMN = 480
 const SUBS_IN = FadeInUp.duration(FADE_MS).easing(EASE_OUT).withInitialValues({ transform: [{ translateY: -4 }] })
 const SUBS_OUT = FadeOut.duration(FADE_MS)
 
@@ -154,7 +156,9 @@ export function Sidebar({ sections, header, search, promo, footer, bottomLinks =
   const [open, setOpen] = useState(defaultOpen)
   const current = active ?? held
   const rail = collapsed && mode === 'rail'
-  const full = mode === 'drawer' ? WIDTH.drawer : WIDTH.rail
+  // On a phone the open bar fills its column, as the web's does at 390; wider columns keep the 264 or 320 bar.
+  const [room, setRoom] = useState(0)
+  const full = room > 0 && room <= PHONE_COLUMN ? room : mode === 'drawer' ? WIDTH.drawer : WIDTH.rail
   const width = useSharedValue(rail ? COLLAPSED_WIDTH : full)
 
   useEffect(() => {
@@ -204,8 +208,9 @@ export function Sidebar({ sections, header, search, promo, footer, bottomLinks =
   const inSections = sections.some((section) => holds(section.links, current))
 
   return (
-    <Animated.View accessibilityLabel={label} style={[styles.frame, frame, style]}>
-      <View style={[styles.sidebar, mode === 'drawer' ? styles.sidebarDrawer : null, rail && styles.sidebarRail]}>
+    <View style={[styles.column, style]} onLayout={(e) => setRoom(Math.round(e.nativeEvent.layout.width))}>
+    <Animated.View accessibilityLabel={label} style={[styles.frame, frame]}>
+      <View style={[styles.sidebar, { width: full }, rail && styles.sidebarRail]}>
         {header ? <View style={[styles.header, rail && styles.centered]}>{header}</View> : null}
         {search && !rail ? <View style={styles.search}>{search}</View> : null}
         <ScrollView showsVerticalScrollIndicator={false} style={styles.scroll}>
@@ -225,6 +230,7 @@ export function Sidebar({ sections, header, search, promo, footer, bottomLinks =
         {footer ? <View style={[styles.footer, rail && styles.centered]}>{footer}</View> : null}
       </View>
     </Animated.View>
+    </View>
   )
 }
 
@@ -245,38 +251,39 @@ export function SidebarPerson({ avatar, name, detail, rail = false }: { avatar: 
 }
 
 const createStyles = (c: Colors) => StyleSheet.create({
+  column: { alignSelf: 'stretch', alignItems: 'flex-start' },
   frame: { borderRadius: radius.tray, flexShrink: 0, height: '100%', overflow: 'hidden' },
   sidebar: { backgroundColor: c.ink4, borderRadius: radius.tray, flex: 1, gap: space[2], minHeight: 0, paddingBottom: space[2], paddingHorizontal: space[2], paddingTop: space[2.5], width: WIDTH.rail },
-  sidebarDrawer: { width: WIDTH.drawer },
   sidebarRail: { paddingRight: RAIL_CLIP + space[2] },
   header: { alignItems: 'center', flexDirection: 'row', minHeight: 36, paddingHorizontal: space[1] },
   centered: { justifyContent: 'center', paddingHorizontal: 0 },
   search: { paddingHorizontal: space[0.5] },
   scroll: { flex: 1, minHeight: 0 },
   sections: { gap: space[3] },
-  sectionLabel: { ...type(10, c.textTertiary, '400', true), paddingHorizontal: space[2.5], paddingVertical: space[1] },
+  sectionLabel: { ...type(10, c.textTertiary, '400', true), lineHeight: 12, paddingHorizontal: space[2.5], paddingVertical: space[1] },
   list: { gap: space[0.5] },
   glideHost: { position: 'relative' },
   subs: { borderLeftColor: c.ink10, borderLeftWidth: 1, gap: space[0.5], marginLeft: space[4.5], marginTop: space[0.5], paddingLeft: space[2] },
   subMark: { backgroundColor: c.textPrimary, bottom: 0, left: -11, position: 'absolute', top: 0, width: 1 },
-  surface: { ...soft(c), backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.xl, borderWidth: 1, left: 0, position: 'absolute', top: 0 },
+  surface: { boxShadow: softElevation(c), backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.xl, borderWidth: 1, left: 0, position: 'absolute', top: 0 },
   surfaceFill: { bottom: 0, right: 0 },
-  item: { alignItems: 'center', borderRadius: radius.xl, flexDirection: 'row', gap: space[2.5], minHeight: 44, padding: space[3] },
-  itemRail: { alignSelf: 'center', height: 44, justifyContent: 'center', padding: 0, width: 44 },
-  trigger: { borderRadius: radius.full, gap: space[1], minHeight: 44, paddingLeft: space[3], paddingRight: space[2.5], paddingVertical: 0 },
+  // Mobile rows: 44 high whatever the state, 12 in from each side, label-default type.
+  item: { alignItems: 'center', borderRadius: radius.xl, flexDirection: 'row', gap: space[2.5], minHeight: 44, paddingHorizontal: space[3] },
+  itemRail: { alignSelf: 'center', height: 40, justifyContent: 'center', minHeight: 40, paddingHorizontal: 0, width: 40 },
+  trigger: { borderRadius: radius.full, gap: space[1], minHeight: 40, paddingLeft: space[3], paddingRight: space[2.5] },
   triggerOpen: { backgroundColor: c.ink5 },
   triggerWrap: { alignSelf: 'flex-start' },
   off: { opacity: 0.4 },
-  label: { ...type(14, c.textPrimary), flex: 1, lineHeight: 20, minWidth: 0 },
+  label: { ...type(16, c.textPrimary), flex: 1, lineHeight: 22, minWidth: 0 },
   labelActive: { fontWeight: '500' },
   labelSub: { color: c.textSecondary },
   labelTrigger: { flex: 0 },
-  count: { ...type(12, c.textSecondary, '400', true) },
+  count: { ...type(12, c.textSecondary, '400', true), lineHeight: 16 },
   countRail: { ...type(10, c.textInverse, '400', true), backgroundColor: c.inverse, borderRadius: radius.full, lineHeight: 14, minWidth: 14, overflow: 'hidden', paddingHorizontal: space[1], position: 'absolute', right: 2, textAlign: 'center', top: 2 },
   promo: { paddingHorizontal: space[0.5] },
   footer: { padding: space[1] },
   person: { alignItems: 'center', flexDirection: 'row', gap: space[2.5], minWidth: 0 },
   personText: { flexShrink: 1, minWidth: 0 },
-  personName: { ...type(14, c.textPrimary, '500'), lineHeight: 20 },
+  personName: { ...type(16, c.textPrimary, '500'), lineHeight: 22 },
   personDetail: { ...type(12, c.textSecondary), lineHeight: 16 },
 })

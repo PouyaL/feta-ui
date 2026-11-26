@@ -4,6 +4,7 @@ import Animated, { Easing, FadeIn, FadeOut, LayoutAnimationConfig, interpolateCo
 import Svg, { Line, Path, Rect } from 'react-native-svg'
 import { radius, space, useColors, type Colors } from '../kit'
 import { Badge, type BadgeTone } from './badge'
+import { AVATAR_BG, AVATAR_INK } from './avatar'
 import { withInk } from './button'
 import { Card, type RenderIcon, type, useStill, useThemed } from './card'
 
@@ -112,12 +113,11 @@ function trayPath(width: number, height: number): string {
 
 function Barcode({ seed }: { seed: string }) {
   const styles = useThemed(createStyles)
-  const colors = useColors()
   const bars = useMemo(() => barsFor(seed), [seed])
   return (
     <View style={styles.barcode} accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
       <Svg aria-hidden width="100%" height={36} viewBox={`0 0 ${CODE_WIDTH} 36`} preserveAspectRatio="none">
-        {bars.map(([x, width]) => <Rect key={x} x={x} width={width} height={36} fill={colors.textPrimary} />)}
+        {bars.map(([x, width]) => <Rect key={x} x={x} width={width} height={36} fill={AVATAR_INK} />)}
       </Svg>
     </View>
   )
@@ -274,7 +274,7 @@ const createStyles = (c: Colors) => StyleSheet.create({
   stubFooter: { alignItems: 'stretch', borderTopWidth: 0, flexDirection: 'column', gap: 0, justifyContent: 'flex-start', padding: 0 },
   tear: { marginHorizontal: space[4.5], marginVertical: space[2] },
   stub: { alignItems: 'center', flexDirection: 'row', gap: space[3], height: 76, justifyContent: 'space-between', paddingBottom: space[3], paddingHorizontal: space[4], paddingTop: space[2.5] },
-  barcode: { backgroundColor: c.muted, borderRadius: radius.xl, flexBasis: 224, flexGrow: 0, flexShrink: 1, height: 52, minWidth: 0, paddingHorizontal: space[2.5], paddingVertical: space[2] },
+  barcode: { backgroundColor: AVATAR_BG, borderRadius: radius.xl, flexBasis: 224, flexGrow: 0, flexShrink: 1, height: 52, minWidth: 0, paddingHorizontal: space[2.5], paddingVertical: space[2] },
   passenger: { alignItems: 'flex-end', flexShrink: 0, gap: space[0.5] },
   person: type(14, c.textPrimary, '500'),
 })

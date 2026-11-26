@@ -1,7 +1,7 @@
 import { useEffect, useMemo, type ReactNode } from 'react'
 import { View, Text, StyleSheet, type StyleProp, type TextStyle, type ViewStyle } from 'react-native'
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, withDelay, Easing } from 'react-native-reanimated'
-import { font, space, useColors, useReduceMotion, type Colors } from '../kit'
+import { font, radius, space, useColors, useReduceMotion, type Colors } from '../kit'
 import { AvailabilityCell, type AvailabilityState } from './availability-cell'
 
 export type AvailabilityMonth = { month: string; state: AvailabilityState; note?: string }
@@ -26,7 +26,7 @@ export function AvailabilityStrip({ label = 'Availability', note = 'Updated ever
   const styles = useStyles()
   return (
     <Reveal animated={animated} style={[styles.strip, style]}>
-      <View><Text style={styles.name}>{label}</Text><Text style={styles.note}>{note}</Text></View>
+      <View style={styles.label}><Text style={styles.name}>{label}</Text><Text style={styles.note}>{note}</Text></View>
       <View style={styles.months}>{months.map((item, i) => <Reveal key={item.month} index={i + 1} stagger={50} rise={6} animated={animated} style={styles.month}><AvailabilityCell {...item} animated={animated} {...(onSelect ? { onSelect: () => onSelect(item.month), selected: selected === item.month } : {})} /></Reveal>)}</View>
     </Reveal>
   )
@@ -57,9 +57,11 @@ const useStyles = () => {
 const text = (size: number, lineHeight: number, weight: TextStyle['fontWeight'] = '400'): TextStyle => ({ fontFamily: font.sans, fontSize: size, lineHeight, fontWeight: weight, letterSpacing: font.tracking(size) })
 
 const createStyles = (c: Colors) => StyleSheet.create({
-  strip: { gap: space[3], alignSelf: 'stretch' },
+  // The web's mobile layout: a grey panel, the label on top, then two columns that share the tray's width.
+  strip: { alignSelf: 'stretch', backgroundColor: c.ink4, borderRadius: radius.panel, gap: space[3], padding: space[4] },
+  label: { gap: space[0.5] },
   name: { ...text(14, 20, '500'), color: c.textPrimary },
-  note: { ...text(12, 16), color: c.textTertiary },
-  months: { flexDirection: 'row', flexWrap: 'wrap', gap: space[1] },
-  month: { flexBasis: '48%', flexGrow: 1 },
+  note: { ...text(12, 16), color: c.textSecondary },
+  months: { flexDirection: 'row', flexWrap: 'wrap', gap: space[2] },
+  month: { flexBasis: '40%', flexGrow: 1 },
 })

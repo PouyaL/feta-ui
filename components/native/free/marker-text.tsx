@@ -1,8 +1,8 @@
 import { Fragment, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { StyleSheet, Text, View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native'
 import Animated, { Easing, useAnimatedProps, useAnimatedStyle, useSharedValue, withDelay, withTiming } from 'react-native-reanimated'
-import Svg, { Ellipse, Line, Rect } from 'react-native-svg'
-import { radius, space, useColors, type Colors } from '../kit'
+import Svg, { Path } from 'react-native-svg'
+import { accent, radius, space, useColors, type Colors } from '../kit'
 import { Button } from './button'
 import { type RenderIcon, type, useStill, useThemed } from './card'
 import { TextShell } from './type-writer'
@@ -11,9 +11,7 @@ const STEP_MS = 600
 const STEP_GAP_MS = 120
 const PAD = 6
 const IN_OUT = Easing.bezier(0.42, 0, 0.58, 1)
-const AnimatedLine = Animated.createAnimatedComponent(Line)
-const AnimatedRect = Animated.createAnimatedComponent(Rect)
-const AnimatedEllipse = Animated.createAnimatedComponent(Ellipse)
+const AnimatedPath = Animated.createAnimatedComponent(Path)
 
 export type MarkKind = 'highlight' | 'underline' | 'circle' | 'box' | 'strike'
 export type MarkerPart = string | { text: string; mark: MarkKind }
@@ -30,32 +28,61 @@ export type MarkerTextProps = {
   style?: StyleProp<ViewStyle>
 }
 
-function Mark({ text, mark, delay, still, textStyle }: { text: string; mark: MarkKind; delay: number; still: boolean; textStyle: StyleProp<TextStyle> }) {
+/** The web's hand drawn strokes, drawn on a 0 to 100 box stretched over the words. */
+function strokePath(mark: Exclude<MarkKind, 'highlight'>, w: number, h: number): string {
+  const x = (n: number): string => ((n / 100) * w).toFixed(1)
+  const y = (n: number): string => ((n / 100) * h).toFixed(1)
+  if (mark === 'circle') return `M${x(50)} ${y(4)}C${x(22)} ${y(2)} ${x(2)} ${y(22)} ${x(4)} ${y(50)}S${x(34)} ${y(96)} ${x(62)} ${y(94)}S${x(100)} ${y(68)} ${x(96)} ${y(44)}S${x(70)} ${y(2)} ${x(44)} ${y(6)}`
+  if (mark === 'box') return `M${x(3)} ${y(4)}H${x(97)}V${y(96)}H${x(3)}Z`
+  if (mark === 'strike') return `M0 ${y(54)}C${x(30)} ${y(48)} ${x(66)} ${y(58)} ${w} ${y(50)}`
+  // Just under the glyphs: the copy's 26 pt line leaves room below the baseline, so 92% sat near the next line.
+  return `M0 ${y(80)}C${x(30)} ${y(74)} ${x(66)} ${y(86)} ${w} ${y(78)}`
+}
+
+/** A little over each stroke's length, so the dash never leaves a gap at the end. */
+function strokeLength(mark: Exclude<MarkKind, 'highlight'>, w: number, h: number): number {
+  if (mark === 'circle') return Math.PI * (w + h) * 0.62
+  if (mark === 'box') return 2 * (w + h)
+  return w * 1.1
+}
+
+/** One word of a highlight: the amber marker sweeps across it in its share of the step. */
+function HighlightWord({ word, delay, duration, still, textStyle }: { word: string; delay: number; duration: number; still: boolean; textStyle: StyleProp<TextStyle> }) {
+  const styles = useThemed(makeStyles)
+  const drawn = useSharedValue(still ? 1 : 0)
+  useEffect(() => {
+    if (!still) drawn.value = withDelay(delay, withTiming(1, { duration, easing: Easing.linear }))
+  }, [delay, duration, still, drawn])
+  const sweep = useAnimatedStyle(() => ({ transform: [{ scaleX: drawn.value }] }))
+  return (
+    <View style={styles.highlightWord}>
+      <Animated.View style={[styles.highlight, sweep]} />
+      <Text style={textStyle}>{word}</Text>
+    </View>
+  )
+}
+
+function Mark({ text, mark, delay, still, textStyle }: { text: string; mark: Exclude<MarkKind, 'highlight'>; delay: number; still: boolean; textStyle: StyleProp<TextStyle> }) {
   const styles = useThemed(makeStyles)
   const colors = useColors()
   const [box, setBox] = useState({ width: 0, height: 0 })
   const drawn = useSharedValue(still ? 1 : 0)
   useEffect(() => {
-    if (!still) drawn.value = withDelay(delay, withTiming(1, { duration: STEP_MS, easing: mark === 'highlight' ? Easing.linear : IN_OUT }))
-  }, [delay, still, mark, drawn])
+    if (!still) drawn.value = withDelay(delay, withTiming(1, { duration: STEP_MS, easing: IN_OUT }))
+  }, [delay, still, drawn])
   const w = box.width + PAD * 2
   const h = box.height + PAD
-  const length = mark === 'box' ? 2 * (w + h) : mark === 'circle' ? Math.PI * (w + h) * 0.75 : w
+  const length = strokeLength(mark, w, h)
   const dash = useAnimatedProps(() => ({ strokeDashoffset: length * (1 - drawn.value) }))
-  const sweep = useAnimatedStyle(() => ({ transform: [{ scaleX: drawn.value }] }))
-  const ink = { underline: colors.textSecondary, circle: colors.inverse, box: colors.success, strike: colors.danger, highlight: colors.ink10 }[mark]
-  const line = { stroke: ink, strokeWidth: 1.5, strokeLinecap: 'round' as const, fill: 'none', strokeDasharray: [length, length], animatedProps: dash }
+  // The web's status inks: warning orange, accent blue, the strong success green and danger red.
+  const ink = { underline: colors.warning, circle: colors.accent, box: colors.success, strike: colors.danger }[mark]
   return (
     <View onLayout={(e) => setBox({ width: e.nativeEvent.layout.width, height: e.nativeEvent.layout.height })}>
-      {mark === 'highlight' ? <Animated.View style={[styles.highlight, sweep]} /> : null}
       <Text style={textStyle}>{text}</Text>
-      {mark !== 'highlight' && box.width > 0 ? (
+      {box.width > 0 ? (
         <View pointerEvents="none" style={styles.draw}>
           <Svg aria-hidden width={w} height={h}>
-            {mark === 'underline' ? <AnimatedLine x1={0} y1={h - 3} x2={w} y2={h - 3} {...line} /> : null}
-            {mark === 'strike' ? <AnimatedLine x1={0} y1={h / 2} x2={w} y2={h / 2} {...line} /> : null}
-            {mark === 'box' ? <AnimatedRect x={2} y={2} width={w - 4} height={h - 4} {...line} /> : null}
-            {mark === 'circle' ? <AnimatedEllipse cx={w / 2} cy={h / 2} rx={w / 2 - 2} ry={h / 2 - 2} {...line} /> : null}
+            <AnimatedPath d={strokePath(mark, w, h)} stroke={ink} strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" fill="none" strokeDasharray={[length, length]} animatedProps={dash} />
           </Svg>
         </View>
       ) : null}
@@ -89,6 +116,12 @@ export function MarkerText({ heading = [], body = [], styleKind = 'soft', replay
     }
     const delay = order * (STEP_MS + STEP_GAP_MS)
     order += 1
+    if (part.mark === 'highlight') {
+      // Word by word, so a highlight wraps across lines like the web's cloned box decoration.
+      const words = part.text.split(/(?<=\s)/)
+      const share = STEP_MS / words.length
+      return <Fragment key={`${run}-${i}`}>{words.map((word, j) => <HighlightWord key={j} word={word} delay={delay + j * share} duration={share} still={still} textStyle={textStyle} />)}</Fragment>
+    }
     return <Mark key={`${run}-${i}`} text={part.text} mark={part.mark} delay={delay} still={still} textStyle={textStyle} />
   })
 
@@ -110,9 +143,11 @@ export function MarkerText({ heading = [], body = [], styleKind = 'soft', replay
 const makeStyles = (c: Colors) => StyleSheet.create({
   copy: { gap: space[3] },
   wrap: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'baseline' },
-  heading: { ...type(18, c.textPrimary, '600'), lineHeight: 24 },
+  heading: { ...type(24, c.textPrimary, '600'), lineHeight: 32 },
   body: { ...type(14, c.textSecondary), lineHeight: 26 },
-  highlight: { ...StyleSheet.absoluteFill, borderRadius: radius.xs, backgroundColor: c.ink10, transformOrigin: 'left' },
+  highlightWord: { paddingHorizontal: space[0.5], marginHorizontal: -space[0.5] },
+  // The web's amber marker, the same in Light and Dark.
+  highlight: { ...StyleSheet.absoluteFill, borderRadius: radius.xs, backgroundColor: accent.amber.from, transformOrigin: 'left' },
   draw: { position: 'absolute', top: -PAD / 2, left: -PAD },
   replay: { alignSelf: 'flex-start', marginLeft: -space[2] },
 })

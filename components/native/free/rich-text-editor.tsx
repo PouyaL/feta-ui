@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
-import { Pressable, StyleSheet, Text, TextInput, View, type StyleProp, type TextInputInstance, type TextInputKeyPressEvent, type TextStyle, type ViewStyle } from 'react-native'
+import { Platform, Pressable, StyleSheet, Text, TextInput, View, type StyleProp, type TextInputInstance, type TextInputKeyPressEvent, type TextStyle, type ViewStyle } from 'react-native'
 import Animated, { FadeIn, FadeInUp, FadeOut } from 'react-native-reanimated'
 import { currentState, font, pressedState, radius, space, useColors, type Colors } from '../kit'
-import { EASE_OUT, LabelSwap, withInk } from './button'
+import { EASE_OUT, LabelSwap, withInk, SELF } from './button'
 import { useStill, useThemed, type RenderIcon } from './card'
 import { IconButton } from './icon-button'
 
@@ -10,6 +10,7 @@ import { IconButton } from './icon-button'
 // are Markdown typed into the text: **bold**, *italic*, `code` and [links](https://...). The toolbar wraps the
 // selection in those marks, and the export turns them into clean Markdown and HTML, as the web editor does.
 
+const WEB_FIELD = Platform.OS === 'web'
 const MENU_MS = 160
 const BAR_MS = 140
 const HISTORY = 100
@@ -88,6 +89,26 @@ const countWords = (blocks: RichBlock[]): number => {
   return text ? text.split(/\s+/).length : 0
 }
 
+type Span = { text: string; mark?: 'bold' | 'italic' | 'code' | 'link' | 'syntax' }
+
+/** Splits a block's text into marks and the Markdown syntax around them, for drawing it formatted. */
+function spans(text: string): Span[] {
+  const out: Span[] = []
+  const pattern = /(`)([^`]+)(`)|(\*\*)([^*]+)(\*\*)|(\*)([^*]+)(\*)|(\[)([^\]]+)(\]\([^)\s]+\))/g
+  let at = 0
+  for (let m = pattern.exec(text); m; m = pattern.exec(text)) {
+    if (m.index > at) out.push({ text: text.slice(at, m.index) })
+    const [open, body, close, mark] = m[1] ? [m[1], m[2], m[3], 'code' as const] : m[4] ? [m[4], m[5], m[6], 'bold' as const] : m[7] ? [m[7], m[8], m[9], 'italic' as const] : [m[10], m[11], m[12], 'link' as const]
+    out.push({ text: open ?? '', mark: 'syntax' }, { text: body ?? '', mark }, { text: close ?? '', mark: 'syntax' })
+    at = m.index + m[0].length
+  }
+  if (at < text.length) out.push({ text: text.slice(at) })
+  return out
+}
+
+const MARK_STYLE = { bold: (s: Styles) => s.markBold, italic: (s: Styles) => s.markItalic, code: (s: Styles) => s.markCode, link: (s: Styles) => s.markLink }
+type Styles = ReturnType<typeof createStyles>
+
 export type RichTextEditorProps = {
   /** The first content, as blocks. Read once. */
   defaultValue?: RichBlock[]
@@ -110,6 +131,7 @@ export function RichTextEditor({ defaultValue, label = 'Editor', placeholder = '
   const [past, setPast] = useState<RichBlock[][]>([])
   const [future, setFuture] = useState<RichBlock[][]>([])
   const [focus, setFocus] = useState(0)
+  const [editing, setEditing] = useState<number | null>(null)
   const [selection, setSelection] = useState({ start: 0, end: 0 })
   const [linking, setLinking] = useState(false)
   const [url, setUrl] = useState('')
@@ -225,9 +247,9 @@ export function RichTextEditor({ defaultValue, label = 'Editor', placeholder = '
   return (
     <View style={[s.tray, style]}>
       <View style={s.toolbar}>
-        <IconButton variant="ghost" size="sm" icon={icon('undo')} label="Undo" animated={animated} disabled={!past.length} aria-disabled={!past.length} onPress={() => history('undo')} />
-        <IconButton variant="ghost" size="sm" icon={icon('redo')} label="Redo" animated={animated} disabled={!future.length} aria-disabled={!future.length} onPress={() => history('redo')} />
-        <IconButton variant="ghost" size="sm" icon={icon('rotate-ccw')} label="Clear" animated={animated} disabled={empty} aria-disabled={empty} onPress={clearAll} />
+        <IconButton style={SELF.center} variant="ghost" size="sm" icon={icon('undo')} label="Undo" animated={animated} disabled={!past.length} aria-disabled={!past.length} onPress={() => history('undo')} />
+        <IconButton style={SELF.center} variant="ghost" size="sm" icon={icon('redo')} label="Redo" animated={animated} disabled={!future.length} aria-disabled={!future.length} onPress={() => history('redo')} />
+        <IconButton style={SELF.center} variant="ghost" size="sm" icon={icon('rotate-ccw')} label="Clear" animated={animated} disabled={empty} aria-disabled={empty} onPress={clearAll} />
         <View style={s.count} accessible aria-label={`${words} words`}>
           <LabelSwap swapKey={String(words)} still={still}><Text style={s.countText}>{words}</Text></LabelSwap>
           <Text style={s.countText}> WORDS</Text>
@@ -235,7 +257,7 @@ export function RichTextEditor({ defaultValue, label = 'Editor', placeholder = '
       </View>
       <View style={s.editor} role="group" aria-label={label}>
         {blocks.map((block, i) => (
-          <View key={i} style={[s.block, block.kind === 'quote' && s.quote, block.kind === 'code' && s.code, block.kind === 'li' && s.li]}>
+          <View key={i} style={[s.block, block.kind === 'quote' && s.quote, block.kind === 'code' && s.code, block.kind === 'li' && s.li, block.kind === 'li' && blocks[i + 1]?.kind === 'li' && s.liRun, block.kind === 'h1' && s.h1Block, block.kind === 'h2' && s.h2Block]}>
             {block.kind === 'li' ? <Text aria-hidden style={s.bullet}>•</Text> : null}
             <TextInput
               ref={(node) => { fields.current[i] = node }}
@@ -246,12 +268,18 @@ export function RichTextEditor({ defaultValue, label = 'Editor', placeholder = '
               scrollEnabled={false}
               selectionColor={c.textPrimary}
               style={[s.field, block.kind === 'h1' && s.h1, block.kind === 'h2' && s.h2, block.kind === 'quote' && s.quoteText, block.kind === 'code' && s.codeText]}
-              value={block.text}
+              // iOS and Android draw the text formatted: bold, italic, code and links, with the Markdown marks hidden
+              // and shown faintly only in the block being edited. The web field keeps plain text.
+              {...(WEB_FIELD ? { value: block.text } : {})}
               onChangeText={(text) => onText(i, text)}
-              onFocus={() => setFocus(i)}
+              onFocus={() => { setFocus(i); setEditing(i) }}
+              onBlur={() => setEditing((at) => (at === i ? null : at))}
               onKeyPress={(event) => onKey(i, event)}
               onSelectionChange={(event) => { if (i === focus) setSelection(event.nativeEvent.selection) }}
-            />
+            >
+              {WEB_FIELD || block.kind === 'code' ? undefined : spans(block.text).map((span, n) => <Text key={n} style={span.mark ? (span.mark === 'syntax' ? (editing === i ? s.syntax : s.hidden) : MARK_STYLE[span.mark](s)) : undefined}>{span.text}</Text>)}
+              {!WEB_FIELD && block.kind === 'code' ? block.text : undefined}
+            </TextInput>
           </View>
         ))}
         {matches.length ? (
@@ -287,9 +315,9 @@ export function RichTextEditor({ defaultValue, label = 'Editor', placeholder = '
       <View role="toolbar" aria-label="Format blocks" style={s.row}>
         {FORMATS.map(({ kind, label: name, icon: glyph }) => {
           const on = (kind === 'heading' && current?.kind === 'h2') || (kind === 'quote' && current?.kind === 'quote') || (kind === 'list' && current?.kind === 'li')
-          return <IconButton key={kind} variant="ghost" size="md" icon={icon(glyph)} label={name} {...pressedState(on)} animated={animated} onPress={() => format(kind)} />
+          return <IconButton style={SELF.center} key={kind} variant="ghost" size="md" icon={icon(glyph)} label={name} {...pressedState(on)} animated={animated} onPress={() => format(kind)} />
         })}
-        <IconButton variant="ghost" size="md" icon={icon('link')} label="Link" animated={animated} onPress={startLink} />
+        <IconButton style={SELF.center} variant="ghost" size="md" icon={icon('link')} label="Link" animated={animated} onPress={startLink} />
       </View>
     </View>
   )
@@ -306,13 +334,23 @@ const createStyles = (c: Colors) => {
     block: { flexDirection: 'row', marginBottom: space[2] },
     field: { ...sans(16, 24), color: c.textPrimary, flex: 1, padding: 0, textAlignVertical: 'top' },
     h1: { ...sans(22, 28, '600') },
-    h2: { ...sans(19, 26, '600'), marginTop: space[2] },
-    li: { paddingLeft: space[2] },
+    h2: { ...sans(19, 26, '600') },
+    h1Block: { marginBottom: space[2] },
+    h2Block: { marginBottom: space[1.5], marginTop: space[2] },
+    li: { paddingLeft: space[1] },
+    liRun: { marginBottom: 0 },
     quote: { borderLeftColor: c.ink10, borderLeftWidth: 2, marginTop: space[1], paddingLeft: space[3] },
     code: { backgroundColor: c.ink4, borderRadius: radius.field, padding: space[3] },
     quoteText: { color: c.textSecondary },
     codeText: { fontFamily: font.mono, fontSize: 13, letterSpacing: 0, lineHeight: 20 },
-    bullet: { ...sans(16, 24), color: c.textPrimary, width: space[4] },
+    bullet: { ...sans(20, 24), color: c.textPrimary, width: space[4] },
+    markBold: { fontWeight: '700' },
+    markItalic: { fontStyle: 'italic' },
+    markCode: { backgroundColor: c.ink5, fontFamily: font.mono, fontSize: 13, letterSpacing: 0 },
+    markLink: { color: c.accent, textDecorationLine: 'underline' },
+    syntax: { color: c.textQuaternary },
+    // Marks outside the edited block take no room: transparent and a hair wide.
+    hidden: { color: 'transparent', fontSize: 1, letterSpacing: 0 },
     menu: { backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.xl, borderWidth: 1, marginTop: space[1], padding: space[1] },
     option: { alignItems: 'center', borderRadius: radius.lg, flexDirection: 'row', gap: space[2.5], minHeight: 44, paddingHorizontal: space[2] },
     optionOn: { backgroundColor: c.ink5 },

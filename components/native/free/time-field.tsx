@@ -180,7 +180,7 @@ const createStyles = (c: Colors) => StyleSheet.create({
   clock: { marginRight: space[1.5] },
   segment: { alignItems: 'center', borderRadius: radius.lg, height: 26, justifyContent: 'center', minWidth: 26, paddingHorizontal: space[1] },
   segmentOn: { backgroundColor: c.inverse },
-  digits: type(16, c.textPrimary, '500', true),
+  digits: type(16, c.textPrimary, '400', true),
   digitsEmpty: { color: c.textTertiary },
   digitsOn: { color: c.textInverse },
   colon: type(16, c.textTertiary),

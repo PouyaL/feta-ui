@@ -3,14 +3,17 @@ import { FlatList, StyleSheet, Text, View, type ListRenderItem, type StyleProp, 
 import Animated, { Easing, FadeInDown, FadeInUp, FadeOutUp } from 'react-native-reanimated'
 import { pressedState, radius, space, type Colors } from '../kit'
 import { Avatar } from './avatar'
-import { Badge, type BadgeTone } from './badge'
-import { Button } from './button'
+import { type BadgeTone } from './badge'
+import { Button, SELF } from './button'
 import { panelEnter, type RenderIcon, type, useStill, useThemed } from './card'
 import { Checkbox } from './checkbox'
+import { DropdownMenu } from './dropdown-menu'
 import { IconButton } from './icon-button'
+import { initials } from './member-row'
 
 const BAR_MS = 200
-const ROW_HEIGHT = 64
+// Long lists recycle fixed 56 point rows with a one line subject, as the web's long list does.
+const ROW_HEIGHT = 56
 const VIEWPORT = 420
 const WINDOW_AFTER = 50
 const BAR_EASE = Easing.bezierFn(0.23, 1, 0.32, 1)
@@ -52,18 +55,16 @@ export function InboxBulkActions({ messages, title = 'Inbox', defaultSelected = 
     const on = picked.includes(message.id)
     const unread = message.unread && !read.includes(message.id)
     return (
-      <View style={[styles.row, on ? styles.rowOn : null]}>
+      <View style={[styles.row, long && styles.rowLong, on ? styles.rowOn : null]}>
         <Checkbox accessibilityLabel={`Select message from ${message.from}`} checked={on} onCheckedChange={(next: boolean) => setPicked((was) => (next ? [...was, message.id] : was.filter((id) => id !== message.id)))} animated={animated} />
-        <Avatar size="sm" initials={message.from.slice(0, 1)} animated={animated} />
+        <Avatar size="sm" initials={initials(message.from)} animated={animated} />
         <View style={styles.text}>
           <View style={styles.line}>
             <Text style={[styles.from, unread ? styles.unread : null]} numberOfLines={1}>{message.from}</Text>
             <Text style={styles.time}>{message.time}</Text>
           </View>
-          <View style={styles.line}>
-            {message.label ? <Badge size="sm" tone={message.tone ?? 'neutral'} animated={animated}>{message.label}</Badge> : null}
-            <Text style={[styles.subject, unread ? styles.unread : null]} numberOfLines={1}>{message.subject}</Text>
-          </View>
+          {/* The label tag is a wide screen extra; the Mobile row is sender and time over the subject. */}
+          <Text style={styles.subject} numberOfLines={long ? 1 : undefined}>{message.subject}</Text>
         </View>
       </View>
     )
@@ -71,15 +72,15 @@ export function InboxBulkActions({ messages, title = 'Inbox', defaultSelected = 
 
   return (
     <Animated.View {...(still ? {} : { entering: panelEnter })} accessibilityLabel={title} style={[styles.panel, style]}>
-      <View style={styles.head}>
+      <View style={[styles.head, bulk && styles.headBulk]}>
         <Checkbox accessibilityLabel="Select all" checked={all} indeterminate={bulk && !all} onCheckedChange={(on: boolean) => setPicked(on ? list.map((message) => message.id) : [])} animated={animated} />
         {bulk ? (
           <Animated.View key="bulk" {...(still ? {} : { entering: barIn, exiting: barOut })} style={styles.bar}>
             <Text accessibilityLiveRegion="polite" style={styles.title}>{picked.length} selected</Text>
             <View style={styles.actions}>
-              <Button variant="secondary" size="sm" shape="pill" leadingIcon={renderIcon('archive', 14)} onPress={() => remove(onArchive)} animated={animated}>Archive</Button>
-              <IconButton variant="ghost" size="sm" label="Mark read" icon={renderIcon('check-check', 16)} onPress={() => { onMarkRead?.(picked); setRead((was) => [...was, ...picked]); setPicked([]) }} animated={animated} />
-              <IconButton variant="ghost" size="sm" label="Delete" icon={renderIcon('trash', 16)} onPress={() => remove(onDelete)} animated={animated} />
+              <Button style={SELF.center} variant="secondary" size="sm" shape="pill" leadingIcon={renderIcon('archive', 14)} onPress={() => remove(onArchive)} animated={animated}>Archive</Button>
+              <IconButton style={SELF.center} variant="ghost" size="sm" label="Mark read" icon={renderIcon('check-check', 16)} onPress={() => { onMarkRead?.(picked); setRead((was) => [...was, ...picked]); setPicked([]) }} animated={animated} />
+              <IconButton style={SELF.center} variant="ghost" size="sm" label="Delete" icon={renderIcon('trash', 16)} onPress={() => remove(onDelete)} animated={animated} />
             </View>
           </Animated.View>
         ) : (
@@ -89,8 +90,14 @@ export function InboxBulkActions({ messages, title = 'Inbox', defaultSelected = 
               <Text style={styles.count}>{list.length.toLocaleString('en-US')} conversations</Text>
             </View>
             <View style={styles.actions}>
-              <IconButton variant="ghost" size="sm" label="Show unread only" {...pressedState(unreadOnly)} icon={renderIcon('filter', 16)} onPress={() => setUnreadOnly(!unreadOnly)} animated={animated} />
-              <IconButton variant="ghost" size="sm" label="Mark all read" icon={renderIcon('check-check', 16)} onPress={() => { const ids = list.map((message) => message.id); onMarkRead?.(ids); setRead((was) => [...was, ...ids]) }} animated={animated} />
+              <IconButton style={SELF.center} variant="ghost" size="sm" label="Show unread only" {...pressedState(unreadOnly)} icon={renderIcon('filter', 16)} onPress={() => setUnreadOnly(!unreadOnly)} animated={animated} />
+              <DropdownMenu
+                label="Inbox actions"
+                align="end"
+                animated={animated}
+                entries={[{ label: 'Mark all read', onSelect: () => { const ids = list.map((message) => message.id); onMarkRead?.(ids); setRead((was) => [...was, ...ids]) } }]}
+                trigger={(props) => <IconButton {...props} style={SELF.center} variant="ghost" size="sm" label="Inbox actions" icon={renderIcon('more-horizontal', 16)} animated={animated} />}
+              />
             </View>
           </Animated.View>
         )}
@@ -101,8 +108,7 @@ export function InboxBulkActions({ messages, title = 'Inbox', defaultSelected = 
         renderItem={row}
         extraData={[picked, read]}
         scrollEnabled={long}
-        getItemLayout={(_, index) => ({ length: ROW_HEIGHT, offset: ROW_HEIGHT * index, index })}
-        {...(long ? { style: styles.scroll } : {})}
+        {...(long ? { style: styles.scroll, getItemLayout: (_: unknown, index: number) => ({ length: ROW_HEIGHT, offset: ROW_HEIGHT * index, index }) } : {})}
       />
     </Animated.View>
   )
@@ -110,19 +116,21 @@ export function InboxBulkActions({ messages, title = 'Inbox', defaultSelected = 
 
 const makeStyles = (c: Colors) => StyleSheet.create({
   panel: { width: '100%', maxWidth: 640, overflow: 'hidden', borderRadius: radius.panel, borderWidth: 1, borderColor: c.ink8, backgroundColor: c.surface },
-  head: { flexDirection: 'row', alignItems: 'center', gap: space[2], minHeight: 56, paddingHorizontal: space[3], borderBottomWidth: 1, borderBottomColor: c.ink8 },
+  head: { flexDirection: 'row', alignItems: 'center', gap: space[3], minHeight: 52, paddingLeft: space[4], paddingRight: space[3], borderBottomWidth: 1, borderBottomColor: c.ink5 },
+  headBulk: { backgroundColor: c.ink4 },
   bar: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: space[2], minWidth: 0 },
-  titles: { flexShrink: 1 },
-  title: type(14, c.textPrimary, '500'),
-  count: type(12, c.textSecondary),
+  titles: { flexDirection: 'row', alignItems: 'baseline', gap: space[2], flexShrink: 1 },
+  title: { ...type(16, c.textPrimary, '500'), lineHeight: 22 },
+  count: type(12, c.textTertiary),
   actions: { flexDirection: 'row', alignItems: 'center', gap: space[1] },
   scroll: { height: VIEWPORT },
-  row: { flexDirection: 'row', alignItems: 'center', gap: space[2], height: ROW_HEIGHT, paddingHorizontal: space[3], borderBottomWidth: 1, borderBottomColor: c.ink5 },
+  row: { flexDirection: 'row', alignItems: 'flex-start', gap: space[2], minHeight: 48, paddingHorizontal: space[4], paddingVertical: space[2] },
+  rowLong: { height: ROW_HEIGHT },
   rowOn: { backgroundColor: c.ink4 },
-  text: { flex: 1, minWidth: 0, gap: space[0.5] },
+  text: { flex: 1, minWidth: 0 },
   line: { flexDirection: 'row', alignItems: 'center', gap: space[2] },
-  from: { ...type(13, c.textSecondary), flex: 1 },
-  subject: { ...type(13, c.textSecondary), flex: 1 },
-  unread: { fontWeight: '500', color: c.textPrimary },
+  from: { ...type(16, c.textPrimary, '500'), lineHeight: 22, flex: 1 },
+  unread: { fontWeight: '600' },
+  subject: { ...type(14, c.textSecondary), lineHeight: 20 },
   time: type(12, c.textTertiary, '400', true),
 })

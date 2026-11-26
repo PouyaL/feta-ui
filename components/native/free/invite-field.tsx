@@ -2,7 +2,7 @@ import { useRef, useState } from 'react'
 import { Pressable, StyleSheet, Text, TextInput, type TextInputInstance, View, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { FadeOut, ZoomIn } from 'react-native-reanimated'
 import { radius, space, type Colors } from '../kit'
-import { Button } from './button'
+import { Button, SELF } from './button'
 import { EASE_STANDARD, ROW_MS, panelEnter, type RenderIcon, type, useStill, useThemed } from './card'
 import { Select } from './select'
 
@@ -28,7 +28,7 @@ export type InviteFieldProps = {
 const defaultSendLabel = (count: number): string => (count === 0 ? 'Send invites' : count > 1 ? `Send ${count} invites` : 'Send invite')
 
 /** A wrapping box of email chips, a role Select and Send. Send waits until every address is valid. */
-export function InviteField({ value, defaultValue = [], onValueChange, roles = ['Admin', 'Member', 'Viewer'], defaultRole = 'Member', label = 'Invite by email', placeholder = 'name@company.com, separated by commas', help = 'Invites expire after 7 days', sendLabel = defaultSendLabel, renderIcon, onSend, animated = true, style }: InviteFieldProps) {
+export function InviteField({ value, defaultValue = [], onValueChange, roles = ['Admin', 'Member', 'Viewer'], defaultRole = 'Member', label = 'Invite by email', placeholder = 'name@company.example, separated by commas', help = 'Invites expire after 7 days', sendLabel = defaultSendLabel, renderIcon, onSend, animated = true, style }: InviteFieldProps) {
   const styles = useThemed(createStyles)
   const still = useStill(animated)
   const input = useRef<TextInputInstance>(null)
@@ -88,7 +88,7 @@ export function InviteField({ value, defaultValue = [], onValueChange, roles = [
       <Text accessibilityLiveRegion="polite" style={[styles.help, bad.length > 0 && styles.wrong]}>{bad.length ? `${bad.join(', ')} ${bad.length > 1 ? 'are' : 'is'} not a valid email` : emails.length ? `${emails.length} ${emails.length === 1 ? 'person' : 'people'} will join as ${role}` : help}</Text>
       <View style={styles.actions}>
         <Select style={styles.role} accessibilityLabel="Role" options={roles.map((entry) => ({ value: entry, label: entry }))} value={role} onValueChange={setRole} animated={animated} />
-        <Button shape="pill" animated={animated} disabled={emails.length === 0 || bad.length > 0} feedback={{ loading: 'Sending', success: emails.length > 1 ? 'Invites sent' : 'Invite sent' }} onPress={() => onSend?.(emails, role)}>{sendLabel(emails.length)}</Button>
+        <Button style={SELF.center} shape="pill" animated={animated} disabled={emails.length === 0 || bad.length > 0} feedback={{ loading: 'Sending', success: emails.length > 1 ? 'Invites sent' : 'Invite sent' }} onPress={() => onSend?.(emails, role)}>{sendLabel(emails.length)}</Button>
       </View>
     </Animated.View>
   )

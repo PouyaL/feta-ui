@@ -2,7 +2,7 @@ import { useMemo, useState, type ReactNode } from 'react'
 import { Modal, Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { Easing, FadeIn, FadeInDown, FadeInUp, FadeOut } from 'react-native-reanimated'
 import { radius, space, type Colors } from '../kit'
-import { Button } from './button'
+import { Button, SELF } from './button'
 import { type RenderIcon, type, useStill, useThemed } from './card'
 import { Checkbox } from './checkbox'
 import { IconButton } from './icon-button'
@@ -162,12 +162,12 @@ export function Questionnaire({ questions, header = 'steps', title, value, defau
         {head}
         <View style={styles.headerEnd}>
           {header === 'select' && mode === 'multiple' ? <Text style={styles.small}>{answer?.values.length ?? 0} selected</Text> : null}
-          {header === 'card' ? <Text style={styles.mono}>{index + 1} / {flow.length}</Text> : null}
+          {header === 'card' ? <Text style={styles.ratio}>{index + 1} / {flow.length}</Text> : null}
           {question?.tag ? <Text style={styles.mono}>{question.tag}</Text> : null}
           {hostLabel ? <Text style={styles.small}>{hostLabel}</Text> : null}
           {wasRestored ? <View style={styles.restored}>{renderIcon('rotate-ccw', 14)}<Text style={styles.mono}>Restored</Text></View> : null}
           {error && validation === 'report' ? <Text style={styles.issue}>1 issue</Text> : null}
-          {onCancel ? <IconButton variant="ghost" size="sm" animated={animated} label="Close" icon={renderIcon('x', 16)} onPress={onCancel} /> : null}
+          {onCancel ? <IconButton style={SELF.center} variant="ghost" size="sm" animated={animated} label="Close" icon={renderIcon('x', 16)} onPress={onCancel} /> : null}
         </View>
       </View>
       <View style={styles.card}>
@@ -196,11 +196,11 @@ export function Questionnaire({ questions, header = 'steps', title, value, defau
           {onCancel ? <Button variant="ghost" size="sm" shape="pill" animated={animated} onPress={onCancel}>Cancel</Button>
             : index > 0 && !foldAnswers ? <Button variant="ghost" size="sm" shape="pill" animated={animated} leadingIcon={renderIcon('arrow-left', 14)} onPress={() => goTo(index - 1)}>{backLabel}</Button>
               : question?.optional ? <Button variant="link" size="sm" animated={animated} onPress={() => { if (last) onComplete?.(answers); else goTo(index + 1) }}>Skip for now</Button>
-                : <Text style={styles.small}>{question?.hint ?? hint}</Text>}
+                : <Text style={styles.hint}>{question?.hint ?? hint}</Text>}
         </View>
         <View style={styles.actions}>
-          {restored && wasRestored ? <Button variant="secondary" size="sm" shape="pill" animated={animated} onPress={() => { setAnswers({}); setWasRestored(false) }}>Reset</Button> : null}
-          <Button size="sm" shape="pill" animated={animated} {...(last && submitLabel ? {} : { trailingIcon: renderIcon('arrow-right', 14) })} disabled={validation === 'lock' && !valid} {...(last && submitLabel ? { feedback: { loading: 'Sending', success: 'Sent' } } : {})} onPress={next}>{last && submitLabel ? submitLabel : nextLabel}</Button>
+          {restored && wasRestored ? <Button style={SELF.center} variant="secondary" size="sm" shape="pill" animated={animated} onPress={() => { setAnswers({}); setWasRestored(false) }}>Reset</Button> : null}
+          <Button style={SELF.center} size="sm" shape="pill" animated={animated} {...(last && submitLabel ? {} : { trailingIcon: renderIcon('arrow-right', 14) })} disabled={validation === 'lock' && !valid} {...(last && submitLabel ? { feedback: { loading: 'Sending', success: 'Sent' } } : {})} onPress={next}>{last && submitLabel ? submitLabel : nextLabel}</Button>
         </View>
       </View>
     </View>
@@ -221,41 +221,47 @@ export function QuestionnaireDialog({ open, onClose, ...rest }: QuestionnaireDia
 
 const createStyles = (c: Colors) => StyleSheet.create({
   shell: { backgroundColor: c.ink4, borderRadius: radius.tray, padding: space[1] },
-  header: { alignItems: 'center', flexDirection: 'row', gap: space[2], justifyContent: 'space-between', minHeight: 44, paddingHorizontal: space[3] },
+  header: { alignItems: 'center', flexDirection: 'row', gap: space[2.5], justifyContent: 'space-between', minHeight: 44, paddingLeft: space[3.5], paddingRight: space[2], paddingVertical: space[2] },
   headerEnd: { alignItems: 'center', flexDirection: 'row', gap: space[2] },
-  count: { alignItems: 'center', flexDirection: 'row', gap: space[2] },
+  count: { alignItems: 'center', flexDirection: 'row', gap: space[2.5] },
   pills: { flexDirection: 'row', gap: space[1] },
-  pill: { backgroundColor: c.ink10, borderRadius: radius.full, height: 4, width: 6 },
-  pillNow: { backgroundColor: c.inverse, width: 16 },
+  pill: { backgroundColor: c.ink10, borderRadius: radius.sm, height: 6, width: 6 },
+  pillNow: { backgroundColor: c.textPrimary, width: 16 },
   pillDone: { backgroundColor: c.textSecondary },
-  mono: type(12, c.textTertiary, '400', true),
-  small: type(12, c.textSecondary),
-  answered: { alignItems: 'center', flex: 1, flexDirection: 'row', gap: space[1.5] },
+  // The web's mono micro label: 10 px, uppercase, 0.04 em apart.
+  mono: { ...type(10, c.textTertiary, '400', true), letterSpacing: 0.4, lineHeight: 12, textTransform: 'uppercase' },
+  ratio: { ...type(12, c.textTertiary, '400', true), lineHeight: 16 },
+  small: { ...type(12, c.textSecondary), lineHeight: 16 },
+  hint: { ...type(12, c.textTertiary), lineHeight: 16 },
+  answered: { alignItems: 'center', flex: 1, flexDirection: 'row', gap: space[2] },
   answer: { ...type(12, c.textPrimary, '500'), flexShrink: 1 },
-  cardTitle: type(14, c.textPrimary, '500'),
-  checkpoints: { flex: 1, gap: space[1] },
-  checkpointRow: { flexDirection: 'row', justifyContent: 'space-between' },
-  bar: { flexDirection: 'row', gap: 2 },
-  barPart: { backgroundColor: c.ink10, borderRadius: radius.full, flex: 1, height: 4 },
-  barOn: { backgroundColor: c.inverse },
-  restored: { alignItems: 'center', flexDirection: 'row', gap: space[1] },
-  issue: type(12, c.danger, '500'),
-  card: { backgroundColor: c.surface, borderRadius: radius.card, overflow: 'hidden', padding: space[4] },
+  cardTitle: { ...type(14, c.textPrimary, '500'), lineHeight: 20 },
+  checkpoints: { flex: 1, gap: space[1.5], paddingRight: space[1.5], paddingTop: space[1] },
+  checkpointRow: { alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', minHeight: 16 },
+  bar: { flexDirection: 'row', gap: space[1] },
+  barPart: { backgroundColor: c.ink10, borderRadius: radius.xs, flex: 1, height: 4 },
+  barOn: { backgroundColor: c.textPrimary },
+  restored: { alignItems: 'center', flexDirection: 'row', gap: space[1.5] },
+  issue: type(12, c.danger),
+  card: {
+    backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.card, borderWidth: 1, padding: space[4],
+    shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.06, shadowRadius: 10,
+  },
   step: { gap: space[4] },
   heading: { gap: space[1] },
-  title: type(20, c.textPrimary, '500'),
-  description: type(14, c.textSecondary),
+  title: { ...type(17, c.textPrimary, '600'), lineHeight: 20 },
+  description: { ...type(14, c.textSecondary), lineHeight: 18 },
   choices: { gap: space[2] },
-  choice: { alignItems: 'center', borderColor: c.ink8, borderRadius: radius.control, borderWidth: 1, flexDirection: 'row', gap: space[3], minHeight: 44, padding: space[3] },
-  choiceOn: { borderColor: c.textPrimary },
-  disabled: { opacity: 0.5 },
-  choiceText: { flex: 1, gap: space[0.5] },
-  choiceLabel: type(14, c.textPrimary),
+  choice: { alignItems: 'center', backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.card, borderWidth: 1, flexDirection: 'row', gap: space[3], minHeight: 44, paddingLeft: space[4], paddingRight: space[3.5], paddingVertical: space[3.5] },
+  choiceOn: { borderColor: c.textPrimary, borderWidth: 1.5, paddingLeft: space[4] - 0.5, paddingRight: space[3.5] - 0.5, paddingVertical: space[3.5] - 0.5, shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.06, shadowRadius: 10 },
+  disabled: { opacity: 0.4 },
+  choiceText: { flex: 1 },
+  choiceLabel: { ...type(14, c.textPrimary, '500'), lineHeight: 20 },
   freeform: { gap: space[2] },
-  error: { alignItems: 'center', flexDirection: 'row', gap: space[1.5] },
-  errorText: type(14, c.danger),
-  footer: { alignItems: 'center', flexDirection: 'row', gap: space[2], justifyContent: 'space-between', padding: space[2] },
+  error: { alignItems: 'center', backgroundColor: 'rgba(239,68,68,0.1)', borderRadius: radius.xl, flexDirection: 'row', gap: space[2], paddingLeft: space[2.5], paddingRight: space[3], paddingVertical: space[2] },
+  errorText: { ...type(14, c.danger), flexShrink: 1 },
+  footer: { alignItems: 'center', flexDirection: 'row', gap: space[2], justifyContent: 'space-between', minHeight: 40, paddingBottom: space[1], paddingLeft: space[3.5], paddingRight: space[1], paddingTop: space[2] },
   footerStart: { flexShrink: 1 },
-  actions: { alignItems: 'center', flexDirection: 'row', gap: space[2] },
+  actions: { alignItems: 'center', flexDirection: 'row', gap: space[1.5] },
   scrim: { backgroundColor: c.ink10, flex: 1, justifyContent: 'center', padding: space[4] },
 })

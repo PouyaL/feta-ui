@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react'
 import { ScrollView, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native'
-import { radius, space, type Colors } from '../kit'
+import { radius, softElevation, space, type Colors } from '../kit'
 import { type, useThemed } from './card'
-import { Modal, ModalGrabber, useDisclosure, useModal, type DisclosureProps, type DismissReason, type ModalPose } from './dialog'
+import { dockedBottom, Modal, ModalGrabber, stackedActions, useDisclosure, useEdgeInsets, useModal, type DisclosureProps, type DismissReason, type ModalPose } from './dialog'
 import { IconButton } from './icon-button'
-import { Copy, EASE_IN, Mark, soft } from './popover'
+import { Copy, EASE_IN, Mark } from './popover'
 
 /** The 40% black in the spec, as a share of the scrim token. */
 const SCRIM = 0.73
@@ -66,6 +66,7 @@ export function Drawer({ title, description, side = 'right', footer, saving = fa
 function Parts({ title, description, footer, scrollable, style, children }: { title: ReactNode; description: ReactNode; footer: ReactNode; scrollable: boolean; style: StyleProp<ViewStyle>; children: ReactNode }) {
   const styles = useThemed(createStyles)
   const { requestClose, locked, mobile, drag, still } = useModal()
+  const insets = useEdgeInsets()
   const header = (
     <View style={styles.header}>
       <View style={styles.heading}>
@@ -76,22 +77,26 @@ function Parts({ title, description, footer, scrollable, style, children }: { ti
     </View>
   )
   return (
-    <View style={[styles.panel, mobile && styles.panelSheet, style]}>
-      {mobile && drag ? <ModalGrabber /> : null}
+    <View style={[styles.panel, mobile ? styles.panelSheet : styles.panelFloat, mobile && { paddingBottom: dockedBottom(insets) }, style]}>
+      {mobile && drag ? <ModalGrabber style={styles.grabber} /> : null}
       {scrollable ? (
         <ScrollView keyboardShouldPersistTaps="handled" style={styles.card} contentContainerStyle={styles.cardBody}>{header}{children}</ScrollView>
       ) : (
         <View style={[styles.card, styles.cardBody]}>{header}{children}</View>
       )}
-      {footer ? <View style={[styles.footer, mobile && styles.footerStacked]}>{footer}</View> : null}
+      {footer ? <View style={[styles.footer, mobile && styles.footerStacked]}>{mobile ? stackedActions(footer) : footer}</View> : null}
     </View>
   )
 }
 
 const createStyles = (c: Colors) => StyleSheet.create({
-  panel: { ...soft(c), backgroundColor: c.canvas, borderColor: c.ink8, borderRadius: radius.tray, borderWidth: 1, flexShrink: 1, padding: space[2] },
-  panelSheet: { borderBottomLeftRadius: 0, borderBottomRightRadius: 0, borderTopLeftRadius: radius.sheet, borderTopRightRadius: radius.sheet, paddingBottom: space[7] },
-  card: { backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.card, borderWidth: 1, flexShrink: 1 },
+  panel: { backgroundColor: c.canvas, borderColor: c.ink8, borderRadius: radius.tray, borderWidth: 1, flexShrink: 1, padding: space[1] },
+  // The floating panel casts the soft shadow; the docked sheet keeps only its hairline, as on the web.
+  panelFloat: { boxShadow: softElevation(c) },
+  panelSheet: { borderBottomLeftRadius: 0, borderBottomRightRadius: 0, borderTopLeftRadius: radius.sheet, borderTopRightRadius: radius.sheet, paddingBottom: space[5], paddingHorizontal: space[1.5], paddingTop: 0 },
+  // 19 high: 6 above the bar and 8 below.
+  grabber: { minHeight: 0, paddingBottom: space[2], paddingTop: space[1.5] },
+  card: { boxShadow: softElevation(c), backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.card, borderWidth: 1, flexShrink: 1 },
   cardBody: { gap: space[4], padding: space[5] },
   header: { alignItems: 'flex-start', flexDirection: 'row', gap: space[3], justifyContent: 'space-between' },
   heading: { flex: 1, minWidth: 0 },

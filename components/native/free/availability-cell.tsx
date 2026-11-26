@@ -67,11 +67,12 @@ const text = (size: number, lineHeight: number, weight: TextStyle['fontWeight'] 
 const createStyles = (c: Colors) => StyleSheet.create({
   cell: { gap: space[0.5], paddingHorizontal: space[3], paddingVertical: space[2.5], borderRadius: radius.xl, borderWidth: 1, borderColor: 'transparent' },
   cell_booked: { backgroundColor: c.ink4 },
-  'cell_one-slot': { backgroundColor: 'rgba(16, 185, 129, 0.1)' },
+  // --feta-bg-success-subtle and --feta-status-success-text: opaque, so the mint stays mint on a grey tray.
+  'cell_one-slot': { backgroundColor: c.canvas === '#ffffff' ? '#ecfdf5' : '#022c22' },
   cell_open: { backgroundColor: c.surface, borderColor: c.ink8 },
   selected: { borderWidth: 2, borderColor: c.textPrimary },
   month: { ...text(14, 20, '500'), color: c.textPrimary },
   quiet: { color: c.textTertiary },
-  success: { color: c.success },
+  success: { color: c.canvas === '#ffffff' ? '#047857' : '#6ee7b7' },
   state: { ...text(12, 16), color: c.textSecondary },
 })

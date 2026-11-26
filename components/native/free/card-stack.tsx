@@ -3,7 +3,8 @@ import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } fro
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import Animated, { interpolate, runOnJS, runOnUI, useAnimatedReaction, useAnimatedStyle, useDerivedValue, useSharedValue, withSpring, type SharedValue } from 'react-native-reanimated'
 import Svg, { Circle, Ellipse, Rect } from 'react-native-svg'
-import { font, radius, space, useColors, type Colors } from '../kit'
+import { font, radius, softElevation, space, useColors, type Colors } from '../kit'
+import { AVATAR_BG, AVATAR_INK } from './avatar'
 import { Button, withInk } from './button'
 import { Card, type RenderIcon, type, useStill, useThemed } from './card'
 import { IconButton } from './icon-button'
@@ -61,8 +62,9 @@ export type CardStackProps = {
 const Paper = ({ children }: { children: ReactNode }) => <Svg aria-hidden width="100%" height="100%" viewBox="0 0 216 216">{children}</Svg>
 
 /** Line art in the avatar paper and ink. Replace it with images through `items`. */
-const createPrints = (c: Colors): PrintItem[] => {
-  const ink = c.textPrimary
+const createPrints = (_c: Colors): PrintItem[] => {
+  // The web's --feta-avatar-ink on --feta-avatar-bg: navy on warm paper, the same in Light and Dark.
+  const ink = AVATAR_INK
   return [
     {
       name: 'Low Sun', meta: 'Print 01 · Risograph', price: '$48', description: 'The last ten minutes of light over the bay, pulled in two inks.', specs: [['Size', 'A3'], ['Paper', 'Cream 120g'], ['Edition', 'of 50']],
@@ -74,7 +76,7 @@ const createPrints = (c: Colors): PrintItem[] => {
     },
     {
       name: 'Tide Pools', meta: 'Print 03 · Risograph', price: '$40', description: 'Rings of water at low tide, in one ink and the paper.', specs: [['Size', 'A4'], ['Paper', 'Cream 120g'], ['Edition', 'of 80']],
-      art: <Paper>{[89, 77, 64, 51, 38, 25, 13].map((r, i) => <Circle key={r} cx={108} cy={108} r={r * 1.09} fill={i % 2 ? c.muted : ink} />)}</Paper>,
+      art: <Paper>{[89, 77, 64, 51, 38, 25, 13].map((r, i) => <Circle key={r} cx={108} cy={108} r={r * 1.09} fill={i % 2 ? AVATAR_BG : ink} />)}</Paper>,
     },
     {
       name: 'Night Market', meta: 'Print 04 · Giclée', price: '$56', description: 'Nine stalls seen from above just before they close.', specs: [['Size', 'A3'], ['Paper', 'Cotton 310g'], ['Edition', 'of 40']],
@@ -329,9 +331,9 @@ const createStyles = (c: Colors) => StyleSheet.create({
   stage: { backgroundColor: 'transparent', borderWidth: 0, overflow: 'visible', padding: 0 },
   scene: { height: 380 },
   sceneDetails: { alignItems: 'center', paddingVertical: space[4] },
-  print: { backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.card, borderWidth: StyleSheet.hairlineWidth, height: 282, left: '50%', marginLeft: -PRINT_WIDTH / 2, position: 'absolute', top: space[6], width: PRINT_WIDTH },
+  print: { backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.card, borderWidth: 1, boxShadow: softElevation(c), height: 282, left: '50%', marginLeft: -PRINT_WIDTH / 2, position: 'absolute', top: space[6], width: PRINT_WIDTH },
   printInner: { flex: 1, gap: space[2.5], paddingBottom: space[3], paddingHorizontal: space[2], paddingTop: space[2] },
-  art: { backgroundColor: c.muted, borderRadius: radius.xl, flexShrink: 0, height: 216, overflow: 'hidden', width: 216 },
+  art: { backgroundColor: AVATAR_BG, borderRadius: radius.xl, flexShrink: 0, height: 216, overflow: 'hidden', width: 216 },
   caption: { flexDirection: 'row', gap: space[2], justifyContent: 'space-between', paddingHorizontal: space[1], width: '100%' },
   captionText: { flexShrink: 1, gap: space[0.5], minWidth: 0 },
   name: type(14, c.textPrimary, '500'),
@@ -339,8 +341,8 @@ const createStyles = (c: Colors) => StyleSheet.create({
   hintRow: { alignItems: 'center', left: 0, position: 'absolute', right: 0, top: space[1.5], zIndex: 1000 },
   hint: { alignItems: 'center', backgroundColor: c.inverse, borderRadius: radius.full, flexDirection: 'row', gap: space[1], paddingBottom: space[2], paddingLeft: space[2.5], paddingRight: space[3], paddingTop: space[2] },
   hintText: type(12, c.textInverse, '500'),
-  detail: { backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.card, borderWidth: StyleSheet.hairlineWidth, gap: space[2.5], maxWidth: '100%', paddingBottom: space[3], paddingHorizontal: space[2], paddingTop: space[2], transformOrigin: 'top', width: 300 },
-  detailArt: { aspectRatio: 1, backgroundColor: c.muted, borderRadius: radius.xl, overflow: 'hidden', width: '100%' },
+  detail: { backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.card, borderWidth: 1, boxShadow: softElevation(c), gap: space[2.5], maxWidth: '100%', paddingBottom: space[3], paddingHorizontal: space[2], paddingTop: space[2], transformOrigin: 'top', width: 300 },
+  detailArt: { aspectRatio: 1, backgroundColor: AVATAR_BG, borderRadius: radius.xl, overflow: 'hidden', width: '100%' },
   more: { gap: space[3], paddingHorizontal: space[1], paddingTop: space[1] },
   description: { ...type(12, c.textSecondary), lineHeight: 20 },
   specs: { flexDirection: 'row', justifyContent: 'space-between' },

@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useId, useRef, useState, type ReactNode } from 'react'
 import { AccessibilityInfo, StyleSheet, Text, View, type GestureResponderEvent, type LayoutChangeEvent } from 'react-native'
 import Animated, { Easing, FadeIn, FadeOut, LayoutAnimationConfig, useAnimatedStyle, useSharedValue, withSequence, withSpring, withTiming } from 'react-native-reanimated'
-import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg'
+import Svg, { Defs, LinearGradient, RadialGradient, Rect, Stop } from 'react-native-svg'
 import { accent, radius, space, useColors, type Colors } from '../kit'
 import { EASE_OUT, EASE_OUT_SOFT, HEIGHT, PRESS_SPRING, PressScale, withInk, type PressScaleProps } from './button'
 import { type, useStill, useThemed, type RenderIcon } from './card'
@@ -33,22 +33,23 @@ const INSET = space[1]
 /** Mercury keeps its look in Light and Dark, so these are fixed. kit.ts has no zinc scale yet. */
 const MERCURY = {
   zinc50: 'rgb(250,250,250)',
+  zinc100: 'rgb(244,244,245)',
   zinc200: 'rgb(228,228,231)',
   zinc300: 'rgb(212,212,216)',
   zinc400: 'rgb(161,161,170)',
   zinc900: 'rgb(24,24,27)',
   black: 'rgb(0,0,0)',
+  white: 'rgb(255,255,255)',
   rim: 'rgba(24,24,27,0.14)',
 } as const
 
-/** The web fill: a bright band on top, a darker waist and a light reflection low down. */
+/** The web fill: a smooth fall from near white to a soft grey low down, with a lift at the very bottom. */
 const MERCURY_STOPS = [
   { offset: 0, color: MERCURY.zinc50 },
-  { offset: 0.28, color: MERCURY.zinc200 },
-  { offset: 0.54, color: MERCURY.zinc300 },
-  { offset: 0.6, color: MERCURY.zinc400 },
-  { offset: 0.82, color: MERCURY.zinc200 },
-  { offset: 1, color: MERCURY.zinc50 },
+  { offset: 0.34, color: MERCURY.zinc100 },
+  { offset: 0.68, color: MERCURY.zinc200 },
+  { offset: 0.9, color: MERCURY.zinc300 },
+  { offset: 1, color: MERCURY.zinc200 },
 ] as const
 
 export type RollArrowStatus = 'idle' | 'loading' | 'success' | 'error'
@@ -113,17 +114,31 @@ const mercuryStyles = StyleSheet.create({
   svg: { left: 0, position: 'absolute', top: 0 },
 })
 
-/** The liquid silver fill. The gradient is vertical, so a fixed wide Svg clipped by the pill looks the same at any width: no layout state, no render while the pill grows. */
+/**
+ * The liquid silver fill. The gradient is vertical, so a fixed wide Svg clipped by the pill looks the same at any
+ * width: no layout state, no render while the pill grows. The broad white glow across the top (the web's radial
+ * `120% 90% at 50% -10%`) sits in a second Svg sized to the pill, so it scales with it.
+ */
 function MercuryFill() {
+  const uid = useId().replace(/[^a-zA-Z0-9]/g, '')
   return (
     <View pointerEvents="none" style={mercuryStyles.clip}>
       <Svg aria-hidden width={MEASURE_ROOM} height="100%" style={mercuryStyles.svg}>
         <Defs>
-          <LinearGradient id="mercury" x1="0" y1="0" x2="0" y2="1">
+          <LinearGradient id={`mercury${uid}`} x1="0" y1="0" x2="0" y2="1">
             {MERCURY_STOPS.map((stop) => <Stop key={stop.offset} offset={stop.offset} stopColor={stop.color} />)}
           </LinearGradient>
         </Defs>
-        <Rect width={MEASURE_ROOM} height="100%" fill="url(#mercury)" />
+        <Rect width={MEASURE_ROOM} height="100%" fill={`url(#mercury${uid})`} />
+      </Svg>
+      <Svg aria-hidden width="100%" height="100%" style={StyleSheet.absoluteFill}>
+        <Defs>
+          <RadialGradient id={`glow${uid}`} cx="0.5" cy="-0.1" rx="1.2" ry="0.9" fx="0.5" fy="-0.1">
+            <Stop offset="0" stopColor={MERCURY.white} stopOpacity={0.9} />
+            <Stop offset="0.62" stopColor={MERCURY.white} stopOpacity={0} />
+          </RadialGradient>
+        </Defs>
+        <Rect width="100%" height="100%" fill={`url(#glow${uid})`} />
       </Svg>
     </View>
   )
@@ -298,7 +313,7 @@ const createStyles = (c: Colors) => StyleSheet.create({
   pill: { alignItems: 'center', borderRadius: radius.full, flexDirection: 'row', overflow: 'hidden', paddingRight: INSET },
   pillLg: { gap: space[4], height: HEIGHT.lg, paddingLeft: space[6] },
   pillMd: { gap: space[3], height: HEIGHT.md, paddingLeft: space[4] },
-  mercury: { backgroundColor: MERCURY.zinc300 },
+  mercury: { backgroundColor: MERCURY.zinc200 },
   rim: { ...StyleSheet.absoluteFill, borderColor: MERCURY.rim, borderRadius: radius.full, borderWidth: 1 },
   ink: { backgroundColor: c.inverse },
   pillOff: { backgroundColor: c.ink5 },

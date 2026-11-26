@@ -1,9 +1,9 @@
 import { useState, type ReactNode } from 'react'
 import { StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { Easing, FadeInLeft, FadeInRight, FadeOut } from 'react-native-reanimated'
-import { font, radius, space, type Colors } from '../kit'
+import { font, radius, space, useColors, type Colors } from '../kit'
 import { Badge } from './badge'
-import { Button } from './button'
+import { Button, withInk, SELF } from './button'
 import { Card, QrArt, type RenderIcon, type, useFlash, useStill, useThemed } from './card'
 import { Field } from './field'
 import { IconButton } from './icon-button'
@@ -40,19 +40,27 @@ export type SignInCardProps = Base & {
 /** Providers, a magic link, and legal copy on the tray. */
 export function SignInCard({ product = 'Halden', providers = ['Orbit', 'Codeharbor'], mark, renderIcon, onProvider, onMagicLink, legal = 'By continuing, you agree to the Terms and Privacy Policy.', animated = true, style }: SignInCardProps) {
   const styles = useThemed(createStyles)
+  const colors = useColors()
   const [email, setEmail] = useState('')
+  const filled = email.trim().length > 0
+  const send = (): void => { if (filled) onMagicLink?.(email) }
+  // The web layout: a centred heading under a round ink mark, providers, an "or" rule, then the email form.
   return (
-    <Card animated={animated} style={style} footer={<Text style={styles.legal}>{legal}</Text>}>
-      <View style={styles.heading}>
-        <View style={styles.tile}>{mark ?? renderIcon('sparkles', 20)}</View>
-        <View style={styles.text}><Text style={styles.titleLg} accessibilityRole="header">Sign in to {product}</Text><Text style={styles.small}>Welcome back. No password needed.</Text></View>
+    <Card animated={animated} style={style} bodyStyle={styles.signInBody} footerStyle={styles.legalFooter} footer={<Text style={styles.legal}>{legal}</Text>}>
+      <View style={styles.signIn}>
+        <View style={styles.headingCentered}>
+          <View style={styles.mark}>{withInk(mark ?? renderIcon('sparkles', 20), colors.textInverse)}</View>
+          <View style={styles.headingText}><Text style={[styles.titleLg, styles.centered]} accessibilityRole="header">Sign in to {product}</Text><Text style={styles.description}>Welcome back. No password needed.</Text></View>
+        </View>
+        <View style={styles.providers}>
+          {providers.map((provider) => <Button key={provider} variant="secondary" animated={animated} style={styles.provider} onPress={() => onProvider?.(provider)}>{provider}</Button>)}
+        </View>
+        <View accessibilityRole="none" style={styles.orRow}><View style={styles.orLine} /><Text style={styles.or}>or</Text><View style={styles.orLine} /></View>
+        <View style={styles.form}>
+          <Field label="Work email" animated={animated}><Input size="sm" type="email" autoComplete="email" autoCapitalize="none" placeholder="you@company.example" value={email} onChangeText={setEmail} onSubmitEditing={send} animated={animated} /></Field>
+          <Button style={styles.wide} trailingIcon={renderIcon('arrow-right', 16)} {...(filled ? { feedback: { loading: 'Sending', success: 'Link sent' } } : {})} animated={animated} onPress={send}>Send magic link</Button>
+        </View>
       </View>
-      <View style={styles.providers}>
-        {providers.map((provider) => <Button key={provider} variant="secondary" animated={animated} style={styles.provider} onPress={() => onProvider?.(provider)}>{provider}</Button>)}
-      </View>
-      <Text style={styles.or}>or</Text>
-      <Field label="Work email" animated={animated}><Input size="sm" type="email" autoComplete="email" autoCapitalize="none" placeholder="you@company.com" value={email} onChangeText={setEmail} onSubmitEditing={() => onMagicLink?.(email)} animated={animated} /></Field>
-      <Button style={styles.wide} trailingIcon={renderIcon('arrow-right', 16)} disabled={email.trim().length === 0} feedback={{ loading: 'Sending', success: 'Link sent' }} animated={animated} onPress={() => onMagicLink?.(email)}>Send magic link</Button>
     </Card>
   )
 }
@@ -93,7 +101,7 @@ export function OrderSummaryCard({ name = 'Field notes, yearly', detail = 'Unlim
       </View>
       <View style={styles.line}>
         <View style={styles.text}><Input size="sm" accessibilityLabel="Promo code" autoCapitalize="characters" value={promo} onChangeText={(next) => { setPromo(next); setApplied(false) }} animated={animated} /></View>
-        <Button variant="secondary" {...(promo.trim().length > 0 ? { feedback: { success: 'Applied' } } : {})} animated={animated} onPress={() => setApplied(promo.trim().length > 0)}>Apply</Button>
+        <Button style={SELF.center} variant="secondary" {...(promo.trim().length > 0 ? { feedback: { success: 'Applied' } } : {})} animated={animated} onPress={() => setApplied(promo.trim().length > 0)}>Apply</Button>
       </View>
       <View style={styles.rule} />
       <View style={styles.spread}><Text style={styles.small}>Subtotal</Text><Text style={styles.small}>{money(subtotal)}</Text></View>
@@ -163,7 +171,7 @@ export type StepperCardProps = Base & {
 
 const STEPPER: NonNullable<StepperCardProps['steps']> = [
   { label: 'Project details', title: 'Project details', description: 'A little context helps the team find it later.', field: 'Project name', defaultValue: 'Arc launch' },
-  { label: 'Assign owner', title: 'Assign owner', description: 'One person answers for it. You can change this later.', field: 'Owner email', placeholder: 'you@company.com' },
+  { label: 'Assign owner', title: 'Assign owner', description: 'One person answers for it. You can change this later.', field: 'Owner email', placeholder: 'you@company.example' },
 ]
 
 /** Numbered steps with one field each, and Back and Continue on the tray. */
@@ -239,7 +247,7 @@ export function TwoFactorCard({ secret, stepLabel = 'Step 1 of 3', apps = ['Pass
       <Text style={styles.small}>Can’t scan it? Enter this key</Text>
       <View style={styles.keyBox}>
         <Text style={styles.key} selectable>{secret}</Text>
-        <IconButton variant="ghost" size="sm" icon={renderIcon(copied ? 'check' : 'copy', 16)} label={copied ? 'Copied' : 'Copy key'} animated={animated} onPress={() => { onCopy?.(secret.replaceAll(' ', '')); flash() }} />
+        <IconButton style={SELF.center} variant="ghost" size="sm" icon={renderIcon(copied ? 'check' : 'copy', 16)} label={copied ? 'Copied' : 'Copy key'} animated={animated} onPress={() => { onCopy?.(secret.replaceAll(' ', '')); flash() }} />
       </View>
     </Card>
   )
@@ -251,14 +259,25 @@ const createStyles = (c: Colors) => StyleSheet.create({
   tile: { alignItems: 'center', backgroundColor: c.ink4, borderRadius: radius.xl, height: 44, justifyContent: 'center', width: 44 },
   text: { flex: 1, gap: space[0.5] },
   title: type(16, c.textPrimary, '500'),
-  titleLg: type(20, c.textPrimary, '500'),
+  titleLg: { ...type(18, c.textPrimary, '600'), lineHeight: 26 },
+  centered: { textAlign: 'center' },
   name: type(14, c.textPrimary, '500'),
   small: type(12, c.textSecondary),
-  legal: { ...type(12, c.textTertiary), flex: 1, textAlign: 'center' },
+  legal: { ...type(12, c.textTertiary), flex: 1, lineHeight: 16, textAlign: 'center' },
+  legalFooter: { justifyContent: 'center', paddingBottom: space[1.5], paddingHorizontal: space[4], paddingTop: space[2.5] },
+  signInBody: { paddingBottom: space[6], paddingHorizontal: space[6], paddingTop: space[7] },
+  signIn: { gap: space[5] },
+  headingCentered: { alignItems: 'center', gap: space[3] },
+  headingText: { alignItems: 'center', gap: space[1] },
+  mark: { alignItems: 'center', backgroundColor: c.inverse, borderRadius: radius.full, height: 40, justifyContent: 'center', width: 40 },
+  description: { ...type(16, c.textSecondary), lineHeight: 22, textAlign: 'center' },
+  orRow: { alignItems: 'center', flexDirection: 'row', gap: space[3] },
+  orLine: { backgroundColor: c.ink8, flex: 1, height: 1 },
+  form: { gap: space[5] },
   or: { ...type(12, c.textTertiary), textAlign: 'center' },
-  // Like the web grid: providers share a row at 120 px or more each and wrap when there are many.
+  // Like the web grid at phone width: providers stack on a phone column and share a row when there is room.
   providers: { flexDirection: 'row', flexWrap: 'wrap', gap: space[2] },
-  provider: { flexBasis: 120, flexGrow: 1, minWidth: 0 },
+  provider: { flexBasis: 160, flexGrow: 1, minWidth: 0 },
   wide: { alignSelf: 'stretch' },
   column: { alignItems: 'stretch', flexDirection: 'column' },
   split: { justifyContent: 'space-between' },

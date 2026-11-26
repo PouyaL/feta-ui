@@ -12,8 +12,10 @@ const SINK = 2
 export type CommandButtonProps = Omit<PressScaleProps, 'still' | 'scale' | 'spring' | 'children' | 'contentStyle' | 'pressedStyle'> & {
   label?: string
   icon?: ReactNode
-  /** The letter of the shortcut. Default `k`. The keys show on iPad only: wire the real key in your app. */
+  /** The letter of the shortcut. Default `k`. Wire the real key in your app. */
   shortcutKey?: string
+  /** Shows the shortcut keycaps, like the web. Default `true`; pass `false` on screens that never have a keyboard. */
+  showKeys?: boolean
   /** Default `mac` on iOS, `windows` elsewhere. */
   os?: 'mac' | 'windows'
   /** `false` turns off the press scale and the sinking keys. */
@@ -38,14 +40,14 @@ function Keycap({ text, down, still, off }: { text: string; down: boolean; still
   )
 }
 
-/** A button that shows its shortcut as keycaps on iPad, sinking as it is pressed. Phones show the action alone. */
-export function CommandButton({ label = 'Search', icon, shortcutKey = 'k', os = Platform.OS === 'ios' ? 'mac' : 'windows', animated = true, disabled, style, onPressIn, onPressOut, ...rest }: CommandButtonProps) {
+/** A button that shows its shortcut as keycaps, sinking as it is pressed. */
+export function CommandButton({ label = 'Search', icon, shortcutKey = 'k', showKeys = true, os = Platform.OS === 'ios' ? 'mac' : 'windows', animated = true, disabled, style, onPressIn, onPressOut, ...rest }: CommandButtonProps) {
   const styles = useThemed(createStyles)
   const colors = useColors()
   const still = useStill(animated)
   const [down, setDown] = useState(false)
   const off = Boolean(disabled)
-  const keys = Platform.OS === 'ios' && Platform.isPad
+  const keys = showKeys
 
   function handleIn(event: GestureResponderEvent): void {
     setDown(true)

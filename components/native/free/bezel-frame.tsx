@@ -89,6 +89,7 @@ export function BezelFrame({ label, placeholder = 'Ask me anything…', defaultV
           icon={renderIcon(thinking ? 'stop' : 'send', SEND_ICON)}
           label={thinking ? 'Stop' : 'Send'}
           animated={animated}
+          style={styles.send}
           disabled={disabled}
           onPress={submit}
         />
@@ -108,10 +109,13 @@ const createStyles = (c: Colors, dark: boolean) => {
     disabled: { backgroundColor: c.ink5, elevation: 0, opacity: 0.5, shadowOpacity: 0 },
     // Focus: a soft glow in the deep sky tint, 40% strong.
     glow: { ...StyleSheet.absoluteFill, backgroundColor: c.surface, borderRadius: radius.full, elevation: 8, shadowColor: accent.sky.deep, shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.4, shadowRadius: 14 },
-    field: { alignItems: 'center', backgroundColor: c.surface, borderRadius: radius.full, flexDirection: 'row', gap: space[2], height: FIELD_HEIGHT, paddingLeft: space[5], paddingRight: space[1] },
+    field: { alignItems: 'center', backgroundColor: c.surface, borderRadius: radius.full, flexDirection: 'row', gap: space[2], height: FIELD_HEIGHT, paddingLeft: space[5], paddingRight: space[1.5] },
     fieldRing: { ...StyleSheet.absoluteFill, borderColor: accent.sky.from, borderRadius: radius.full, borderWidth: 1 },
-    lead: { flexShrink: 0 },
-    // The web's 24 px body line: without it iOS sizes the empty field shorter than its placeholder and clips it.
-    input: { ...type(16, c.textPrimary), flex: 1, minHeight: 24, minWidth: 0, paddingVertical: 0 },
+    lead: { alignSelf: 'center', flexShrink: 0 },
+    // Button hugs the top of its row by default; the web centres send in the 50 point field.
+    send: { alignSelf: 'center' },
+    // Fills the field's height: a 24 point box clipped the placeholder's descenders and sat it low on iOS. iOS
+    // centres a single line input's text in its box, so a tall box keeps value and placeholder on the same line.
+    input: { ...type(16, c.textPrimary), alignSelf: 'stretch', flex: 1, minWidth: 0, paddingVertical: 0 },
   })
 }

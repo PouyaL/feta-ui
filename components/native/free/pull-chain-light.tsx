@@ -181,6 +181,8 @@ export function PullChainLight({ title = 'Desk lamp', on, defaultOn = false, onC
         </View>
       </View>
       <View style={styles.scene}>
+        {/* The scene fills the column; the lamp, its light and the chain keep the web's 280 point stage, centred. */}
+        <View pointerEvents="box-none" style={styles.stage}>
         <Animated.View pointerEvents="none" style={[styles.light, lightStyle]}>
           <Svg aria-hidden width={440} height={400}>
             <Defs>
@@ -237,6 +239,7 @@ export function PullChainLight({ title = 'Desk lamp', on, defaultOn = false, onC
             </Pressable>
           </Animated.View>
         </GestureDetector>
+        </View>
         <View accessibilityLiveRegion="polite" style={styles.caption}>
           <Text style={styles.captionTitle}>{label}</Text>
           <Text style={styles.meta}>{hint}</Text>
@@ -247,14 +250,15 @@ export function PullChainLight({ title = 'Desk lamp', on, defaultOn = false, onC
 }
 
 const createStyles = (c: Colors) => StyleSheet.create({
-  tray: { backgroundColor: c.ink4, borderRadius: radius.tray, maxWidth: 288, padding: space[1], width: '100%' },
+  tray: { alignSelf: 'stretch', backgroundColor: c.ink4, borderRadius: radius.tray, padding: space[1] },
   header: { alignItems: 'center', flexDirection: 'row', gap: space[2], justifyContent: 'space-between', paddingBottom: space[2.5], paddingHorizontal: space[3], paddingTop: space[2] },
   title: { alignItems: 'center', flexDirection: 'row', flexShrink: 1, gap: space[2] },
   titleText: type(16, c.textPrimary, '500'),
   status: { backgroundColor: c.ink5, borderRadius: radius.full, overflow: 'hidden', paddingHorizontal: space[2], paddingVertical: space[0.5] },
   statusTint: { ...StyleSheet.absoluteFill, backgroundColor: accent.orange.to, opacity: 0.16 },
   statusText: type(12, c.textSecondary, '500'),
-  scene: { alignSelf: 'center', backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.card, borderWidth: 1, height: 280, maxWidth: '100%', overflow: 'hidden', width: 280 },
+  scene: { backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.card, borderWidth: 1, height: 280, overflow: 'hidden' },
+  stage: { bottom: 0, left: '50%', marginLeft: -140, position: 'absolute', top: 0, width: 280 },
   light: { left: -80, position: 'absolute', top: -60 },
   mote: { backgroundColor: accent.amber.light, borderRadius: radius.full, position: 'absolute' },
   lamp: { left: 0, position: 'absolute', top: 0, transformOrigin: '140px 0px' },

@@ -5,6 +5,7 @@ import Svg, { Path } from 'react-native-svg'
 import { radius, space, useColors, type Colors } from '../kit'
 import { type, useStill, useThemed, type RenderIcon } from './card'
 import { useFieldControl } from './field'
+import { withInk } from './button'
 import { iconFor } from './label'
 
 const DRAW_MS = 180
@@ -144,6 +145,8 @@ export function CheckboxField({ label, description, error, checked, defaultCheck
         aria-checked={indeterminate ? 'mixed' : on}
         aria-disabled={field.disabled}
         disabled={field.disabled}
+        // The web row has no minimum height, so an error sits right under the label; the slop keeps a 44 point target.
+        hitSlop={{ top: 11, bottom: 11 }}
         style={styles.row}
         onPress={toggle}
         onPressIn={() => setPressed(true)}
@@ -170,6 +173,7 @@ export type CheckboxCardProps = Omit<CheckboxProps, 'style'> & { title: ReactNod
 /** A whole card that toggles. */
 export function CheckboxCard({ title, description, icon, checked, defaultChecked = false, onCheckedChange, indeterminate = false, invalid, disabled = false, drawDelay = 0, accessibilityLabel, animated = true, style }: CheckboxCardProps) {
   const styles = useThemed(createStyles)
+  const colors = useColors()
   const still = useStill(animated)
   const { on, toggle } = useChecked(checked, defaultChecked, onCheckedChange)
   const [pressed, setPressed] = useState(false)
@@ -185,7 +189,7 @@ export function CheckboxCard({ title, description, icon, checked, defaultChecked
       onPressIn={() => setPressed(true)}
       onPressOut={() => setPressed(false)}
     >
-      {icon ? <View style={[styles.tile, on && styles.tileOn]}>{icon}</View> : null}
+      {icon ? <View style={[styles.tile, on && styles.tileOn]}>{withInk(icon, on ? colors.textInverse : colors.textPrimary)}</View> : null}
       <View style={styles.text}>
         <Text style={styles.title}>{title}</Text>
         {description ? <Text style={styles.description}>{description}</Text> : null}
@@ -227,7 +231,7 @@ export function CheckboxGroup({ label, items, value, defaultValue = [], onValueC
   return (
     <View accessibilityLabel={label} style={[styles.group, style]}>
       <View style={styles.parent}>
-        <CheckboxField label={label} animated={animated} checked={all} indeterminate={count > 0 && !all} invalid={Boolean(error)} onCheckedChange={() => set(all ? [] : enabled.map((item) => item.value))} />
+        <CheckboxField style={styles.parentField} label={label} animated={animated} checked={all} indeterminate={count > 0 && !all} invalid={Boolean(error)} onCheckedChange={() => set(all ? [] : enabled.map((item) => item.value))} />
         <Text style={styles.count}>{count} of {enabled.length}</Text>
       </View>
       <View style={styles.list}>
@@ -268,7 +272,7 @@ const createStyles = (c: Colors) => StyleSheet.create({
   fillInvalid: { backgroundColor: c.danger },
   field: { flexShrink: 1, gap: space[1], minWidth: 0 },
   dimmed: { opacity: 0.5 },
-  row: { alignItems: 'flex-start', flexDirection: 'row', gap: space[2.5], minHeight: 44 },
+  row: { alignItems: 'flex-start', flexDirection: 'row', gap: space[2.5] },
   text: { flex: 1, minWidth: 0 },
   title: { ...type(16, c.textPrimary, '500'), lineHeight: 22 },
   description: { ...type(14, c.textSecondary), lineHeight: 20 },
@@ -282,6 +286,7 @@ const createStyles = (c: Colors) => StyleSheet.create({
   tileOn: { backgroundColor: c.inverse },
   group: { backgroundColor: c.ink4, borderRadius: radius.tray, padding: space[1] },
   parent: { alignItems: 'center', flexDirection: 'row', gap: space[2], justifyContent: 'space-between', paddingHorizontal: space[3], paddingVertical: space[2] },
+  parentField: { flex: 1 },
   count: type(12, c.textTertiary, '400', true),
   list: { backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.card, borderWidth: StyleSheet.hairlineWidth, gap: space[0.5], padding: space[1] },
   item: { borderRadius: radius.xl, justifyContent: 'center', minHeight: 44, paddingHorizontal: space[2.5], paddingVertical: space[2] },

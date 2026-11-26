@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Pressable, ScrollView, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated'
 import Svg, { Path } from 'react-native-svg'
-import { press, radius, space, useColors, type Colors } from '../kit'
+import { press, radius, softElevation, space, useColors, type Colors } from '../kit'
 import { type, useStill, useThemed } from './card'
 
 const DAY_MS = 86400000
@@ -60,7 +60,7 @@ function Capsule({ number, label, on, past, still, onPress }: { number: number; 
       accessibilityLabel={label}
       accessibilityRole="radio"
       aria-checked={on}
-      style={[styles.capsule, past && styles.capsulePast, capsule]}
+      style={[styles.capsule, past ? styles.capsulePast : styles.lifted, capsule]}
       onPress={onPress}
       onPressIn={() => { if (!still) scale.value = withSpring(TAP_SCALE, PRESS) }}
       onPressOut={() => { if (!still) scale.value = withSpring(1, PRESS) }}
@@ -120,13 +120,15 @@ export function DayStrip({ start, days = 5, value, defaultValue, onValueChange, 
 
 const createStyles = (c: Colors) => StyleSheet.create({
   scroller: { alignSelf: 'center', flexGrow: 0, maxWidth: '100%' },
-  strip: { alignItems: 'flex-start', flexDirection: 'row', gap: GAP, paddingTop: space[3] },
-  pointer: { height: 6, left: 0, position: 'absolute', top: 0, width: 8 },
+  strip: { alignItems: 'flex-start', flexDirection: 'row', gap: GAP, paddingBottom: space[4], paddingHorizontal: space[1], paddingTop: space[3] },
+  pointer: { height: 6, left: space[1], position: 'absolute', top: 0, width: 8 },
   column: { alignItems: 'center', gap: space[2], minWidth: 0 },
   weekday: type(12, c.textTertiary, '400', true),
   weekdayOn: { color: c.textPrimary, fontWeight: '600' },
   capsule: { alignItems: 'center', backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.full, borderWidth: StyleSheet.hairlineWidth, justifyContent: 'flex-start', paddingTop: space[2] },
   capsulePast: { backgroundColor: c.ink4, borderWidth: 0 },
+  // The web soft elevation on today and future days; past days sit flat.
+  lifted: { boxShadow: softElevation(c) },
   disc: { alignItems: 'center', borderColor: c.ink8, borderRadius: radius.full, borderWidth: 1, justifyContent: 'center' },
   discOn: { backgroundColor: c.inverse, borderWidth: 0 },
   number: type(16, c.textPrimary, '500'),

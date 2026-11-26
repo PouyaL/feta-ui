@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { Image, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { Easing, FadeIn, cancelAnimation, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated'
 import Svg, { Circle, Defs, LinearGradient, Path, Polygon, Rect, Stop } from 'react-native-svg'
-import { radius, space, useColors, type Colors } from '../kit'
+import { accent, radius, space, useColors, type Colors } from '../kit'
 import { Button } from './button'
 import { type RenderIcon, type, useStill, useThemed } from './card'
 
@@ -181,15 +181,20 @@ export function AspectRatio({ ratio = '16:9', src, alt = '', content, children, 
   )
 }
 
+const SCENE_COLORS = { sky: accent.sky.from, sun: accent.amber.from, dune: accent.emerald.from, duneNear: accent.emerald.to } as const
+/** The same colours through a grayscale filter (Rec. 709 luma). */
+const SCENE_GREYS = { sky: '#a5a5a5', sun: '#c1c1c1', dune: '#adadad', duneNear: '#747474' } as const
+
 /** The drawn stand-in from the Figma frames. Replace it with real media. */
-export function AspectRatioScene({ style }: { style?: StyleProp<ViewStyle> }) {
-  const colors = useColors()
+export function AspectRatioScene({ grayscale = false, style }: { /** The scene in greys, as a CSS grayscale filter draws it. */ grayscale?: boolean; style?: StyleProp<ViewStyle> }) {
+  // The web scene's gradient tokens: sky, amber sun, emerald dunes. The same in Light and Dark.
+  const ink = grayscale ? SCENE_GREYS : SCENE_COLORS
   return (
     <Svg aria-hidden width="100%" height="100%" viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice" style={style}>
-      <Rect width={320} height={180} fill={colors.muted} />
-      <Circle cx={226} cy={74} r={26} fill={colors.textQuaternary} />
-      <Path d="M0 118C60 88 108 96 168 122S280 142 320 112V180H0Z" fill={colors.textTertiary} />
-      <Path d="M0 152C54 124 132 128 188 146S288 166 320 148V180H0Z" fill={colors.textSecondary} />
+      <Rect width={320} height={180} fill={ink.sky} />
+      <Circle cx={226} cy={74} r={26} fill={ink.sun} />
+      <Path d="M0 118C60 88 108 96 168 122S280 142 320 112V180H0Z" fill={ink.dune} />
+      <Path d="M0 152C54 124 132 128 188 146S288 166 320 148V180H0Z" fill={ink.duneNear} />
     </Svg>
   )
 }

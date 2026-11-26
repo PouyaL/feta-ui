@@ -10,6 +10,12 @@ export const HEIGHT = { sm: 36, md: 44, lg: 52 } as const
 export const ICON_SIZE = 20
 /** The smallest touch target. */
 export const TARGET = 44
+/**
+ * Button holds `alignSelf: 'flex-start'` so it hugs its label in a column. That also overrides a parent's
+ * `alignItems`, so where the parent centres or ends its children (a row of controls, a centred footer) pass the
+ * matching one of these as the Button's style.
+ */
+export const SELF = StyleSheet.create({ center: { alignSelf: 'center' }, end: { alignSelf: 'flex-end' } })
 
 export type Spring = { stiffness: number; damping: number; mass: number }
 

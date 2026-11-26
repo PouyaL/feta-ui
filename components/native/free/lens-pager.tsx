@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import { StyleSheet, Text, View, type AccessibilityActionEvent, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated'
-import { font, radius, space, type Colors } from '../kit'
+import { font, radius, softElevation, space, type Colors } from '../kit'
 import { type, useStill, useThemed } from './card'
 import { IconButton } from './icon-button'
-import { Mark, soft } from './popover'
+import { Mark } from './popover'
 
 /** Sideways distance between numbers on the strip. */
 const SLOT = 64
@@ -65,7 +65,7 @@ export function LensPager({ pages, page, defaultPage = 1, onPageChange, 'aria-la
 
   return (
     <View accessibilityLabel={label} style={[styles.tray, style]}>
-      <IconButton variant="secondary" size="sm" label="Previous page" icon={<Mark name="chevron-left" />} animated={animated} disabled={current <= 1} onPress={() => go(current - 1)} />
+      <IconButton variant="secondary" size="sm" label="Previous page" icon={<Mark name="chevron-left" />} style={styles.arrow} animated={animated} disabled={current <= 1} onPress={() => go(current - 1)} />
       <View
         accessible
         accessibilityRole="adjustable"
@@ -85,7 +85,7 @@ export function LensPager({ pages, page, defaultPage = 1, onPageChange, 'aria-la
         <View style={styles.window}>{strip.map((n) => <Numeral key={n} n={n} current={current} still={still} />)}</View>
         <Text accessibilityLiveRegion="polite" style={styles.count}>{current} of {pages}</Text>
       </View>
-      <IconButton variant="secondary" size="sm" label="Next page" icon={<Mark name="chevron-right" />} animated={animated} disabled={current >= pages} onPress={() => go(current + 1)} />
+      <IconButton variant="secondary" size="sm" label="Next page" icon={<Mark name="chevron-right" />} style={styles.arrow} animated={animated} disabled={current >= pages} onPress={() => go(current + 1)} />
     </View>
   )
 }
@@ -97,7 +97,8 @@ const MARK = 34
 
 const createStyles = (c: Colors) => StyleSheet.create({
   tray: { alignItems: 'center', alignSelf: 'flex-start', backgroundColor: c.ink4, borderRadius: radius.full, flexDirection: 'row', gap: space[3], justifyContent: 'center', maxWidth: '100%', paddingHorizontal: space[3], paddingVertical: space[1] },
-  lens: { ...soft(c), backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.full, borderWidth: 1, height: LENS, overflow: 'hidden', width: LENS },
+  arrow: { alignSelf: 'center' },
+  lens: { boxShadow: softElevation(c), backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.full, borderWidth: 1, height: LENS, overflow: 'hidden', width: LENS },
   rule: { backgroundColor: c.ink8, height: 1, left: 26, position: 'absolute', right: 26 },
   ruleTop: { top: CENTER - RULE - 1 },
   ruleBottom: { top: CENTER + RULE },
@@ -106,7 +107,7 @@ const createStyles = (c: Colors) => StyleSheet.create({
   markLeft: { left: CENTER - MARK - 1 },
   markRight: { left: CENTER + MARK - 1 },
   window: { height: 44, left: 0, position: 'absolute', right: 0, top: CENTER - 22 },
-  number: { color: c.textTertiary, fontFamily: font.mono, fontSize: 26, fontWeight: '300', left: '50%', lineHeight: 44, marginLeft: -30, position: 'absolute', textAlign: 'center', top: 0, width: 60 },
-  numberOn: { color: c.textPrimary, fontWeight: '500' },
+  number: { color: c.textTertiary, fontFamily: font.mono, fontSize: 26, fontWeight: '400', left: '50%', lineHeight: 44, marginLeft: -30, position: 'absolute', textAlign: 'center', top: 0, width: 60 },
+  numberOn: { color: c.textPrimary, fontWeight: '700' },
   count: { ...type(10, c.textTertiary, '400', true), bottom: 36, left: 0, lineHeight: 14, position: 'absolute', right: 0, textAlign: 'center' },
 })

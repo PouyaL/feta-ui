@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Platform, Pressable, StyleSheet, Text, View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native'
 import Animated, { Easing, cancelAnimation, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated'
-import { font, space, useColors, type Colors } from '../kit'
+import { font, space, useAppActive, useColors, type Colors } from '../kit'
 import { type, useStill, useThemed } from './card'
 import { TextShell } from './type-writer'
 
@@ -28,12 +28,13 @@ export type GlitchTextProps = {
 function Slice({ text, textStyle, color, top, shift, duration, on }: { text: string; textStyle: StyleProp<TextStyle>; color: string; top: boolean; shift: number; duration: number; on: boolean }) {
   const styles = useThemed(makeStyles)
   const x = useSharedValue(0)
+  const active = useAppActive()
   useEffect(() => {
-    if (!on) return undefined
+    if (!on || !active) return undefined
     x.value = -1
     x.value = withRepeat(withTiming(1, { duration, easing: Easing.linear }), -1, true)
     return () => cancelAnimation(x)
-  }, [on, duration, x])
+  }, [on, active, duration, x])
   const offset = useAnimatedStyle(() => ({ transform: [{ translateX: (x.value >= 0 ? 1 : -1) * shift * (top ? 1 : -1) }] }))
   const ink = useMemo(() => ({ color }), [color])
   if (!on) return null

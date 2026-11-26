@@ -1,11 +1,40 @@
-import { cloneElement, createContext, useContext, useEffect, useMemo, useRef, useState, type ReactElement, type ReactNode } from 'react'
+import { Children, Fragment, cloneElement, createContext, isValidElement, useContext, useEffect, useMemo, useRef, useState, type ReactElement, type ReactNode } from 'react'
 import { KeyboardAvoidingView, Modal as NativeModal, Platform, Pressable, ScrollView, StyleSheet, View, useColorScheme, useWindowDimensions, type LayoutChangeEvent, type StyleProp, type ViewStyle } from 'react-native'
 import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler'
+import { SafeAreaInsetsContext, type EdgeInsets } from 'react-native-safe-area-context'
 import Animated, { interpolateColor, runOnJS, useAnimatedStyle, useDerivedValue, useSharedValue, withSequence, withSpring, withTiming, type SharedValue } from 'react-native-reanimated'
-import { radius, space, useColors, type Colors } from '../kit'
+import { radius, softElevation, space, useColors, type Colors } from '../kit'
 import { type, useStill, useThemed } from './card'
+import { Button, type ButtonProps } from './button'
 import { IconButton } from './icon-button'
-import { animateTo, Copy, EASE_IN, EASE_OUT, Mark, ORIENTATIONS, soft, useCompact, type Transition } from './popover'
+import { animateTo, Copy, EASE_IN, EASE_OUT, Mark, ORIENTATIONS, useCompact, type Transition } from './popover'
+
+type Action = ReactElement<{ style?: StyleProp<ViewStyle>; size?: ButtonProps['size'] }>
+
+/**
+ * Phone sheets stack their actions full width at the Medium height, as the web's mobile sheet does
+ * (`.actions > *` in the dialog, `.footer > button` in the drawer). Fragments are opened so each action stretches.
+ */
+export function stackedActions(node: ReactNode): ReactNode {
+  return Children.map(node, (child): ReactNode => {
+    if (!isValidElement(child)) return child
+    if (child.type === Fragment) return stackedActions((child.props as { children?: ReactNode }).children)
+    const action = child as Action
+    return cloneElement(action, { style: [action.props.style, STACKED], ...(action.type === Button ? { size: 'md' as const } : {}) })
+  })
+}
+
+const STACKED = StyleSheet.create({ action: { alignSelf: 'stretch' } }).action
+
+const NO_INSETS: EdgeInsets = { top: 0, right: 0, bottom: 0, left: 0 }
+
+/** The device's safe area (status bar, notch, home indicator), from the app's SafeAreaProvider. Zero without one. */
+export function useEdgeInsets(): EdgeInsets {
+  return useContext(SafeAreaInsetsContext) ?? NO_INSETS
+}
+
+/** Bottom padding inside a sheet docked to the bottom edge: the design's 28, or the home indicator plus 8 when that is taller. */
+export const dockedBottom = (insets: EdgeInsets): number => Math.max(space[7], insets.bottom + space[2])
 
 /** The Figma scrim alpha, `--feta-effect-scrim`. */
 const SCRIM_ALPHA = 0.55
@@ -150,8 +179,12 @@ export function Modal({ open, onDismiss, role = 'dialog', label, placement = 'ce
   const gutter = inset ?? (docked && where === 'bottom' ? 0 : 8)
   const across = where === 'top' || where === 'bottom'
   const full = docked && across && gutter === 0
-  const panelWidth = Math.min(width, view.width - gutter * 2)
-  const panelHeight = view.height - (full ? 32 : 16)
+  // The panel keeps its gutter inside the safe area. A sheet docked to the bottom edge runs to the edge and pads inside.
+  const insets = useEdgeInsets()
+  const edgeBottom = gutter === 0 && where === 'bottom' ? 0 : insets.bottom
+  const frame = { paddingBottom: gutter + edgeBottom, paddingLeft: gutter + insets.left, paddingRight: gutter + insets.right, paddingTop: gutter + insets.top }
+  const panelWidth = Math.min(width, view.width - gutter * 2 - insets.left - insets.right)
+  const panelHeight = view.height - (full ? 32 : 16) - insets.top - edgeBottom
 
   function finish(): void {
     entered.current = false
@@ -261,7 +294,7 @@ export function Modal({ open, onDismiss, role = 'dialog', label, placement = 'ce
           <Animated.View style={[styles.scrim, scheme === 'dark' ? styles.scrimDark : null, scrimStyle]} />
           <Pressable accessibilityRole="button" accessibilityLabel="Dismiss" style={StyleSheet.absoluteFill} onPress={() => dismiss.current('scrim')} />
           {renderPanel ? renderPanel(context) : (
-            <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} pointerEvents="box-none" style={[StyleSheet.absoluteFill, PLACE[where], gutter === 8 ? layout.gutter : null]}>
+            <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} pointerEvents="box-none" style={[StyleSheet.absoluteFill, PLACE[where], frame]}>
               <Animated.View
                 accessibilityViewIsModal
                 accessibilityRole={role === 'alertdialog' ? 'alert' : undefined}
@@ -373,7 +406,7 @@ export function DialogFooter({ note, children, style }: DialogFooterProps) {
   return (
     <View style={[styles.footer, style]}>
       {note ? <Copy style={styles.note}>{note}</Copy> : null}
-      <View style={[styles.actions, mobile && styles.actionsStacked]}>{children}</View>
+      <View style={[styles.actions, mobile && styles.actionsStacked]}>{mobile ? stackedActions(children) : children}</View>
     </View>
   )
 }
@@ -424,12 +457,13 @@ type BodyProps = Pick<DialogProps, 'title' | 'description' | 'media' | 'close' |
 function DialogBody({ pulse, arrangement, title, description, media, close, footer, style, children }: BodyProps) {
   const styles = useThemed(createStyles)
   const { mobile } = useModal()
+  const insets = useEdgeInsets()
   const pinned = arrangement !== 'default'
   const nudge = useAnimatedStyle(() => ({ transform: [{ scale: pulse.value }] }))
   const header = <DialogHeader title={title} description={description} media={media} {...(close === undefined ? {} : { close })} {...(pinned ? { style: styles.headerPinned } : {})} />
   return (
-    <Animated.View style={[styles.tray, mobile && styles.traySheet, pinned && styles.trayPinned, nudge, style]}>
-      {mobile ? <ModalGrabber /> : null}
+    <Animated.View style={[styles.tray, mobile && styles.traySheet, mobile && { paddingBottom: dockedBottom(insets) }, pinned && styles.trayPinned, nudge, style]}>
+      {mobile ? <ModalGrabber style={styles.grabberTight} /> : null}
       <View style={[styles.card, pinned && styles.cardPinned]}>
         {header}
         {pinned ? <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={styles.scroller}>{children}</ScrollView> : children}
@@ -448,7 +482,6 @@ const PLACE = StyleSheet.create({
 })
 
 const layout = StyleSheet.create({
-  gutter: { padding: space[2] },
   panel: { flexShrink: 1 },
 })
 
@@ -458,10 +491,12 @@ const createStyles = (c: Colors) => StyleSheet.create({
   scrimDark: { backgroundColor: c.canvas },
   grabber: { alignItems: 'center', minHeight: 24, paddingBottom: space[1], paddingTop: space[0.5] },
   bar: { borderRadius: radius.full, height: 4, width: 36 },
+  // The web dialog's grabber: 2 above the bar and 4 below, no taller.
+  grabberTight: { minHeight: 0 },
   tray: { backgroundColor: c.muted, borderRadius: radius.tray, flexShrink: 1, padding: space[1] },
   traySheet: { borderBottomLeftRadius: 0, borderBottomRightRadius: 0, borderTopLeftRadius: radius.sheet, borderTopRightRadius: radius.sheet, paddingBottom: space[7] },
   trayPinned: { maxHeight: 420 },
-  card: { ...soft(c), backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.card, borderWidth: 1, flexShrink: 1, gap: space[4], padding: space[5] },
+  card: { boxShadow: softElevation(c), backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.card, borderWidth: 1, flexShrink: 1, gap: space[4], padding: space[5] },
   cardPinned: { overflow: 'hidden', paddingBottom: 0 },
   header: { alignItems: 'flex-start', flexDirection: 'row', gap: space[3] },
   headerPinned: { borderBottomColor: c.ink8, borderBottomWidth: 1, marginBottom: -space[4], paddingBottom: space[4] },

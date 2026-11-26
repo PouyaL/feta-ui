@@ -3,7 +3,7 @@ import { AccessibilityInfo, Platform, Pressable, StyleSheet, Text, View, type St
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import Animated, { Easing, ZoomIn, runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
 import { font, radius, space, useColors, type Colors } from '../kit'
-import { Button } from './button'
+import { Button, SELF } from './button'
 import { type, useStill, useThemed } from './card'
 import { animateTo, EASE_OUT, Mark } from './popover'
 import { Switch } from './switch'
@@ -177,7 +177,7 @@ export function StackPanel({ pages, root, defaultPath = [], onPathChange, animat
           ) : null}
           <Animated.View style={[styles.sheet, topStyle]}>
             <View style={styles.nav}>
-              {parentTitle ? <Button variant="ghost" size="sm" shape="pill" animated={animated} leadingIcon={<Mark name="chevron-left" />} onPress={pop}>{parentTitle}</Button> : null}
+              {parentTitle ? <Button style={SELF.center} variant="ghost" size="sm" shape="pill" animated={animated} leadingIcon={<Mark name="chevron-left" />} onPress={pop}>{parentTitle}</Button> : null}
               <Text accessibilityRole="header" numberOfLines={1} style={styles.title}>{page?.title}</Text>
             </View>
             {page ? sections(page) : null}
@@ -189,21 +189,21 @@ export function StackPanel({ pages, root, defaultPath = [], onPathChange, animat
 }
 
 const createStyles = (c: Colors) => StyleSheet.create({
-  panel: { backgroundColor: c.ink4, borderRadius: radius.tray, maxWidth: '100%', padding: space[1], width: 358 },
+  panel: { backgroundColor: c.ink4, borderRadius: radius.tray, maxWidth: '100%', padding: space[1], width: '100%' },
   viewport: { borderRadius: radius.card, overflow: 'hidden' },
   sheet: { backgroundColor: c.muted, width: '100%' },
   under: { ...StyleSheet.absoluteFill, backgroundColor: c.muted },
   nav: { alignItems: 'center', flexDirection: 'row', minHeight: 48, padding: space[1.5] },
-  title: { ...type(14, c.textPrimary, '500'), left: 96, lineHeight: 20, position: 'absolute', right: 96, textAlign: 'center' },
+  title: { ...type(16, c.textPrimary, '500'), left: 96, lineHeight: 22, position: 'absolute', right: 96, textAlign: 'center' },
   section: { paddingBottom: space[2] },
   sectionTitle: { color: c.textTertiary, fontFamily: font.mono, fontSize: 10, lineHeight: 14, paddingBottom: space[1.5], paddingHorizontal: space[3], paddingTop: space[3], textTransform: 'uppercase' },
   card: { backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.card, borderWidth: 1, overflow: 'hidden' },
   row: { alignItems: 'center', flexDirection: 'row', gap: space[2.5], minHeight: 52, paddingHorizontal: space[3], paddingVertical: space[1] },
   rowRule: { borderTopColor: c.ink5, borderTopWidth: 1 },
   rowLabel: { flex: 1, minWidth: 0 },
-  label: { ...type(14, c.textPrimary), lineHeight: 20 },
+  label: { ...type(16, c.textPrimary), lineHeight: 22 },
   danger: { color: c.danger },
   small: { ...type(12, c.textSecondary), lineHeight: 16 },
-  detail: { ...type(14, c.textSecondary), lineHeight: 20 },
+  detail: { ...type(16, c.textSecondary), lineHeight: 22 },
   note: { ...type(12, c.textSecondary), lineHeight: 16, paddingHorizontal: space[3], paddingTop: space[1.5] },
 })

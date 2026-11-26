@@ -202,7 +202,7 @@ export function MetricCard({ title = 'Revenue', periods, period, defaultPeriod, 
                 <AnimatedPath animatedProps={prevProps} fill="none" stroke={c.textTertiary} strokeDasharray="4 4" />
                 {active.events?.map((item) => <Line key={item.label} x1={x(item.index)} x2={x(item.index)} y1={0} y2={CHART_HEIGHT} stroke={c.textTertiary} strokeDasharray="2 3" />)}
                 <AnimatedPath animatedProps={lineProps} fill="none" stroke={c.textPrimary} strokeWidth={2} />
-                {active.events?.map((item) => <Circle key={item.label} cx={x(item.index)} cy={shape.y(active.current[item.index] ?? 0)} r={3} fill={c.textPrimary} />)}
+                {active.events?.map((item) => <Circle key={item.label} cx={x(item.index)} cy={shape.y(active.current[item.index] ?? 0)} r={3} fill={c.surface} stroke={c.textPrimary} strokeWidth={1.5} />)}
                 <Circle cx={x(count - 1)} cy={shape.y(active.current[count - 1] ?? 0)} r={4} fill={c.textPrimary} />
                 {day !== null ? <><Line x1={x(day)} x2={x(day)} y1={0} y2={CHART_HEIGHT} stroke={c.ink10} /><Circle cx={x(day)} cy={shape.y(dayValue ?? 0)} r={5} fill={c.surface} stroke={c.textPrimary} strokeWidth={2} /></> : null}
               </Svg>
@@ -210,7 +210,7 @@ export function MetricCard({ title = 'Revenue', periods, period, defaultPeriod, 
           </Animated.View>
         </View>
       </GestureDetector>
-      <View style={styles.axis}><Text style={styles.meta}>{active.from}</Text><Text style={styles.meta}>Previous period</Text><Text style={styles.meta}>{active.to}</Text></View>
+      <View style={styles.axis}><Text style={styles.meta}>{active.from}</Text><View style={styles.key}><View style={styles.dash} /><Text style={styles.meta}>Previous period</Text></View><Text style={styles.meta}>{active.to}</Text></View>
       <Separator animated={animated} />
       <View style={styles.share}>{active.segments.map(({ name, value: share }, i) => <View key={name} style={[styles.part, i === 0 ? styles.solid : i === 1 ? styles.mid : styles.soft, segment !== null && name !== segment && styles.dim, { flexGrow: share }]} />)}</View>
       {active.segments.map((item, i) => {
@@ -220,7 +220,7 @@ export function MetricCard({ title = 'Revenue', periods, period, defaultPeriod, 
             <View style={[styles.dot, i === 0 ? styles.solid : i === 1 ? styles.mid : styles.soft]} />
             <Text style={styles.rowName}>{item.name}</Text>
             <RollingText value={format(item.value)} still={still} style={styles.rowValue} />
-            <Text style={styles.meta}>{Math.round((item.value / sum) * 100)}%</Text>
+            <Text style={styles.rowShare}>{Math.round((item.value / sum) * 100)}%</Text>
           </Pressable>
         )
       })}
@@ -230,22 +230,26 @@ export function MetricCard({ title = 'Revenue', periods, period, defaultPeriod, 
 
 const createStyles = (c: Colors) => StyleSheet.create({
   header: { alignItems: 'center', flexDirection: 'row', gap: space[2], justifyContent: 'space-between' },
-  title: type(16, c.textPrimary, '500'),
-  number: type(32, c.textPrimary, '500'),
+  // The web's mobile rules: a secondary 14 title, a 32/38 semibold number, rows with 16/22 values and mono shares.
+  title: { ...type(14, c.textSecondary, '500'), lineHeight: 18 },
+  number: { ...type(32, c.textPrimary, '600'), lineHeight: 38 },
   delta: { alignItems: 'center', flexDirection: 'row', gap: space[2], minHeight: 24 },
   meta: type(12, c.textSecondary),
   chart: { height: CHART_HEIGHT },
   clip: { height: CHART_HEIGHT, overflow: 'hidden' },
   axis: { flexDirection: 'row', justifyContent: 'space-between' },
+  key: { alignItems: 'center', flexDirection: 'row', gap: space[1.5] },
+  dash: { backgroundColor: c.ink10, borderRadius: radius.xs, height: 2, width: 12 },
   share: { borderRadius: radius.full, flexDirection: 'row', gap: 2, height: 8, overflow: 'hidden' },
   part: { flexBasis: 0, height: 8 },
   solid: { backgroundColor: c.inverse },
-  mid: { backgroundColor: c.textTertiary },
+  mid: { backgroundColor: c.canvas === '#ffffff' ? 'rgba(0,0,0,0.6)' : 'rgba(255,255,255,0.6)' },
   soft: { backgroundColor: c.ink10 },
   dim: { opacity: 0.4 },
-  row: { alignItems: 'center', borderRadius: radius.field, flexDirection: 'row', gap: space[2], minHeight: 44, paddingHorizontal: space[1] },
-  rowOn: { backgroundColor: c.ink4 },
+  row: { alignItems: 'center', borderRadius: radius.field, flexDirection: 'row', gap: space[2.5], minHeight: 34, paddingHorizontal: space[2], paddingVertical: space[1.5] },
+  rowOn: { backgroundColor: c.ink5 },
+  rowShare: { ...type(12, c.textTertiary, '400', true), textAlign: 'right', width: 36 },
   dot: { borderRadius: radius.full, height: 8, width: 8 },
-  rowName: { ...type(14, c.textPrimary), flex: 1 },
-  rowValue: type(14, c.textPrimary, '500'),
+  rowName: { ...type(14, c.textSecondary), flex: 1, minWidth: 0 },
+  rowValue: { ...type(16, c.textPrimary, '500'), lineHeight: 22 },
 })

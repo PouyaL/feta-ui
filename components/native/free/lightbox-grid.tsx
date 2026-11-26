@@ -3,7 +3,7 @@ import { BackHandler, Image, Platform, Pressable, StyleSheet, Text, View, type S
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import Animated, { Easing, FadeIn, FadeOut, LayoutAnimationConfig, runOnJS, useAnimatedStyle, useSharedValue, withDelay, withSequence, withSpring, withTiming } from 'react-native-reanimated'
 import Svg, { Circle, Ellipse, Rect } from 'react-native-svg'
-import { font, pressedState, radius, space, useColors, type Colors } from '../kit'
+import { font, pressedState, radius, space, type Colors } from '../kit'
 import { Card, type RenderIcon, type, useStill, useThemed } from './card'
 import { IconButton } from './icon-button'
 
@@ -46,10 +46,13 @@ const ART: Shape[][] = [
   [['center', 0, 45, 89, 89, 'deep'], ['rect', 0, 89, 179, 89]],
 ]
 
+/** The web's --feta-avatar-bg and --feta-avatar-ink: a warm paper and a slate ink, the same in Light and Dark. */
+const ART_PAPER = '#e3dcdb'
+const ART_INK = '#2d333e'
+
 function ArtShape({ shape }: { shape: Shape }) {
-  const colors = useColors()
   const [kind, left, top, width, height, tone] = shape
-  const fill = tone === 'paper' ? colors.muted : colors.textPrimary
+  const fill = tone === 'paper' ? ART_PAPER : tone === 'deep' ? '#000000' : ART_INK
   const opacity = tone === 'deep' ? 0.6 : 1
   const paint = { fill, opacity }
   if (kind === 'circle') return <Circle cx={left + width / 2} cy={top + height / 2} r={width / 2} {...paint} />
@@ -312,7 +315,7 @@ const createStyles = (c: Colors) => StyleSheet.create({
   grid: { flexDirection: 'row', flexWrap: 'wrap', margin: -TILE_GAP / 2 },
   cell: { padding: TILE_GAP / 2, width: `${100 / COLUMNS}%` },
   tile: { aspectRatio: 1, borderRadius: radius.lg, overflow: 'hidden' },
-  art: { backgroundColor: c.muted, flex: 1, overflow: 'hidden' },
+  art: { backgroundColor: ART_PAPER, flex: 1, overflow: 'hidden' },
   image: { height: '100%', width: '100%' },
   toolbar: { alignItems: 'center', flexDirection: 'row', height: TOOLBAR_HEIGHT, justifyContent: 'space-between' },
   counter: { color: c.textTertiary, fontFamily: font.mono, fontSize: 12 },

@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState, type ComponentRef } from 'react'
 import { Pressable, ScrollView, StyleSheet, Text, View, type LayoutChangeEvent, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated'
-import { radius, space, type Colors, hscroll } from '../kit'
+import { hscroll, radius, softElevation, space, type Colors } from '../kit'
 import { type, useStill, useThemed } from './card'
 import { Menu, useMenuStore, type MenuEntry } from './dropdown-menu'
-import { EASE_OUT, Floating, soft, useCompact, type FloatingMotion, type Point } from './popover'
+import { EASE_OUT, Floating, useCompact, type FloatingMotion, type Point } from './popover'
 
 const SLIDE = { stiffness: 420, damping: 34 }
 const GAP = 6
@@ -136,7 +136,7 @@ const createStyles = (c: Colors) => StyleSheet.create({
   root: { alignSelf: 'stretch' },
   bar: { backgroundColor: c.ink4, borderRadius: radius.control, padding: space[1] },
   track: { flexDirection: 'row', gap: space[0.5] },
-  tab: { ...soft(c), backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.field, borderWidth: 1, bottom: 0, left: 0, position: 'absolute', top: 0 },
+  tab: { boxShadow: softElevation(c), backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.field, borderWidth: 1, bottom: 0, left: 0, position: 'absolute', top: 0 },
   trigger: { alignItems: 'center', borderRadius: radius.field, justifyContent: 'center', minHeight: 44, paddingHorizontal: space[3.5] },
   off: { opacity: 0.4 },
   label: { ...type(15, c.textSecondary, '500'), lineHeight: 20 },

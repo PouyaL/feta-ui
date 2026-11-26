@@ -1,10 +1,16 @@
 import { useState, type ReactNode } from 'react'
 import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native'
 import Animated from 'react-native-reanimated'
-import { radius, space, type Colors } from '../kit'
+import { radius, softElevation, space, type Colors } from '../kit'
 import { useSlidingLift } from './button-group'
 import { useStill, useThemed } from './card'
 import { TOGGLE_SPRING, Toggle } from './toggle'
+
+/** The segment tray, shared by Toggle Group, pill Tabs and every segmented switch: a 4% ink capsule with 4 pt padding and a 2 pt gap. */
+export const segmentTrack = (c: Colors): ViewStyle => ({ backgroundColor: c.ink4, borderRadius: radius.full, flexDirection: 'row', gap: space[0.5], padding: space[1] })
+
+/** The lifted thumb on a segment tray: a surface capsule with a 1 px 8% ring and the soft elevation. */
+export const segmentThumb = (c: Colors): ViewStyle => ({ backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.full, borderWidth: 1, boxShadow: softElevation(c) })
 
 export type ToggleGroupItem = {
   value: string
@@ -63,7 +69,7 @@ export function ToggleGroup(props: ToggleGroupProps) {
     <View
       accessibilityRole={single ? 'radiogroup' : 'toolbar'}
       accessibilityLabel={label}
-      style={[styles.group, orientation === 'vertical' && styles.vertical, appearance === 'segment' ? styles.segment : styles.outline, appearance === 'segment' && orientation === 'vertical' && styles.segmentVertical, style]}
+      style={[styles.group, appearance === 'segment' ? styles.segment : styles.outline, orientation === 'vertical' && styles.vertical, appearance === 'segment' && orientation === 'vertical' && styles.segmentVertical, style]}
     >
       {slides ? <Animated.View pointerEvents="none" style={[styles.lift, liftStyle]} /> : null}
       {items.map((item) => {
@@ -105,11 +111,11 @@ export function ToggleToolbarSeparator() {
 const createStyles = (c: Colors) => StyleSheet.create({
   group: { alignSelf: 'flex-start', flexDirection: 'row' },
   vertical: { flexDirection: 'column' },
-  segment: { backgroundColor: c.ink4, borderRadius: radius.full, gap: space[0.5], padding: space[1] },
+  segment: segmentTrack(c),
   segmentVertical: { borderRadius: radius.card },
   outline: { gap: space[1] },
-  lift: { backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.full, borderWidth: 1, left: 0, position: 'absolute', top: 0 },
+  lift: { ...segmentThumb(c), left: 0, position: 'absolute', top: 0 },
   stretch: { alignSelf: 'stretch' },
-  toolbar: { alignItems: 'center', alignSelf: 'flex-start', backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.full, borderWidth: 1, flexDirection: 'row', gap: space[1.5], padding: space[1] },
+  toolbar: { alignItems: 'center', alignSelf: 'flex-start', backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.full, borderWidth: 1, boxShadow: softElevation(c), flexDirection: 'row', gap: space[1.5], padding: space[1] },
   separator: { backgroundColor: c.ink8, height: space[4.5], width: 1 },
 })

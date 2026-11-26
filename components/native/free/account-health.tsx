@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-na
 import Animated, { useAnimatedProps, useSharedValue, withTiming } from 'react-native-reanimated'
 import Svg, { Circle, Path } from 'react-native-svg'
 import { radius, space, useColors, type Colors } from '../kit'
-import { Button, withInk } from './button'
+import { Button, withInk, SELF } from './button'
 import { EASE_STANDARD, ROW_MS, panelEnter, rowEnter, type RenderIcon, type, useStill, useThemed } from './card'
 import { IconButton } from './icon-button'
 import { RollingText } from './label'
@@ -233,7 +233,7 @@ export function AccountHealth({ account, plan, periods, period, onPeriodChange, 
             <Text style={[styles.signalTitle, styles.summaryTitle]} accessibilityRole="header">Risk summary</Text>
             {model && !compact ? <Text style={styles.model}>{model}</Text> : null}
             {loading ? <View style={styles.refreshSlot}><Spinner size="s" label="Refreshing the summary" animated={animated} /></View>
-              : onRefresh ? <IconButton variant="ghost" size="sm" icon={renderIcon('refresh-cw', 16)} label="Refresh the summary" animated={animated} onPress={onRefresh} /> : null}
+              : onRefresh ? <IconButton style={SELF.center} variant="ghost" size="sm" icon={renderIcon('refresh-cw', 16)} label="Refresh the summary" animated={animated} onPress={onRefresh} /> : null}
           </View>
           {loading ? (
             <View style={styles.skeleton}><Skeleton height={12} animated={!still} /><Skeleton height={12} animated={!still} /><Skeleton height={12} width="62%" animated={!still} /></View>

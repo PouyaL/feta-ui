@@ -37,25 +37,28 @@ export function PlanCard({ name, price, period, pitch, features, state = 'defaul
         {state === 'recommended' ? <Badge size="sm" tone="accent" mark>Recommended</Badge> : null}
         {state === 'default' || state === 'selected' ? <Radio accessibilityLabel={`Select ${name}`} checked={state === 'selected'} onChange={() => onSelect?.()} animated={animated} /> : null}
       </View>
-      <View style={styles.price}><Text style={styles.amount}>{price}</Text><Text style={styles.small}>{period}</Text></View>
-      <Text style={styles.small}>{pitch}</Text>
+      <Text style={styles.price}><Text style={styles.amount}>{price}</Text> <Text style={styles.period}>{period}</Text></Text>
+      <Text style={styles.pitch}>{pitch}</Text>
       <View style={styles.features}>
         {features.map((feature) => <View key={feature} style={styles.feature}>{renderIcon('check', 16)}<Text style={styles.featureText}>{feature}</Text></View>)}
       </View>
-      <Button shape="pill" variant={state === 'recommended' || state === 'selected' ? 'primary' : 'secondary'} disabled={state === 'current'} onPress={onAction} animated={animated}>{action}</Button>
+      <Button style={styles.action} shape="pill" variant={state === 'recommended' || state === 'selected' ? 'primary' : 'secondary'} disabled={state === 'current'} onPress={onAction} animated={animated}>{action}</Button>
     </Animated.View>
   )
 }
 
 const createStyles = (c: Colors) => StyleSheet.create({
-  card: { backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.card, borderWidth: StyleSheet.hairlineWidth, gap: space[3], padding: space[4] },
-  selected: { borderColor: c.textPrimary, borderWidth: 2 },
-  head: { alignItems: 'center', flexDirection: 'row', gap: space[2], justifyContent: 'space-between' },
-  name: type(16, c.textPrimary, '500'),
-  price: { alignItems: 'baseline', flexDirection: 'row', gap: space[1] },
-  amount: type(28, c.textPrimary, '500'),
-  small: type(14, c.textSecondary),
-  features: { gap: space[2] },
+  // The web rings the card with a 4 px ink shadow (2 px Primary when selected); a border of the same width draws it.
+  card: { alignSelf: 'stretch', backgroundColor: c.surface, borderColor: c.ink4, borderRadius: radius.panel + 4, borderWidth: 4, gap: space[3], maxWidth: 358, paddingBottom: space[5], paddingHorizontal: space[5], paddingTop: space[4] },
+  selected: { borderColor: c.textPrimary, borderWidth: 2, paddingBottom: space[5] + 2, paddingHorizontal: space[5] + 2, paddingTop: space[4] + 2 },
+  head: { alignItems: 'center', flexDirection: 'row', gap: space[2], justifyContent: 'space-between', minHeight: 24 },
+  name: { ...type(16, c.textPrimary, '500'), lineHeight: 20 },
+  price: { lineHeight: 32 },
+  amount: { ...type(28, c.textPrimary, '600'), fontVariant: ['tabular-nums'] },
+  period: type(12, c.textSecondary),
+  pitch: { ...type(14, c.textSecondary), lineHeight: 20 },
+  features: { borderTopColor: c.ink5, borderTopWidth: 1, gap: space[2], paddingTop: space[3] },
   feature: { alignItems: 'center', flexDirection: 'row', gap: space[2] },
-  featureText: { ...type(14, c.textPrimary), flex: 1 },
+  featureText: { ...type(14, c.textPrimary), flex: 1, lineHeight: 18 },
+  action: { alignSelf: 'stretch', marginTop: space[1] },
 })

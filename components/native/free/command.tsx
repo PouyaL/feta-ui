@@ -1,12 +1,12 @@
 import { useMemo, useState, type ReactNode } from 'react'
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { FadeIn, FadeInLeft, FadeInUp, FadeOut, ZoomIn } from 'react-native-reanimated'
-import { pressedState, radius, space, useColors, type Colors } from '../kit'
+import { pressedState, radius, softElevation, space, useColors, type Colors } from '../kit'
 import { Button } from './button'
 import { type, useStill, useThemed } from './card'
 import { Modal, useDisclosure, type DisclosureProps, type ModalMotion } from './dialog'
 import { Keycaps } from './dropdown-menu'
-import { EASE_IN, EASE_OUT, Mark, soft, useCompact } from './popover'
+import { EASE_IN, EASE_OUT, Mark, useCompact } from './popover'
 import { Spinner } from './spinner'
 
 const SUBMENU_X = 16
@@ -252,7 +252,7 @@ const createStyles = (c: Colors) => StyleSheet.create({
   cancel: { alignSelf: 'center' },
   chip: { backgroundColor: c.ink8, borderRadius: radius.full, paddingHorizontal: space[2], paddingVertical: space[0.5] },
   chipLabel: { ...type(12, c.textPrimary, '500'), lineHeight: 16 },
-  body: { ...soft(c), backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.panel, borderWidth: 1, overflow: 'hidden' },
+  body: { boxShadow: softElevation(c), backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.panel, borderWidth: 1, overflow: 'hidden' },
   scroll: { maxHeight: LIST_HEIGHT },
   list: { paddingBottom: space[1.5], paddingHorizontal: space[1.5], paddingTop: space[1] },
   groupLabel: { ...type(12, c.textSecondary), lineHeight: 16, paddingBottom: space[1], paddingHorizontal: space[3], paddingTop: space[2] },

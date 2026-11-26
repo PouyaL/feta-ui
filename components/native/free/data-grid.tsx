@@ -2,7 +2,7 @@ import { useCallback, useMemo, useRef, useState, type ReactNode } from 'react'
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View, type NativeScrollEvent, type NativeSyntheticEvent, type StyleProp, type TextInputKeyPressEvent, type TextStyle, type ViewStyle } from 'react-native'
 import Animated, { FadeInDown, FadeOutUp, LayoutAnimationConfig } from 'react-native-reanimated'
 import { font, gridCellRole, radius, space, useColors, type Colors } from '../kit'
-import { Button, EASE_OUT, withInk } from './button'
+import { Button, EASE_OUT, withInk, SELF } from './button'
 import { type, useStill, useThemed, type RenderIcon } from './card'
 import { DropdownMenu, type MenuEntry } from './dropdown-menu'
 import { IconButton } from './icon-button'
@@ -235,25 +235,25 @@ export function DataGrid({ title, columns: start, rows, loading = false, default
     <View style={[s.shell, style]}>
       <View style={s.titleBar}>
         <Text numberOfLines={1} style={s.title}>{title}</Text>
-        <Button variant="ghost" size="sm" leadingIcon={icon('refresh-cw', 14)} onPress={reset} animated={animated}>Reset</Button>
+        <Button style={SELF.center} variant="ghost" size="sm" leadingIcon={icon('refresh-cw', 14)} onPress={reset} animated={animated}>Reset</Button>
       </View>
       <View style={s.toolbar}>
         <LayoutAnimationConfig skipEntering>
           {selectedCount ? (
             <Animated.View key="bulk" {...(still ? {} : { entering: swapIn, exiting: swapOut })} role="toolbar" aria-label="Bulk actions" style={s.tools}>
-              <IconButton variant="ghost" size="sm" label="Clear selection" icon={icon('x', 16)} onPress={() => setPicked(new Set())} animated={animated} />
+              <IconButton style={SELF.center} variant="ghost" size="sm" label="Clear selection" icon={icon('x', 16)} onPress={() => setPicked(new Set())} animated={animated} />
               <Text style={s.bulkCount}>{selectedCount.toLocaleString('en-US')} selected</Text>
               <View style={s.spacer} />
-              {onCopy ? <Button variant="ghost" size="sm" leadingIcon={icon('copy', 14)} onPress={() => onCopy([...picked])} animated={animated}>Copy</Button> : null}
-              {onExport ? <Button variant="ghost" size="sm" leadingIcon={icon('download', 14)} onPress={() => onExport([...picked])} animated={animated}>Export</Button> : null}
-              <Button variant="destructive" shape="pill" size="sm" leadingIcon={icon('trash', 14, c.textInverse)} animated={animated} onPress={() => { const ids = [...picked]; onDelete?.(ids); setGone((was) => new Set([...was, ...ids])); setPicked(new Set()) }}>Delete</Button>
+              {onCopy ? <Button style={SELF.center} variant="ghost" size="sm" leadingIcon={icon('copy', 14)} onPress={() => onCopy([...picked])} animated={animated}>Copy</Button> : null}
+              {onExport ? <Button style={SELF.center} variant="ghost" size="sm" leadingIcon={icon('download', 14)} onPress={() => onExport([...picked])} animated={animated}>Export</Button> : null}
+              <Button style={SELF.center} variant="destructive" shape="pill" size="sm" leadingIcon={icon('trash', 14, c.textInverse)} animated={animated} onPress={() => { const ids = [...picked]; onDelete?.(ids); setGone((was) => new Set([...was, ...ids])); setPicked(new Set()) }}>Delete</Button>
             </Animated.View>
           ) : (
             <Animated.View key="tools" {...(still ? {} : { entering: swapIn, exiting: swapOut })} style={s.tools}>
               <SearchField style={s.search} value={query} onValueChange={setQuery} accessibilityLabel={`Search ${title}`} animated={animated} {...(renderIcon ? { renderIcon } : {})} />
               <Text style={s.rowCount}>{view.length.toLocaleString('en-US')} ROWS</Text>
               <View style={s.spacer} />
-              <IconButton variant="ghost" size="sm" label="Undo" icon={icon('undo', 16)} disabled={undo.length === 0} aria-disabled={undo.length === 0} onPress={undoLast} animated={animated} />
+              <IconButton style={SELF.center} variant="ghost" size="sm" label="Undo" icon={icon('undo', 16)} disabled={undo.length === 0} aria-disabled={undo.length === 0} onPress={undoLast} animated={animated} />
               {facets.length ? (
                 <DropdownMenu
                   label="Filter"
@@ -316,6 +316,7 @@ export function DataGrid({ title, columns: start, rows, loading = false, default
                       label={`${column.label} column`}
                       align="end"
                       animated={animated}
+                      style={s.headMenuAnchor}
                       entries={columnEntries(column)}
                       trigger={(props) => (
                         <Pressable {...props} accessibilityRole="button" accessibilityLabel={`${column.label} options`} hitSlop={12} style={s.headMenu}>
@@ -329,7 +330,7 @@ export function DataGrid({ title, columns: start, rows, loading = false, default
             </View>
 
             <ScrollView
-              style={s.viewport}
+              style={[s.viewport, { height: Math.min(VIEWPORT, (loading ? 8 : Math.max(view.length, 1)) * ROW) }]}
               nestedScrollEnabled
               scrollEventThrottle={16}
               onScroll={(event: NativeSyntheticEvent<NativeScrollEvent>) => setOffset(event.nativeEvent.contentOffset.y)}
@@ -415,12 +416,12 @@ export function DataGrid({ title, columns: start, rows, loading = false, default
           <View style={s.stats}>
             {stats.numeric > 1 ? (
               <>
-                <Text style={s.statusText}>SUM </Text><Tween value={stats.sum} format={spanFormat} animated={animated} style={s.statusText} />
-                <Text style={s.statusText}>{'  '}AVG </Text><Tween value={stats.avg} format={spanFormat} animated={animated} style={s.statusText} />
+                <Text style={s.statusText}>SUM </Text><Tween value={stats.sum} format={spanFormat} animated={animated} style={s.statusNumber} />
+                <Text style={s.statusText}>{'  '}AVG </Text><Tween value={stats.avg} format={spanFormat} animated={animated} style={s.statusNumber} />
                 <Text style={s.statusText}>{'  '}</Text>
               </>
             ) : null}
-            <Text style={s.statusText}>COUNT </Text><Tween value={stats.count} format={plain} animated={animated} style={s.statusText} />
+            <Text style={s.statusText}>COUNT </Text><Tween value={stats.count} format={plain} animated={animated} style={s.statusNumber} />
           </View>
         )}
       </View>
@@ -468,6 +469,8 @@ const createStyles = (c: Colors) => {
     headLabel: { alignItems: 'center', flexDirection: 'row', flexShrink: 1, gap: space[1], minHeight: 44 },
     headLabelEnd: { marginLeft: 'auto' },
     headText: { ...type(12, c.textSecondary, '500'), lineHeight: 16 },
+    // The menu anchor hugs the top by default; centre it on the header label.
+    headMenuAnchor: { alignSelf: 'center' },
     headMenu: { alignItems: 'center', borderRadius: radius.sm, height: 20, justifyContent: 'center', width: 20 },
     headDots: { ...type(12, c.textTertiary, '600'), lineHeight: 16 },
     viewport: { height: VIEWPORT },
@@ -500,5 +503,7 @@ const createStyles = (c: Colors) => {
     statusCell: { ...mono(11, 16), color: c.textPrimary, letterSpacing: 0.44 },
     stats: { alignItems: 'center', flexDirection: 'row', flexShrink: 1 },
     statusText: { ...mono(11, 16), color: c.textSecondary, flexShrink: 1, letterSpacing: 0.44 },
+    // A TextInput sets a line height above the glyphs on iOS, so the numbers take the label's 16 as a box height instead.
+    statusNumber: { color: c.textSecondary, flexShrink: 1, fontFamily: font.mono, fontSize: 11, height: 16, letterSpacing: 0.44, paddingVertical: 0 },
   })
 }

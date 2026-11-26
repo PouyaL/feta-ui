@@ -2,18 +2,18 @@ import { useEffect, useId, useMemo, useState, type ReactNode } from 'react'
 import { StyleSheet, TextInput, View, useColorScheme, type LayoutChangeEvent, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { Easing, useAnimatedProps, useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming, type SharedValue } from 'react-native-reanimated'
 import Svg, { Defs, Ellipse, G, LinearGradient, Mask, RadialGradient, Rect, Stop, Text as SvgText } from 'react-native-svg'
-import { accent, font, radius, space, toggleState, useColors, type Colors } from '../kit'
-import { Button, EASE_OUT, withInk } from './button'
+import { accent, font, radius, space, toggleState, useAppActive, useColors, type Colors } from '../kit'
+import { Button, EASE_OUT, withInk, SELF } from './button'
 import { type, useStill, type RenderIcon } from './card'
 import { IconButton } from './icon-button'
-import { shadowInk, useAppActive, useTurn } from './metal-frame'
+import { shadowInk, useTurn } from './metal-frame'
 
 /*
  * What differs from web: CSS blurs the two glows; here each glow is an SVG ellipse filled with a radial gradient that
  * falls off to nothing, which reads the same as a blurred capsule. The glyph block is masked by an SVG radial gradient,
  * as on the web. The web rewrites the glyphs every 80 ms from the JS thread; here eight frames are drawn once and the UI
- * thread shows one at a time, so the flicker never re-renders. The pink hairline stop has no token on the web either;
- * it uses the danger red at reduced strength, and blue-500 and blue-400 map to the sky info colours in kit.ts. The
+ * thread shows one at a time, so the flicker never re-renders. The ramp colours below are the web's own values
+ * (orange 500, blue 500 and 400, violet 500, and the pink that has no token on the web either). The
  * component switches to the Mobile layout (no DeepThink pill, a voice icon) under 480 wide, where the web follows the
  * viewport. Icons come from `renderIcon`.
  */
@@ -38,6 +38,8 @@ const BREATHE_MS = 2400
 const IN_OUT = Easing.bezier(0.42, 0, 0.58, 1)
 const LEAD_ICON = 16
 const BUTTON_ICON = 16
+/** The web's ramp colours: --feta-orange-500, --feta-blue-500, --feta-blue-400, --feta-violet-500, and its untokened pink. */
+const RAMP = { warm: '#f97316', cool: '#3b82f6', coolInk: '#60a5fa', pink: '#F472B6', violet: '#8b5cf6' } as const
 
 const AnimatedG = Animated.createAnimatedComponent(G)
 
@@ -174,6 +176,7 @@ export function AuraFrame({ label, placeholder = 'Ask anything…', state = 'res
   const [deep, setDeep] = useState(defaultDeepThink)
   const [focused, setFocused] = useState(false)
   const [width, setWidth] = useState(0)
+  const [box, setBox] = useState({ width: 0, height: 0 })
   const busy = state !== 'rest'
   const thinking = state === 'thinking'
   const listening = state === 'listening'
@@ -212,22 +215,11 @@ export function AuraFrame({ label, placeholder = 'Ask anything…', state = 'res
 
   return (
     <View style={[themed.aura, style]} onLayout={measure}>
-      <Glow id={`${ids}-warm`} color={colors.warning} width={glow.width} height={glow.height} opacity={warm} place={styles.warmGlow} />
-      <Glow id={`${ids}-cool`} color={colors.info} width={glow.width} height={glow.height} opacity={cool} scale={coolScale} place={styles.coolGlow} />
-      <Glyphs id={`${ids}-wg`} frames={WARM_FRAMES} clock={clock} color={colors.warning} width={glyphs.width} height={glyphs.height} opacity={warmGlyphs} place={styles.warmGlyphs} />
-      <Glyphs id={`${ids}-cg`} frames={COOL_FRAMES} clock={clock} color={accent.sky.from} width={glyphs.width} height={glyphs.height} opacity={coolGlyphs} place={styles.coolGlyphs} />
-      <View style={themed.shell}>
-        <Svg aria-hidden style={StyleSheet.absoluteFill} width="100%" height="100%">
-          <Defs>
-            <LinearGradient id={`${ids}-line`} x1="0" y1="0" x2="1" y2="0">
-              <Stop offset="0" stopColor={accent.orange.from} stopOpacity={level.line} />
-              <Stop offset="0.35" stopColor={colors.danger} stopOpacity={level.line * 0.6} />
-              <Stop offset="0.65" stopColor={accent.violet.from} stopOpacity={level.line} />
-              <Stop offset="1" stopColor={accent.violet.to} stopOpacity={level.line} />
-            </LinearGradient>
-          </Defs>
-          <Rect x="0" y="0" width="100%" height="100%" rx={radius.tray} ry={radius.tray} fill={`url(#${ids}-line)`} />
-        </Svg>
+      <Glow id={`${ids}-warm`} color={RAMP.warm} width={glow.width} height={glow.height} opacity={warm} place={styles.warmGlow} />
+      <Glow id={`${ids}-cool`} color={RAMP.cool} width={glow.width} height={glow.height} opacity={cool} scale={coolScale} place={styles.coolGlow} />
+      <Glyphs id={`${ids}-wg`} frames={WARM_FRAMES} clock={clock} color={RAMP.warm} width={glyphs.width} height={glyphs.height} opacity={warmGlyphs} place={styles.warmGlyphs} />
+      <Glyphs id={`${ids}-cg`} frames={COOL_FRAMES} clock={clock} color={RAMP.coolInk} width={glyphs.width} height={glyphs.height} opacity={coolGlyphs} place={styles.coolGlyphs} />
+      <View style={themed.shell} onLayout={(e) => setBox({ width: e.nativeEvent.layout.width, height: e.nativeEvent.layout.height })}>
         <View style={themed.box}>
           <View style={themed.field}>
             {busy ? <View aria-hidden style={themed.lead}>{withInk(renderIcon(thinking ? 'sparkles' : 'audio-lines', LEAD_ICON), colors.textPrimary)}</View> : null}
@@ -248,22 +240,36 @@ export function AuraFrame({ label, placeholder = 'Ask anything…', state = 'res
             />
           </View>
           <View style={themed.footer}>
-            <IconButton variant="secondary" size="sm" icon={icon('plus')} label="Add" animated={animated} onPress={onAttach} />
-            <Button variant="secondary" shape="pill" size="sm" animated={animated} leadingIcon={icon('sparkles')} trailingIcon={chevron} onPress={onMode}>{mode}</Button>
+            <IconButton style={SELF.center} variant="secondary" size="sm" icon={icon('plus')} label="Add" animated={animated} onPress={onAttach} />
+            <Button style={SELF.center} variant="secondary" shape="pill" size="sm" animated={animated} leadingIcon={icon('sparkles')} trailingIcon={chevron} onPress={onMode}>{mode}</Button>
             {wide ? (
-              <Button variant={deep ? 'primary' : 'secondary'} shape="pill" size="sm" animated={animated} {...toggleState(deep)} leadingIcon={icon('bulb')} onPress={() => setDeep(!deep)}>DeepThink</Button>
+              <Button style={SELF.center} variant={deep ? 'primary' : 'secondary'} shape="pill" size="sm" animated={animated} {...toggleState(deep)} leadingIcon={icon('bulb')} onPress={() => setDeep(!deep)}>DeepThink</Button>
             ) : null}
             <View style={themed.spacer} />
             {wide ? (
               listening
-                ? <Button variant="primary" shape="pill" size="sm" animated={animated} leadingIcon={icon('audio-lines')} onPress={onStop}>Stop</Button>
-                : <Button variant="secondary" shape="pill" size="sm" animated={animated} leadingIcon={icon('audio-lines')} onPress={onVoice}>Voice</Button>
+                ? <Button style={SELF.center} variant="primary" shape="pill" size="sm" animated={animated} leadingIcon={icon('audio-lines')} onPress={onStop}>Stop</Button>
+                : <Button style={SELF.center} variant="secondary" shape="pill" size="sm" animated={animated} leadingIcon={icon('audio-lines')} onPress={onVoice}>Voice</Button>
             ) : (
-              <IconButton variant={listening ? 'primary' : 'secondary'} size="sm" icon={icon('audio-lines')} label={listening ? 'Stop listening' : 'Voice'} animated={animated} onPress={listening ? onStop : onVoice} />
+              <IconButton style={SELF.center} variant={listening ? 'primary' : 'secondary'} size="sm" icon={icon('audio-lines')} label={listening ? 'Stop listening' : 'Voice'} animated={animated} onPress={listening ? onStop : onVoice} />
             )}
-            <IconButton variant="primary" size="sm" disabled={state === 'rest' && !value} icon={icon(thinking ? 'stop' : 'chevron-up')} label={thinking ? 'Stop' : 'Send'} animated={animated} onPress={submit} />
+            <IconButton style={SELF.center} variant="primary" size="sm" disabled={state === 'rest' && !value} icon={icon(thinking ? 'stop' : 'chevron-up')} label={thinking ? 'Stop' : 'Send'} animated={animated} onPress={submit} />
           </View>
         </View>
+        {/* The 1 px gradient hairline all round the box, drawn over its edge at measured size, as the web's border-box background. */}
+        {box.width > 0 ? (
+          <Svg aria-hidden pointerEvents="none" style={StyleSheet.absoluteFill} width={box.width} height={box.height}>
+            <Defs>
+              <LinearGradient id={`${ids}-line`} x1="0" y1="0" x2={box.width} y2="0" gradientUnits="userSpaceOnUse">
+                <Stop offset="0" stopColor={accent.orange.from} stopOpacity={level.line} />
+                <Stop offset="0.35" stopColor={RAMP.pink} stopOpacity={level.line} />
+                <Stop offset="0.65" stopColor={accent.violet.from} stopOpacity={level.line} />
+                <Stop offset="1" stopColor={RAMP.violet} stopOpacity={level.line} />
+              </LinearGradient>
+            </Defs>
+            <Rect x={0.5} y={0.5} width={box.width - 1} height={box.height - 1} rx={radius.tray - 0.5} ry={radius.tray - 0.5} fill="none" stroke={`url(#${ids}-line)`} strokeWidth={1} />
+          </Svg>
+        ) : null}
       </View>
     </View>
   )
@@ -284,10 +290,11 @@ const createStyles = (c: Colors, dark: boolean) => {
     aura: { alignSelf: 'center', maxWidth: 560, position: 'relative', width: '100%' },
     // The 1 px gradient hairline is the shell showing round the box, as the web's border-box background.
     shell: {
-      backgroundColor: c.surface, borderRadius: radius.tray, elevation: 6, padding: 1,
+      backgroundColor: c.surface, borderRadius: radius.tray, elevation: 6,
       shadowColor: shade.color, shadowOffset: { width: 0, height: 12 }, shadowOpacity: shade.opacity, shadowRadius: 16,
     },
-    box: { backgroundColor: c.surface, borderRadius: radius.tray - 1, gap: space[3.5], paddingBottom: space[3.5], paddingLeft: space[4.5], paddingRight: space[3.5], paddingTop: space[4] },
+    // The web's 1 px transparent border sits inside the padding box; the hairline is drawn over it.
+    box: { backgroundColor: c.surface, borderRadius: radius.tray, gap: space[3.5], margin: 1, paddingBottom: space[3.5], paddingLeft: space[4.5], paddingRight: space[3.5], paddingTop: space[4] },
     field: { alignItems: 'center', flexDirection: 'row', gap: space[1.5] },
     lead: { flexShrink: 0 },
     // The web's 24 px body line: without it iOS sizes the empty field shorter than its placeholder and clips it.

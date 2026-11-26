@@ -79,6 +79,6 @@ const makeStyles = (c: Colors) => StyleSheet.create({
   root: { alignItems: 'flex-start', gap: space[1] },
   text: { width: '100%', gap: space[3], overflow: 'hidden' },
   measure: { position: 'absolute', opacity: 0, left: 0, right: 0 },
-  body: { ...type(14, c.textSecondary), lineHeight: 21 },
+  body: { ...type(15, c.textSecondary), lineHeight: 22 },
   toggle: { marginLeft: -space[2] },
 })

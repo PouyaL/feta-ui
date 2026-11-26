@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { StyleSheet, Text, type TextInputInstance, View, type StyleProp, type ViewStyle } from 'react-native'
-import { radius, space, type Colors } from '../kit'
-import { Button } from './button'
+import { radius, softElevation, space, type Colors } from '../kit'
+import { Button, SELF } from './button'
 import { type, useStill, useThemed } from './card'
 import { InputOTP } from './input-otp'
 import { LabelSwap } from './label'
@@ -75,13 +75,13 @@ export function OTPForm({ title = 'Verify your login', description = 'Enter the 
         <View accessibilityLiveRegion="polite" style={styles.status}>
           <LabelSwap swapKey={wait > 0 ? 'sent' : hint} still={still} style={[styles.message, status === 'error' && styles.messageError, status === 'success' && styles.messageSuccess]}>{wait > 0 ? 'New code sent.' : hint}</LabelSwap>
         </View>
-        {wait > 0 ? <Text style={styles.count}>Resend in {Math.floor(wait / 60)}:{String(wait % 60).padStart(2, '0')}</Text> : <Button variant="ghost" size="sm" animated={animated} onPress={resend}>Resend code</Button>}
+        {wait > 0 ? <Text style={styles.count}>Resend in {Math.floor(wait / 60)}:{String(wait % 60).padStart(2, '0')}</Text> : <Button style={SELF.center} variant="ghost" size="sm" animated={animated} onPress={resend}>Resend code</Button>}
       </View>
       <Button animated={animated} style={styles.verify} disabled={!complete || status === 'success'} status={verifying ? 'loading' : 'idle'} onPress={() => { void verify(code) }}>{verifying ? 'Verifying' : 'Verify'}</Button>
       {help ? (
         <View style={styles.help}>
           <Text style={styles.helpText}>{help.text}</Text>
-          <Button variant="ghost" size="sm" animated={animated} onPress={() => help.onPress?.()}>{help.action}</Button>
+          <Button style={SELF.center} variant="ghost" size="sm" animated={animated} onPress={() => help.onPress?.()}>{help.action}</Button>
         </View>
       ) : null}
     </View>
@@ -89,9 +89,9 @@ export function OTPForm({ title = 'Verify your login', description = 'Enter the 
 }
 
 const createStyles = (c: Colors) => StyleSheet.create({
-  card: { backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.frame, borderWidth: 1, paddingHorizontal: space[5], paddingVertical: space[6], width: '100%' },
+  card: { boxShadow: softElevation(c), backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius['2xl'], borderWidth: 1, paddingHorizontal: space[5], paddingVertical: space[6], width: '100%' },
   title: type(16, c.textPrimary, '500'),
-  description: { ...type(14, c.textSecondary), marginBottom: space[4], marginTop: space[1] },
+  description: { ...type(12, c.textSecondary), lineHeight: 20, marginBottom: space[4], marginTop: space[1] },
   row: { alignItems: 'center', flexDirection: 'row', gap: space[2], justifyContent: 'space-between', marginVertical: space[2], minHeight: 32 },
   status: { flex: 1, minWidth: 0 },
   message: type(12, c.textSecondary),
@@ -100,5 +100,5 @@ const createStyles = (c: Colors) => StyleSheet.create({
   count: type(12, c.textSecondary, '400', true),
   verify: { width: '100%' },
   help: { alignItems: 'center', flexDirection: 'row', gap: space[0.5], justifyContent: 'center', marginTop: space[2] },
-  helpText: type(12, c.textSecondary),
+  helpText: { ...type(12, c.textSecondary), flexShrink: 1 },
 })

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { StyleSheet, Text, TextInput, type TextInputInstance, View, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { Easing, LayoutAnimationConfig, ZoomIn, interpolateColor, useAnimatedStyle, useSharedValue, withSequence, withTiming } from 'react-native-reanimated'
 import { font, radius, space, useColors, type Colors } from '../kit'
-import { Button, withInk } from './button'
+import { Button, withInk, SELF } from './button'
 import { type RenderIcon, type, useStill, useThemed } from './card'
 
 /** Expired: x 0, 4, -4, 0 over 300 ms. */
@@ -154,7 +154,7 @@ export function CardField({ amount, label = 'Card', defaultValue, testCard = fal
     <View style={[styles.tray, style]}>
       <View style={styles.header}>
         <Text style={styles.label}>{label}</Text>
-        {testCard ? <Button variant="link" size="sm" disabled={busy} animated={animated} onPress={() => setCard(TEST_CARD)}>Use test card</Button> : null}
+        {testCard ? <Button style={SELF.center} variant="link" size="sm" disabled={busy} animated={animated} onPress={() => setCard(TEST_CARD)}>Use test card</Button> : null}
       </View>
       <View style={styles.body}>
         <Animated.View accessibilityLabel={label} style={[styles.field, fieldStyle]}>
@@ -239,7 +239,7 @@ export function CardField({ amount, label = 'Card', defaultValue, testCard = fal
 }
 
 const createStyles = (c: Colors) => StyleSheet.create({
-  tray: { backgroundColor: c.ink4, borderRadius: radius.tray, gap: space[1], maxWidth: 358, padding: space[1], width: '100%' },
+  tray: { backgroundColor: c.ink4, borderRadius: radius.tray, gap: space[1], maxWidth: 384, padding: space[1], width: '100%' },
   header: { alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', minHeight: 40, paddingHorizontal: space[3] },
   label: type(14, c.textPrimary, '500'),
   body: { backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.card, borderWidth: StyleSheet.hairlineWidth, gap: space[2.5], padding: space[3.5] },

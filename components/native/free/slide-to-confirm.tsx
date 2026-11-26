@@ -121,6 +121,7 @@ export function SlideToConfirm({ label = 'Slide to pay $24.00', doneLabel = 'Pai
 
   return (
     <View style={[styles.track, disabled && styles.off, style]} onLayout={(event) => { width.value = event.nativeEvent.layout.width }}>
+      <View pointerEvents="none" style={styles.ring} />
       <View style={styles.center}><Text numberOfLines={1} style={styles.label}>{text}</Text></View>
       <Animated.View style={[styles.trail, trailStyle]}>
         <Animated.View style={[styles.trailCenter, trailLabelStyle]}><Text numberOfLines={1} style={styles.trailLabel}>{text}</Text></Animated.View>
@@ -151,13 +152,15 @@ export function SlideToConfirm({ label = 'Slide to pay $24.00', doneLabel = 'Pai
 }
 
 const createStyles = (c: Colors) => StyleSheet.create({
-  track: { backgroundColor: c.ink5, borderRadius: radius.full, height: TRACK, maxWidth: 340, overflow: 'hidden', width: '100%' },
+  // Fills its column like the web track does at 390.
+  track: { backgroundColor: c.ink5, borderRadius: radius.full, height: TRACK, overflow: 'hidden', width: '100%' },
+  ring: { ...StyleSheet.absoluteFill, borderColor: c.ink8, borderRadius: radius.full, borderWidth: 1 },
   off: { opacity: 0.4 },
   center: { ...StyleSheet.absoluteFill, alignItems: 'center', justifyContent: 'center' },
   label: type(16, c.textTertiary, '500'),
   trail: { borderRadius: radius.full, bottom: 0, left: 0, overflow: 'hidden', position: 'absolute', top: 0 },
   trailCenter: { alignItems: 'center', bottom: 0, justifyContent: 'center', left: 0, position: 'absolute', top: 0 },
   trailLabel: type(16, c.textInverse, '500'),
-  thumb: { alignItems: 'center', backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.full, borderWidth: 1, height: THUMB, justifyContent: 'center', left: INSET, position: 'absolute', top: INSET, width: THUMB },
+  thumb: { alignItems: 'center', backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.full, borderWidth: 1, height: THUMB, justifyContent: 'center', left: INSET, position: 'absolute', top: INSET, width: THUMB, shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.08, shadowRadius: 8 },
   live: { height: 1, opacity: 0, position: 'absolute', width: 1 },
 })

@@ -2,7 +2,8 @@ import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native'
 import Animated, { Easing, FadeInDown, FadeInUp, FadeOut, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
 import { currentState, font, pressedState, radius, space, useColors, type Colors } from '../kit'
-import { type, useStill, useThemed } from './card'
+import { type, useStill, useThemed, type RenderIcon } from './card'
+import { withInk } from './button'
 import { Checkbox } from './checkbox'
 import { Copy, Mark } from './popover'
 
@@ -48,17 +49,19 @@ export type TreeItemProps = {
   lead?: ReactNode
   /** For rows with a checkbox lead. */
   checked?: boolean | 'mixed'
+  /** Draws the default icons, as the web does: an open folder on branches and a file on leaves. */
+  renderIcon?: RenderIcon
   style?: StyleProp<ViewStyle>
   onPress?: () => void
 }
 
 /** One row: chevron, icon, label and an optional mono count, 16 in per level. */
-export function TreeItem({ label, icon, count, mark, level = 0, branch = false, expanded = false, selected = false, disabled = false, animated = true, guides = false, lead, checked, style, onPress }: TreeItemProps) {
+export function TreeItem({ label, icon, count, mark, level = 0, branch = false, expanded = false, selected = false, disabled = false, animated = true, guides = false, lead, checked, renderIcon, style, onPress }: TreeItemProps) {
   const styles = useThemed(createStyles)
   const colors = useColors()
   const still = useStill(animated)
-  const turn = useSharedValue(expanded ? 0 : -90)
-  useEffect(() => { turn.value = withTiming(expanded ? 0 : -90, { duration: still ? 0 : ROW_MS, easing: STANDARD }) }, [expanded, still, turn])
+  const turn = useSharedValue(expanded ? 90 : 0)
+  useEffect(() => { turn.value = withTiming(expanded ? 90 : 0, { duration: still ? 0 : ROW_MS, easing: STANDARD }) }, [expanded, still, turn])
   const turned = useAnimatedStyle(() => ({ transform: [{ rotate: `${turn.value}deg` }] }))
   const indent = useAnimatedStyle(() => ({ paddingLeft: 8 + level * INDENT }), [level])
   return (
@@ -77,12 +80,12 @@ export function TreeItem({ label, icon, count, mark, level = 0, branch = false, 
       {guides ? Array.from({ length: level }, (_, i) => <Guide key={i} index={i} />) : null}
       {lead ?? null}
       <View style={styles.chevron}>
-        {branch ? <Animated.View style={turned}><Mark name="arrow-down" size={14} color={colors.textSecondary} /></Animated.View> : null}
+        {branch ? <Animated.View style={turned}><Mark name="chevron-right" size={14} color={colors.textSecondary} /></Animated.View> : null}
       </View>
-      {lead ? null : icon ?? null}
+      {lead ? null : withInk(icon ?? renderIcon?.(branch ? 'folder-open' : 'file', 20) ?? null, colors.textSecondary)}
       <Text numberOfLines={1} style={[styles.label, selected && styles.labelSelected]}>{label}</Text>
       {count === undefined ? null : <Text style={styles.count}>{count}</Text>}
-      {mark ? <Text style={[styles.count, mark === 'U' && styles.markNew]}>{mark}</Text> : null}
+      {mark ? <Text style={[styles.count, mark === 'U' && styles.markNew, mark === 'M' && styles.markChanged]}>{mark}</Text> : null}
     </AnimatedPressable>
   )
 }
@@ -109,6 +112,8 @@ export type TreeProps = {
   checked?: string[]
   defaultChecked?: string[]
   onCheckedChange?: (ids: string[]) => void
+  /** Draws the default folder and file icons. */
+  renderIcon?: RenderIcon
   animated?: boolean
   style?: StyleProp<ViewStyle>
 }
@@ -118,7 +123,7 @@ type Row = { node: TreeNode; level: number }
 const leavesOf = (node: TreeNode): string[] => (node.children?.length ? node.children.flatMap(leavesOf) : [node.id])
 
 /** A hierarchy of rows. Branches open with a fade. */
-export function Tree({ nodes, label, kind = 'files', expanded, defaultExpanded = [], onExpandedChange, selected, defaultSelected, onSelect, checked, defaultChecked = [], onCheckedChange, animated = true, style }: TreeProps) {
+export function Tree({ nodes, label, kind = 'files', expanded, defaultExpanded = [], onExpandedChange, selected, defaultSelected, onSelect, checked, defaultChecked = [], onCheckedChange, renderIcon, animated = true, style }: TreeProps) {
   const still = useStill(animated)
   const [heldOpen, setHeldOpen] = useState(defaultExpanded)
   const [heldSelected, setHeldSelected] = useState(defaultSelected)
@@ -169,6 +174,7 @@ export function Tree({ nodes, label, kind = 'files', expanded, defaultExpanded =
             <TreeItem
               label={node.label}
               icon={node.icon}
+              {...(renderIcon ? { renderIcon } : {})}
               count={node.count}
               mark={node.mark}
               level={level}
@@ -193,39 +199,43 @@ export function Tree({ nodes, label, kind = 'files', expanded, defaultExpanded =
 
 export type TreeCardProps = { title: ReactNode; caption?: ReactNode; actions?: ReactNode; children: ReactNode; animated?: boolean; style?: StyleProp<ViewStyle> }
 
-/** The Soft card trees sit in: a title on a 4% tray, the rows on an inset body. */
+/** The Soft card trees sit in: a 4% tray around an inset body that holds the title and the rows. */
 export function TreeCard({ title, caption, actions, children, animated = true, style }: TreeCardProps) {
   const styles = useThemed(createStyles)
   const still = useStill(animated)
   return (
     <Animated.View {...(still ? {} : { entering: CARD_IN })} style={[styles.card, style]}>
-      <View style={styles.head}>
-        <View style={styles.heading}>
-          <Copy style={styles.title}>{title}</Copy>
-          {caption ? <Copy style={styles.caption}>{caption}</Copy> : null}
+      <View style={styles.body}>
+        <View style={styles.head}>
+          <View style={styles.heading}>
+            <Copy style={styles.title}>{title}</Copy>
+            {caption ? <Copy style={styles.caption}>{caption}</Copy> : null}
+          </View>
+          {actions ? <View style={styles.actions}>{actions}</View> : null}
         </View>
-        {actions ? <View style={styles.actions}>{actions}</View> : null}
+        {children}
       </View>
-      <View style={styles.body}>{children}</View>
     </Animated.View>
   )
 }
 
 const createStyles = (c: Colors) => StyleSheet.create({
-  card: { backgroundColor: c.ink4, borderRadius: space[6], maxWidth: '100%', padding: space[1], width: 358 },
+  // Mobile card: 358 wide on the web at 390, so it fills the column here.
+  card: { alignSelf: 'stretch', backgroundColor: c.ink4, borderRadius: radius.frame, padding: space[1] },
   head: { alignItems: 'center', flexDirection: 'row', gap: space[2], paddingBottom: space[2], paddingHorizontal: space[2], paddingTop: space[2.5] },
   heading: { flex: 1, minWidth: 0 },
-  title: { ...type(14, c.textPrimary, '500'), lineHeight: 20 },
+  title: { ...type(16, c.textPrimary, '500'), lineHeight: 22 },
   caption: { ...type(12, c.textSecondary), lineHeight: 16 },
   actions: { flexDirection: 'row', gap: space[0.5], marginLeft: 'auto' },
-  body: { backgroundColor: c.surface, borderColor: c.ink8, borderRadius: space[5], borderWidth: 1, paddingBottom: space[2], paddingHorizontal: space[2], paddingTop: space[1.5] },
+  body: { backgroundColor: c.surface, borderColor: c.ink8, borderRadius: radius.panel, borderWidth: 1, paddingBottom: space[2], paddingHorizontal: space[2], paddingTop: space[1.5] },
   item: { alignItems: 'center', borderRadius: radius.field, flexDirection: 'row', gap: space[1.5], minHeight: 44, paddingRight: space[2] },
   itemSelected: { backgroundColor: c.ink8 },
   off: { opacity: 0.4 },
   guide: { backgroundColor: c.ink10, bottom: 0, position: 'absolute', top: 0, width: 1 },
   chevron: { alignItems: 'center', height: 14, justifyContent: 'center', width: 14 },
-  label: { ...type(14, c.textPrimary), flex: 1, lineHeight: 20, minWidth: 0 },
+  label: { ...type(16, c.textPrimary), flex: 1, lineHeight: 22, minWidth: 0 },
   labelSelected: { fontWeight: '500' },
   count: { color: c.textSecondary, fontFamily: font.mono, fontSize: 12, lineHeight: 16 },
   markNew: { color: c.success },
+  markChanged: { color: c.warning },
 })
