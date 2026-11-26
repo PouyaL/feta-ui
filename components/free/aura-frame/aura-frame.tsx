@@ -34,7 +34,9 @@ export type AuraFrameProps = {
   /** The model chip. Default `Normal`. */
   mode?: string
   onMode?: () => void
-  /** Whether DeepThink is on at the start. */
+  /** Whether Deep mode is on at the start. */
+  defaultDeepMode?: boolean
+  /** @deprecated Renamed to `defaultDeepMode`; still read when `defaultDeepMode` is not set. */
   defaultDeepThink?: boolean
   onAttach?: () => void
   onSubmit?: (value: string) => void
@@ -47,12 +49,12 @@ export type AuraFrameProps = {
 }
 
 /** Warm and cool light leaking from a prompt, with glyphs in the glow, for a louder, brand led composer. */
-export function AuraFrame({ label, placeholder = 'Ask anything…', state = 'rest', statusText, mode = 'Normal', onMode, defaultDeepThink = false, onAttach, onSubmit, onStop, onVoice, voiceLevel = 0, animated = true, className }: AuraFrameProps) {
+export function AuraFrame({ label, placeholder = 'Ask anything…', state = 'rest', statusText, mode = 'Normal', onMode, defaultDeepMode, defaultDeepThink, onAttach, onSubmit, onStop, onVoice, voiceLevel = 0, animated = true, className }: AuraFrameProps) {
   const still = useStill(animated)
   const warm = useRef<HTMLPreElement>(null)
   const cool = useRef<HTMLPreElement>(null)
   const [value, setValue] = useState('')
-  const [deep, setDeep] = useState(defaultDeepThink)
+  const [deep, setDeep] = useState(defaultDeepMode ?? defaultDeepThink ?? false)
   const busy = state !== 'rest'
 
   // Glyphs re-roll on a timer, written to the DOM so a tick never re-renders.
@@ -91,7 +93,7 @@ export function AuraFrame({ label, placeholder = 'Ask anything…', state = 'res
         <div className={styles.footer}>
           <IconButton variant="secondary" size="sm" icon={<PlusIcon />} label="Add" animated={animated} onClick={onAttach} />
           <Button variant="secondary" shape="pill" size="sm" animated={animated} leadingIcon={<SparklesIcon />} trailingIcon={<span className={styles.down}><ChevronUpIcon /></span>} onClick={onMode}>{mode}</Button>
-          <span className={styles.deep}><Button variant={deep ? 'primary' : 'secondary'} shape="pill" size="sm" animated={animated} aria-pressed={deep} leadingIcon={<BulbIcon />} onClick={() => setDeep(!deep)}>DeepThink</Button></span>
+          <span className={styles.deep}><Button variant={deep ? 'primary' : 'secondary'} shape="pill" size="sm" animated={animated} aria-pressed={deep} leadingIcon={<BulbIcon />} onClick={() => setDeep(!deep)}>Deep mode</Button></span>
           <span className={styles.spacer} />
           {/* Web shows a Voice pill that turns into a Primary Stop; Mobile shows the same as an icon button. */}
           <span className={styles.voice}>

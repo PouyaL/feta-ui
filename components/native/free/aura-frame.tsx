@@ -14,7 +14,7 @@ import { shadowInk, useTurn } from './metal-frame'
  * as on the web. The web rewrites the glyphs every 80 ms from the JS thread; here eight frames are drawn once and the UI
  * thread shows one at a time, so the flicker never re-renders. The ramp colours below are the web's own values
  * (orange 500, blue 500 and 400, violet 500, and the pink that has no token on the web either). The
- * component switches to the Mobile layout (no DeepThink pill, a voice icon) under 480 wide, where the web follows the
+ * component switches to the Mobile layout (no Deep mode pill, a voice icon) under 480 wide, where the web follows the
  * viewport. Icons come from `renderIcon`.
  */
 
@@ -151,7 +151,9 @@ export type AuraFrameProps = {
   /** The model chip. Default `Normal`. */
   mode?: string
   onMode?: () => void
-  /** Whether DeepThink is on at the start. The pill shows at 480 wide and up. */
+  /** Whether Deep mode is on at the start. The pill shows at 480 wide and up. */
+  defaultDeepMode?: boolean
+  /** @deprecated Renamed to `defaultDeepMode`; still read when `defaultDeepMode` is not set. */
   defaultDeepThink?: boolean
   onAttach?: () => void
   onSubmit?: (value: string) => void
@@ -166,14 +168,14 @@ export type AuraFrameProps = {
 }
 
 /** Warm and cool light leaking from a prompt, with glyphs in the glow, for a louder, brand led composer. */
-export function AuraFrame({ label, placeholder = 'Ask anything…', state = 'rest', statusText, mode = 'Normal', onMode, defaultDeepThink = false, onAttach, onSubmit, onStop, onVoice, voiceLevel = 0, renderIcon, animated = true, style }: AuraFrameProps) {
+export function AuraFrame({ label, placeholder = 'Ask anything…', state = 'rest', statusText, mode = 'Normal', onMode, defaultDeepMode, defaultDeepThink, onAttach, onSubmit, onStop, onVoice, voiceLevel = 0, renderIcon, animated = true, style }: AuraFrameProps) {
   const colors = useColors()
   const dark = useColorScheme() === 'dark'
   const themed = useMemo(() => createStyles(colors, dark), [colors, dark])
   const still = useStill(animated)
   const active = useAppActive()
   const [value, setValue] = useState('')
-  const [deep, setDeep] = useState(defaultDeepThink)
+  const [deep, setDeep] = useState(defaultDeepMode ?? defaultDeepThink ?? false)
   const [focused, setFocused] = useState(false)
   const [width, setWidth] = useState(0)
   const [box, setBox] = useState({ width: 0, height: 0 })
@@ -243,7 +245,7 @@ export function AuraFrame({ label, placeholder = 'Ask anything…', state = 'res
             <IconButton style={SELF.center} variant="secondary" size="sm" icon={icon('plus')} label="Add" animated={animated} onPress={onAttach} />
             <Button style={SELF.center} variant="secondary" shape="pill" size="sm" animated={animated} leadingIcon={icon('sparkles')} trailingIcon={chevron} onPress={onMode}>{mode}</Button>
             {wide ? (
-              <Button style={SELF.center} variant={deep ? 'primary' : 'secondary'} shape="pill" size="sm" animated={animated} {...toggleState(deep)} leadingIcon={icon('bulb')} onPress={() => setDeep(!deep)}>DeepThink</Button>
+              <Button style={SELF.center} variant={deep ? 'primary' : 'secondary'} shape="pill" size="sm" animated={animated} {...toggleState(deep)} leadingIcon={icon('bulb')} onPress={() => setDeep(!deep)}>Deep mode</Button>
             ) : null}
             <View style={themed.spacer} />
             {wide ? (
